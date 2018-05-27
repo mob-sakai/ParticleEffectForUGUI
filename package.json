@@ -1,0 +1,10 @@
+{
+  "name": "ParticleForUGUI",
+  "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mob-sakai/ParticleForUGUI.git"
+  },
+  "src": "Assets/Coffee/UIExtensions/UIParticle",
+  "license": "MIT"
+}
