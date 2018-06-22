@@ -1,21 +1,21 @@
-ParticleForUGUI
+ParticleEffectForUGUI
 ===
 
 This plugin provide a component to render particle effect for uGUI in Unity 2018.2+.  
 The particle rendering is maskable and sortable, without Camera, RenderTexture or Canvas.
 
-[![](https://img.shields.io/github/release/mob-sakai/ParticleForUGUI.svg?label=latest%20version)](https://github.com/mob-sakai/ParticleForUGUI/releases)
-[![](https://img.shields.io/github/release-date/mob-sakai/ParticleForUGUI.svg)](https://github.com/mob-sakai/ParticleForUGUI/releases)  
+[![](https://img.shields.io/github/release/mob-sakai/ParticleEffectForUGUI.svg?label=latest%20version)](https://github.com/mob-sakai/ParticleEffectForUGUI/releases)
+[![](https://img.shields.io/github/release-date/mob-sakai/ParticleEffectForUGUI.svg)](https://github.com/mob-sakai/ParticleEffectForUGUI/releases)  
 ![](https://img.shields.io/badge/requirement-Unity%202018.2%2B-green.svg)
-[![](https://img.shields.io/github/license/mob-sakai/ParticleForUGUI.svg)](https://github.com/mob-sakai/ParticleForUGUI/blob/master/LICENSE.txt)  
-[![](https://img.shields.io/github/last-commit/mob-sakai/ParticleForUGUI/develop.svg?label=last%20commit%20to%20develop)](https://github.com/mob-sakai/ParticleForUGUI/commits/develop)
-[![](https://img.shields.io/github/issues/mob-sakai/ParticleForUGUI.svg)](https://github.com/mob-sakai/ParticleForUGUI/issues)
+[![](https://img.shields.io/github/license/mob-sakai/ParticleEffectForUGUI.svg)](https://github.com/mob-sakai/ParticleEffectForUGUI/blob/master/LICENSE.txt)  
+[![](https://img.shields.io/github/last-commit/mob-sakai/ParticleEffectForUGUI/develop.svg?label=last%20commit%20to%20develop)](https://github.com/mob-sakai/ParticleEffectForUGUI/commits/develop)
+[![](https://img.shields.io/github/issues/mob-sakai/ParticleEffectForUGUI.svg)](https://github.com/mob-sakai/ParticleEffectForUGUI/issues)
 
 
 
-<< [Description](#Description) | [WebGL Demo](#demo) | [Download](https://github.com/mob-sakai/ParticleForUGUI/releases) | [Usage](#usage) | [Development Note](#development-note) | [Change log](https://github.com/mob-sakai/ParticleForUGUI/blob/master/CHANGELOG.md) >>
+<< [Description](#Description) | [WebGL Demo](#demo) | [Download](https://github.com/mob-sakai/ParticleEffectForUGUI/releases) | [Usage](#usage) | [Development Note](#development-note) | [Change log](https://github.com/mob-sakai/ParticleEffectForUGUI/blob/master/CHANGELOG.md) >>
 
-### What's new? Please see [RELEASE NOTE ![](https://img.shields.io/github/release-date/mob-sakai/ParticleForUGUI.svg?label=last%20updated&style=for-the-badge)](https://github.com/mob-sakai/ParticleForUGUI/blob/master/CHANGELOG.md)
+### What's new? Please see [RELEASE NOTE ![](https://img.shields.io/github/release-date/mob-sakai/ParticleEffectForUGUI.svg?label=last%20updated&style=for-the-badge)](https://github.com/mob-sakai/ParticleEffectForUGUI/blob/master/CHANGELOG.md)
 
 
 
@@ -45,14 +45,14 @@ Compares this "Baking mesh" approach with the conventional approach:
 <br><br><br><br>
 ## Demo
 
-[WebGL Demo](http://mob-sakai.github.io/ParticleForUGUI)
+[WebGL Demo](http://mob-sakai.github.io/ParticleEffectForUGUI)
 
 
 
 <br><br><br><br>
 ## Usage
 
-1. Download ParticleForUGUI.unitypackage from [Releases](https://github.com/mob-sakai/ParticleForUGUI/releases).
+1. Download ParticleEffectForUGUI.unitypackage from [Releases](https://github.com/mob-sakai/ParticleEffectForUGUI/releases).
 1. Import the package into your Unity project. Select `Import Package > Custom Package` from the `Assets` menu.
 1. Add particle system to canvas.
 1. If you want to mask particles, set the "UI/UIAdditive" shader to material.
@@ -99,8 +99,8 @@ Please vote the issue to improve `UIParticle`!
 
 ## See Also
 
-* GitHub page : https://github.com/mob-sakai/ParticleForUGUI
-* Releases : https://github.com/mob-sakai/ParticleForUGUI/releases
-* Issue tracker : https://github.com/mob-sakai/ParticleForUGUI/issues
-* Current project : https://github.com/mob-sakai/ParticleForUGUI/projects/1
-* Change log : https://github.com/mob-sakai/ParticleForUGUI/blob/master/CHANGELOG.md
+* GitHub page : https://github.com/mob-sakai/ParticleEffectForUGUI
+* Releases : https://github.com/mob-sakai/ParticleEffectForUGUI/releases
+* Issue tracker : https://github.com/mob-sakai/ParticleEffectForUGUI/issues
+* Current project : https://github.com/mob-sakai/ParticleEffectForUGUI/projects/1
+* Change log : https://github.com/mob-sakai/ParticleEffectForUGUI/blob/master/CHANGELOG.md
