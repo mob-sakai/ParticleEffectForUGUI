@@ -37,8 +37,32 @@ namespace Coffee.UIExtensions
 		{
 			get
 			{
-				var mat = _renderer ? _renderer.sharedMaterial : defaultGraphicMaterial;
-				return mat && mat.HasProperty(s_IdMainTex) ? mat.mainTexture : s_WhiteTexture; ;
+				Texture tex = null;
+				if (!m_IsTrail)
+				{
+					Profiler.BeginSample("Check TextureSheetAnimation module");
+					var textureSheet = m_ParticleSystem.textureSheetAnimation;
+					if (textureSheet.enabled && textureSheet.mode == ParticleSystemAnimationMode.Sprites && 0 < textureSheet.spriteCount)
+					{
+						tex = textureSheet.GetSprite(0).texture;
+					}
+					Profiler.EndSample();
+				}
+				if (!tex && _renderer)
+				{
+					Profiler.BeginSample("Check material");
+					var mat = m_IsTrail
+						? _renderer.trailMaterial
+						: Application.isPlaying
+							? _renderer.material
+							: _renderer.sharedMaterial;
+					if (mat && mat.HasProperty(s_IdMainTex))
+					{
+						tex = mat.mainTexture;
+					}
+					Profiler.EndSample();
+				}
+				return tex ?? s_WhiteTexture;
 			}
 		}
 
@@ -143,8 +167,9 @@ namespace Coffee.UIExtensions
 
 
 				// Set mesh to CanvasRenderer.
-				Profiler.BeginSample("Set mesh to CanvasRenderer");
+				Profiler.BeginSample("Set mesh and texture to CanvasRenderer");
 				canvasRenderer.SetMesh(_mesh);
+				canvasRenderer.SetTexture(mainTexture);
 				Profiler.EndSample();
 			}
 		}
