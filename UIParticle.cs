@@ -56,10 +56,13 @@ namespace Coffee.UIExtensions
 			_mesh.MarkDynamic();
 			CheckTrail();
 			base.OnEnable();
+
+			Canvas.willRenderCanvases += UpdateMesh;
 		}
 
 		protected override void OnDisable()
 		{
+			Canvas.willRenderCanvases -= UpdateMesh;
 			DestroyImmediate(_mesh);
 			_mesh = null;
 			CheckTrail();
@@ -76,7 +79,7 @@ namespace Coffee.UIExtensions
 		Mesh _mesh;
 		ParticleSystemRenderer _renderer;
 
-		void Update()
+		void UpdateMesh()
 		{
 			Profiler.BeginSample("CheckTrail");
 			CheckTrail();
