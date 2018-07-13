@@ -1,5 +1,19 @@
 # Changelog
 
+## [v1.0.0](https://github.com/mob-sakai/ParticleEffectForUGUI/tree/v1.0.0) (2018-07-13)
+
+[Full Changelog](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v0.1.0...v1.0.0)
+
+Let's use particle for your UI!  
+UIParticle is use easy.  
+The particle rendering is maskable and sortable, without Camera, RenderTexture or Canvas.  
+![](https://user-images.githubusercontent.com/12690315/41771577-8da4b968-7650-11e8-9524-cd162c422d9d.gif)
+
+**Implemented enhancements:**
+
+- Supports sprites [\#5](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/5)
+- Use Canvas.willRenderCanvases event instead of LateUpdate [\#4](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/4)
+
 ## [v0.1.0](https://github.com/mob-sakai/ParticleEffectForUGUI/tree/v0.1.0) (2018-06-22)
 
 [Full Changelog](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/6b89c14a5144e290e55d041bc0ad03756a113ae0...v0.1.0)

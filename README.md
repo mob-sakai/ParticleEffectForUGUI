@@ -33,7 +33,7 @@ Compares this "Baking mesh" approach with the conventional approach:
 
 |Approach|Good|Bad|Screenshot|
 |-|-|-|-|
-|Baking mesh<br>**\(UIParticle\)**|Rendered as is.<br>Maskable.<br>Sortable.<br>Less objects.|**Requires Unity 2018.2+.**<br>Requires UI shaders.|<img src="https://user-images.githubusercontent.com/12690315/41765089-0302b9a2-763e-11e8-88b3-b6ffa306bbb0.gif" width="500px">|
+|Baking mesh<br>**\(UIParticle\)**|Rendered as is.<br>Maskable.<br>Sortable.<br>Less objects.|**Requires Unity 2018.2+.**<br>Requires UI shaders to use Mask.|<img src="https://user-images.githubusercontent.com/12690315/41765089-0302b9a2-763e-11e8-88b3-b6ffa306bbb0.gif" width="500px">|
 |Do nothing|Rendered as is.|**Looks like a glitch.**<br>Not maskable.<br>Not sortable.|<img src="https://user-images.githubusercontent.com/12690315/41765090-0329828a-763e-11e8-8d8a-f1d269ea3bc7.gif" width="500px">|
 |Convert particle to UIVertex<br>[\(UIParticleSystem\)](https://forum.unity.com/threads/free-script-particle-systems-in-ui-screen-space-overlay.406862/)|Maskable.<br>Sortable.<br>Less objects.|**Adjustment is difficult.**<br>Requires UI shaders.<br>Difficult to adjust scale.<br>Force hierarchy scalling.<br>Simulation results are incorrect.<br>Trail, rotation of transform, time scaling are not supported.|<img src="https://user-images.githubusercontent.com/12690315/41765088-02deb9c6-763e-11e8-98d0-9e0c1766ef39.gif" width="500px">|
 |Use Canvas to sort|Rendered as is.<br>Sortable.|**You must to manage sorting orders.**<br>Not maskable.<br>More batches.|<img src="https://user-images.githubusercontent.com/12690315/41765087-02b866ea-763e-11e8-8c33-081c9ad852f8.gif" width="500px">|
@@ -55,15 +55,17 @@ Compares this "Baking mesh" approach with the conventional approach:
 1. Download ParticleEffectForUGUI.unitypackage from [Releases](https://github.com/mob-sakai/ParticleEffectForUGUI/releases).
 1. Import the package into your Unity project. Select `Import Package > Custom Package` from the `Assets` menu.
 1. Add particle system to canvas.
-1. If you want to mask particles, set the "UI/UIAdditive" shader to material.
-1. Add `UIParticle` component to particle system from `Add Component` in inspector.
+1. (Option) If you want to mask particles, set a UI shader such as "UI/UIAdditive" to material for ParticleSystem.  
+![](https://user-images.githubusercontent.com/12690315/42674022-134e3a40-86a9-11e8-8f44-a110d2f14185.gif)
+1. Add `UIParticle` component to particle system from `Add Component` in inspector.  
 ![](https://user-images.githubusercontent.com/12690315/41772125-5aca69c8-7652-11e8-8442-21f6015069a1.png)
+1. That's all. There are no properties you must set in the inspector!
 1. Enjoy!
 
 
 ##### Requirement
 
-* Unity 2018.2+ (Tested in Unity 2018.2b9)
+* Unity 2018.2+ (Tested in Unity 2018.2.0f2)
 * No other SDK are required
 
 
@@ -71,14 +73,6 @@ Compares this "Baking mesh" approach with the conventional approach:
 
 <br><br><br><br>
 ## Development Note
-
-#### BakeMesh API has a issue!
-
-See [this issue](https://issuetracker.unity3d.com/issues/bakemesh-slash-baketrailsmesh-crashes-if-update-jobs-are-running).
-
-`UIParticle` avoids the issue, but the rendering result lags one frame.
-
-Please vote the issue to improve `UIParticle`!
 
 
 
