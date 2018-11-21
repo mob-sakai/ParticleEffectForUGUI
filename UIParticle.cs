@@ -28,6 +28,8 @@ namespace Coffee.UIExtensions
 		[Tooltip("The UIParticle to render trail effect")]
 		[SerializeField] UIParticle m_TrailParticle;
 		[HideInInspector] [SerializeField] bool m_IsTrail = false;
+		[Tooltip("Particle effect scale.")]
+		[SerializeField] float m_Scale = 1;
 
 
 		//################################
@@ -66,6 +68,11 @@ namespace Coffee.UIExtensions
 			}
 		}
 
+		/// <summary>
+		/// Particle effect scale.
+		/// </summary>
+		public float scale { get { return _parent ? _parent.scale : m_Scale; } set { m_Scale = value; } }
+
 		public override Material GetModifiedMaterial(Material baseMaterial)
 		{
 			return base.GetModifiedMaterial(_renderer ? _renderer.sharedMaterial : baseMaterial);
@@ -82,6 +89,11 @@ namespace Coffee.UIExtensions
 			base.OnEnable();
 
 			Canvas.willRenderCanvases += UpdateMesh;
+
+			foreach(var c in Resources.FindObjectsOfTypeAll<Camera>())
+			{
+				Debug.LogFormat ("{0}, {1}, {2}, {3}, {4}",c,c.orthographic,c.orthographicSize,c.transform.localScale,c.transform.position);
+			}
 		}
 
 		protected override void OnDisable()
@@ -102,6 +114,7 @@ namespace Coffee.UIExtensions
 		//################################
 		Mesh _mesh;
 		ParticleSystemRenderer _renderer;
+		Matrix4x4 scaleaMatrix = default(Matrix4x4);
 
 		void UpdateMesh()
 		{
@@ -121,19 +134,21 @@ namespace Coffee.UIExtensions
 					Profiler.EndSample();
 
 					Profiler.BeginSample("Make Matrix");
-					var cam = canvas.worldCamera ?? Camera.main;
-					bool useTransform = false;
+					var s = scale;
+					scaleaMatrix = Matrix4x4.Scale(new Vector3(s, s, s));
 					Matrix4x4 matrix = default(Matrix4x4);
 					switch (m_ParticleSystem.main.simulationSpace)
 					{
 						case ParticleSystemSimulationSpace.Local:
 							matrix =
-							Matrix4x4.Rotate(m_ParticleSystem.transform.rotation).inverse
-							 * Matrix4x4.Scale(m_ParticleSystem.transform.lossyScale).inverse;
-							useTransform = true;
+								scaleaMatrix
+								* Matrix4x4.Rotate(m_ParticleSystem.transform.rotation).inverse
+								* Matrix4x4.Scale(m_ParticleSystem.transform.lossyScale).inverse;
 							break;
 						case ParticleSystemSimulationSpace.World:
-							matrix = m_ParticleSystem.transform.worldToLocalMatrix;
+							matrix =
+								scaleaMatrix
+								* m_ParticleSystem.transform.worldToLocalMatrix;
 							break;
 						case ParticleSystemSimulationSpace.Custom:
 							break;
@@ -146,11 +161,11 @@ namespace Coffee.UIExtensions
 						Profiler.BeginSample("Bake Mesh");
 						if (m_IsTrail)
 						{
-							_renderer.BakeTrailsMesh(_mesh, cam, useTransform);
+							_renderer.BakeTrailsMesh(_mesh, cam, m_UseTransform);
 						}
 						else
 						{
-							_renderer.BakeMesh(_mesh, cam, useTransform);
+							_renderer.BakeMesh(_mesh, cam, m_UseTransform);
 						}
 						Profiler.EndSample();
 
