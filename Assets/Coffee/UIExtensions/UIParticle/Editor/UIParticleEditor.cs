@@ -58,6 +58,11 @@ namespace Coffee.UIExtensions
 			EditorGUILayout.PropertyField(_spTrailParticle);
 			EditorGUI.EndDisabledGroup();
 
+			if ((target as UIParticle).GetComponentsInParent<UIParticle> (false).Length == 1)
+			{
+				EditorGUILayout.PropertyField (serializedObject.FindProperty ("m_Scale"));
+			}
+
 			serializedObject.ApplyModifiedProperties();
 		}
 
