@@ -62,6 +62,7 @@ namespace Coffee.UIExtensions
 			{
 				EditorGUILayout.PropertyField (serializedObject.FindProperty ("m_Scale"));
 			}
+			EditorGUILayout.PropertyField (serializedObject.FindProperty ("m_IgnoreParent"));
 
 			serializedObject.ApplyModifiedProperties();
 		}

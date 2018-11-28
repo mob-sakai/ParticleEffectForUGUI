@@ -18,6 +18,8 @@ namespace Coffee.UIExtensions
 		//################################
 		static readonly int s_IdMainTex = Shader.PropertyToID("_MainTex");
 		static readonly List<Vector3> s_Vertices = new List<Vector3>();
+		static readonly List<UIParticle> s_TempRelatables = new List<UIParticle>();
+		static readonly List<UIParticle> s_ActiveSoftMasks = new List<UIParticle>();
 
 
 		//################################
@@ -28,8 +30,10 @@ namespace Coffee.UIExtensions
 		[Tooltip("The UIParticle to render trail effect")]
 		[SerializeField] UIParticle m_TrailParticle;
 		[HideInInspector] [SerializeField] bool m_IsTrail = false;
-		[Tooltip("Particle effect scale.")]
+		[Tooltip("Particle effect scale")]
 		[SerializeField] float m_Scale = 1;
+		[Tooltip("Ignore parent scale")]
+		[SerializeField] bool m_IgnoreParent = false;
 
 
 		//################################
@@ -73,6 +77,23 @@ namespace Coffee.UIExtensions
 		/// </summary>
 		public float scale { get { return _parent ? _parent.scale : m_Scale; } set { m_Scale = value; } }
 
+		/// <summary>
+		/// Should the soft mask ignore parent soft masks?
+		/// </summary>
+		/// <value>If set to true the soft mask will ignore any parent soft mask settings.</value>
+		public bool ignoreParent
+		{
+			get { return m_IgnoreParent; }
+			set
+			{
+				if(m_IgnoreParent != value)
+				{
+					m_IgnoreParent = value;
+					OnTransformParentChanged();
+				}
+			}
+		}
+
 		public override Material GetModifiedMaterial(Material baseMaterial)
 		{
 			return base.GetModifiedMaterial(_renderer ? _renderer.sharedMaterial : baseMaterial);
@@ -80,28 +101,54 @@ namespace Coffee.UIExtensions
 
 		protected override void OnEnable()
 		{
+			// Register.
+			if(s_ActiveSoftMasks.Count == 0)
+			{
+				Canvas.willRenderCanvases += UpdateMeshes;
+			}
+			s_ActiveSoftMasks.Add(this);
+
+			// Reset the parent-child relation.
+			GetComponentsInChildren<UIParticle>(false, s_TempRelatables);
+			for(int i = s_TempRelatables.Count - 1; 0 <= i; i--)
+			{
+				s_TempRelatables [i].OnTransformParentChanged();
+			}
+			s_TempRelatables.Clear();
+
 			m_ParticleSystem = m_ParticleSystem ? m_ParticleSystem : GetComponent<ParticleSystem>();
 			_renderer = m_ParticleSystem ? m_ParticleSystem.GetComponent<ParticleSystemRenderer>() : null;
 
+			// Create objects.
 			_mesh = new Mesh();
 			_mesh.MarkDynamic();
 			CheckTrail();
+
 			base.OnEnable();
-
-			Canvas.willRenderCanvases += UpdateMesh;
-
-			foreach(var c in Resources.FindObjectsOfTypeAll<Camera>())
-			{
-				Debug.LogFormat ("{0}, {1}, {2}, {3}, {4}",c,c.orthographic,c.orthographicSize,c.transform.localScale,c.transform.position);
-			}
 		}
 
 		protected override void OnDisable()
 		{
-			Canvas.willRenderCanvases -= UpdateMesh;
+			// Unregister.
+			s_ActiveSoftMasks.Remove(this);
+			if(s_ActiveSoftMasks.Count == 0)
+			{
+				Canvas.willRenderCanvases -= UpdateMeshes;
+			}
+
+			// Reset the parent-child relation.
+			for(int i = _children.Count - 1; 0 <= i; i--)
+			{
+				_children [i].SetParent(_parent);
+			}
+			_children.Clear();
+			SetParent(null);
+
+			// Destroy objects.
 			DestroyImmediate(_mesh);
 			_mesh = null;
 			CheckTrail();
+
 			base.OnDisable();
 		}
 
@@ -109,12 +156,56 @@ namespace Coffee.UIExtensions
 		{
 		}
 
+		/// <summary>
+		/// This function is called when the parent property of the transform of the GameObject has changed.
+		/// </summary>
+		protected override void OnTransformParentChanged()
+		{
+			UIParticle newParent = null;
+			if(isActiveAndEnabled && !m_IgnoreParent)
+			{
+				var parentTransform = transform.parent;
+				while(parentTransform &&(!newParent || !newParent.enabled))
+				{
+					newParent = parentTransform.GetComponent<UIParticle>();
+					parentTransform = parentTransform.parent;
+				}
+			}
+			SetParent(newParent);
+		}
+
+		protected override void OnDidApplyAnimationProperties()
+		{
+		}
+
+#if UNITY_EDITOR
+		/// <summary>
+		/// This function is called when the script is loaded or a value is changed in the inspector(Called in the editor only).
+		/// </summary>
+		protected override void OnValidate()
+		{
+			OnTransformParentChanged();
+			base.OnValidate();
+		}
+#endif
+
+
 		//################################
 		// Private Members.
 		//################################
 		Mesh _mesh;
 		ParticleSystemRenderer _renderer;
+		UIParticle _parent;
+		List<UIParticle> _children = new List<UIParticle>();
 		Matrix4x4 scaleaMatrix = default(Matrix4x4);
+
+		static void UpdateMeshes()
+		{
+			foreach(var uip in s_ActiveSoftMasks)
+			{
+				uip.UpdateMesh();
+			}
+		}
 
 		void UpdateMesh()
 		{
@@ -161,11 +252,11 @@ namespace Coffee.UIExtensions
 						Profiler.BeginSample("Bake Mesh");
 						if (m_IsTrail)
 						{
-							_renderer.BakeTrailsMesh(_mesh, cam, m_UseTransform);
+							_renderer.BakeTrailsMesh(_mesh, true);
 						}
 						else
 						{
-							_renderer.BakeMesh(_mesh, cam, m_UseTransform);
+							_renderer.BakeMesh(_mesh, true);
 						}
 						Profiler.EndSample();
 
@@ -218,6 +309,28 @@ namespace Coffee.UIExtensions
 			else if (m_TrailParticle)
 			{
 				m_TrailParticle.enabled = false;
+			}
+		}
+
+		/// <summary>
+		/// Set the parent of the soft mask.
+		/// </summary>
+		/// <param name="newParent">The parent soft mask to use.</param>
+		void SetParent(UIParticle newParent)
+		{
+			if(_parent != newParent && this != newParent)
+			{
+				if(_parent && _parent._children.Contains(this))
+				{
+					_parent._children.Remove(this);
+					_parent._children.RemoveAll(x => x == null);
+				}
+				_parent = newParent;
+			}
+
+			if(_parent && !_parent._children.Contains(this))
+			{
+				_parent._children.Add(this);
 			}
 		}
 	}
