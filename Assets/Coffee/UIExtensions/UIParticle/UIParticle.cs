@@ -99,6 +99,8 @@ namespace Coffee.UIExtensions
 			get { return !_parent; }
 		}
 
+		public override bool raycastTarget { get { return false; } set { base.raycastTarget = value; } }
+
 		public override Material GetModifiedMaterial (Material baseMaterial)
 		{
 			return base.GetModifiedMaterial (_renderer ? _renderer.sharedMaterial : baseMaterial);
