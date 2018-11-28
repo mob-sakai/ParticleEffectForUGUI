@@ -94,6 +94,11 @@ namespace Coffee.UIExtensions
 			}
 		}
 
+		public bool isRoot
+		{
+			get { return !_parent; }
+		}
+
 		public override Material GetModifiedMaterial (Material baseMaterial)
 		{
 			return base.GetModifiedMaterial (_renderer ? _renderer.sharedMaterial : baseMaterial);
