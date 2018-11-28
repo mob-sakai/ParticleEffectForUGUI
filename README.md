@@ -15,8 +15,8 @@ The particle rendering is maskable and sortable, without Camera, RenderTexture o
 
 << [Description](#Description) | [WebGL Demo](#demo) | [Download](https://github.com/mob-sakai/ParticleEffectForUGUI/releases) | [Usage](#usage) | [Development Note](#development-note) | [Change log](https://github.com/mob-sakai/ParticleEffectForUGUI/blob/master/CHANGELOG.md) >>
 
-### What's new? Please see [RELEASE NOTE ![](https://img.shields.io/github/release-date/mob-sakai/ParticleEffectForUGUI.svg?label=last%20updated&style=for-the-badge)](https://github.com/mob-sakai/ParticleEffectForUGUI/blob/master/CHANGELOG.md)
-
+### What's new? Please see [See changelog ![](https://img.shields.io/github/release-date/mob-sakai/ParticleEffectForUGUI.svg?label=last%20updated&style=for-the-badge)](https://github.com/mob-sakai/ParticleEffectForUGUI/blob/master/CHANGELOG.md)
+### Do you want to receive notifications for new releases? [Watch this repo ![](https://img.shields.io/github/watchers/mob-sakai/ParticleEffectForUGUI.svg?style=social&label=Watch)](https://github.com/mob-sakai/ParticleEffectForUGUI/subscription)
 
 
 
@@ -40,6 +40,17 @@ Compares this "Baking mesh" approach with the conventional approach:
 |Use RenderTexture|Maskable.<br>Sortable.|**Requires Camera and RenderTexture.**<br>Difficult to adjust position and size.<br>Quality depends on the RenderTexture's setting.|<img src="https://user-images.githubusercontent.com/12690315/41765085-0291b3e2-763e-11e8-827b-72e5ee9bc556.gif" width="500px">|
 
 
+#### Features
+
+* Sort particle effects with uGUI
+* No Camera, RenderTexture or Canvas are required
+* Masking with Mask or RectMask2D
+* Easy to use
+* Support Trail module
+* Change alpha with CanvasGroup
+* Scaling independent of Transform
+* No heavy allocation every frame
+
 
 
 <br><br><br><br>
@@ -53,14 +64,18 @@ Compares this "Baking mesh" approach with the conventional approach:
 ## Usage
 
 1. Download ParticleEffectForUGUI.unitypackage from [Releases](https://github.com/mob-sakai/ParticleEffectForUGUI/releases).
-1. Import the package into your Unity project. Select `Import Package > Custom Package` from the `Assets` menu.
-1. Add particle system to canvas.
-1. (Option) If you want to mask particles, set a UI shader such as "UI/UIAdditive" to material for ParticleSystem.  
+2. Import the package into your Unity project. Select `Import Package > Custom Package` from the `Assets` menu.
+3. Add your particle effect to canvas.
+4. (Option) If you want to mask particles, set a UI shader such as "UI/UIAdditive" to material for ParticleSystem.  
 ![](https://user-images.githubusercontent.com/12690315/42674022-134e3a40-86a9-11e8-8f44-a110d2f14185.gif)
-1. Add `UIParticle` component to particle system from `Add Component` in inspector.  
+5. Add `UIParticle` component to root particle system of your effect from `Add Component` in inspector.  
 ![](https://user-images.githubusercontent.com/12690315/41772125-5aca69c8-7652-11e8-8442-21f6015069a1.png)
-1. That's all. There are no properties you must set in the inspector!
-1. Enjoy!
+6. If your effect consists of multiple ParticleSystems, click "Fix".  
+![](https://user-images.githubusercontent.com/12690315/49148942-1c243880-f34c-11e8-9cf5-d871d65c4dbe.png)
+7. Adjust the Scale property to change the size of the effect.  
+![](https://user-images.githubusercontent.com/12690315/49148937-19c1de80-f34c-11e8-87fc-138192777540.gif)
+8. That's all. There are no properties you must set in the inspector!
+9.  Enjoy!
 
 
 ##### Requirement
