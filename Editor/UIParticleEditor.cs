@@ -15,7 +15,6 @@ namespace Coffee.UIExtensions
 		//################################
 		static readonly GUIContent contentParticleMaterial = new GUIContent ("Particle Material", "The material for rendering particles");
 		static readonly GUIContent contentTrailMaterial = new GUIContent ("Trail Material", "The material for rendering particle trails");
-		static readonly List<UIParticle> s_UIParticles = new List<UIParticle> ();
 		static readonly List<ParticleSystem> s_ParticleSystems = new List<ParticleSystem> ();
 
 		//################################
