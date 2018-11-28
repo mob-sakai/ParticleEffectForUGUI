@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 namespace Coffee.UIExtensions.Demo
 {
@@ -8,8 +9,8 @@ namespace Coffee.UIExtensions.Demo
 		[SerializeField] Sprite m_Sprite;
 		[SerializeField] ParticleSystem [] m_ParticleSystems;
 		[SerializeField] Mask [] m_Masks;
-		[SerializeField] Transform m_ScalingByTransform;
-		[SerializeField] UIParticle m_ScalingByUIParticle;
+		[SerializeField] List<Transform> m_ScalingByTransforms;
+		[SerializeField] List<UIParticle> m_ScalingByUIParticles;
 
 		public void SetTimeScale (float scale)
 		{
@@ -44,8 +45,8 @@ namespace Coffee.UIExtensions.Demo
 
 		public void SetScale (float scale)
 		{
-			m_ScalingByTransform.localScale = Vector3.one * (10 * scale);
-			m_ScalingByUIParticle.scale = scale;
+			m_ScalingByTransforms.ForEach (x => x.localScale = Vector3.one * (10 * scale));
+			m_ScalingByUIParticles.ForEach (x => x.scale = scale);
 		}
 	}
 }
