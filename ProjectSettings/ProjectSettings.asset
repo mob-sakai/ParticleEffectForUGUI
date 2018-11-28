@@ -13,7 +13,7 @@ PlayerSettings:
   useOnDemandResources: 0
   accelerometerFrequency: 60
   companyName: Coffee
-  productName: GradientForUGUI
+  productName: ParticleEffectForUGUI
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
@@ -125,6 +125,7 @@ PlayerSettings:
   m_HolographicPauseOnTrackingLoss: 1
   xboxOneDisableKinectGpuReservation: 0
   xboxOneEnable7thCore: 1
+  isWsaHolographicRemotingEnabled: 0
   vrSettings:
     cardboard:
       depthFormat: 0
@@ -151,10 +152,10 @@ PlayerSettings:
   androidSupportedAspectRatio: 1
   androidMaxAspectRatio: 2.1
   applicationIdentifier:
-    Android: com.coffee.gradientforugui
-    Standalone: unity.coffee.particle
-    iOS: com.coffee.gradientforugui
-    tvOS: com.coffee.gradientforugui
+    Android: com.coffee.particleeffectforugui
+    Standalone: com.coffee.particleeffectforugui
+    iOS: com.coffee.particleeffectforugui
+    tvOS: com.coffee.particleeffectforugui
   buildNumber:
     iOS: 0
   AndroidBundleVersionCode: 1
@@ -401,6 +402,7 @@ PlayerSettings:
   switchAllowsVideoCapturing: 1
   switchAllowsRuntimeAddOnContentInstall: 0
   switchDataLossConfirmation: 0
+  switchUserAccountLockEnabled: 0
   switchSupportedNpadStyles: 3
   switchNativeFsCacheSize: 32
   switchIsHoldTypeHorizontal: 0
@@ -557,14 +559,14 @@ PlayerSettings:
   apiCompatibilityLevelPerPlatform: {}
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
-  metroPackageName: GradientForUGUI
+  metroPackageName: ParticleEffectForUGUI
   metroPackageVersion: 
   metroCertificatePath: 
   metroCertificatePassword: 
   metroCertificateSubject: 
   metroCertificateIssuer: 
   metroCertificateNotAfter: 0000000000000000
-  metroApplicationDescription: GradientForUGUI
+  metroApplicationDescription: ParticleEffectForUGUI
   wsaImages: {}
   metroTileShortName: 
   metroTileShowName: 0
