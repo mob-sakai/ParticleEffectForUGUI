@@ -4,15 +4,15 @@ using UnityEngine;
 
 namespace Coffee.UIExtensions
 {
-	[CustomEditor(typeof(UIParticle))]
+	[CustomEditor (typeof (UIParticle))]
 	[CanEditMultipleObjects]
 	public class UIParticleEditor : GraphicEditor
 	{
 		//################################
 		// Constant or Static Members.
 		//################################
-		static readonly GUIContent contentParticleMaterial = new GUIContent("Particle Material", "The material for rendering particles");
-		static readonly GUIContent contentTrailMaterial = new GUIContent("Trail Material", "The material for rendering particle trails");
+		static readonly GUIContent contentParticleMaterial = new GUIContent ("Particle Material", "The material for rendering particles");
+		static readonly GUIContent contentTrailMaterial = new GUIContent ("Trail Material", "The material for rendering particle trails");
 
 
 		//################################
@@ -21,42 +21,42 @@ namespace Coffee.UIExtensions
 		/// <summary>
 		/// This function is called when the object becomes enabled and active.
 		/// </summary>
-		protected override void OnEnable()
+		protected override void OnEnable ()
 		{
-			base.OnEnable();
-			_spParticleSystem = serializedObject.FindProperty("m_ParticleSystem");
-			_spTrailParticle = serializedObject.FindProperty("m_TrailParticle");
+			base.OnEnable ();
+			_spParticleSystem = serializedObject.FindProperty ("m_ParticleSystem");
+			_spTrailParticle = serializedObject.FindProperty ("m_TrailParticle");
 		}
 
 		/// <summary>
 		/// Implement this function to make a custom inspector.
 		/// </summary>
-		public override void OnInspectorGUI()
+		public override void OnInspectorGUI ()
 		{
-			serializedObject.Update();
+			serializedObject.Update ();
 
-			EditorGUILayout.PropertyField(_spParticleSystem);
+			EditorGUILayout.PropertyField (_spParticleSystem);
 			EditorGUI.indentLevel++;
 			var ps = _spParticleSystem.objectReferenceValue as ParticleSystem;
 			if (ps)
 			{
-				var pr = ps.GetComponent<ParticleSystemRenderer>();
-				var sp = new SerializedObject(pr).FindProperty("m_Materials");
+				var pr = ps.GetComponent<ParticleSystemRenderer> ();
+				var sp = new SerializedObject (pr).FindProperty ("m_Materials");
 
-				EditorGUILayout.PropertyField(sp.GetArrayElementAtIndex(0), contentParticleMaterial);
-				EditorGUILayout.PropertyField(sp.GetArrayElementAtIndex(1), contentTrailMaterial);
-				sp.serializedObject.ApplyModifiedProperties();
+				EditorGUILayout.PropertyField (sp.GetArrayElementAtIndex (0), contentParticleMaterial);
+				EditorGUILayout.PropertyField (sp.GetArrayElementAtIndex (1), contentTrailMaterial);
+				sp.serializedObject.ApplyModifiedProperties ();
 
-				if(!Application.isPlaying && pr.enabled)
+				if (!Application.isPlaying && pr.enabled)
 				{
-					EditorGUILayout.HelpBox("ParticleSystemRenderer will be disable on playing.", MessageType.Info);
+					EditorGUILayout.HelpBox ("ParticleSystemRenderer will be disable on playing.", MessageType.Info);
 				}
 			}
 			EditorGUI.indentLevel--;
 
-			EditorGUI.BeginDisabledGroup(true);
-			EditorGUILayout.PropertyField(_spTrailParticle);
-			EditorGUI.EndDisabledGroup();
+			EditorGUI.BeginDisabledGroup (true);
+			EditorGUILayout.PropertyField (_spTrailParticle);
+			EditorGUI.EndDisabledGroup ();
 
 			if ((target as UIParticle).GetComponentsInParent<UIParticle> (false).Length == 1)
 			{
@@ -64,7 +64,7 @@ namespace Coffee.UIExtensions
 			}
 			EditorGUILayout.PropertyField (serializedObject.FindProperty ("m_IgnoreParent"));
 
-			serializedObject.ApplyModifiedProperties();
+			serializedObject.ApplyModifiedProperties ();
 		}
 
 		//################################
