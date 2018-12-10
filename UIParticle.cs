@@ -222,7 +222,7 @@ namespace Coffee.UIExtensions
 				CheckTrail ();
 				Profiler.EndSample ();
 
-				if (m_ParticleSystem)
+				if (m_ParticleSystem && canvas)
 				{
 					Profiler.BeginSample ("Disable ParticleSystemRenderer");
 					if (Application.isPlaying)
@@ -232,7 +232,7 @@ namespace Coffee.UIExtensions
 					Profiler.EndSample ();
 
 					Profiler.BeginSample ("Make Matrix");
-					var s = scale;
+					var s = scale * canvas.scaleFactor;
 					scaleaMatrix = Matrix4x4.Scale (new Vector3 (s, s, s));
 					Matrix4x4 matrix = default (Matrix4x4);
 					switch (m_ParticleSystem.main.simulationSpace)
