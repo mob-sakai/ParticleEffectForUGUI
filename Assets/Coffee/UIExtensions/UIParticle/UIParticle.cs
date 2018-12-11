@@ -19,7 +19,7 @@ namespace Coffee.UIExtensions
 		static readonly int s_IdMainTex = Shader.PropertyToID ("_MainTex");
 		static readonly List<Vector3> s_Vertices = new List<Vector3> ();
 		static readonly List<UIParticle> s_TempRelatables = new List<UIParticle> ();
-		static readonly List<UIParticle> s_ActiveSoftMasks = new List<UIParticle> ();
+		static readonly List<UIParticle> s_ActiveParticles = new List<UIParticle> ();
 
 
 		//################################
@@ -109,11 +109,11 @@ namespace Coffee.UIExtensions
 		protected override void OnEnable ()
 		{
 			// Register.
-			if (s_ActiveSoftMasks.Count == 0)
+			if (s_ActiveParticles.Count == 0)
 			{
 				Canvas.willRenderCanvases += UpdateMeshes;
 			}
-			s_ActiveSoftMasks.Add (this);
+			s_ActiveParticles.Add (this);
 
 			// Reset the parent-child relation.
 			GetComponentsInChildren<UIParticle> (false, s_TempRelatables);
@@ -137,8 +137,8 @@ namespace Coffee.UIExtensions
 		protected override void OnDisable ()
 		{
 			// Unregister.
-			s_ActiveSoftMasks.Remove (this);
-			if (s_ActiveSoftMasks.Count == 0)
+			s_ActiveParticles.Remove (this);
+			if (s_ActiveParticles.Count == 0)
 			{
 				Canvas.willRenderCanvases -= UpdateMeshes;
 			}
@@ -208,9 +208,12 @@ namespace Coffee.UIExtensions
 
 		static void UpdateMeshes ()
 		{
-			foreach (var uip in s_ActiveSoftMasks)
+			foreach (var uip in s_ActiveParticles)
 			{
-				uip.UpdateMesh ();
+				if(uip)
+				{
+					uip.UpdateMesh ();
+				}
 			}
 		}
 
