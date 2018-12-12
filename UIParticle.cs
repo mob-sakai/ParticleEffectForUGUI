@@ -237,8 +237,9 @@ namespace Coffee.UIExtensions
 					Profiler.EndSample ();
 
 					Profiler.BeginSample ("Make Matrix");
-					var s = scale * canvas.scaleFactor;
-					scaleaMatrix = Matrix4x4.Scale (new Vector3 (s, s, s));
+					scaleaMatrix = m_ParticleSystem.main.scalingMode == ParticleSystemScalingMode.Hierarchy
+					                               ? Matrix4x4.Scale (scale * Vector3.one)
+					                               : Matrix4x4.Scale (scale * canvas.rootCanvas.transform.localScale);
 					Matrix4x4 matrix = default (Matrix4x4);
 					switch (m_ParticleSystem.main.simulationSpace)
 					{
