@@ -179,6 +179,8 @@ namespace Coffee.UIExtensions
 				}
 			}
 			SetParent (newParent);
+
+			base.OnTransformParentChanged ();
 		}
 
 		protected override void OnDidApplyAnimationProperties ()
