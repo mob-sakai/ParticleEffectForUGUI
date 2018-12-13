@@ -19,7 +19,7 @@ namespace Coffee.UIExtensions
 		static readonly int s_IdMainTex = Shader.PropertyToID ("_MainTex");
 		static readonly List<Vector3> s_Vertices = new List<Vector3> ();
 		static readonly List<UIParticle> s_TempRelatables = new List<UIParticle> ();
-		static readonly List<UIParticle> s_ActiveSoftMasks = new List<UIParticle> ();
+		static readonly List<UIParticle> s_ActiveParticles = new List<UIParticle> ();
 
 
 		//################################
@@ -109,11 +109,11 @@ namespace Coffee.UIExtensions
 		protected override void OnEnable ()
 		{
 			// Register.
-			if (s_ActiveSoftMasks.Count == 0)
+			if (s_ActiveParticles.Count == 0)
 			{
 				Canvas.willRenderCanvases += UpdateMeshes;
 			}
-			s_ActiveSoftMasks.Add (this);
+			s_ActiveParticles.Add (this);
 
 			// Reset the parent-child relation.
 			GetComponentsInChildren<UIParticle> (false, s_TempRelatables);
@@ -137,8 +137,8 @@ namespace Coffee.UIExtensions
 		protected override void OnDisable ()
 		{
 			// Unregister.
-			s_ActiveSoftMasks.Remove (this);
-			if (s_ActiveSoftMasks.Count == 0)
+			s_ActiveParticles.Remove (this);
+			if (s_ActiveParticles.Count == 0)
 			{
 				Canvas.willRenderCanvases -= UpdateMeshes;
 			}
@@ -179,6 +179,8 @@ namespace Coffee.UIExtensions
 				}
 			}
 			SetParent (newParent);
+
+			base.OnTransformParentChanged ();
 		}
 
 		protected override void OnDidApplyAnimationProperties ()
@@ -208,9 +210,12 @@ namespace Coffee.UIExtensions
 
 		static void UpdateMeshes ()
 		{
-			foreach (var uip in s_ActiveSoftMasks)
+			foreach (var uip in s_ActiveParticles)
 			{
-				uip.UpdateMesh ();
+				if(uip)
+				{
+					uip.UpdateMesh ();
+				}
 			}
 		}
 
@@ -222,7 +227,7 @@ namespace Coffee.UIExtensions
 				CheckTrail ();
 				Profiler.EndSample ();
 
-				if (m_ParticleSystem)
+				if (m_ParticleSystem && canvas)
 				{
 					Profiler.BeginSample ("Disable ParticleSystemRenderer");
 					if (Application.isPlaying)
@@ -232,8 +237,9 @@ namespace Coffee.UIExtensions
 					Profiler.EndSample ();
 
 					Profiler.BeginSample ("Make Matrix");
-					var s = scale;
-					scaleaMatrix = Matrix4x4.Scale (new Vector3 (s, s, s));
+					scaleaMatrix = m_ParticleSystem.main.scalingMode == ParticleSystemScalingMode.Hierarchy
+					                               ? Matrix4x4.Scale (scale * Vector3.one)
+					                               : Matrix4x4.Scale (scale * canvas.rootCanvas.transform.localScale);
 					Matrix4x4 matrix = default (Matrix4x4);
 					switch (m_ParticleSystem.main.simulationSpace)
 					{

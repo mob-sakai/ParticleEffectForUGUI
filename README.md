@@ -50,7 +50,7 @@ Compares this "Baking mesh" approach with the conventional approach:
 * Change alpha with CanvasGroup
 * Scaling independent of Transform
 * No heavy allocation every frame
-
+* All ParticleSystem.ScalingModes and all Canvas.RenderModes are supported. They look almost the same in all modes.
 
 
 <br><br><br><br>
@@ -74,8 +74,7 @@ Compares this "Baking mesh" approach with the conventional approach:
 ![](https://user-images.githubusercontent.com/12690315/49148942-1c243880-f34c-11e8-9cf5-d871d65c4dbe.png)
 7. Adjust the Scale property to change the size of the effect.  
 ![](https://user-images.githubusercontent.com/12690315/49148937-19c1de80-f34c-11e8-87fc-138192777540.gif)
-8. That's all. There are no properties you must set in the inspector!
-9.  Enjoy!
+8.  Enjoy!
 
 
 ##### Requirement
