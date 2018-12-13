@@ -1,5 +1,33 @@
 # Changelog
 
+## [v1.2.0](https://github.com/mob-sakai/ParticleEffectForUGUI/tree/v1.2.0) (2018-12-13)
+
+[Full Changelog](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v1.1.0...v1.2.0)
+
+New scaling system solves the particle effect scaling problem in most cases.
+* All ParticleSystem.ScalingModes are supported
+* All Canvas.RenderModes are supported
+* They look almost the same in all modes
+
+New scaling system scales particle effect well even if you change the following parameters:
+* Camera.FieldOfView
+* CanvasScaler.MatchWidthOrHeight
+* Canvas.PlaneDistance
+
+![](https://user-images.githubusercontent.com/12690315/49866926-6c22f500-fe4c-11e8-8393-d5a546e9e2d3.gif)
+
+**NOTE: If upgrading from v1.1.0, readjust the UIParticle.Scale property.**
+
+**Implemented enhancements:**
+
+- New scaling system [\#18](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/18)
+
+**Fixed bugs:**
+
+- Rect mask 2D doesn't work [\#17](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/17)
+- Using prefab view will cause a lot of errors [\#16](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/16)
+- Canvas.scaleFactor not take into account [\#15](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/15)
+
 ## [v1.1.0](https://github.com/mob-sakai/ParticleEffectForUGUI/tree/v1.1.0) (2018-11-28)
 
 [Full Changelog](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v1.0.0...v1.1.0)
