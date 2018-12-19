@@ -229,6 +229,7 @@ namespace Coffee.UIExtensions
 
 				if (m_ParticleSystem && canvas)
 				{
+					var rootCanvas = canvas.rootCanvas;
 					Profiler.BeginSample ("Disable ParticleSystemRenderer");
 					if (Application.isPlaying)
 					{
@@ -239,7 +240,7 @@ namespace Coffee.UIExtensions
 					Profiler.BeginSample ("Make Matrix");
 					scaleaMatrix = m_ParticleSystem.main.scalingMode == ParticleSystemScalingMode.Hierarchy
 					                               ? Matrix4x4.Scale (scale * Vector3.one)
-					                               : Matrix4x4.Scale (scale * canvas.rootCanvas.transform.localScale);
+					                               : Matrix4x4.Scale (scale * rootCanvas.transform.localScale);
 					Matrix4x4 matrix = default (Matrix4x4);
 					switch (m_ParticleSystem.main.simulationSpace)
 					{
@@ -263,13 +264,21 @@ namespace Coffee.UIExtensions
 					if (0 < m_ParticleSystem.particleCount)
 					{
 						Profiler.BeginSample ("Bake Mesh");
+						var cam = rootCanvas.renderMode == RenderMode.ScreenSpaceOverlay
+							? UIParticleOverlayCamera.GetCameraForOvrelay (rootCanvas)
+							: canvas.worldCamera ?? Camera.main;
+
+						if (!cam)
+						{
+							return;
+						}
 						if (m_IsTrail)
 						{
-							_renderer.BakeTrailsMesh (_mesh, true);
+							_renderer.BakeTrailsMesh (_mesh, cam, true);
 						}
 						else
 						{
-							_renderer.BakeMesh (_mesh, true);
+							_renderer.BakeMesh (_mesh, cam, true);
 						}
 						Profiler.EndSample ();
 
