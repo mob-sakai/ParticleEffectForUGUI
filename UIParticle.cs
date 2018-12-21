@@ -44,10 +44,10 @@ namespace Coffee.UIExtensions
 			get
 			{
 				Texture tex = null;
-				if (!m_IsTrail)
+				if (!m_IsTrail && particleSystem)
 				{
 					Profiler.BeginSample ("Check TextureSheetAnimation module");
-					var textureSheet = m_ParticleSystem.textureSheetAnimation;
+					var textureSheet = particleSystem.textureSheetAnimation;
 					if (textureSheet.enabled && textureSheet.mode == ParticleSystemAnimationMode.Sprites && 0 < textureSheet.spriteCount)
 					{
 						tex = textureSheet.GetSprite (0).texture;
@@ -101,6 +101,10 @@ namespace Coffee.UIExtensions
 
 		public override bool raycastTarget { get { return false; } set { base.raycastTarget = value; } }
 
+		/// <summary>
+		/// ParticleSystem.
+		/// </summary>
+		new public ParticleSystem particleSystem { get { return m_ParticleSystem ? m_ParticleSystem : (m_ParticleSystem = GetComponent<ParticleSystem> ()); } }
 		public override Material GetModifiedMaterial (Material baseMaterial)
 		{
 			return base.GetModifiedMaterial (_renderer ? _renderer.sharedMaterial : baseMaterial);
@@ -123,8 +127,7 @@ namespace Coffee.UIExtensions
 			}
 			s_TempRelatables.Clear ();
 
-			m_ParticleSystem = m_ParticleSystem ? m_ParticleSystem : GetComponent<ParticleSystem> ();
-			_renderer = m_ParticleSystem ? m_ParticleSystem.GetComponent<ParticleSystemRenderer> () : null;
+			_renderer = particleSystem ? particleSystem.GetComponent<ParticleSystemRenderer> () : null;
 
 			// Create objects.
 			_mesh = new Mesh ();
