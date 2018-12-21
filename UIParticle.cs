@@ -94,22 +94,37 @@ namespace Coffee.UIExtensions
 			}
 		}
 
+		/// <summary>
+		/// Is this the root UIParticle?
+		/// </summary>
 		public bool isRoot
 		{
 			get { return !_parent; }
 		}
 
+		/// <summary>
+		/// Should this graphic be considered a target for raycasting?
+		/// </summary>
 		public override bool raycastTarget { get { return false; } set { base.raycastTarget = value; } }
 
 		/// <summary>
 		/// ParticleSystem.
 		/// </summary>
 		new public ParticleSystem particleSystem { get { return m_ParticleSystem ? m_ParticleSystem : (m_ParticleSystem = GetComponent<ParticleSystem> ()); } }
+
+		/// <summary>
+		/// Perform material modification in this function.
+		/// </summary>
+		/// <returns>Modified material.</returns>
+		/// <param name="baseMaterial">Configured Material.</param>
 		public override Material GetModifiedMaterial (Material baseMaterial)
 		{
 			return base.GetModifiedMaterial (_renderer ? _renderer.sharedMaterial : baseMaterial);
 		}
 
+		/// <summary>
+		/// This function is called when the object becomes enabled and active.
+		/// </summary>
 		protected override void OnEnable ()
 		{
 			// Register.
@@ -137,6 +152,9 @@ namespace Coffee.UIExtensions
 			base.OnEnable ();
 		}
 
+		/// <summary>
+		/// This function is called when the behaviour becomes disabled.
+		/// </summary>
 		protected override void OnDisable ()
 		{
 			// Unregister.
@@ -162,6 +180,9 @@ namespace Coffee.UIExtensions
 			base.OnDisable ();
 		}
 
+		/// <summary>
+		/// Call to update the geometry of the Graphic onto the CanvasRenderer.
+		/// </summary>
 		protected override void UpdateGeometry ()
 		{
 		}
@@ -186,6 +207,9 @@ namespace Coffee.UIExtensions
 			base.OnTransformParentChanged ();
 		}
 
+		/// <summary>
+		/// Callback for when properties have been changed by animation.
+		/// </summary>
 		protected override void OnDidApplyAnimationProperties ()
 		{
 		}
@@ -211,6 +235,9 @@ namespace Coffee.UIExtensions
 		List<UIParticle> _children = new List<UIParticle> ();
 		Matrix4x4 scaleaMatrix = default (Matrix4x4);
 
+		/// <summary>
+		/// Update meshes.
+		/// </summary>
 		static void UpdateMeshes ()
 		{
 			foreach (var uip in s_ActiveParticles)
@@ -222,6 +249,9 @@ namespace Coffee.UIExtensions
 			}
 		}
 
+		/// <summary>
+		/// Update meshe.
+		/// </summary>
 		void UpdateMesh ()
 		{
 			try
@@ -312,6 +342,9 @@ namespace Coffee.UIExtensions
 			}
 		}
 
+		/// <summary>
+		/// Checks the trail.
+		/// </summary>
 		void CheckTrail ()
 		{
 			if (isActiveAndEnabled && !m_IsTrail && m_ParticleSystem && m_ParticleSystem.trails.enabled)
