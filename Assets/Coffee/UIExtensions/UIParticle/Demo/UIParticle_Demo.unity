@@ -3300,11 +3300,26 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 199250511257377142, guid: 5d682dd3e44264ff69bd02590123ea73,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 356b9d0e2cad849c3b53c7e9e1680cb7, type: 2}
+    - target: {fileID: 199250511257377142, guid: 5d682dd3e44264ff69bd02590123ea73,
+        type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 356b9d0e2cad849c3b53c7e9e1680cb7, type: 2}
     - target: {fileID: 199894620351742168, guid: 5d682dd3e44264ff69bd02590123ea73,
         type: 3}
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 199894620351742168, guid: 5d682dd3e44264ff69bd02590123ea73,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 57cef6c0f7570214991e091275f08894, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5d682dd3e44264ff69bd02590123ea73, type: 3}
 --- !u!224 &603288243 stripped
@@ -3455,6 +3470,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 203308585}
     m_Modifications:
+    - target: {fileID: 1682573490798784, guid: 5d682dd3e44264ff69bd02590123ea73, type: 3}
+      propertyPath: m_Name
+      value: UIParticle_Demo_Effect_Root
+      objectReference: {fileID: 0}
     - target: {fileID: 224024702899216688, guid: 5d682dd3e44264ff69bd02590123ea73,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -3493,6 +3512,21 @@ PrefabInstance:
     - target: {fileID: 224024702899216688, guid: 5d682dd3e44264ff69bd02590123ea73,
         type: 3}
       propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224024702899216688, guid: 5d682dd3e44264ff69bd02590123ea73,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224024702899216688, guid: 5d682dd3e44264ff69bd02590123ea73,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224024702899216688, guid: 5d682dd3e44264ff69bd02590123ea73,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224024702899216688, guid: 5d682dd3e44264ff69bd02590123ea73,
@@ -5371,7 +5405,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: << ParticleEffectForUGUI v1.2.0 >>
+  m_Text: << ParticleEffectForUGUI v1.3.0 >>
 --- !u!222 &1359744117
 CanvasRenderer:
   m_ObjectHideFlags: 0

@@ -51,6 +51,9 @@ Compares this "Baking mesh" approach with the conventional approach:
 * Scaling independent of Transform
 * No heavy allocation every frame
 * All ParticleSystem.ScalingModes and all Canvas.RenderModes are supported. They look almost the same in all modes.
+![](https://user-images.githubusercontent.com/12690315/49866926-6c22f500-fe4c-11e8-8393-d5a546e9e2d3.gif)
+* Scaled gizmo
+![](https://user-images.githubusercontent.com/12690315/50343861-f31e4e80-056b-11e9-8f60-8bd0a8ff7adb.gif)
 
 
 <br><br><br><br>

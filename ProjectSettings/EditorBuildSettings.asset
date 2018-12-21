@@ -11,4 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Coffee/UIExtensions/UIParticle/Demo/UIParticle_Demo_ScaleTest.unity
     guid: 728f1c107bd0b49418a7e499b481b8da
+  - enabled: 1
+    path: Assets/Coffee/UIExtensions/UIParticle/Demo/UIParticle_Demo_ScaleTest2.unity
+    guid: 712b3f963876343cebf8429fee2f2b57
   m_configObjects: {}

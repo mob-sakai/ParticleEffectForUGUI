@@ -44,10 +44,10 @@ namespace Coffee.UIExtensions
 			get
 			{
 				Texture tex = null;
-				if (!m_IsTrail)
+				if (!m_IsTrail && particleSystem)
 				{
 					Profiler.BeginSample ("Check TextureSheetAnimation module");
-					var textureSheet = m_ParticleSystem.textureSheetAnimation;
+					var textureSheet = particleSystem.textureSheetAnimation;
 					if (textureSheet.enabled && textureSheet.mode == ParticleSystemAnimationMode.Sprites && 0 < textureSheet.spriteCount)
 					{
 						tex = textureSheet.GetSprite (0).texture;
@@ -94,18 +94,37 @@ namespace Coffee.UIExtensions
 			}
 		}
 
+		/// <summary>
+		/// Is this the root UIParticle?
+		/// </summary>
 		public bool isRoot
 		{
 			get { return !_parent; }
 		}
 
+		/// <summary>
+		/// Should this graphic be considered a target for raycasting?
+		/// </summary>
 		public override bool raycastTarget { get { return false; } set { base.raycastTarget = value; } }
 
+		/// <summary>
+		/// ParticleSystem.
+		/// </summary>
+		new public ParticleSystem particleSystem { get { return m_ParticleSystem ? m_ParticleSystem : (m_ParticleSystem = GetComponent<ParticleSystem> ()); } }
+
+		/// <summary>
+		/// Perform material modification in this function.
+		/// </summary>
+		/// <returns>Modified material.</returns>
+		/// <param name="baseMaterial">Configured Material.</param>
 		public override Material GetModifiedMaterial (Material baseMaterial)
 		{
 			return base.GetModifiedMaterial (_renderer ? _renderer.sharedMaterial : baseMaterial);
 		}
 
+		/// <summary>
+		/// This function is called when the object becomes enabled and active.
+		/// </summary>
 		protected override void OnEnable ()
 		{
 			// Register.
@@ -123,8 +142,7 @@ namespace Coffee.UIExtensions
 			}
 			s_TempRelatables.Clear ();
 
-			m_ParticleSystem = m_ParticleSystem ? m_ParticleSystem : GetComponent<ParticleSystem> ();
-			_renderer = m_ParticleSystem ? m_ParticleSystem.GetComponent<ParticleSystemRenderer> () : null;
+			_renderer = particleSystem ? particleSystem.GetComponent<ParticleSystemRenderer> () : null;
 
 			// Create objects.
 			_mesh = new Mesh ();
@@ -134,6 +152,9 @@ namespace Coffee.UIExtensions
 			base.OnEnable ();
 		}
 
+		/// <summary>
+		/// This function is called when the behaviour becomes disabled.
+		/// </summary>
 		protected override void OnDisable ()
 		{
 			// Unregister.
@@ -159,6 +180,9 @@ namespace Coffee.UIExtensions
 			base.OnDisable ();
 		}
 
+		/// <summary>
+		/// Call to update the geometry of the Graphic onto the CanvasRenderer.
+		/// </summary>
 		protected override void UpdateGeometry ()
 		{
 		}
@@ -183,6 +207,9 @@ namespace Coffee.UIExtensions
 			base.OnTransformParentChanged ();
 		}
 
+		/// <summary>
+		/// Callback for when properties have been changed by animation.
+		/// </summary>
 		protected override void OnDidApplyAnimationProperties ()
 		{
 		}
@@ -208,6 +235,9 @@ namespace Coffee.UIExtensions
 		List<UIParticle> _children = new List<UIParticle> ();
 		Matrix4x4 scaleaMatrix = default (Matrix4x4);
 
+		/// <summary>
+		/// Update meshes.
+		/// </summary>
 		static void UpdateMeshes ()
 		{
 			foreach (var uip in s_ActiveParticles)
@@ -219,6 +249,9 @@ namespace Coffee.UIExtensions
 			}
 		}
 
+		/// <summary>
+		/// Update meshe.
+		/// </summary>
 		void UpdateMesh ()
 		{
 			try
@@ -229,6 +262,7 @@ namespace Coffee.UIExtensions
 
 				if (m_ParticleSystem && canvas)
 				{
+					var rootCanvas = canvas.rootCanvas;
 					Profiler.BeginSample ("Disable ParticleSystemRenderer");
 					if (Application.isPlaying)
 					{
@@ -239,7 +273,7 @@ namespace Coffee.UIExtensions
 					Profiler.BeginSample ("Make Matrix");
 					scaleaMatrix = m_ParticleSystem.main.scalingMode == ParticleSystemScalingMode.Hierarchy
 					                               ? Matrix4x4.Scale (scale * Vector3.one)
-					                               : Matrix4x4.Scale (scale * canvas.rootCanvas.transform.localScale);
+					                               : Matrix4x4.Scale (scale * rootCanvas.transform.localScale);
 					Matrix4x4 matrix = default (Matrix4x4);
 					switch (m_ParticleSystem.main.simulationSpace)
 					{
@@ -263,13 +297,21 @@ namespace Coffee.UIExtensions
 					if (0 < m_ParticleSystem.particleCount)
 					{
 						Profiler.BeginSample ("Bake Mesh");
+						var cam = rootCanvas.renderMode == RenderMode.ScreenSpaceOverlay
+							? UIParticleOverlayCamera.GetCameraForOvrelay (rootCanvas)
+							: canvas.worldCamera ?? Camera.main;
+
+						if (!cam)
+						{
+							return;
+						}
 						if (m_IsTrail)
 						{
-							_renderer.BakeTrailsMesh (_mesh, true);
+							_renderer.BakeTrailsMesh (_mesh, cam, true);
 						}
 						else
 						{
-							_renderer.BakeMesh (_mesh, true);
+							_renderer.BakeMesh (_mesh, cam, true);
 						}
 						Profiler.EndSample ();
 
@@ -300,6 +342,9 @@ namespace Coffee.UIExtensions
 			}
 		}
 
+		/// <summary>
+		/// Checks the trail.
+		/// </summary>
 		void CheckTrail ()
 		{
 			if (isActiveAndEnabled && !m_IsTrail && m_ParticleSystem && m_ParticleSystem.trails.enabled)
