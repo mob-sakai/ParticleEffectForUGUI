@@ -140,9 +140,9 @@ namespace Coffee.UIExtensions
 
 			EditorGUI.BeginChangeCheck ();
 
-			foreach (UIParticle current in _particles)
+			foreach (UIParticle uip in _particles)
 			{
-				ParticleSystem ps = current.GetComponent<ParticleSystem> ();
+				ParticleSystem ps = uip.cachedParticleSystem;
 				if (!ps)
 				{
 					continue;
@@ -174,13 +174,13 @@ namespace Coffee.UIExtensions
 				transformMatrix *= emitterMatrix;
 				Handles.matrix = transformMatrix;
 
-				if(current.canvas.renderMode == RenderMode.ScreenSpaceOverlay || ps.main.scalingMode == ParticleSystemScalingMode.Hierarchy)
+				if(uip.canvas.renderMode == RenderMode.ScreenSpaceOverlay || ps.main.scalingMode == ParticleSystemScalingMode.Hierarchy)
 				{
-					Handles.matrix = Handles.matrix * Matrix4x4.Scale (Vector3.one * current.scale);
+					Handles.matrix = Handles.matrix * Matrix4x4.Scale (Vector3.one * uip.scale);
 				}
 				else
 				{
-					Handles.matrix = Handles.matrix * Matrix4x4.Scale (current.canvas.rootCanvas.transform.localScale * current.scale);
+					Handles.matrix = Handles.matrix * Matrix4x4.Scale (uip.canvas.rootCanvas.transform.localScale * uip.scale);
 				}
 
 				if (type == ParticleSystemShapeType.Sphere)
@@ -189,7 +189,7 @@ namespace Coffee.UIExtensions
 					Handles.color *= s_ShapeGizmoThicknessTint;
 					EditorGUI.BeginChangeCheck ();
 					//float radiusThickness = Handles.DoSimpleRadiusHandle (Quaternion.identity, Vector3.zero, shapeModule.radius * (1.0f - shapeModule.radiusThickness), false, shapeModule.arc);
-					float radiusThickness = Call<float> (typeof (Handles), "DoSimpleRadiusHandle", Quaternion.identity, Vector3.zero, shapeModule.radius * (1.0f - shapeModule.radiusThickness), false, shapeModule.arc);
+					float radiusThickness = Handles.RadiusHandle (Quaternion.identity, Vector3.zero, shapeModule.radius * (1.0f - shapeModule.radiusThickness), false);
 					if (EditorGUI.EndChangeCheck ())
 					{
 						Undo.RecordObject (ps, "Sphere Thickness Handle Change");
@@ -200,7 +200,7 @@ namespace Coffee.UIExtensions
 					Handles.color = s_GizmoColor;
 					EditorGUI.BeginChangeCheck ();
 					//float radius = Handles.DoSimpleRadiusHandle (Quaternion.identity, Vector3.zero, shapeModule.radius, false, shapeModule.arc);
-					float radius = Call<float> (typeof (Handles), "DoSimpleRadiusHandle", Quaternion.identity, Vector3.zero, shapeModule.radius, false, shapeModule.arc);
+					float radius = Handles.RadiusHandle (Quaternion.identity, Vector3.zero, shapeModule.radius, false);
 					if (EditorGUI.EndChangeCheck ())
 					{
 						Undo.RecordObject (ps, "Sphere Handle Change");
@@ -256,7 +256,8 @@ namespace Coffee.UIExtensions
 					Handles.color *= s_ShapeGizmoThicknessTint;
 					EditorGUI.BeginChangeCheck ();
 					//float radiusThickness = Handles.DoSimpleRadiusHandle (Quaternion.identity, Vector3.zero, shapeModule.radius * (1.0f - shapeModule.radiusThickness), true, shapeModule.arc);
-					float radiusThickness = Call<float> (typeof (Handles), "DoSimpleRadiusHandle", Quaternion.identity, Vector3.zero, shapeModule.radius * (1.0f - shapeModule.radiusThickness), true, shapeModule.arc);
+					//float radiusThickness = Call<float> (typeof (Handles), "DoSimpleRadiusHandle", Quaternion.identity, Vector3.zero, shapeModule.radius * (1.0f - shapeModule.radiusThickness), true, shapeModule.arc);
+					float radiusThickness = Handles.RadiusHandle (Quaternion.identity, Vector3.zero, shapeModule.radius * (1.0f - shapeModule.radiusThickness), true);
 					if (EditorGUI.EndChangeCheck ())
 					{
 						Undo.RecordObject (ps, "Hemisphere Thickness Handle Change");
@@ -267,7 +268,7 @@ namespace Coffee.UIExtensions
 					Handles.color = s_GizmoColor;
 					EditorGUI.BeginChangeCheck ();
 					//float radius = Handles.DoSimpleRadiusHandle (Quaternion.identity, Vector3.zero, shapeModule.radius, true, shapeModule.arc);
-					float radius = Call<float> (typeof (Handles), "DoSimpleRadiusHandle", Quaternion.identity, Vector3.zero, shapeModule.radius, true, shapeModule.arc);
+					float radius = Handles.RadiusHandle (Quaternion.identity, Vector3.zero, shapeModule.radius, true);
 					if (EditorGUI.EndChangeCheck ())
 					{
 						Undo.RecordObject (ps, "Hemisphere Handle Change");
@@ -286,7 +287,11 @@ namespace Coffee.UIExtensions
 					float angleThickness = Mathf.Lerp (shapeModule.angle, 0.0f, shapeModule.radiusThickness);
 					Vector3 radiusThicknessAngleRange = new Vector3 (shapeModule.radius * (1.0f - shapeModule.radiusThickness), angleThickness, mainModule.startSpeedMultiplier);
 					//radiusThicknessAngleRange = Handles.ConeFrustrumHandle (Quaternion.identity, Vector3.zero, radiusThicknessAngleRange, Handles.ConeHandles.Radius);
+#if UNITY_2018_3_OR_NEWER
 					radiusThicknessAngleRange = Call<Vector3> (typeof (Handles), "ConeFrustrumHandle", Quaternion.identity, Vector3.zero, radiusThicknessAngleRange, 1);
+#else
+					radiusThicknessAngleRange = Call<Vector3> (typeof (Handles), "ConeFrustrumHandle", Quaternion.identity, Vector3.zero, radiusThicknessAngleRange);
+#endif
 					if (EditorGUI.EndChangeCheck ())
 					{
 						Undo.RecordObject (ps, "Cone Thickness Handle Change");
@@ -298,7 +303,11 @@ namespace Coffee.UIExtensions
 					EditorGUI.BeginChangeCheck ();
 					Vector3 radiusAngleRange = new Vector3 (shapeModule.radius, shapeModule.angle, mainModule.startSpeedMultiplier);
 					//radiusAngleRange = Handles.ConeFrustrumHandle (Quaternion.identity, Vector3.zero, radiusAngleRange);
+#if UNITY_2018_3_OR_NEWER
 					radiusAngleRange = Call<Vector3> (typeof (Handles), "ConeFrustrumHandle", Quaternion.identity, Vector3.zero, radiusAngleRange, 7);
+#else
+					radiusAngleRange = Call<Vector3> (typeof (Handles), "ConeFrustrumHandle", Quaternion.identity, Vector3.zero, radiusAngleRange);
+#endif
 					if (EditorGUI.EndChangeCheck ())
 					{
 						Undo.RecordObject (ps, "Cone Handle Change");
@@ -319,7 +328,11 @@ namespace Coffee.UIExtensions
 					float angleThickness = Mathf.Lerp (shapeModule.angle, 0.0f, shapeModule.radiusThickness);
 					Vector3 radiusThicknessAngleLength = new Vector3 (shapeModule.radius * (1.0f - shapeModule.radiusThickness), angleThickness, shapeModule.length);
 					//radiusThicknessAngleLength = Handles.ConeFrustrumHandle (Quaternion.identity, Vector3.zero, radiusThicknessAngleLength, Handles.ConeHandles.Radius);
+#if UNITY_2018_3_OR_NEWER
 					radiusThicknessAngleLength = Call<Vector3> (typeof (Handles), "ConeFrustrumHandle", Quaternion.identity, Vector3.zero, radiusThicknessAngleLength, 1);
+#else
+					radiusThicknessAngleLength = Call<Vector3> (typeof (Handles), "ConeFrustrumHandle", Quaternion.identity, Vector3.zero, radiusThicknessAngleLength);
+#endif
 					if (EditorGUI.EndChangeCheck ())
 					{
 						Undo.RecordObject (ps, "Cone Volume Thickness Handle Change");
@@ -331,7 +344,11 @@ namespace Coffee.UIExtensions
 					EditorGUI.BeginChangeCheck ();
 					Vector3 radiusAngleLength = new Vector3 (shapeModule.radius, shapeModule.angle, shapeModule.length);
 					//radiusAngleLength = Handles.ConeFrustrumHandle (Quaternion.identity, Vector3.zero, radiusAngleLength);
+#if UNITY_2018_3_OR_NEWER
 					radiusAngleLength = Call<Vector3> (typeof (Handles), "ConeFrustrumHandle", Quaternion.identity, Vector3.zero, radiusAngleLength, 7);
+#else
+					radiusAngleLength = Call<Vector3> (typeof (Handles), "ConeFrustrumHandle", Quaternion.identity, Vector3.zero, radiusAngleLength);
+#endif
 					if (EditorGUI.EndChangeCheck ())
 					{
 						Undo.RecordObject (ps, "Cone Volume Handle Change");
