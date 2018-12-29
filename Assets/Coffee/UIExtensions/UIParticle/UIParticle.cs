@@ -59,9 +59,7 @@ namespace Coffee.UIExtensions
 					Profiler.BeginSample ("Check material");
 					var mat = m_IsTrail
 						? _renderer.trailMaterial
-						: Application.isPlaying
-							? _renderer.material
-							: _renderer.sharedMaterial;
+						: _renderer.sharedMaterial;
 					if (mat && mat.HasProperty (s_IdMainTex))
 					{
 						tex = mat.mainTexture;
