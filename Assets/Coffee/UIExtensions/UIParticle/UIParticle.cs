@@ -59,9 +59,7 @@ namespace Coffee.UIExtensions
 					Profiler.BeginSample ("Check material");
 					var mat = m_IsTrail
 						? _renderer.trailMaterial
-						: Application.isPlaying
-							? _renderer.material
-							: _renderer.sharedMaterial;
+						: _renderer.sharedMaterial;
 					if (mat && mat.HasProperty (s_IdMainTex))
 					{
 						tex = mat.mainTexture;
@@ -143,6 +141,10 @@ namespace Coffee.UIExtensions
 			s_TempRelatables.Clear ();
 
 			_renderer = cachedParticleSystem ? cachedParticleSystem.GetComponent<ParticleSystemRenderer> () : null;
+			if (_renderer && Application.isPlaying)
+			{
+				_renderer.enabled = false;
+			}
 
 			// Create objects.
 			_mesh = new Mesh ();
