@@ -141,6 +141,10 @@ namespace Coffee.UIExtensions
 			s_TempRelatables.Clear ();
 
 			_renderer = cachedParticleSystem ? cachedParticleSystem.GetComponent<ParticleSystemRenderer> () : null;
+			if (_renderer && Application.isPlaying)
+			{
+				_renderer.enabled = false;
+			}
 
 			// Create objects.
 			_mesh = new Mesh ();
