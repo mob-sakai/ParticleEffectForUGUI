@@ -1,5 +1,17 @@
 # Changelog
 
+## [v1.3.2](https://github.com/mob-sakai/ParticleEffectForUGUI/tree/v1.3.2) (2018-12-29)
+
+[Full Changelog](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v1.3.1...v1.3.2)
+
+**Implemented enhancements:**
+
+- Use shared material during play mode [\#29](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/29)
+
+**Fixed bugs:**
+
+- Particle not showing on Android, while on editor it works  [\#31](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/31)
+
 ## [v1.3.1](https://github.com/mob-sakai/ParticleEffectForUGUI/tree/v1.3.1) (2018-12-24)
 
 [Full Changelog](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v1.3.0...v1.3.1)
@@ -18,7 +30,6 @@ With Gizmo you can control the scaled Shape.
 
 **Fixed bugs:**
 
-- Assertion failed on expression: 'IsNormalized\(normal, 0.001f\)' [\#22](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/22)
 - In overlay, particle size is too small [\#23](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/23)
 - UIParticle.Scale does not affect the gizmo of shape module [\#21](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/21)
 
