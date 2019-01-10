@@ -105,8 +105,9 @@ Compares this "Baking mesh" approach with the conventional approach:
 
 ## Author
 
-[mob-sakai](https://github.com/mob-sakai)  
-[![](https://img.shields.io/twitter/follow/mob_sakai.svg?label=Follow&style=social)](https://twitter.com/intent/follow?screen_name=mob_sakai)
+[mob-sakai](https://github.com/mob-sakai)
+[![](https://img.shields.io/twitter/follow/mob_sakai.svg?label=Follow&style=social)](https://twitter.com/intent/follow?screen_name=mob_sakai)  
+[![become_a_patron](https://user-images.githubusercontent.com/12690315/50731629-3b18b480-11ad-11e9-8fad-4b13f27969c1.png)](https://www.patreon.com/join/2343451?)
 
 
 
