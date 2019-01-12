@@ -299,6 +299,14 @@ namespace Coffee.UIExtensions
 					if (0 < m_ParticleSystem.particleCount)
 					{
 						Profiler.BeginSample ("Bake Mesh");
+
+						// If current scene is prefab mode, prevent create OverlayCamera.
+						#if UNITY_2018_3_OR_NEWER && UNITY_EDITOR
+						var prefabStage = UnityEditor.Experimental.SceneManagement.PrefabStageUtility.GetCurrentPrefabStage();
+						if (prefabStage != null && prefabStage.scene != null && prefabStage.scene.isLoaded)
+							return;
+						#endif
+
 						var cam = rootCanvas.renderMode == RenderMode.ScreenSpaceOverlay
 							? UIParticleOverlayCamera.GetCameraForOvrelay (rootCanvas)
 							: canvas.worldCamera ?? Camera.main;
