@@ -242,11 +242,11 @@ namespace Coffee.UIExtensions
 		/// </summary>
 		static void UpdateMeshes ()
 		{
-			foreach (var uip in s_ActiveParticles)
+			for (int i = 0; i < s_ActiveParticles.Count; i++)
 			{
-				if(uip)
+				if (s_ActiveParticles [i])
 				{
-					uip.UpdateMesh ();
+					s_ActiveParticles [i].UpdateMesh ();
 				}
 			}
 		}

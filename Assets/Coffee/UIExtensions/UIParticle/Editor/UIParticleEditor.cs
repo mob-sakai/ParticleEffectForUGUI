@@ -143,7 +143,7 @@ namespace Coffee.UIExtensions
 			foreach (UIParticle uip in _particles)
 			{
 				ParticleSystem ps = uip.cachedParticleSystem;
-				if (!ps)
+				if (!ps || !uip.canvas)
 				{
 					continue;
 				}
