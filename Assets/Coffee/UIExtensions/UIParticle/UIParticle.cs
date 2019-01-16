@@ -242,11 +242,11 @@ namespace Coffee.UIExtensions
 		/// </summary>
 		static void UpdateMeshes ()
 		{
-			foreach (var uip in s_ActiveParticles)
+			for (int i = 0; i < s_ActiveParticles.Count; i++)
 			{
-				if(uip)
+				if (s_ActiveParticles [i])
 				{
-					uip.UpdateMesh ();
+					s_ActiveParticles [i].UpdateMesh ();
 				}
 			}
 		}
@@ -264,6 +264,16 @@ namespace Coffee.UIExtensions
 
 				if (m_ParticleSystem && canvas)
 				{
+					if (canvas.renderMode != RenderMode.ScreenSpaceOverlay)
+					{
+						Vector3 pos = rectTransform.localPosition;
+						if (Mathf.Abs (pos.z) < 0.01f)
+						{
+							pos.z = 0.01f;
+							rectTransform.localPosition = pos;
+						}
+					}
+
 					var rootCanvas = canvas.rootCanvas;
 					Profiler.BeginSample ("Disable ParticleSystemRenderer");
 					if (Application.isPlaying)

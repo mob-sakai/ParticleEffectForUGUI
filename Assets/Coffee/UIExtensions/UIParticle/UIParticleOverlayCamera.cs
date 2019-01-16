@@ -1,6 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+#if UNITY_2018_3_OR_NEWER && UNITY_EDITOR
+using PrefabStageUtility = UnityEditor.Experimental.SceneManagement.PrefabStageUtility;
+#endif
 
 namespace Coffee.UIExtensions
 {
@@ -20,6 +23,28 @@ namespace Coffee.UIExtensions
 		{
 			get
 			{
+#if UNITY_2018_3_OR_NEWER && UNITY_EDITOR
+				// If current scene is prefab mode, create OverlayCamera for editor.
+				var prefabStage = PrefabStageUtility.GetCurrentPrefabStage ();
+				if (prefabStage != null && prefabStage.scene.isLoaded)
+				{
+					if (!s_InstanceForPrefabMode)
+					{
+						// This GameObject is not saved in prefab.
+						// This GameObject is not shown in the hierarchy view.
+						// When you exit prefab mode, this GameObject is destroyed automatically.
+						var go = new GameObject (typeof (UIParticleOverlayCamera).Name + "_ForEditor")
+						{
+							hideFlags = HideFlags.HideAndDontSave,
+							tag = "EditorOnly",
+						};
+						UnityEngine.SceneManagement.SceneManager.MoveGameObjectToScene (go, prefabStage.scene);
+						s_InstanceForPrefabMode = go.AddComponent<UIParticleOverlayCamera> ();
+					}
+					return s_InstanceForPrefabMode;
+				}
+#endif
+
 				// Find instance in scene, or create new one.
 				if (object.ReferenceEquals (s_Instance, null))
 				{
@@ -56,12 +81,24 @@ namespace Coffee.UIExtensions
 		Camera cameraForOvrelay { get { return m_Camera ? m_Camera : (m_Camera = GetComponent<Camera> ()) ? m_Camera : (m_Camera = gameObject.AddComponent<Camera> ()); } }
 		Camera m_Camera;
 		static UIParticleOverlayCamera s_Instance;
+#if UNITY_2018_3_OR_NEWER && UNITY_EDITOR
+		static UIParticleOverlayCamera s_InstanceForPrefabMode;
+#endif
 
 		/// <summary>
 		/// Awake is called when the script instance is being loaded.
 		/// </summary>
 		void Awake ()
 		{
+#if UNITY_2018_3_OR_NEWER && UNITY_EDITOR
+			// OverlayCamera for editor.
+			if (hideFlags == HideFlags.HideAndDontSave || s_InstanceForPrefabMode == this)
+			{
+				s_InstanceForPrefabMode = GetComponent<UIParticleOverlayCamera> ();
+				return;
+			}
+#endif
+
 			// Hold the instance.
 			if (s_Instance == null)
 			{
@@ -100,6 +137,13 @@ namespace Coffee.UIExtensions
 		/// </summary>
 		void OnDestroy ()
 		{
+#if UNITY_2018_3_OR_NEWER && UNITY_EDITOR
+			if (s_InstanceForPrefabMode == this)
+			{
+				s_InstanceForPrefabMode = null;
+			}
+#endif
+
 			// Clear instance on destroy.
 			if (s_Instance == this)
 			{

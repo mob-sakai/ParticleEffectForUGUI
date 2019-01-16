@@ -1,5 +1,14 @@
 # Changelog
 
+## [v1.3.3](https://github.com/mob-sakai/ParticleEffectForUGUI/tree/v1.3.3) (2019-01-16)
+
+[Full Changelog](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v1.3.2...v1.3.3)
+
+**Fixed bugs:**
+
+- On prefab edit mode, unnecessary UIParticleOverlayCamera is generated in the scene [\#35](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/35)
+- With 'Screen Space - Camera' render mode, sorting is incorrect [\#34](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/34)
+
 ## [v1.3.2](https://github.com/mob-sakai/ParticleEffectForUGUI/tree/v1.3.2) (2018-12-29)
 
 [Full Changelog](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v1.3.1...v1.3.2)
