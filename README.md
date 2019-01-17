@@ -57,6 +57,7 @@ Compares this "Baking mesh" approach with the conventional approach:
 ![](https://user-images.githubusercontent.com/12690315/50343861-f31e4e80-056b-11e9-8f60-8bd0a8ff7adb.gif)
 
 
+
 <br><br><br><br>
 ## Demo
 
@@ -65,20 +66,51 @@ Compares this "Baking mesh" approach with the conventional approach:
 
 
 <br><br><br><br>
+## Install
+
+#### Using UnityPackageManager (for Unity 2018.3+)
+
+Find the manifest.json file in the Packages folder of your project and edit it to look like this:
+```js
+{
+  "dependencies": {
+    "com.coffee.ui-particle": "https://github.com/mob-sakai/ParticleEffectForUGUI.git#2.0.0",
+    ...
+  },
+}
+```
+To update the package, change `#2.0.0` to the target version.
+
+#### Using .unitypackage file (for Unity 2018.2+)
+
+Download `*.unitypackage` from [Releases](https://github.com/mob-sakai/ParticleEffectForUGUI/releases) and import the package into your Unity project.  
+Select `Assets > Import Package > Custom Package` from the menu.  
+![](https://user-images.githubusercontent.com/12690315/46570979-edbb5a00-c9a7-11e8-845d-c5ee279effec.png)
+
+
+
+<br><br><br><br>
+## How to play demo
+
+* Import `UIParticle_Demo.unitypackage` into your project.  
+* The demo unitypackage exists in `Assets/Assets/Coffee/UIExtensions/UIParticle` or `Packages/UI Particle`.  
+* Open UIParticle_Demo scene and play it.
+
+
+
+<br><br><br><br>
 ## Usage
 
-1. Download ParticleEffectForUGUI.unitypackage from [Releases](https://github.com/mob-sakai/ParticleEffectForUGUI/releases).
-2. Import the package into your Unity project. Select `Import Package > Custom Package` from the `Assets` menu.
-3. Add your particle effect to canvas.
-4. (Option) If you want to mask particles, set a UI shader such as "UI/UIAdditive" to material for ParticleSystem.  
+1. Add your particle effect to canvas.
+2. (Option) If you want to mask particles, set a UI shader such as "UI/UIAdditive" to material for ParticleSystem.  
 ![](https://user-images.githubusercontent.com/12690315/42674022-134e3a40-86a9-11e8-8f44-a110d2f14185.gif)
-5. Add `UIParticle` component to root particle system of your effect from `Add Component` in inspector.  
+3. Add `UIParticle` component to root particle system of your effect from `Add Component` in inspector.  
 ![](https://user-images.githubusercontent.com/12690315/41772125-5aca69c8-7652-11e8-8442-21f6015069a1.png)
-6. If your effect consists of multiple ParticleSystems, click "Fix".  
+4. If your effect consists of multiple ParticleSystems, click "Fix".  
 ![](https://user-images.githubusercontent.com/12690315/49148942-1c243880-f34c-11e8-9cf5-d871d65c4dbe.png)
-7. Adjust the Scale property to change the size of the effect.  
+5. Adjust the Scale property to change the size of the effect.  
 ![](https://user-images.githubusercontent.com/12690315/49148937-19c1de80-f34c-11e8-87fc-138192777540.gif)
-8.  Enjoy!
+6.  Enjoy!
 
 
 ##### Requirement
