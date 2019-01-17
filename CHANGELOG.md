@@ -1,5 +1,26 @@
 # Changelog
 
+## [2.0.0](https://github.com/mob-sakai/ParticleEffectForUGUI/tree/2.0.0) (2019-01-17)
+
+[Full Changelog](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v1.3.3...2.0.0)
+
+**Install UIParticle with Unity Package Manager!**
+
+Find the manifest.json file in the Packages folder of your project and edit it to look like this:
+```js
+{
+  "dependencies": {
+    "com.coffee.ui-particle": "https://github.com/mob-sakai/ParticleEffectForUGUI.git#2.0.0",
+    ...
+  },
+}
+```
+To update the package, change `#2.0.0` to the target version.
+
+**Implemented enhancements:**
+
+- Integrate with UnityPackageManager [\#30](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/30)
+
 ## [v1.3.3](https://github.com/mob-sakai/ParticleEffectForUGUI/tree/v1.3.3) (2019-01-16)
 
 [Full Changelog](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v1.3.2...v1.3.3)
