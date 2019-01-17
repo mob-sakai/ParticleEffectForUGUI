@@ -10,8 +10,10 @@
     "url": "git+https://github.com/mob-sakai/ParticleEffectForUGUI.git"
   },
   "src": "Assets/Coffee/UIExtensions/UIParticle",
-	"author": "mob-sakai <sakai861104@gmail.com> (https://github.com/mob-sakai)",
-	"dependencies": {
-	}
+  "author": "mob-sakai <sakai861104@gmail.com> (https://github.com/mob-sakai)",
+  "editorOnly": false,
+  "upmSupport": true,
+  "dependencies": {
+  }
 }
 
