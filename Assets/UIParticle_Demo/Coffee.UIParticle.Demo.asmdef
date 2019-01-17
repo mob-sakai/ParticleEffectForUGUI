@@ -1,0 +1,10 @@
+{
+    "name": "Coffee.UIParticle.Demo",
+    "references": [
+        "Coffee.UIParticle"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false
+}
