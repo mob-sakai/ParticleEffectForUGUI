@@ -1289,6 +1289,11 @@ Prefab:
       propertyPath: m_Scale
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 224008531090009632, guid: 93be31a30fbb04a19ab014d2b7c8489e,
+        type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0.01
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 93be31a30fbb04a19ab014d2b7c8489e, type: 2}
   m_IsPrefabAsset: 0
@@ -2812,6 +2817,11 @@ Prefab:
       propertyPath: m_LocalScale.z
       value: 20
       objectReference: {fileID: 0}
+    - target: {fileID: 224008531090009632, guid: 93be31a30fbb04a19ab014d2b7c8489e,
+        type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0.01
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 93be31a30fbb04a19ab014d2b7c8489e, type: 2}
   m_IsPrefabAsset: 0
@@ -3048,6 +3058,16 @@ Prefab:
         type: 2}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224454615849711668, guid: 5d682dd3e44264ff69bd02590123ea73,
+        type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 224875847181012744, guid: 5d682dd3e44264ff69bd02590123ea73,
+        type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0.01
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5d682dd3e44264ff69bd02590123ea73, type: 2}
@@ -5067,7 +5087,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: << ParticleEffectForUGUI v1.3.1 >>
+  m_Text: << ParticleEffectForUGUI v2.0.0 >>
 --- !u!222 &1359744117
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -5499,7 +5519,7 @@ RectTransform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1464857223}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0.01}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 603288246}

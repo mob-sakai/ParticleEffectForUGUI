@@ -236,6 +236,8 @@ namespace Coffee.UIExtensions
 		UIParticle _parent;
 		List<UIParticle> _children = new List<UIParticle> ();
 		Matrix4x4 scaleaMatrix = default (Matrix4x4);
+		Vector3 _worldPos;
+		static ParticleSystem.Particle [] s_Particles = new ParticleSystem.Particle [4096];
 
 		/// <summary>
 		/// Update meshes.
@@ -284,21 +286,43 @@ namespace Coffee.UIExtensions
 
 					Profiler.BeginSample ("Make Matrix");
 					scaleaMatrix = m_ParticleSystem.main.scalingMode == ParticleSystemScalingMode.Hierarchy
-					                               ? Matrix4x4.Scale (scale * Vector3.one)
-					                               : Matrix4x4.Scale (scale * rootCanvas.transform.localScale);
+												   ? Matrix4x4.Scale (scale * Vector3.one)
+												   : Matrix4x4.Scale (scale * rootCanvas.transform.localScale);
 					Matrix4x4 matrix = default (Matrix4x4);
 					switch (m_ParticleSystem.main.simulationSpace)
 					{
 						case ParticleSystemSimulationSpace.Local:
 							matrix =
 								scaleaMatrix
-								* Matrix4x4.Rotate (m_ParticleSystem.transform.rotation).inverse
-								* Matrix4x4.Scale (m_ParticleSystem.transform.lossyScale).inverse;
+								* Matrix4x4.Rotate (rectTransform.rotation).inverse
+								* Matrix4x4.Scale (rectTransform.lossyScale).inverse;
 							break;
 						case ParticleSystemSimulationSpace.World:
 							matrix =
 								scaleaMatrix
-								* m_ParticleSystem.transform.worldToLocalMatrix;
+								* rectTransform.worldToLocalMatrix;
+
+							Vector3 newPos = rectTransform.position;
+							Vector3 delta = (newPos - _worldPos);
+							_worldPos = newPos;
+							if (canvas.renderMode != RenderMode.WorldSpace && !Mathf.Approximately (scale, 0) && 0 < delta.sqrMagnitude)
+							{
+								delta *= (1 - 1 / scale);
+								int count = m_ParticleSystem.particleCount;
+								if (s_Particles.Length < count)
+								{
+									s_Particles = new ParticleSystem.Particle [s_Particles.Length * 2];
+								}
+
+								m_ParticleSystem.GetParticles (s_Particles);
+								for (int i = 0; i < count; i++)
+								{
+									var p = s_Particles [i];
+									p.position = p.position + delta;
+									s_Particles [i] = p;
+								}
+								m_ParticleSystem.SetParticles (s_Particles, count);
+							}
 							break;
 						case ParticleSystemSimulationSpace.Custom:
 							break;
