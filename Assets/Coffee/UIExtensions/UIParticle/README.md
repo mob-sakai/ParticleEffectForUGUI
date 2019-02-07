@@ -74,12 +74,12 @@ Find the manifest.json file in the Packages folder of your project and edit it t
 ```js
 {
   "dependencies": {
-    "com.coffee.ui-particle": "https://github.com/mob-sakai/ParticleEffectForUGUI.git#2.0.0",
+    "com.coffee.ui-particle": "https://github.com/mob-sakai/ParticleEffectForUGUI.git#2.1.0",
     ...
   },
 }
 ```
-To update the package, change `#2.0.0` to the target version.
+To update the package, change `#{version}` to the target version.
 
 #### Using .unitypackage file (for Unity 2018.2+)
 
