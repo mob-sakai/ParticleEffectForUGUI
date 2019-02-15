@@ -1,16 +1,19 @@
 # Changelog
 
+## [v2.1.1](https://github.com/mob-sakai/ParticleEffectForUGUI/tree/v2.1.1) (2019-02-15)
+
+[Full Changelog](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v2.1.0...v2.1.1)
+
+**Fixed bugs:**
+
+- UIParticle.Scale - Rendering Order Issue [\#39](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/39)
+
 ## [v2.1.0](https://github.com/mob-sakai/ParticleEffectForUGUI/tree/v2.1.0) (2019-02-07)
 
 [Full Changelog](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v2.0.0...v2.1.0)
 
 World simulation bug is fixed.  
-
-Before:  
-![](https://user-images.githubusercontent.com/12690315/52271654-a1008380-2987-11e9-8afc-51bfe634d78e.gif)
-
-After:  
-![](https://user-images.githubusercontent.com/12690315/52338840-d2905200-2a4e-11e9-8e53-14b39808ecad.gif)
+![](https://user-images.githubusercontent.com/12690315/52386223-71a56000-2ac8-11e9-9cdb-93175d24febe.gif)
 
 **Fixed bugs:**
 
@@ -18,7 +21,7 @@ After:
 
 ## [v2.0.0](https://github.com/mob-sakai/ParticleEffectForUGUI/tree/v2.0.0) (2019-01-17)
 
-[Full Changelog](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/2.0.0...v2.0.0)
+[Full Changelog](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v1.3.3...v2.0.0)
 
 **Install UIParticle with Unity Package Manager!**
 
