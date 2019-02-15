@@ -266,7 +266,7 @@ namespace Coffee.UIExtensions
 
 				if (m_ParticleSystem && canvas)
 				{
-					if (canvas.renderMode != RenderMode.ScreenSpaceOverlay)
+					// I do not know why, but it worked fine when setting `transform.localPosition.z` to `0.01`. (#34, #39)
 					{
 						Vector3 pos = rectTransform.localPosition;
 						if (Mathf.Abs (pos.z) < 0.01f)
