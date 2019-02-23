@@ -39,6 +39,7 @@ namespace Coffee.UIExtensions
 			_spTrailParticle = serializedObject.FindProperty ("m_TrailParticle");
 			_spScale = serializedObject.FindProperty ("m_Scale");
 			_spIgnoreParent = serializedObject.FindProperty ("m_IgnoreParent");
+			_spAnimatableProperties = serializedObject.FindProperty ("m_AnimatableProperties");
 
 			if (!s_Material)
 			{
@@ -86,6 +87,9 @@ namespace Coffee.UIExtensions
 			EditorGUILayout.PropertyField (_spScale);
 			EditorGUI.EndDisabledGroup ();
 
+			// AnimatableProperties
+			AnimatedProperty.DrawAnimatableProperties (_spAnimatableProperties, current.material);
+
 			current.GetComponentsInChildren<ParticleSystem> (true, s_ParticleSystems);
 			if (s_ParticleSystems.Any (x => x.GetComponent<UIParticle> () == null))
 			{
@@ -107,6 +111,109 @@ namespace Coffee.UIExtensions
 			serializedObject.ApplyModifiedProperties ();
 		}
 
+		class AnimatedProperty
+		{
+			static readonly List<string> s_ActiveNames = new List<string> ();
+			static readonly System.Text.StringBuilder s_Sb = new System.Text.StringBuilder ();
+
+			public string name;
+			public ShaderUtil.ShaderPropertyType type;
+
+			static string CollectActiveNames (SerializedProperty sp, List<string> result)
+			{
+				result.Clear ();
+				for (int i = 0; i < sp.arraySize; i++)
+				{
+					result.Add (sp.GetArrayElementAtIndex (i).FindPropertyRelative ("name").stringValue);
+				}
+
+				s_Sb.Length = 0;
+				if (result.Count == 0)
+				{
+					s_Sb.Append ("Nothing");
+				}
+				else
+				{
+					result.Aggregate (s_Sb, (a, b) => s_Sb.AppendFormat ("{0}, ", b));
+					s_Sb.Length -= 2;
+				}
+
+				return s_Sb.ToString ();
+			}
+
+			public static void DrawAnimatableProperties (SerializedProperty sp, Material mat)
+			{
+				if (!mat || !mat.shader)
+					return;
+				bool isClicked = false;
+				using (new EditorGUILayout.HorizontalScope (GUILayout.ExpandWidth(false)))
+				{
+					var r = EditorGUI.PrefixLabel (EditorGUILayout.GetControlRect (true), new GUIContent(sp.displayName, sp.tooltip));
+					isClicked = GUI.Button (r, CollectActiveNames (sp, s_ActiveNames), EditorStyles.popup);
+				}
+
+				if(isClicked)
+				{
+					GenericMenu gm = new GenericMenu ();
+					gm.AddItem (new GUIContent ("Nothing"), s_ActiveNames.Count == 0, () =>
+					{
+						sp.ClearArray ();
+						sp.serializedObject.ApplyModifiedProperties ();
+					});
+
+
+					for (int i = 0; i < sp.arraySize; i++)
+					{
+						var p = sp.GetArrayElementAtIndex (i);
+						var name = p.FindPropertyRelative ("name").stringValue;
+						var type = (ShaderUtil.ShaderPropertyType)p.FindPropertyRelative ("type").intValue;
+						AddMenu (gm, sp, new AnimatedProperty () { name = name, type = type }, false);
+					}
+
+					for (int i = 0; i < ShaderUtil.GetPropertyCount (mat.shader); i++)
+					{
+						var pName = ShaderUtil.GetPropertyName (mat.shader, i);
+						var type = ShaderUtil.GetPropertyType (mat.shader, i);
+						AddMenu (gm, sp, new AnimatedProperty () { name = pName, type = type }, true);
+
+						if (type == ShaderUtil.ShaderPropertyType.TexEnv)
+						{
+							AddMenu (gm, sp, new AnimatedProperty () { name = pName + "_ST", type = ShaderUtil.ShaderPropertyType.Vector }, true);
+							AddMenu (gm, sp, new AnimatedProperty () { name = pName + "_HDR", type = ShaderUtil.ShaderPropertyType.Vector }, true);
+							AddMenu (gm, sp, new AnimatedProperty () { name = pName + "_TexelSize", type = ShaderUtil.ShaderPropertyType.Vector }, true);
+						}
+
+					}
+
+					gm.ShowAsContext ();
+				}
+			}
+
+			public static void AddMenu (GenericMenu menu, SerializedProperty sp, AnimatedProperty property, bool add)
+			{
+				if (add && s_ActiveNames.Contains (property.name))
+					return;
+
+				menu.AddItem (new GUIContent (string.Format ("{0} ({1})", property.name, property.type)), s_ActiveNames.Contains (property.name), () =>
+				{
+					var index = s_ActiveNames.IndexOf (property.name);
+					if (0 <= index)
+					{
+						sp.DeleteArrayElementAtIndex (index);
+					}
+					else
+					{
+						sp.InsertArrayElementAtIndex (sp.arraySize);
+						var p = sp.GetArrayElementAtIndex (sp.arraySize - 1);
+						p.FindPropertyRelative ("name").stringValue = property.name;
+						p.FindPropertyRelative ("type").intValue = (int)property.type;
+					}
+					sp.serializedObject.ApplyModifiedProperties ();
+				});
+			}
+		}
+
+
 		//################################
 		// Private Members.
 		//################################
@@ -114,6 +221,7 @@ namespace Coffee.UIExtensions
 		SerializedProperty _spTrailParticle;
 		SerializedProperty _spScale;
 		SerializedProperty _spIgnoreParent;
+		SerializedProperty _spAnimatableProperties;
 		UIParticle [] _particles;
 		ArcHandle _arcHandle = new ArcHandle ();
 		BoxBoundsHandle _boxBoundsHandle = new BoxBoundsHandle ();

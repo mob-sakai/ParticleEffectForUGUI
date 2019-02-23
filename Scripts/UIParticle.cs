@@ -35,6 +35,28 @@ namespace Coffee.UIExtensions
 		[Tooltip ("Ignore parent scale")]
 		[SerializeField] bool m_IgnoreParent = false;
 
+		[Tooltip ("Animatable material properties. AnimationでParticleSystemのマテリアルプロパティを変更する場合、有効にしてください。")]
+		[SerializeField] AnimatableProperty[] m_AnimatableProperties = new AnimatableProperty[0];
+
+		static MaterialPropertyBlock s_Mpb;
+
+		[System.Serializable]
+		public class AnimatableProperty
+		{
+			public enum ShaderPropertyType
+			{
+				Color,
+				Vector,
+				Float,
+				Range,
+				TexEnv,
+			};
+
+			public string name;
+			public ShaderPropertyType type;
+		}
+
+
 
 		//################################
 		// Public/Protected Members.
@@ -57,9 +79,7 @@ namespace Coffee.UIExtensions
 				if (!tex && _renderer)
 				{
 					Profiler.BeginSample ("Check material");
-					var mat = m_IsTrail
-						? _renderer.trailMaterial
-						: _renderer.sharedMaterial;
+					var mat = material;
 					if (mat && mat.HasProperty (s_IdMainTex))
 					{
 						tex = mat.mainTexture;
@@ -67,6 +87,35 @@ namespace Coffee.UIExtensions
 					Profiler.EndSample ();
 				}
 				return tex ?? s_WhiteTexture;
+			}
+		}
+
+		public override Material material
+		{
+			get
+			{
+				return _renderer
+						? m_IsTrail
+							? _renderer.trailMaterial
+							: _renderer.sharedMaterial
+						: null;
+			}
+
+			set
+			{
+				if (!_renderer)
+				{
+				}
+				else if (m_IsTrail && _renderer.trailMaterial != value)
+				{
+					_renderer.trailMaterial = value;
+					SetMaterialDirty ();
+				}
+				else if (!m_IsTrail && _renderer.sharedMaterial != value)
+				{
+					_renderer.sharedMaterial = value;
+					SetMaterialDirty ();
+				}
 			}
 		}
 
@@ -117,7 +166,15 @@ namespace Coffee.UIExtensions
 		/// <param name="baseMaterial">Configured Material.</param>
 		public override Material GetModifiedMaterial (Material baseMaterial)
 		{
-			return base.GetModifiedMaterial (_renderer ? _renderer.sharedMaterial : baseMaterial);
+			Material mat = null;
+			if (!_renderer)
+				mat = baseMaterial;
+			else if (m_AnimatableProperties.Length == 0)
+				mat = _renderer.sharedMaterial;
+			else
+				mat = new Material (material);
+
+			return base.GetModifiedMaterial (mat);
 		}
 
 		/// <summary>
@@ -129,6 +186,7 @@ namespace Coffee.UIExtensions
 			if (s_ActiveParticles.Count == 0)
 			{
 				Canvas.willRenderCanvases += UpdateMeshes;
+				s_Mpb = new MaterialPropertyBlock ();
 			}
 			s_ActiveParticles.Add (this);
 
@@ -369,6 +427,21 @@ namespace Coffee.UIExtensions
 					Profiler.BeginSample ("Set mesh and texture to CanvasRenderer");
 					canvasRenderer.SetMesh (_mesh);
 					canvasRenderer.SetTexture (mainTexture);
+
+					// Copy the value from MaterialPropertyBlock to CanvasRenderer (#41)
+					if (Application.isPlaying && 0 < m_AnimatableProperties.Length)
+					{
+						_renderer.GetPropertyBlock (s_Mpb);
+						for (int i = 0; i < canvasRenderer.materialCount; i++)
+						{
+							var mat = canvasRenderer.GetMaterial (i);
+							foreach (var ap in m_AnimatableProperties)
+							{
+								mat.SetVector (ap.name, s_Mpb.GetVector (ap.name));
+							}
+						}
+					}
+
 					Profiler.EndSample ();
 				}
 			}
