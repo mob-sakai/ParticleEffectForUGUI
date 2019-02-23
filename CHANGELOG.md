@@ -1,12 +1,21 @@
 # Changelog
 
-## [v2.1.1](https://github.com/mob-sakai/ParticleEffectForUGUI/tree/v2.1.1) (2019-02-15)
+## [v2.2.0](https://github.com/mob-sakai/ParticleEffectForUGUI/tree/v2.2.0) (2019-02-23)
 
-[Full Changelog](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v2.1.0...v2.1.1)
+[Full Changelog](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v2.1.1...v2.2.0)
+
+**Implemented enhancements:**
+
+- Display warning when material does not support Mask [\#43](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/43)
+- Support changing material property by AnimationClip [\#42](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/42)
 
 **Fixed bugs:**
 
-- UIParticle.Scale - Rendering Order Issue [\#39](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/39)
+- UV Animation is not work. [\#41](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/41)
+
+## [v2.1.1](https://github.com/mob-sakai/ParticleEffectForUGUI/tree/v2.1.1) (2019-02-15)
+
+[Full Changelog](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v2.1.0...v2.1.1)
 
 ## [v2.1.0](https://github.com/mob-sakai/ParticleEffectForUGUI/tree/v2.1.0) (2019-02-07)
 
