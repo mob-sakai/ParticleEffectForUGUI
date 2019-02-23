@@ -55,6 +55,8 @@ Compares this "Baking mesh" approach with the conventional approach:
 ![](https://user-images.githubusercontent.com/12690315/49866926-6c22f500-fe4c-11e8-8393-d5a546e9e2d3.gif)
 * Scaled gizmo  
 ![](https://user-images.githubusercontent.com/12690315/50343861-f31e4e80-056b-11e9-8f60-8bd0a8ff7adb.gif)
+* Animatable material property  
+![](https://user-images.githubusercontent.com/12690315/53286323-2d94a980-37b0-11e9-8afb-c4a207805ff2.gif)
 
 
 
@@ -74,12 +76,13 @@ Find the manifest.json file in the Packages folder of your project and edit it t
 ```js
 {
   "dependencies": {
-    "com.coffee.ui-particle": "https://github.com/mob-sakai/ParticleEffectForUGUI.git#2.1.0",
+    "com.coffee.ui-particle": "https://github.com/mob-sakai/ParticleEffectForUGUI.git#2.2.0",
     ...
   },
 }
 ```
-To update the package, change `#{version}` to the target version.
+To update the package, change `#{version}` to the target version.  
+Or, use [UpmGitExtension](https://github.com/mob-sakai/UpmGitExtension).
 
 #### Using .unitypackage file (for Unity 2018.2+)
 
@@ -124,6 +127,21 @@ Select `Assets > Import Package > Custom Package` from the menu.
 <br><br><br><br>
 ## Development Note
 
+#### Animatable material property
+
+![](https://user-images.githubusercontent.com/12690315/53286323-2d94a980-37b0-11e9-8afb-c4a207805ff2.gif)
+
+Animation clips can change the material properties of the Renderer, such as ParticleSystemRenderer.  
+It uses MaterialPropertyBlock so it does not create new material instances.  
+Using material properties, you can change UV animation, scale and color etc.
+
+Well, there is a component called CanvasRenderer.  
+It is used by all Graphic components for UI (Text, Image, Raw Image, etc.) including UIParticle.  
+However, It is **NOT** a Renderer.  
+Therefore, in UIParticle, changing ParticleSystemRenderer's MaterialPropertyBlock by animation clip is ignored.
+
+To prevent this, Use "Animatable Material Property".  
+"Animatable Material Property" gets the necessary properties from ParticleSystemRenderer's MaterialPropertyBlock and sets them to the CanvasRenderer's material. 
 
 
 
