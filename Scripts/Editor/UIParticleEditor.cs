@@ -108,8 +108,33 @@ namespace Coffee.UIExtensions
 			}
 			s_ParticleSystems.Clear ();
 
+			if (current.maskable && current.material && current.material.shader)
+			{
+				var mat = current.material;
+				var shader = mat.shader;
+				foreach (var propName in s_MaskablePropertyNames)
+				{
+					if (!mat.HasProperty (propName))
+					{
+						EditorGUILayout.HelpBox (string.Format("Shader {0} doesn't have '{1}' property. This graphic is not maskable.", shader.name, propName), MessageType.Warning);
+						break;
+					}
+				}
+			}
+
 			serializedObject.ApplyModifiedProperties ();
 		}
+
+		static readonly List<string> s_MaskablePropertyNames = new List<string> ()
+		{
+			"_Stencil",
+			"_StencilComp",
+			"_StencilOp",
+			"_StencilWriteMask",
+			"_StencilReadMask",
+			"_ColorMask",
+		};
+
 
 		class AnimatedProperty
 		{
