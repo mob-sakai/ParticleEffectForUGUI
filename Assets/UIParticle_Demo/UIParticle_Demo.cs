@@ -7,9 +7,7 @@ namespace Coffee.UIExtensions.Demo
 {
 	public class UIParticle_Demo : MonoBehaviour
 	{
-		[SerializeField] Sprite m_Sprite;
 		[SerializeField] ParticleSystem [] m_ParticleSystems;
-		[SerializeField] Mask [] m_Masks;
 		[SerializeField] List<Transform> m_ScalingByTransforms;
 		[SerializeField] List<UIParticle> m_ScalingByUIParticles;
 
@@ -69,6 +67,45 @@ namespace Coffee.UIExtensions.Demo
 		public void LoadScene(string name)
 		{
 			SceneManager.LoadScene (name);
+		}
+
+		public void PlayAllParticleEffect ()
+		{
+			foreach (var animator in FindObjectsOfType<Animator> ())
+			{
+				animator.Play ("Play");
+			}
+
+			foreach (var particle in FindObjectsOfType<ParticleSystem> ())
+			{
+				particle.Play ();
+			}
+		}
+
+		public void SetWorldSpase (bool flag)
+		{
+			if (flag)
+			{
+				GetComponent<Canvas> ().renderMode = RenderMode.ScreenSpaceCamera;
+				GetComponent<Canvas> ().renderMode = RenderMode.WorldSpace;
+				transform.rotation = Quaternion.Euler (new Vector3 (0, 6, 0));
+			}
+		}
+
+		public void SetScreenSpase (bool flag)
+		{
+			if (flag)
+			{
+				GetComponent<Canvas> ().renderMode = RenderMode.ScreenSpaceCamera;
+			}
+		}
+
+		public void SetOverlay (bool flag)
+		{
+			if (flag)
+			{
+				GetComponent<Canvas> ().renderMode = RenderMode.ScreenSpaceOverlay;
+			}
 		}
 	}
 }

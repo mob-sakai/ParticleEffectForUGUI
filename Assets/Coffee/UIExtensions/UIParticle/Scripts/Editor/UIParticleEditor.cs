@@ -6,6 +6,7 @@ using System.Linq;
 using UnityEditor.IMGUI.Controls;
 using System;
 using System.Reflection;
+using ShaderPropertyType = Coffee.UIExtensions.UIParticle.AnimatableProperty.ShaderPropertyType;
 
 namespace Coffee.UIExtensions
 {
@@ -13,6 +14,108 @@ namespace Coffee.UIExtensions
 	[CanEditMultipleObjects]
 	public class UIParticleEditor : GraphicEditor
 	{
+		class AnimatedPropertiesEditor
+		{
+			static readonly List<string> s_ActiveNames = new List<string> ();
+			static readonly System.Text.StringBuilder s_Sb = new System.Text.StringBuilder ();
+
+			public string name;
+			public ShaderPropertyType type;
+
+			static string CollectActiveNames (SerializedProperty sp, List<string> result)
+			{
+				result.Clear ();
+				for (int i = 0; i < sp.arraySize; i++)
+				{
+					result.Add (sp.GetArrayElementAtIndex (i).FindPropertyRelative ("m_Name").stringValue);
+				}
+
+				s_Sb.Length = 0;
+				if (result.Count == 0)
+				{
+					s_Sb.Append ("Nothing");
+				}
+				else
+				{
+					result.Aggregate (s_Sb, (a, b) => s_Sb.AppendFormat ("{0}, ", b));
+					s_Sb.Length -= 2;
+				}
+
+				return s_Sb.ToString ();
+			}
+
+			public static void DrawAnimatableProperties (SerializedProperty sp, Material mat)
+			{
+				if (!mat || !mat.shader)
+					return;
+				bool isClicked = false;
+				using (new EditorGUILayout.HorizontalScope (GUILayout.ExpandWidth (false)))
+				{
+					var r = EditorGUI.PrefixLabel (EditorGUILayout.GetControlRect (true), new GUIContent (sp.displayName, sp.tooltip));
+					isClicked = GUI.Button (r, CollectActiveNames (sp, s_ActiveNames), EditorStyles.popup);
+				}
+
+				if (isClicked)
+				{
+					GenericMenu gm = new GenericMenu ();
+					gm.AddItem (new GUIContent ("Nothing"), s_ActiveNames.Count == 0, () =>
+					{
+						sp.ClearArray ();
+						sp.serializedObject.ApplyModifiedProperties ();
+					});
+
+
+					for (int i = 0; i < sp.arraySize; i++)
+					{
+						var p = sp.GetArrayElementAtIndex (i);
+						var name = p.FindPropertyRelative ("m_Name").stringValue;
+						var type = (ShaderPropertyType)p.FindPropertyRelative ("m_Type").intValue;
+						AddMenu (gm, sp, new AnimatedPropertiesEditor () { name = name, type = type }, false);
+					}
+
+					for (int i = 0; i < ShaderUtil.GetPropertyCount (mat.shader); i++)
+					{
+						var pName = ShaderUtil.GetPropertyName (mat.shader, i);
+						var type = (ShaderPropertyType)ShaderUtil.GetPropertyType (mat.shader, i);
+						AddMenu (gm, sp, new AnimatedPropertiesEditor () { name = pName, type = type }, true);
+
+						if (type == ShaderPropertyType.Texture)
+						{
+							AddMenu (gm, sp, new AnimatedPropertiesEditor () { name = pName + "_ST", type = ShaderPropertyType.Vector }, true);
+							AddMenu (gm, sp, new AnimatedPropertiesEditor () { name = pName + "_HDR", type = ShaderPropertyType.Vector }, true);
+							AddMenu (gm, sp, new AnimatedPropertiesEditor () { name = pName + "_TexelSize", type = ShaderPropertyType.Vector }, true);
+						}
+
+					}
+
+					gm.ShowAsContext ();
+				}
+			}
+
+			public static void AddMenu (GenericMenu menu, SerializedProperty sp, AnimatedPropertiesEditor property, bool add)
+			{
+				if (add && s_ActiveNames.Contains (property.name))
+					return;
+
+				menu.AddItem (new GUIContent (string.Format ("{0} ({1})", property.name, property.type)), s_ActiveNames.Contains (property.name), () =>
+				{
+					var index = s_ActiveNames.IndexOf (property.name);
+					if (0 <= index)
+					{
+						sp.DeleteArrayElementAtIndex (index);
+					}
+					else
+					{
+						sp.InsertArrayElementAtIndex (sp.arraySize);
+						var p = sp.GetArrayElementAtIndex (sp.arraySize - 1);
+						p.FindPropertyRelative ("m_Name").stringValue = property.name;
+						p.FindPropertyRelative ("m_Type").intValue = (int)property.type;
+					}
+					sp.serializedObject.ApplyModifiedProperties ();
+				});
+			}
+		}
+
 		//################################
 		// Constant or Static Members.
 		//################################
@@ -25,6 +128,15 @@ namespace Coffee.UIExtensions
 		static readonly Color s_ShapeGizmoThicknessTint = new Color (0.7f, 0.7f, 0.7f, 1.0f);
 		static Material s_Material;
 
+		static readonly List<string> s_MaskablePropertyNames = new List<string> ()
+		{
+			"_Stencil",
+			"_StencilComp",
+			"_StencilOp",
+			"_StencilWriteMask",
+			"_StencilReadMask",
+			"_ColorMask",
+		};
 
 		//################################
 		// Public/Protected Members.
@@ -39,6 +151,7 @@ namespace Coffee.UIExtensions
 			_spTrailParticle = serializedObject.FindProperty ("m_TrailParticle");
 			_spScale = serializedObject.FindProperty ("m_Scale");
 			_spIgnoreParent = serializedObject.FindProperty ("m_IgnoreParent");
+			_spAnimatableProperties = serializedObject.FindProperty ("m_AnimatableProperties");
 
 			if (!s_Material)
 			{
@@ -86,6 +199,9 @@ namespace Coffee.UIExtensions
 			EditorGUILayout.PropertyField (_spScale);
 			EditorGUI.EndDisabledGroup ();
 
+			// AnimatableProperties
+			AnimatedPropertiesEditor.DrawAnimatableProperties (_spAnimatableProperties, current.material);
+
 			current.GetComponentsInChildren<ParticleSystem> (true, s_ParticleSystems);
 			if (s_ParticleSystems.Any (x => x.GetComponent<UIParticle> () == null))
 			{
@@ -104,8 +220,27 @@ namespace Coffee.UIExtensions
 			}
 			s_ParticleSystems.Clear ();
 
+			if (current.maskable && current.material && current.material.shader)
+			{
+				var mat = current.material;
+				var shader = mat.shader;
+				foreach (var propName in s_MaskablePropertyNames)
+				{
+					if (!mat.HasProperty (propName))
+					{
+						EditorGUILayout.HelpBox (string.Format("Shader {0} doesn't have '{1}' property. This graphic is not maskable.", shader.name, propName), MessageType.Warning);
+						break;
+					}
+				}
+			}
+
 			serializedObject.ApplyModifiedProperties ();
 		}
+
+
+
+
+
 
 		//################################
 		// Private Members.
@@ -114,6 +249,7 @@ namespace Coffee.UIExtensions
 		SerializedProperty _spTrailParticle;
 		SerializedProperty _spScale;
 		SerializedProperty _spIgnoreParent;
+		SerializedProperty _spAnimatableProperties;
 		UIParticle [] _particles;
 		ArcHandle _arcHandle = new ArcHandle ();
 		BoxBoundsHandle _boxBoundsHandle = new BoxBoundsHandle ();

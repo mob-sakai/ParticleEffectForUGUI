@@ -77,7 +77,7 @@
 				v2f OUT;
 				OUT.worldPosition = IN.vertex;
 				OUT.vertex = UnityObjectToClipPos(IN.vertex);
-				OUT.texcoord = IN.texcoord;
+				OUT.texcoord = TRANSFORM_TEX(IN.texcoord, _MainTex);
 #ifdef UNITY_HALF_TEXEL_OFFSET
 				OUT.vertex.xy += (_ScreenParams.zw-1.0)*float2(-1,1);
 #endif
