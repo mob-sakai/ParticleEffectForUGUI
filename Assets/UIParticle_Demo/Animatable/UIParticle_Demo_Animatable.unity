@@ -324,6 +324,11 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 824147634}
     m_Modifications:
+    - target: {fileID: 114437316559070794, guid: fd2938b6280d84e328d330be2aedd18f,
+        type: 2}
+      propertyPath: m_AnimatableProperties.Array.size
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 224969614123491506, guid: fd2938b6280d84e328d330be2aedd18f,
         type: 2}
       propertyPath: m_LocalPosition.x
@@ -558,6 +563,16 @@ Prefab:
       propertyPath: m_Name
       value: UvAnimParticle
       objectReference: {fileID: 0}
+    - target: {fileID: 114437316559070794, guid: fd2938b6280d84e328d330be2aedd18f,
+        type: 2}
+      propertyPath: m_AnimatableProperties.Array.data[1].m_Name
+      value: _MainTex_ST
+      objectReference: {fileID: 0}
+    - target: {fileID: 114437316559070794, guid: fd2938b6280d84e328d330be2aedd18f,
+        type: 2}
+      propertyPath: m_AnimatableProperties.Array.data[1].m_Type
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fd2938b6280d84e328d330be2aedd18f, type: 2}
   m_IsPrefabAsset: 0
@@ -734,6 +749,11 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 824147634}
     m_Modifications:
+    - target: {fileID: 114437316559070794, guid: fd2938b6280d84e328d330be2aedd18f,
+        type: 2}
+      propertyPath: m_AnimatableProperties.Array.size
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 224969614123491506, guid: fd2938b6280d84e328d330be2aedd18f,
         type: 2}
       propertyPath: m_LocalPosition.x
