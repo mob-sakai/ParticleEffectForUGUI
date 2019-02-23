@@ -11,4 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/UIParticle_Demo/UIParticle_Demo_ScaleTest.unity
     guid: 51072f6aafc134e4bac206c56bc6876b
+  - enabled: 1
+    path: Assets/UIParticle_Demo/Animatable/UIParticle_Demo_Animatable.unity
+    guid: 386ec701f53b9e1409c2448a9ac4194e
   m_configObjects: {}
