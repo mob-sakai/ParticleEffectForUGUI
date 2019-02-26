@@ -37,7 +37,7 @@ namespace Coffee.UIExtensions
 		[SerializeField] bool m_IgnoreParent = false;
 
 		[Tooltip ("Animatable material properties. AnimationでParticleSystemのマテリアルプロパティを変更する場合、有効にしてください。")]
-		[SerializeField] AnimatableProperty[] m_AnimatableProperties = new AnimatableProperty[0];
+		[SerializeField] AnimatableProperty [] m_AnimatableProperties = new AnimatableProperty [0];
 
 		static MaterialPropertyBlock s_Mpb;
 

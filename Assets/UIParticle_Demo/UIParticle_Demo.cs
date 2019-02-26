@@ -56,15 +56,15 @@ namespace Coffee.UIExtensions.Demo
 			m_ScalingByUIParticles.ForEach (x => x.scale = scale);
 		}
 
-		public void SetUIParticleScale(float scale)
+		public void SetUIParticleScale (float scale)
 		{
-			foreach(var uip in FindObjectsOfType<UIParticle>())
+			foreach (var uip in FindObjectsOfType<UIParticle> ())
 			{
 				uip.scale = scale;
 			}
 		}
 
-		public void LoadScene(string name)
+		public void LoadScene (string name)
 		{
 			SceneManager.LoadScene (name);
 		}
