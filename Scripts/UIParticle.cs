@@ -54,9 +54,9 @@ namespace Coffee.UIExtensions
 			};
 
 			[SerializeField]
-			string m_Name;
+			string m_Name = "";
 			[SerializeField]
-			ShaderPropertyType m_Type;
+			ShaderPropertyType m_Type = ShaderPropertyType.Vector;
 			public int id { get; private set; }
 			public ShaderPropertyType type { get { return m_Type; } }
 
