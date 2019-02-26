@@ -7,9 +7,9 @@ namespace Coffee.UIExtensions.Demo
 {
 	public class UIParticle_Demo : MonoBehaviour
 	{
-		[SerializeField] ParticleSystem [] m_ParticleSystems;
-		[SerializeField] List<Transform> m_ScalingByTransforms;
-		[SerializeField] List<UIParticle> m_ScalingByUIParticles;
+		[SerializeField] ParticleSystem [] m_ParticleSystems = new ParticleSystem [0];
+		[SerializeField] List<Transform> m_ScalingByTransforms = new List<Transform> ();
+		[SerializeField] List<UIParticle> m_ScalingByUIParticles = new List<UIParticle> ();
 
 		public void SetTimeScale (float scale)
 		{
