@@ -7,9 +7,9 @@ namespace Coffee.UIExtensions.Demo
 {
 	public class UIParticle_Demo : MonoBehaviour
 	{
-		[SerializeField] ParticleSystem [] m_ParticleSystems;
-		[SerializeField] List<Transform> m_ScalingByTransforms;
-		[SerializeField] List<UIParticle> m_ScalingByUIParticles;
+		[SerializeField] ParticleSystem [] m_ParticleSystems = new ParticleSystem [0];
+		[SerializeField] List<Transform> m_ScalingByTransforms = new List<Transform> ();
+		[SerializeField] List<UIParticle> m_ScalingByUIParticles = new List<UIParticle> ();
 
 		public void SetTimeScale (float scale)
 		{
@@ -56,15 +56,15 @@ namespace Coffee.UIExtensions.Demo
 			m_ScalingByUIParticles.ForEach (x => x.scale = scale);
 		}
 
-		public void SetUIParticleScale(float scale)
+		public void SetUIParticleScale (float scale)
 		{
-			foreach(var uip in FindObjectsOfType<UIParticle>())
+			foreach (var uip in FindObjectsOfType<UIParticle> ())
 			{
 				uip.scale = scale;
 			}
 		}
 
-		public void LoadScene(string name)
+		public void LoadScene (string name)
 		{
 			SceneManager.LoadScene (name);
 		}

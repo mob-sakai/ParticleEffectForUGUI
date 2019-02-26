@@ -37,7 +37,7 @@ namespace Coffee.UIExtensions
 		[SerializeField] bool m_IgnoreParent = false;
 
 		[Tooltip ("Animatable material properties. AnimationでParticleSystemのマテリアルプロパティを変更する場合、有効にしてください。")]
-		[SerializeField] AnimatableProperty[] m_AnimatableProperties = new AnimatableProperty[0];
+		[SerializeField] AnimatableProperty [] m_AnimatableProperties = new AnimatableProperty [0];
 
 		static MaterialPropertyBlock s_Mpb;
 
@@ -54,9 +54,9 @@ namespace Coffee.UIExtensions
 			};
 
 			[SerializeField]
-			string m_Name;
+			string m_Name = "";
 			[SerializeField]
-			ShaderPropertyType m_Type;
+			ShaderPropertyType m_Type = ShaderPropertyType.Vector;
 			public int id { get; private set; }
 			public ShaderPropertyType type { get { return m_Type; } }
 
@@ -254,6 +254,21 @@ namespace Coffee.UIExtensions
 
 			base.OnDisable ();
 		}
+
+#if UNITY_EDITOR
+		/// <summary>
+		/// Reset to default values.
+		/// </summary>
+		protected override void Reset ()
+		{
+			// Disable ParticleSystemRenderer on reset.
+			if (cachedParticleSystem)
+			{
+				cachedParticleSystem.GetComponent<ParticleSystemRenderer> ().enabled = false;
+			}
+			base.Reset ();
+		}
+#endif
 
 		/// <summary>
 		/// Call to update the geometry of the Graphic onto the CanvasRenderer.
