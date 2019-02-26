@@ -1,5 +1,14 @@
 # Changelog
 
+## [v2.2.1](https://github.com/mob-sakai/ParticleEffectForUGUI/tree/v2.2.1) (2019-02-26)
+
+[Full Changelog](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v2.2.0...v2.2.1)
+
+**Fixed bugs:**
+
+- v2.2.0 has 2 warnings [\#44](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/44)
+- Disable ParticleSystemRenderer on reset [\#45](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/45)
+
 ## [v2.2.0](https://github.com/mob-sakai/ParticleEffectForUGUI/tree/v2.2.0) (2019-02-23)
 
 [Full Changelog](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v2.1.1...v2.2.0)
