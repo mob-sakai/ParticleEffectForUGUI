@@ -255,6 +255,21 @@ namespace Coffee.UIExtensions
 			base.OnDisable ();
 		}
 
+#if UNITY_EDITOR
+		/// <summary>
+		/// Reset to default values.
+		/// </summary>
+		protected override void Reset ()
+		{
+			// Disable ParticleSystemRenderer on reset.
+			if (cachedParticleSystem)
+			{
+				cachedParticleSystem.GetComponent<ParticleSystemRenderer> ().enabled = false;
+			}
+			base.Reset ();
+		}
+#endif
+
 		/// <summary>
 		/// Call to update the geometry of the Graphic onto the CanvasRenderer.
 		/// </summary>
