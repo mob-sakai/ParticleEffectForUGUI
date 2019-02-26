@@ -228,7 +228,7 @@ namespace Coffee.UIExtensions
 				{
 					if (!mat.HasProperty (propName))
 					{
-						EditorGUILayout.HelpBox (string.Format("Shader {0} doesn't have '{1}' property. This graphic is not maskable.", shader.name, propName), MessageType.Warning);
+						EditorGUILayout.HelpBox (string.Format ("Shader {0} doesn't have '{1}' property. This graphic is not maskable.", shader.name, propName), MessageType.Warning);
 						break;
 					}
 				}
@@ -310,7 +310,7 @@ namespace Coffee.UIExtensions
 				transformMatrix *= emitterMatrix;
 				Handles.matrix = transformMatrix;
 
-				if(uip.canvas.renderMode == RenderMode.ScreenSpaceOverlay || ps.main.scalingMode == ParticleSystemScalingMode.Hierarchy)
+				if (uip.canvas.renderMode == RenderMode.ScreenSpaceOverlay || ps.main.scalingMode == ParticleSystemScalingMode.Hierarchy)
 				{
 					Handles.matrix = Handles.matrix * Matrix4x4.Scale (Vector3.one * uip.scale);
 				}
