@@ -224,6 +224,13 @@ namespace Coffee.UIExtensions
 			_mesh.MarkDynamic ();
 			CheckTrail ();
 
+			if (cachedParticleSystem)
+			{
+				_oldPos = cachedParticleSystem.main.scalingMode == ParticleSystemScalingMode.Local
+					? rectTransform.localPosition
+					: rectTransform.position;
+			}
+
 			base.OnEnable ();
 		}
 
@@ -324,7 +331,7 @@ namespace Coffee.UIExtensions
 		UIParticle _parent;
 		List<UIParticle> _children = new List<UIParticle> ();
 		Matrix4x4 scaleaMatrix = default (Matrix4x4);
-		Vector3 _worldPos;
+		Vector3 _oldPos;
 		static ParticleSystem.Particle [] s_Particles = new ParticleSystem.Particle [4096];
 
 		/// <summary>
@@ -373,11 +380,12 @@ namespace Coffee.UIExtensions
 					Profiler.EndSample ();
 
 					Profiler.BeginSample ("Make Matrix");
-					scaleaMatrix = m_ParticleSystem.main.scalingMode == ParticleSystemScalingMode.Hierarchy
+					ParticleSystem.MainModule main = m_ParticleSystem.main;
+					scaleaMatrix = main.scalingMode == ParticleSystemScalingMode.Hierarchy
 												   ? Matrix4x4.Scale (scale * Vector3.one)
 												   : Matrix4x4.Scale (scale * rootCanvas.transform.localScale);
 					Matrix4x4 matrix = default (Matrix4x4);
-					switch (m_ParticleSystem.main.simulationSpace)
+					switch (main.simulationSpace)
 					{
 						case ParticleSystemSimulationSpace.Local:
 							matrix =
@@ -390,12 +398,25 @@ namespace Coffee.UIExtensions
 								scaleaMatrix
 								* rectTransform.worldToLocalMatrix;
 
+							bool isLocalScaling = main.scalingMode == ParticleSystemScalingMode.Local;
 							Vector3 newPos = rectTransform.position;
-							Vector3 delta = (newPos - _worldPos);
-							_worldPos = newPos;
-							if (canvas.renderMode != RenderMode.WorldSpace && !Mathf.Approximately (scale, 0) && 0 < delta.sqrMagnitude)
+							Vector3 delta = (newPos - _oldPos);
+							_oldPos = newPos;
+
+							if (!Mathf.Approximately (scale, 0) && 0 < delta.sqrMagnitude)
 							{
-								delta *= (1 - 1 / scale);
+								if(isLocalScaling)
+								{
+									var s = rootCanvas.transform.localScale * scale;
+									delta.x *= 1f - 1f / s.x;
+									delta.y *= 1f - 1f / s.y;
+									delta.z *= 1f - 1f / s.z;
+								}
+								else
+								{
+									delta = delta * (1 - 1 / scale);
+								}
+
 								int count = m_ParticleSystem.particleCount;
 								if (s_Particles.Length < count)
 								{
