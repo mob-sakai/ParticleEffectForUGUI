@@ -1,5 +1,15 @@
 # Changelog
 
+## [v2.3.0](https://github.com/mob-sakai/ParticleEffectForUGUI/tree/v2.3.0) (2019-05-12)
+
+[Full Changelog](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v2.2.1...v2.3.0)
+
+World simulation bug due to transform movement have been fixed
+
+**Fixed bugs:**
+
+- World simulation bug due to transform movement [\#47](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/47)
+
 ## [v2.2.1](https://github.com/mob-sakai/ParticleEffectForUGUI/tree/v2.2.1) (2019-02-26)
 
 [Full Changelog](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v2.2.0...v2.2.1)
