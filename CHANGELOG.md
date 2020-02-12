@@ -1,3 +1,35 @@
+# [3.0.0-preview.1](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v2.3.0...v3.0.0-preview.1) (2020-02-12)
+
+
+### Bug Fixes
+
+* change the text in the inspector to make it more understandable. ([7ca0b6f](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/7ca0b6fa34c1168ef103992e1c69b68631b3bc60)), closes [#66](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/66)
+* editor crashes when mesh is set to null when ParticleSystem.RenderMode=Mesh ([e5ebadd](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/e5ebadd84731716f82c63ac5ba3eb676720e3ad6)), closes [#69](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/69)
+* getting massive errors on editor ([ef82fa8](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/ef82fa82a69894e643f0d257f99eb9177785f697)), closes [#67](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/67)
+* heavy editor UI ([d3b470a](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/d3b470a2be3a21add9e126b357e46bdfaa6f16c8))
+* remove a menu to add overlay camera ([f5d3b6e](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/f5d3b6edb5687c4d465992ef5c3c0d54f7b36d74))
+* rotating the particle rect may cause out of bounds ([3439842](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/3439842119f334b50910c0a983e561944cc792a2)), closes [#55](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/55)
+* scale will be decrease on editor ([0c59846](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/0c59846f11438b12caad04ae5d5b544a28883ea6))
+* UI darker than normal when change to linear color space ([db4d8a7](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/db4d8a742ca36c8dd2de6936b9cf2912c72d4b9f)), closes [#57](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/57)
+
+
+### Build System
+
+* update develop environment ([9fcf169](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/9fcf169cd3ced519611b2ede7f98ad4d678027c6))
+
+
+### Features
+
+* add menu to import sample ([b8b1827](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/b8b18273185769235101da01f5bbadbac188e387))
+* add samples test ([287b5cc](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/287b5cc832f2899796227520bda4d11ad8e4fae9))
+* **editor:** add osc package (portable mode) ([6c7f880](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/6c7f8804350112505949c5c296f9e0340877a3e8))
+
+
+### BREAKING CHANGES
+
+* update develop environment to Unity 2018.3.
+Unity 2018.2 will continue to be supported.
+
 # Changelog
 
 ## [v2.3.0](https://github.com/mob-sakai/ParticleEffectForUGUI/tree/v2.3.0) (2019-05-12)
