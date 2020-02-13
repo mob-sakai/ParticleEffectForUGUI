@@ -1,3 +1,10 @@
+# [3.0.0-preview.2](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.1...v3.0.0-preview.2) (2020-02-13)
+
+
+### Bug Fixes
+
+* compile error ([e2c5c7b](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/e2c5c7b05d1307877e2f37555d4845932d542930))
+
 # [3.0.0-preview.1](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v2.3.0...v3.0.0-preview.1) (2020-02-12)
 
 

@@ -245,7 +245,7 @@ namespace Coffee.UIExtensions
 
         void OnSceneGUI()
         {
-            _shapeModuleUIs ??= _inspector?.m_ParticleEffectUI?.m_Emitters?.SelectMany(x => x.m_Modules).OfType<ShapeModuleUI>()?.ToArray();
+            _shapeModuleUIs = _shapeModuleUIs ?? _inspector?.m_ParticleEffectUI?.m_Emitters?.SelectMany(x => x.m_Modules).OfType<ShapeModuleUI>()?.ToArray();
             if (_shapeModuleUIs == null || _shapeModuleUIs.Length == 0 || _shapeModuleUIs[0].GetParticleSystem() != (target as UIParticle).cachedParticleSystem)
                 return;
 
