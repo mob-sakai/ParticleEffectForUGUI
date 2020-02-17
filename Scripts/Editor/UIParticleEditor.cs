@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿#if OPEN_SESAME
+using UnityEditor;
 using UnityEditor.UI;
 using UnityEngine;
 using System.Collections.Generic;
@@ -278,3 +279,4 @@ namespace Coffee.UIExtensions
         }
     }
 }
+#endif

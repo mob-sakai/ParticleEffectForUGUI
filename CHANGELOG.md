@@ -1,3 +1,11 @@
+# [3.0.0-preview.3](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.2...v3.0.0-preview.3) (2020-02-17)
+
+
+### Bug Fixes
+
+* remove unnecessary scripts ([0a43740](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/0a4374099dc3151e7f1a3a24a6ce6c39a968e163))
+* workaround for [#70](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/70) ([4bbcc33](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/4bbcc334abb7cd6db2897fad0bda219d5ea73530))
+
 # [3.0.0-preview.2](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.1...v3.0.0-preview.2) (2020-02-13)
 
 
