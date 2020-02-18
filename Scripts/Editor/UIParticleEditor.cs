@@ -1,4 +1,4 @@
-﻿#if OPEN_SESAME
+#if IGNORE_ACCESS_CHECKS // [ASMDEFEX] DO NOT REMOVE THIS LINE MANUALLY.
 using UnityEditor;
 using UnityEditor.UI;
 using UnityEngine;
@@ -58,10 +58,10 @@ namespace Coffee.UIExtensions
                 {
                     GenericMenu gm = new GenericMenu();
                     gm.AddItem(new GUIContent("Nothing"), s_ActiveNames.Count == 0, () =>
-                  {
-                      sp.ClearArray();
-                      sp.serializedObject.ApplyModifiedProperties();
-                  });
+                    {
+                        sp.ClearArray();
+                        sp.serializedObject.ApplyModifiedProperties();
+                    });
 
 
                     for (int i = 0; i < sp.arraySize; i++)
@@ -279,4 +279,4 @@ namespace Coffee.UIExtensions
         }
     }
 }
-#endif
+#endif // [ASMDEFEX] DO NOT REMOVE THIS LINE MANUALLY.

@@ -1,4 +1,4 @@
-﻿#if OPEN_SESAME
+#if IGNORE_ACCESS_CHECKS // [ASMDEFEX] DO NOT REMOVE THIS LINE MANUALLY.
 #if !UNITY_2019_1_OR_NEWER
 using System.Collections;
 using System.Collections.Generic;
@@ -24,4 +24,4 @@ namespace Coffee.UIExtensions
     }
 }
 #endif
-#endif
+#endif // [ASMDEFEX] DO NOT REMOVE THIS LINE MANUALLY.

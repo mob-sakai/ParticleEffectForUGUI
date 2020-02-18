@@ -70,25 +70,28 @@ Compares this "Baking mesh" approach with the conventional approach:
 <br><br><br><br>
 ## Install
 
-#### Using UnityPackageManager (for Unity 2018.3+)
+#### Using UnityPackageManager (for Unity 2018.3 or later)
 
 Find the manifest.json file in the Packages folder of your project and edit it to look like this:
 ```js
 {
   "dependencies": {
-    "com.coffee.ui-particle": "https://github.com/mob-sakai/ParticleEffectForUGUI.git#2.2.1",
+    "com.coffee.ui-particle": "https://github.com/mob-sakai/ParticleEffectForUGUI.git",
     ...
   },
 }
 ```
-To update the package, change `#{version}` to the target version.  
-Or, use [UpmGitExtension](https://github.com/mob-sakai/UpmGitExtension).
 
-#### Using .unitypackage file (for Unity 2018.2+)
+To update the package, change suffix `#{version}` to the target version.
 
-Download `*.unitypackage` from [Releases](https://github.com/mob-sakai/ParticleEffectForUGUI/releases) and import the package into your Unity project.  
-Select `Assets > Import Package > Custom Package` from the menu.  
-![](https://user-images.githubusercontent.com/12690315/46570979-edbb5a00-c9a7-11e8-845d-c5ee279effec.png)
+* e.g. `"com.coffee.open-sesame-compiler": "https://github.com/mob-sakai/OpenSesameCompilerForUnity.git#1.0.0",`
+
+Or, use [UpmGitExtension](https://github.com/mob-sakai/UpmGitExtension) to install and update the package.
+
+#### Using zip file (for Unity 2018.2)
+
+1. Download a source code zip file from [Releases](https://github.com/mob-sakai/ParticleEffectForUGUI/releases) page
+2. Extract and import it into your Unity project
 
 
 

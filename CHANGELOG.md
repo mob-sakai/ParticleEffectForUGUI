@@ -1,3 +1,10 @@
+# [3.0.0-preview.4](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.3...v3.0.0-preview.4) (2020-02-18)
+
+
+### Bug Fixes
+
+* compile error in Unity 2019.1 or later ([28ca922](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/28ca922167afff3ef8341fa747968357d4487d1f)), closes [#70](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/70) [#71](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/71)
+
 # [3.0.0-preview.3](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.2...v3.0.0-preview.3) (2020-02-17)
 
 
