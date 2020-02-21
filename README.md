@@ -4,6 +4,7 @@ ParticleEffectForUGUI
 This plugin provide a component to render particle effect for uGUI in Unity 2018.2+.  
 The particle rendering is maskable and sortable, without Camera, RenderTexture or Canvas.
 
+[![](https://img.shields.io/npm/v/com.coffee.ui-particle?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.coffee.ui-particle/)
 [![](https://img.shields.io/github/release/mob-sakai/ParticleEffectForUGUI.svg?label=latest%20version)](https://github.com/mob-sakai/ParticleEffectForUGUI/releases)
 [![](https://img.shields.io/github/release-date/mob-sakai/ParticleEffectForUGUI.svg)](https://github.com/mob-sakai/ParticleEffectForUGUI/releases)  
 ![](https://img.shields.io/badge/requirement-Unity%202018.2%2B-green.svg)
@@ -13,11 +14,10 @@ The particle rendering is maskable and sortable, without Camera, RenderTexture o
 
 
 
-<< [Description](#Description) | [WebGL Demo](#demo) | [Download](https://github.com/mob-sakai/ParticleEffectForUGUI/releases) | [Usage](#usage) | [Development Note](#development-note) | [Change log](https://github.com/mob-sakai/ParticleEffectForUGUI/blob/upm/CHANGELOG.md) >>
+<< [Description](#Description) | [WebGL Demo](#demo) | [Installation](#installation) | [Usage](#usage) | [Development Note](#development-note) | [Change log](https://github.com/mob-sakai/ParticleEffectForUGUI/blob/upm/CHANGELOG.md) >>
 
 ### What's new? Please see [See changelog ![](https://img.shields.io/github/release-date/mob-sakai/ParticleEffectForUGUI.svg?label=last%20updated)](https://github.com/mob-sakai/ParticleEffectForUGUI/blob/upm/CHANGELOG.md)
 ### Do you want to receive notifications for new releases? [Watch this repo ![](https://img.shields.io/github/watchers/mob-sakai/ParticleEffectForUGUI.svg?style=social&label=Watch)](https://github.com/mob-sakai/ParticleEffectForUGUI/subscription)
-### Support me on Patreon! [![become_a_patron](https://user-images.githubusercontent.com/12690315/50731629-3b18b480-11ad-11e9-8fad-4b13f27969c1.png)](https://www.patreon.com/join/2343451?)
 
 
 
@@ -43,10 +43,10 @@ Compares this "Baking mesh" approach with the conventional approach:
 
 #### Features
 
+* Easy to use: the package is out-of-the-box
 * Sort particle effects with uGUI
 * No Camera, RenderTexture or Canvas are required
 * Masking with Mask or RectMask2D
-* Easy to use
 * Support Trail module
 * Change alpha with CanvasGroup
 * Scaling independent of Transform
@@ -68,9 +68,24 @@ Compares this "Baking mesh" approach with the conventional approach:
 
 
 <br><br><br><br>
-## Install
+## System Requirements
 
-#### Using UnityPackageManager (for Unity 2018.3 or later)
+Unity 2018.2 or later versions.
+
+
+<br><br><br><br>
+## Installation
+
+#### For Unity 2018.3 or later (Using OpenUPM)
+
+This package is available on [OpenUPM](https://openupm.com).  
+You can install it via [openupm-cli](https://github.com/openupm/openupm-cli).
+```
+openupm add com.coffee.ui-particle
+```
+
+
+#### For Unity 2018.3 or later (Using Unity Package Manager)
 
 Find the manifest.json file in the Packages folder of your project and edit it to look like this:
 ```js
@@ -88,19 +103,32 @@ To update the package, change suffix `#{version}` to the target version.
 
 Or, use [UpmGitExtension](https://github.com/mob-sakai/UpmGitExtension) to install and update the package.
 
-#### Using zip file (for Unity 2018.2)
+#### For Unity 2018.2
+
+Unity 2018.2 supports embedded packages.
 
 1. Download a source code zip file from [Releases](https://github.com/mob-sakai/ParticleEffectForUGUI/releases) page
-2. Extract and import it into your Unity project
+2. Extract it
+3. Import it under `Packages` directory in your Unity project
 
 
 
 <br><br><br><br>
 ## How to play demo
 
-* Import `UIParticle_Demo.unitypackage` into your project.  
-* The demo unitypackage exists in `Assets/Assets/Coffee/UIExtensions/UIParticle` or `Packages/UI Particle`.  
-* Open UIParticle_Demo scene and play it.
+#### For Unity 2019.1 or later
+
+1. Open `Package Manager` window
+2. Select `UI Particle` package in package list
+3. Click `Import Sample` button
+4. The demo project is imported into `Assets/Samples/UI Particle/{version}/Demo`
+5. Open `UIParticle_Demo` scene and play it
+
+#### For Unity 2018.4 or earlier
+
+1. Select `Assets/Samples/UI Particle Demo` from menu
+2. The demo project is imported into `Assets/Samples/UI Particle/{version}/Demo`
+3. Open `UIParticle_Demo` scene and play it
 
 
 
@@ -108,7 +136,7 @@ Or, use [UpmGitExtension](https://github.com/mob-sakai/UpmGitExtension) to insta
 ## Usage
 
 1. Add your particle effect to canvas.
-2. (Option) If you want to mask particles, set a UI shader such as "UI/UIAdditive" to material for ParticleSystem.  
+2. (Option) If you want to mask particles, set **a UI shader** such as `UI/UIAdditive` to material for ParticleSystem.  
 ![](https://user-images.githubusercontent.com/12690315/42674022-134e3a40-86a9-11e8-8f44-a110d2f14185.gif)
 3. Add `UIParticle` component to root particle system of your effect from `Add Component` in inspector.  
 ![](https://user-images.githubusercontent.com/12690315/41772125-5aca69c8-7652-11e8-8442-21f6015069a1.png)
@@ -117,13 +145,6 @@ Or, use [UpmGitExtension](https://github.com/mob-sakai/UpmGitExtension) to insta
 5. Adjust the Scale property to change the size of the effect.  
 ![](https://user-images.githubusercontent.com/12690315/49148937-19c1de80-f34c-11e8-87fc-138192777540.gif)
 6.  Enjoy!
-
-
-##### Requirement
-
-* Unity 2018.2+ (Tested in Unity 2018.2.0f2)
-* No other SDK are required
-
 
 
 
@@ -156,11 +177,21 @@ To prevent this, Use "Animatable Material Property".
 
 
 
+<br><br><br><br>
+## Support
+
+This is an open-source project that I am developing in my free time.  
+If you like it, you can support me.  
+By supporting, you let me spend more time working on better tools that you can use for free. :)
+
+[![become_a_patron_on_patreon](https://user-images.githubusercontent.com/12690315/50731629-3b18b480-11ad-11e9-8fad-4b13f27969c1.png)](https://www.patreon.com/join/2343451?)  
+[![become_a_sponsor_on_github](https://user-images.githubusercontent.com/12690315/66942881-03686280-f085-11e9-9586-fc0b6011029f.png)](https://github.com/users/mob-sakai/sponsorship)
+
+
 ## Author
 
 [mob-sakai](https://github.com/mob-sakai)
 [![](https://img.shields.io/twitter/follow/mob_sakai.svg?label=Follow&style=social)](https://twitter.com/intent/follow?screen_name=mob_sakai)  
-[![become_a_patron](https://user-images.githubusercontent.com/12690315/50731629-3b18b480-11ad-11e9-8fad-4b13f27969c1.png)](https://www.patreon.com/join/2343451?)
 
 
 

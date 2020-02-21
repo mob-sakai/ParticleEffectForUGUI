@@ -1,3 +1,10 @@
+# [3.0.0-preview.5](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.4...v3.0.0-preview.5) (2020-02-21)
+
+
+### Bug Fixes
+
+* particles not visible if scale.z is 0 ([35718e0](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/35718e099acbb04fdadf131c7e4d2e6c3f4a1756)), closes [#64](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/64)
+
 # [3.0.0-preview.4](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.3...v3.0.0-preview.4) (2020-02-18)
 
 

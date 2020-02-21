@@ -333,6 +333,7 @@ namespace Coffee.UIExtensions
         List<UIParticle> _children = new List<UIParticle>();
         Matrix4x4 scaleaMatrix = default(Matrix4x4);
         Vector3 _oldPos;
+        static readonly Vector3 minimumVec3 = new Vector3(0.0000001f, 0.0000001f, 0.0000001f);
         static ParticleSystem.Particle[] s_Particles = new ParticleSystem.Particle[4096];
 
         /// <summary>
@@ -398,7 +399,7 @@ namespace Coffee.UIExtensions
                             matrix =
                                 scaleaMatrix
                                 * Matrix4x4.Rotate(rectTransform.rotation).inverse
-                                * Matrix4x4.Scale(rectTransform.lossyScale).inverse;
+                                * Matrix4x4.Scale(rectTransform.lossyScale + minimumVec3).inverse;
                             break;
                         case ParticleSystemSimulationSpace.World:
                             matrix =
