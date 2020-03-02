@@ -1,3 +1,11 @@
+# [3.0.0-preview.7](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.6...v3.0.0-preview.7) (2020-03-02)
+
+
+### Bug Fixes
+
+* add package keywords ([49d8f3f](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/49d8f3fe4c76cf6bd2cd5b6134ee23134532da8e))
+* fix sample path ([57ee210](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/57ee21005e114fdf186b5db55ca2b77b7b7c441a))
+
 # [3.0.0-preview.6](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.5...v3.0.0-preview.6) (2020-02-21)
 
 
