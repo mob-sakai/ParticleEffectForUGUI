@@ -136,6 +136,15 @@ namespace Coffee.UIExtensions
         /// <summary>
         /// This function is called when the MonoBehaviour will be destroyed.
         /// </summary>
+        void OnEnable()
+        {
+            gameObject.hideFlags = HideFlags.HideAndDontSave;
+            gameObject.tag = "EditorOnly";
+		}
+
+        /// <summary>
+        /// This function is called when the MonoBehaviour will be destroyed.
+        /// </summary>
         void OnDestroy()
         {
 #if UNITY_2018_3_OR_NEWER && UNITY_EDITOR

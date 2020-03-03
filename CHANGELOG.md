@@ -1,3 +1,11 @@
+# [3.0.0-preview.8](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.7...v3.0.0-preview.8) (2020-03-03)
+
+
+### Bug Fixes
+
+* abnormal Mesh Bounds with Particle Trails ([518a749](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/518a7497105a114a0f6b1782df0c35ba0aecfab2)), closes [#61](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/61)
+* multiple UIParticleOverlayCamera in scene ([3f09395](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/3f093958b3353463d6c5bd29ef3338203d4e41d7)), closes [#73](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/73)
+
 # [3.0.0-preview.7](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.6...v3.0.0-preview.7) (2020-03-02)
 
 
