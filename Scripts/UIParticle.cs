@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Profiling;
+using UnityEngine.Rendering;
 using UnityEngine.UI;
 using ShaderPropertyType = Coffee.UIExtensions.UIParticle.AnimatableProperty.ShaderPropertyType;
 
@@ -88,7 +89,9 @@ namespace Coffee.UIExtensions
                     var textureSheet = cachedParticleSystem.textureSheetAnimation;
                     if (textureSheet.enabled && textureSheet.mode == ParticleSystemAnimationMode.Sprites && 0 < textureSheet.spriteCount)
                     {
-                        tex = textureSheet.GetSprite(0).texture;
+                        var sprite = textureSheet.GetSprite(0);
+                        textureSheet.uvChannelMask = (UVChannelFlags) (sprite.packed ? -1 : 0);
+                        tex = sprite.texture;
                     }
                     Profiler.EndSample();
                 }

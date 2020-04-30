@@ -1,3 +1,10 @@
+# [3.0.0-preview.10](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.9...v3.0.0-preview.10) (2020-04-30)
+
+
+### Features
+
+* add support for SpriteAtlas ([b31e325](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/b31e325bb1ef0856cb1ac4c4b0c4da0f1578b8ba))
+
 # [3.0.0-preview.9](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.8...v3.0.0-preview.9) (2020-03-04)
 
 
