@@ -1,3 +1,10 @@
+# [3.0.0-preview.11](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.10...v3.0.0-preview.11) (2020-05-07)
+
+
+### Bug Fixes
+
+* If sprite is null, a null exception is thrown ([50c6e98](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/50c6e980ca37dda1bece5252162fa05ca3472ee8))
+
 # [3.0.0-preview.10](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.9...v3.0.0-preview.10) (2020-04-30)
 
 

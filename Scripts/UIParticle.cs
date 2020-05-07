@@ -90,8 +90,8 @@ namespace Coffee.UIExtensions
                     if (textureSheet.enabled && textureSheet.mode == ParticleSystemAnimationMode.Sprites && 0 < textureSheet.spriteCount)
                     {
                         var sprite = textureSheet.GetSprite(0);
-                        textureSheet.uvChannelMask = (UVChannelFlags) (sprite.packed ? -1 : 0);
-                        tex = sprite.texture;
+                        textureSheet.uvChannelMask = (UVChannelFlags) (sprite && sprite.packed ? -1 : 0);
+                        tex = sprite ? sprite.texture : null;
                     }
                     Profiler.EndSample();
                 }
