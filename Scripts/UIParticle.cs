@@ -461,6 +461,7 @@ namespace Coffee.UIExtensions
 
                         if (!cam)
                         {
+                            Profiler.EndSample();
                             return;
                         }
                         if (m_IsTrail)
