@@ -282,8 +282,14 @@ namespace Coffee.UIExtensions
                     trans.localScale = Vector3.Scale(localScale, x.canvas.rootCanvas.transform.localScale * x.scale);
                 });
 
-            foreach (var ui in _shapeModuleUIs)
-                ui.OnSceneViewGUI();
+            try
+            {
+                foreach (var ui in _shapeModuleUIs)
+                    ui.OnSceneViewGUI();
+            }
+            catch
+            {
+            }
 
             postAction();
             ShapeModuleUI.s_GizmoColor.m_Color = origin;

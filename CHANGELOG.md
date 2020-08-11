@@ -1,3 +1,10 @@
+# [3.0.0-preview.15](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.14...v3.0.0-preview.15) (2020-08-11)
+
+
+### Bug Fixes
+
+* An exception in the OnSceneGUI caused the scale of the transformation to change unintentionally ([75413e0](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/75413e0e2cff42a85b73b33e17e0bb6344ecc8f6))
+
 # [3.0.0-preview.14](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.13...v3.0.0-preview.14) (2020-08-11)
 
 
