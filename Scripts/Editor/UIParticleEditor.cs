@@ -171,7 +171,10 @@ namespace Coffee.UIExtensions
                 var sp = new SerializedObject(pr).FindProperty("m_Materials");
 
                 EditorGUILayout.PropertyField(sp.GetArrayElementAtIndex(0), s_ContentParticleMaterial);
-                EditorGUILayout.PropertyField(sp.GetArrayElementAtIndex(1), s_ContentTrailMaterial);
+                if (2 <= sp.arraySize)
+                {
+                    EditorGUILayout.PropertyField(sp.GetArrayElementAtIndex(1), s_ContentTrailMaterial);
+                }
                 sp.serializedObject.ApplyModifiedProperties();
 
                 if (!Application.isPlaying && pr.enabled)

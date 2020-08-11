@@ -1,3 +1,16 @@
+# [3.0.0-preview.13](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.12...v3.0.0-preview.13) (2020-08-11)
+
+
+### Bug Fixes
+
+* Added CanvasRenderer as a required component ([a8950f6](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/a8950f65c817be04b0be222c9728c716fdd7c658))
+* inspector is broken in Unity 2020.1 ([26c5395](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/26c5395a45ff00e99e46ee4aae85c51df6c3641f))
+
+
+### Features
+
+* update OSC to 1.0.0-preview.25 ([22e116e](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/22e116e11d3b8cf13b941e9a02a0ffce24e3e99f))
+
 # [3.0.0-preview.12](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.11...v3.0.0-preview.12) (2020-08-11)
 
 

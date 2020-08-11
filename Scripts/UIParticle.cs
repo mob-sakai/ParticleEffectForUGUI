@@ -13,6 +13,7 @@ namespace Coffee.UIExtensions
     /// Render maskable and sortable particle effect ,without Camera, RenderTexture or Canvas.
     /// </summary>
     [ExecuteInEditMode]
+    [RequireComponent(typeof(CanvasRenderer))]
     public class UIParticle : MaskableGraphic
     {
         //################################
