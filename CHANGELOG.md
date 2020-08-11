@@ -1,3 +1,10 @@
+# [3.0.0-preview.14](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.13...v3.0.0-preview.14) (2020-08-11)
+
+
+### Bug Fixes
+
+* read-only properties in the inspector ([f012b23](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/f012b238d97aad3fdc3107b1f9a197de869c43e6))
+
 # [3.0.0-preview.13](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.12...v3.0.0-preview.13) (2020-08-11)
 
 

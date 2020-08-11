@@ -162,7 +162,10 @@ namespace Coffee.UIExtensions
         {
             serializedObject.Update();
 
+            EditorGUI.BeginDisabledGroup(true);
             EditorGUILayout.PropertyField(_spParticleSystem);
+            EditorGUI.EndDisabledGroup();
+
             EditorGUI.indentLevel++;
             var ps = _spParticleSystem.objectReferenceValue as ParticleSystem;
             if (ps)
@@ -170,12 +173,18 @@ namespace Coffee.UIExtensions
                 var pr = ps.GetComponent<ParticleSystemRenderer>();
                 var sp = new SerializedObject(pr).FindProperty("m_Materials");
 
-                EditorGUILayout.PropertyField(sp.GetArrayElementAtIndex(0), s_ContentParticleMaterial);
-                if (2 <= sp.arraySize)
+                EditorGUI.BeginChangeCheck();
                 {
-                    EditorGUILayout.PropertyField(sp.GetArrayElementAtIndex(1), s_ContentTrailMaterial);
+                    EditorGUILayout.PropertyField(sp.GetArrayElementAtIndex(0), s_ContentParticleMaterial);
+                    if (2 <= sp.arraySize)
+                    {
+                        EditorGUILayout.PropertyField(sp.GetArrayElementAtIndex(1), s_ContentTrailMaterial);
+                    }
                 }
-                sp.serializedObject.ApplyModifiedProperties();
+                if (EditorGUI.EndChangeCheck())
+                {
+                    sp.serializedObject.ApplyModifiedProperties();
+                }
 
                 if (!Application.isPlaying && pr.enabled)
                 {
