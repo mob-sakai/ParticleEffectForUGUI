@@ -1,3 +1,10 @@
+# [3.0.0-preview.12](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.11...v3.0.0-preview.12) (2020-08-11)
+
+
+### Bug Fixes
+
+* Profiler.BeginSample -> Profiler.EndSample if a canvas is disabled or a camera doesn't found ([4a0a5d1](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/4a0a5d13be68e38d5b2e225156740aed27c52d12))
+
 # [3.0.0-preview.11](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.10...v3.0.0-preview.11) (2020-05-07)
 
 
