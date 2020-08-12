@@ -20,6 +20,7 @@ namespace Coffee.UIExtensions
                 if (Directory.Exists(samplePath))
                     return samplePath;
             }
+
             return null;
         }
 
@@ -37,8 +38,8 @@ namespace Coffee.UIExtensions
             if (!string.IsNullOrEmpty(previous))
             {
                 string msg = "A different version of the sample is already imported at\n\n"
-                    + previous
-                    + "\n\nIt will be deleted when you update. Are you sure you want to continue?";
+                             + previous
+                             + "\n\nIt will be deleted when you update. Are you sure you want to continue?";
                 if (!EditorUtility.DisplayDialog("Sample Importer", msg, "OK", "Cancel"))
                     return;
 

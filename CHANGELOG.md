@@ -1,3 +1,10 @@
+# [3.0.0-preview.16](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.15...v3.0.0-preview.16) (2020-08-12)
+
+
+### Bug Fixes
+
+* texture sheet animation module Sprite mode not working ([30d1d5d](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/30d1d5d3cc67234a8cd985e98f181aff2a8bd8ef)), closes [#79](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/79)
+
 # [3.0.0-preview.15](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.14...v3.0.0-preview.15) (2020-08-11)
 
 

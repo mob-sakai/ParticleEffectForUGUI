@@ -1,11 +1,12 @@
-﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Profiling;
-using UnityEngine.Rendering;
 using UnityEngine.UI;
 using ShaderPropertyType = Coffee.UIExtensions.UIParticle.AnimatableProperty.ShaderPropertyType;
+#if UNITY_EDITOR
+using System.Reflection;
 
+#endif
 
 namespace Coffee.UIExtensions
 {
@@ -29,18 +30,22 @@ namespace Coffee.UIExtensions
         //################################
         // Serialize Members.
         //################################
-        [Tooltip("The ParticleSystem rendered by CanvasRenderer")]
-        [SerializeField] ParticleSystem m_ParticleSystem;
-        [Tooltip("The UIParticle to render trail effect")]
-        [SerializeField] UIParticle m_TrailParticle;
-        [HideInInspector] [SerializeField] bool m_IsTrail = false;
-        [Tooltip("Particle effect scale")]
-        [SerializeField] float m_Scale = 1;
-        [Tooltip("Ignore parent scale")]
-        [SerializeField] bool m_IgnoreParent = false;
+        [Tooltip("The ParticleSystem rendered by CanvasRenderer")] [SerializeField]
+        ParticleSystem m_ParticleSystem;
 
-        [Tooltip("Animatable material properties. AnimationでParticleSystemのマテリアルプロパティを変更する場合、有効にしてください。")]
-        [SerializeField] AnimatableProperty[] m_AnimatableProperties = new AnimatableProperty[0];
+        [Tooltip("The UIParticle to render trail effect")] [SerializeField]
+        UIParticle m_TrailParticle;
+
+        [HideInInspector] [SerializeField] bool m_IsTrail = false;
+
+        [Tooltip("Particle effect scale")] [SerializeField]
+        float m_Scale = 1;
+
+        [Tooltip("Ignore parent scale")] [SerializeField]
+        bool m_IgnoreParent = false;
+
+        [Tooltip("Animatable material properties. AnimationでParticleSystemのマテリアルプロパティを変更する場合、有効にしてください。")] [SerializeField]
+        AnimatableProperty[] m_AnimatableProperties = new AnimatableProperty[0];
 
         static MaterialPropertyBlock s_Mpb;
 
@@ -56,12 +61,14 @@ namespace Coffee.UIExtensions
                 Texture,
             };
 
-            [SerializeField]
-            string m_Name = "";
-            [SerializeField]
-            ShaderPropertyType m_Type = ShaderPropertyType.Vector;
+            [SerializeField] string m_Name = "";
+            [SerializeField] ShaderPropertyType m_Type = ShaderPropertyType.Vector;
             public int id { get; private set; }
-            public ShaderPropertyType type { get { return m_Type; } }
+
+            public ShaderPropertyType type
+            {
+                get { return m_Type; }
+            }
 
 
             public void OnBeforeSerialize()
@@ -73,7 +80,6 @@ namespace Coffee.UIExtensions
                 id = Shader.PropertyToID(m_Name);
             }
         }
-
 
 
         //################################
@@ -90,12 +96,12 @@ namespace Coffee.UIExtensions
                     var textureSheet = cachedParticleSystem.textureSheetAnimation;
                     if (textureSheet.enabled && textureSheet.mode == ParticleSystemAnimationMode.Sprites && 0 < textureSheet.spriteCount)
                     {
-                        var sprite = textureSheet.GetSprite(0);
-                        textureSheet.uvChannelMask = (UVChannelFlags) (sprite && sprite.packed ? -1 : 0);
-                        tex = sprite ? sprite.texture : null;
+                        tex = GetActualTexture(textureSheet.GetSprite(0));
                     }
+
                     Profiler.EndSample();
                 }
+
                 if (!tex && _renderer)
                 {
                     Profiler.BeginSample("Check material");
@@ -104,8 +110,10 @@ namespace Coffee.UIExtensions
                     {
                         tex = mat.mainTexture;
                     }
+
                     Profiler.EndSample();
                 }
+
                 return tex ?? s_WhiteTexture;
             }
         }
@@ -115,10 +123,10 @@ namespace Coffee.UIExtensions
             get
             {
                 return _renderer
-                        ? m_IsTrail
-                            ? _renderer.trailMaterial
-                            : _renderer.sharedMaterial
-                        : null;
+                    ? m_IsTrail
+                        ? _renderer.trailMaterial
+                        : _renderer.sharedMaterial
+                    : null;
             }
 
             set
@@ -142,7 +150,11 @@ namespace Coffee.UIExtensions
         /// <summary>
         /// Particle effect scale.
         /// </summary>
-        public float scale { get { return _parent ? _parent.scale : m_Scale; } set { m_Scale = value; } }
+        public float scale
+        {
+            get { return _parent ? _parent.scale : m_Scale; }
+            set { m_Scale = value; }
+        }
 
         /// <summary>
         /// Should the soft mask ignore parent soft masks?
@@ -172,12 +184,19 @@ namespace Coffee.UIExtensions
         /// <summary>
         /// Should this graphic be considered a target for raycasting?
         /// </summary>
-        public override bool raycastTarget { get { return false; } set { base.raycastTarget = value; } }
+        public override bool raycastTarget
+        {
+            get { return false; }
+            set { base.raycastTarget = value; }
+        }
 
         /// <summary>
         /// ParticleSystem.
         /// </summary>
-        public ParticleSystem cachedParticleSystem { get { return m_ParticleSystem ? m_ParticleSystem : (m_ParticleSystem = GetComponent<ParticleSystem>()); } }
+        public ParticleSystem cachedParticleSystem
+        {
+            get { return m_ParticleSystem ? m_ParticleSystem : (m_ParticleSystem = GetComponent<ParticleSystem>()); }
+        }
 
         /// <summary>
         /// Perform material modification in this function.
@@ -208,6 +227,7 @@ namespace Coffee.UIExtensions
                 Canvas.willRenderCanvases += UpdateMeshes;
                 s_Mpb = new MaterialPropertyBlock();
             }
+
             s_ActiveParticles.Add(this);
 
             // Reset the parent-child relation.
@@ -216,6 +236,7 @@ namespace Coffee.UIExtensions
             {
                 s_TempRelatables[i].OnTransformParentChanged();
             }
+
             s_TempRelatables.Clear();
 
             _renderer = cachedParticleSystem ? cachedParticleSystem.GetComponent<ParticleSystemRenderer>() : null;
@@ -256,6 +277,7 @@ namespace Coffee.UIExtensions
             {
                 _children[i].SetParent(_parent);
             }
+
             _children.Clear();
             SetParent(null);
 
@@ -278,6 +300,7 @@ namespace Coffee.UIExtensions
             {
                 cachedParticleSystem.GetComponent<ParticleSystemRenderer>().enabled = false;
             }
+
             base.Reset();
         }
 #endif
@@ -304,6 +327,7 @@ namespace Coffee.UIExtensions
                     parentTransform = parentTransform.parent;
                 }
             }
+
             SetParent(newParent);
 
             base.OnTransformParentChanged();
@@ -383,6 +407,7 @@ namespace Coffee.UIExtensions
                     {
                         _renderer.enabled = false;
                     }
+
                     Profiler.EndSample();
 
                     // #69: Editor crashes when mesh is set to null when ParticleSystem.RenderMode=Mesh
@@ -396,8 +421,8 @@ namespace Coffee.UIExtensions
                     Profiler.BeginSample("Make Matrix");
                     ParticleSystem.MainModule main = m_ParticleSystem.main;
                     scaleaMatrix = main.scalingMode == ParticleSystemScalingMode.Hierarchy
-                                                   ? Matrix4x4.Scale(scale * Vector3.one)
-                                                   : Matrix4x4.Scale(scale * rootCanvas.transform.localScale);
+                        ? Matrix4x4.Scale(scale * Vector3.one)
+                        : Matrix4x4.Scale(scale * rootCanvas.transform.localScale);
                     Matrix4x4 matrix = default(Matrix4x4);
                     switch (main.simulationSpace)
                     {
@@ -444,12 +469,15 @@ namespace Coffee.UIExtensions
                                     p.position = p.position + delta;
                                     s_Particles[i] = p;
                                 }
+
                                 m_ParticleSystem.SetParticles(s_Particles, count);
                             }
+
                             break;
                         case ParticleSystemSimulationSpace.Custom:
                             break;
                     }
+
                     Profiler.EndSample();
 
                     _mesh.Clear();
@@ -465,6 +493,7 @@ namespace Coffee.UIExtensions
                             Profiler.EndSample();
                             return;
                         }
+
                         if (m_IsTrail)
                         {
                             _renderer.BakeTrailsMesh(_mesh, cam, true);
@@ -473,6 +502,7 @@ namespace Coffee.UIExtensions
                         {
                             _renderer.BakeMesh(_mesh, cam, true);
                         }
+
                         Profiler.EndSample();
 
                         // Apply matrix.
@@ -484,8 +514,9 @@ namespace Coffee.UIExtensions
                             var count_c = s_Colors.Count;
                             for (int i = 0; i < count_c; i++)
                             {
-                                s_Colors[i] = ((Color)s_Colors[i]).gamma;
+                                s_Colors[i] = ((Color) s_Colors[i]).gamma;
                             }
+
                             _mesh.SetColors(s_Colors);
                         }
 
@@ -495,6 +526,7 @@ namespace Coffee.UIExtensions
                         {
                             s_Vertices[i] = matrix.MultiplyPoint3x4(s_Vertices[i]);
                         }
+
                         _mesh.SetVertices(s_Vertices);
                         _mesh.RecalculateBounds();
                         s_Vertices.Clear();
@@ -540,6 +572,7 @@ namespace Coffee.UIExtensions
                     m_TrailParticle.m_ParticleSystem = GetComponent<ParticleSystem>();
                     m_TrailParticle.m_IsTrail = true;
                 }
+
                 m_TrailParticle.enabled = true;
             }
             else if (m_TrailParticle)
@@ -561,6 +594,7 @@ namespace Coffee.UIExtensions
                     _parent._children.Remove(this);
                     _parent._children.RemoveAll(x => x == null);
                 }
+
                 _parent = newParent;
             }
 
@@ -607,5 +641,24 @@ namespace Coffee.UIExtensions
                 }
             }
         }
+
+#if UNITY_EDITOR
+        private static MethodInfo miGetActiveAtlasTexture = typeof(UnityEditor.Experimental.U2D.SpriteEditorExtension)
+            .GetMethod("GetActiveAtlasTexture", BindingFlags.Static | BindingFlags.NonPublic);
+
+        static Texture2D GetActualTexture(Sprite sprite)
+        {
+            if (!sprite) return null;
+
+            if (Application.isPlaying) return sprite.texture;
+            var ret = miGetActiveAtlasTexture.Invoke(null, new[] {sprite}) as Texture2D;
+            return ret ? ret : sprite.texture;
+        }
+#else
+        static Texture2D GetActualTexture(Sprite sprite)
+        {
+            return sprite ? sprite.texture : null;
+        }
+#endif
     }
 }

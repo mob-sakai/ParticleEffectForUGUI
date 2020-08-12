@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 #if UNITY_2018_3_OR_NEWER && UNITY_EDITOR
 using PrefabStageUtility = UnityEditor.Experimental.SceneManagement.PrefabStageUtility;
 #endif
@@ -10,7 +8,7 @@ namespace Coffee.UIExtensions
     /// <summary>
     /// </summary>
     [ExecuteInEditMode]
-	[AddComponentMenu("")]
+    [AddComponentMenu("")]
     public class UIParticleOverlayCamera : MonoBehaviour
     {
         //################################
@@ -42,6 +40,7 @@ namespace Coffee.UIExtensions
                         UnityEngine.SceneManagement.SceneManager.MoveGameObjectToScene(go, prefabStage.scene);
                         s_InstanceForPrefabMode = go.AddComponent<UIParticleOverlayCamera>();
                     }
+
                     return s_InstanceForPrefabMode;
                 }
 #endif
@@ -49,10 +48,12 @@ namespace Coffee.UIExtensions
                 // Find instance in scene, or create new one.
                 if (object.ReferenceEquals(s_Instance, null))
                 {
-                    s_Instance = FindObjectOfType<UIParticleOverlayCamera>() ?? new GameObject(typeof(UIParticleOverlayCamera).Name, typeof(UIParticleOverlayCamera)).GetComponent<UIParticleOverlayCamera>();
+                    s_Instance = FindObjectOfType<UIParticleOverlayCamera>() ??
+                                 new GameObject(typeof(UIParticleOverlayCamera).Name, typeof(UIParticleOverlayCamera)).GetComponent<UIParticleOverlayCamera>();
                     s_Instance.gameObject.SetActive(true);
                     s_Instance.enabled = true;
                 }
+
                 return s_Instance;
             }
         }
@@ -79,7 +80,11 @@ namespace Coffee.UIExtensions
         //################################
         // Private Members.
         //################################
-        Camera cameraForOvrelay { get { return m_Camera ? m_Camera : (m_Camera = GetComponent<Camera>()) ? m_Camera : (m_Camera = gameObject.AddComponent<Camera>()); } }
+        Camera cameraForOvrelay
+        {
+            get { return m_Camera ? m_Camera : (m_Camera = GetComponent<Camera>()) ? m_Camera : (m_Camera = gameObject.AddComponent<Camera>()); }
+        }
+
         Camera m_Camera;
         static UIParticleOverlayCamera s_Instance;
 #if UNITY_2018_3_OR_NEWER && UNITY_EDITOR
@@ -121,6 +126,7 @@ namespace Coffee.UIExtensions
                 {
                     Destroy(gameObject);
                 }
+
                 return;
             }
 
@@ -140,7 +146,7 @@ namespace Coffee.UIExtensions
         {
             gameObject.hideFlags = HideFlags.HideAndDontSave;
             gameObject.tag = "EditorOnly";
-		}
+        }
 
         /// <summary>
         /// This function is called when the MonoBehaviour will be destroyed.

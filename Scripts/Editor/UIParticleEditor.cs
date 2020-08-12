@@ -68,23 +68,22 @@ namespace Coffee.UIExtensions
                     {
                         var p = sp.GetArrayElementAtIndex(i);
                         var name = p.FindPropertyRelative("m_Name").stringValue;
-                        var type = (ShaderPropertyType)p.FindPropertyRelative("m_Type").intValue;
-                        AddMenu(gm, sp, new AnimatedPropertiesEditor() { name = name, type = type }, false);
+                        var type = (ShaderPropertyType) p.FindPropertyRelative("m_Type").intValue;
+                        AddMenu(gm, sp, new AnimatedPropertiesEditor() {name = name, type = type}, false);
                     }
 
                     for (int i = 0; i < ShaderUtil.GetPropertyCount(mat.shader); i++)
                     {
                         var pName = ShaderUtil.GetPropertyName(mat.shader, i);
-                        var type = (ShaderPropertyType)ShaderUtil.GetPropertyType(mat.shader, i);
-                        AddMenu(gm, sp, new AnimatedPropertiesEditor() { name = pName, type = type }, true);
+                        var type = (ShaderPropertyType) ShaderUtil.GetPropertyType(mat.shader, i);
+                        AddMenu(gm, sp, new AnimatedPropertiesEditor() {name = pName, type = type}, true);
 
                         if (type == ShaderPropertyType.Texture)
                         {
-                            AddMenu(gm, sp, new AnimatedPropertiesEditor() { name = pName + "_ST", type = ShaderPropertyType.Vector }, true);
-                            AddMenu(gm, sp, new AnimatedPropertiesEditor() { name = pName + "_HDR", type = ShaderPropertyType.Vector }, true);
-                            AddMenu(gm, sp, new AnimatedPropertiesEditor() { name = pName + "_TexelSize", type = ShaderPropertyType.Vector }, true);
+                            AddMenu(gm, sp, new AnimatedPropertiesEditor() {name = pName + "_ST", type = ShaderPropertyType.Vector}, true);
+                            AddMenu(gm, sp, new AnimatedPropertiesEditor() {name = pName + "_HDR", type = ShaderPropertyType.Vector}, true);
+                            AddMenu(gm, sp, new AnimatedPropertiesEditor() {name = pName + "_TexelSize", type = ShaderPropertyType.Vector}, true);
                         }
-
                     }
 
                     gm.ShowAsContext();
@@ -97,21 +96,22 @@ namespace Coffee.UIExtensions
                     return;
 
                 menu.AddItem(new GUIContent(string.Format("{0} ({1})", property.name, property.type)), s_ActiveNames.Contains(property.name), () =>
-            {
-                var index = s_ActiveNames.IndexOf(property.name);
-                if (0 <= index)
                 {
-                    sp.DeleteArrayElementAtIndex(index);
-                }
-                else
-                {
-                    sp.InsertArrayElementAtIndex(sp.arraySize);
-                    var p = sp.GetArrayElementAtIndex(sp.arraySize - 1);
-                    p.FindPropertyRelative("m_Name").stringValue = property.name;
-                    p.FindPropertyRelative("m_Type").intValue = (int)property.type;
-                }
-                sp.serializedObject.ApplyModifiedProperties();
-            });
+                    var index = s_ActiveNames.IndexOf(property.name);
+                    if (0 <= index)
+                    {
+                        sp.DeleteArrayElementAtIndex(index);
+                    }
+                    else
+                    {
+                        sp.InsertArrayElementAtIndex(sp.arraySize);
+                        var p = sp.GetArrayElementAtIndex(sp.arraySize - 1);
+                        p.FindPropertyRelative("m_Name").stringValue = property.name;
+                        p.FindPropertyRelative("m_Type").intValue = (int) property.type;
+                    }
+
+                    sp.serializedObject.ApplyModifiedProperties();
+                });
             }
         }
 
@@ -191,6 +191,7 @@ namespace Coffee.UIExtensions
                     EditorGUILayout.HelpBox("UIParticles disable the RendererModule in ParticleSystem at runtime to prevent double rendering.", MessageType.Warning);
                 }
             }
+
             EditorGUI.indentLevel--;
 
             EditorGUI.BeginDisabledGroup(true);
@@ -221,9 +222,11 @@ namespace Coffee.UIExtensions
                         p.gameObject.AddComponent<UIParticle>();
                     }
                 }
+
                 GUILayout.EndVertical();
                 GUILayout.EndHorizontal();
             }
+
             s_ParticleSystems.Clear();
 
             if (current.maskable && current.material && current.material.shader)
@@ -270,7 +273,7 @@ namespace Coffee.UIExtensions
 
             _particles
                 .Distinct()
-                .Select(x => new { canvas = x.canvas, ps = x.cachedParticleSystem, scale = x.scale })
+                .Select(x => new {canvas = x.canvas, ps = x.cachedParticleSystem, scale = x.scale})
                 .Where(x => x.ps && x.canvas)
                 .ToList()
                 .ForEach(x =>
