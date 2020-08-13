@@ -1,3 +1,10 @@
+# [3.0.0-preview.17](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.16...v3.0.0-preview.17) (2020-08-13)
+
+
+### Bug Fixes
+
+* The type or namespace name 'U2D' does not exist in the namespace 'UnityEditor.Experimental' in Unity 2019.3 or later ([930199e](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/930199e5e42920825b27d5bf3e2b2a4bda77fa14)), closes [#82](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/82)
+
 # [3.0.0-preview.16](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.15...v3.0.0-preview.16) (2020-08-12)
 
 

@@ -4,8 +4,8 @@ using UnityEngine.Profiling;
 using UnityEngine.UI;
 using ShaderPropertyType = Coffee.UIExtensions.UIParticle.AnimatableProperty.ShaderPropertyType;
 #if UNITY_EDITOR
+using System;
 using System.Reflection;
-
 #endif
 
 namespace Coffee.UIExtensions
@@ -643,7 +643,9 @@ namespace Coffee.UIExtensions
         }
 
 #if UNITY_EDITOR
-        private static MethodInfo miGetActiveAtlasTexture = typeof(UnityEditor.Experimental.U2D.SpriteEditorExtension)
+        private static Type tSpriteEditorExtension = Type.GetType("UnityEditor.Experimental.U2D.SpriteEditorExtension, UnityEditor")
+                                                     ?? Type.GetType("UnityEditor.U2D.SpriteEditorExtension, UnityEditor");
+        private static MethodInfo miGetActiveAtlasTexture = tSpriteEditorExtension
             .GetMethod("GetActiveAtlasTexture", BindingFlags.Static | BindingFlags.NonPublic);
 
         static Texture2D GetActualTexture(Sprite sprite)
