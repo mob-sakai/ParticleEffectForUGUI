@@ -1,3 +1,30 @@
+# [3.0.0-preview.18](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.17...v3.0.0-preview.18) (2020-08-19)
+
+
+### Bug Fixes
+
+* AsmdefEx is no longer required ([50e749c](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/50e749c183def5e97affa7e6ae9f3ceb69247825))
+* fix camera for baking mesh ([6395a4f](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/6395a4fa744a46551593185711d6545a94d8b456))
+* support .Net Framework 3.5 (again) ([23fcb06](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/23fcb06bf9169ee160ccd8adb2cc3aab1a30186a))
+
+
+### Features
+
+* 3.0.0 updater ([f99292b](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/f99292b9a15c9c085efacc0330d6b848669fadfa))
+* add menu to create UIParticle ([14f1c78](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/14f1c782ff0f2b67d85d7c9ad0cf662da1dd1fc6))
+* Combine baked meshes to improve performance ([633d058](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/633d058756fde776a7e5192a0f023adf6eb0ca7b))
+* improve performance ([77c056a](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/77c056ad5f2918efe457883f3b0361f952600568))
+* optimization for vertices transforms and adding node for trails ([e070e8d](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/e070e8d5ee205c25a1e3be5d3178821d4a8265d0)), closes [#75](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/75)
+* option to ignoring canvas scaling ([fe85fed](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/fe85fed3c0ad2881578ff68722863d65dfa4db7a))
+* support 3d scaling ([42a84bc](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/42a84bc5e130aed3cf5e57dcd6a9d8dc94deb641))
+* support custom simulation space ([a83e647](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/a83e64761c008e88ff328a2609118806e97f19cf)), closes [#78](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/78)
+* support for particle systems including trail only ([f389d39](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/f389d39953c85b97482b12d1c8578ecaeddacd18)), closes [#61](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/61)
+
+
+### BREAKING CHANGES
+
+* The bake-task has changed significantly. It may look different from previous versions.
+
 # [3.0.0-preview.17](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.16...v3.0.0-preview.17) (2020-08-13)
 
 
