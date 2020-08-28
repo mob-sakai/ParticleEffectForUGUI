@@ -1,3 +1,10 @@
+# [3.0.0-preview.20](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.19...v3.0.0-preview.20) (2020-08-28)
+
+
+### Features
+
+* automatically update ([96a868b](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/96a868b60a3f36d761d58b5082aa9d37666e63a3))
+
 # [3.0.0-preview.19](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.18...v3.0.0-preview.19) (2020-08-28)
 
 

@@ -15,7 +15,7 @@ namespace Coffee.UIExtensions
     [ExecuteInEditMode]
     [RequireComponent(typeof(RectTransform))]
     [RequireComponent(typeof(CanvasRenderer))]
-    public class UIParticle : MaskableGraphic
+    public class UIParticle : MaskableGraphic, ISerializationCallbackReceiver
     {
         [HideInInspector] [SerializeField] bool m_IsTrail = false;
 
@@ -113,6 +113,13 @@ namespace Coffee.UIExtensions
         public void RefreshParticles()
         {
             GetComponentsInChildren(particles);
+
+            foreach (var ps in particles)
+            {
+                var tsa = ps.textureSheetAnimation;
+                if (tsa.mode == ParticleSystemAnimationMode.Sprites && tsa.uvChannelMask == (UVChannelFlags) 0)
+                    tsa.uvChannelMask = UVChannelFlags.UV0;
+            }
 
             particles.Exec(p => p.GetComponent<ParticleSystemRenderer>().enabled = !enabled);
             particles.SortForRendering(transform);
@@ -258,12 +265,11 @@ namespace Coffee.UIExtensions
 
         private void InitializeIfNeeded()
         {
-            if (0 < particles.Count) return;
+            if (!this || 0 < particles.Count) return;
 
-            if (m_IsTrail
-                || transform.parent && transform.parent.GetComponentInParent<UIParticle>())
+            if (m_IsTrail)
             {
-                gameObject.SetActive(false);
+                UnityEngine.Debug.LogWarningFormat("[UIParticle] Remove this UIParticle: {0}\nReason: UIParticle for trails is no longer needed.", name);
                 if (Application.isPlaying)
                     Destroy(gameObject);
                 else
@@ -271,13 +277,41 @@ namespace Coffee.UIExtensions
                 return;
             }
 
+            if (transform.parent && transform.parent.GetComponentInParent<UIParticle>())
+            {
+                UnityEngine.Debug.LogWarningFormat("[UIParticle] Remove this UIParticle: {0}\nReason: The parent UIParticle exists.", name);
+                if (Application.isPlaying)
+                    Destroy(this);
+                else
+                    DestroyImmediate(this);
+                return;
+            }
+
             // refresh.
 #if UNITY_EDITOR
             if (!Application.isPlaying)
-                UnityEditor.EditorApplication.delayCall += RefreshParticles;
+                UnityEditor.EditorApplication.delayCall += () =>
+                {
+                    if (this) RefreshParticles();
+                };
             else
 #endif
                 RefreshParticles();
         }
+
+#if UNITY_EDITOR
+        void ISerializationCallbackReceiver.OnBeforeSerialize()
+        {
+            InitializeIfNeeded();
+        }
+
+        void ISerializationCallbackReceiver.OnAfterDeserialize()
+        {
+            UnityEditor.EditorApplication.delayCall += () =>
+            {
+                if (this) InitializeIfNeeded();
+            };
+        }
+#endif
     }
 }
