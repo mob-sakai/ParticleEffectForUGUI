@@ -205,6 +205,11 @@ namespace Coffee.UIExtensions
 
                     if (m.vertexCount == 0)
                         MeshHelper.DiscardTemporaryMesh();
+                    else
+                    {
+                        var index = MeshHelper.activeMeshIndices.BitCount() - 1;
+                        particle.UpdateMaterialProperties(r, index);
+                    }
                 }
 
                 // Bake trails particles.

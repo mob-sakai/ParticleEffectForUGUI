@@ -34,9 +34,11 @@ namespace Coffee.UIExtensions
         private DrivenRectTransformTracker _tracker;
         private Mesh _bakedMesh;
         private readonly List<Material> _modifiedMaterials = new List<Material>();
+        private readonly List<Material> _maskMaterials = new List<Material>();
         private uint _activeMeshIndices;
         private Vector3 _cachedPosition;
         private static readonly List<Material> s_TempMaterials = new List<Material>(2);
+        private static MaterialPropertyBlock s_Mpb;
 
 
         /// <summary>
@@ -129,10 +131,18 @@ namespace Coffee.UIExtensions
 
         protected override void UpdateMaterial()
         {
+            // Clear mask materials.
+            for (var i = 0; i < _maskMaterials.Count; i++)
+            {
+                StencilMaterial.Remove(_maskMaterials[i]);
+                _maskMaterials[i] = null;
+            }
+
+            _maskMaterials.Clear();
+
             // Clear modified materials.
             for (var i = 0; i < _modifiedMaterials.Count; i++)
             {
-                StencilMaterial.Remove(_modifiedMaterials[i]);
                 DestroyImmediate(_modifiedMaterials[i]);
                 _modifiedMaterials[i] = null;
             }
@@ -173,7 +183,9 @@ namespace Coffee.UIExtensions
                 if (0 < (activeMeshIndices & bit) && 0 < s_TempMaterials.Count)
                 {
                     var mat = GetModifiedMaterial(s_TempMaterials[0], ps.GetTextureForSprite());
-                    canvasRenderer.SetMaterial(mat, j++);
+                    canvasRenderer.SetMaterial(mat, j);
+                    UpdateMaterialProperties(r, j);
+                    j++;
                 }
 
                 // Trails
@@ -192,7 +204,7 @@ namespace Coffee.UIExtensions
             if (0 < m_StencilValue)
             {
                 baseMaterial = StencilMaterial.Add(baseMaterial, (1 << m_StencilValue) - 1, StencilOp.Keep, CompareFunction.Equal, ColorWriteMask.All, (1 << m_StencilValue) - 1, 0);
-                _modifiedMaterials.Add(baseMaterial);
+                _maskMaterials.Add(baseMaterial);
             }
 
             if (texture == null && m_AnimatableProperties.Length == 0) return baseMaterial;
@@ -203,6 +215,25 @@ namespace Coffee.UIExtensions
                 baseMaterial.mainTexture = texture;
 
             return baseMaterial;
+        }
+
+        internal void UpdateMaterialProperties(Renderer r, int index)
+        {
+            if (m_AnimatableProperties.Length == 0 || canvasRenderer.materialCount <= index) return;
+
+            r.GetPropertyBlock(s_Mpb ?? (s_Mpb = new MaterialPropertyBlock()));
+            if (s_Mpb.isEmpty) return;
+
+            // #41: Copy the value from MaterialPropertyBlock to CanvasRenderer
+            var mat = canvasRenderer.GetMaterial(index);
+            if (!mat) return;
+
+            foreach (var ap in m_AnimatableProperties)
+            {
+                ap.UpdateMaterialProperties(mat, s_Mpb);
+            }
+
+            s_Mpb.Clear();
         }
 
         /// <summary>

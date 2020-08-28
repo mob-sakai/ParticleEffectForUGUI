@@ -1,3 +1,11 @@
+# [3.0.0-preview.21](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.20...v3.0.0-preview.21) (2020-08-28)
+
+
+### Bug Fixes
+
+* if in the mask, rendering material will be destroyed ([0db40cf](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/0db40cf160b2a5a27c83ef15d648b2771a47b51a))
+* support animatable material property (again) ([cf6ca80](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/cf6ca80d1273bcf49e18d805260afa8e36e94617))
+
 # [3.0.0-preview.20](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.19...v3.0.0-preview.20) (2020-08-28)
 
 
