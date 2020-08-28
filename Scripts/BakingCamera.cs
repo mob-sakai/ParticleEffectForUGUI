@@ -1,11 +1,12 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Coffee.UIExtensions
 {
     internal class BakingCamera : MonoBehaviour
     {
         static BakingCamera s_Instance;
+        private static readonly Vector3 s_OrthoPosition = new Vector3(0, 0, -1000);
+        private static readonly Quaternion s_OrthoRotation = Quaternion.identity;
 
 #if UNITY_2018_3_OR_NEWER && UNITY_EDITOR
         static BakingCamera s_InstanceForPrefab;
@@ -106,11 +107,18 @@ namespace Coffee.UIExtensions
             {
                 var cameraTr = camera.transform;
                 transform.SetPositionAndRotation(cameraTr.position, cameraTr.rotation);
+
+                Instance._camera.orthographic = camera.orthographic;
+                Instance._camera.orthographicSize = camera.orthographicSize;
+                Instance._camera.fieldOfView = camera.fieldOfView;
+                Instance._camera.nearClipPlane = camera.nearClipPlane;
+                Instance._camera.farClipPlane = camera.farClipPlane;
+                Instance._camera.rect = camera.rect;
             }
             else
             {
                 Instance._camera.orthographic = true;
-                transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
+                transform.SetPositionAndRotation(canvas.transform.position + s_OrthoPosition, s_OrthoRotation);
             }
 
             return Instance._camera;

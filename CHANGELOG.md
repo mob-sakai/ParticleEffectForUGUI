@@ -1,3 +1,25 @@
+# [3.0.0-preview.19](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.18...v3.0.0-preview.19) (2020-08-28)
+
+
+### Bug Fixes
+
+* baking camera settings for camera space ([436c5e4](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/436c5e47f75c3e167dcd77c188847e9d7d6ea68d))
+* fix local simulation ([7add9de](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/7add9defb70be29ddbe536d854591c2e0d9e83fa))
+
+
+### Features
+
+* add menu to create UIParticle ([2fa1843](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/2fa18431f0c8c4aeadfdd1cb98eeeef5ac6970a0))
+* add play/pause/stop api ([f09a386](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/f09a386bc59fbab8143f7f0b814c8684aea7f27c))
+* support for changing rendering orders ([745d4a5](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/745d4a598846b3e77d1071433079fdd5140921a8))
+* Support for child ParticleSystem rendering ([4ee90be](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/4ee90be17c68bf405f81f432615a3eebaa022366))
+* UIParticle for trail is no longer needed ([466e43c](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/466e43cf931d211907419f804a90776a0d9f4906))
+
+
+### BREAKING CHANGES
+
+* The child UIParticle is no longer needed.
+
 # [3.0.0-preview.18](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.17...v3.0.0-preview.18) (2020-08-19)
 
 

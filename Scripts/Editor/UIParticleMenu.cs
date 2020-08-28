@@ -2,6 +2,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Coffee.UIExtensions
 {
@@ -66,43 +67,41 @@ namespace Coffee.UIExtensions
         }
 #endif
 
+        [MenuItem("GameObject/UI/Particle System (Empty)", false, 2018)]
+        public static void AddParticleEmpty(MenuCommand menuCommand)
+        {
+            // Create empty UI element.
+            EditorApplication.ExecuteMenuItem("GameObject/UI/Image");
+            var ui = Selection.activeGameObject;
+            Object.DestroyImmediate(ui.GetComponent<Image>());
+
+            // Add UIParticle.
+            var uiParticle = ui.AddComponent<UIParticle>();
+            uiParticle.name = "UIParticle";
+            uiParticle.scale = 10;
+            uiParticle.rectTransform.sizeDelta = Vector2.zero;
+        }
 
         [MenuItem("GameObject/UI/Particle System", false, 2019)]
         public static void AddParticle(MenuCommand menuCommand)
         {
-            // Create UI element.
-            EditorApplication.ExecuteMenuItem("GameObject/UI/Image");
-            var ui = Selection.activeGameObject;
+            // Create empty UIEffect.
+            AddParticleEmpty(menuCommand);
+            var uiParticle = Selection.activeGameObject.GetComponent<UIParticle>();
 
             // Create ParticleSystem.
             EditorApplication.ExecuteMenuItem("GameObject/Effects/Particle System");
             var ps = Selection.activeGameObject;
-            var transform = ps.transform;
-            var localRotation = transform.localRotation;
-
-            transform.SetParent(ui.transform.parent, true);
-            var pos = transform.localPosition;
-            pos.z = 0;
-            ps.transform.localPosition = pos;
-            ps.transform.localRotation = localRotation;
-
-            // Destroy UI elemant
-            Object.DestroyImmediate(ui);
+            ps.transform.SetParent(uiParticle.transform, false);
+            ps.transform.localPosition = Vector3.zero;
 
             // Assign default material.
             var renderer = ps.GetComponent<ParticleSystemRenderer>();
             var defaultMat = AssetDatabase.GetBuiltinExtraResource<Material>("Default-Particle.mat");
             renderer.material = defaultMat ? defaultMat : renderer.material;
 
-            // Set to hierarchy mode
-            var particleSystem = ps.GetComponent<ParticleSystem>();
-            var main = particleSystem.main;
-            main.scalingMode = ParticleSystemScalingMode.Hierarchy;
-
-            // Add UIParticle.
-            var uiParticle = ps.AddComponent<UIParticle>();
-            uiParticle.ignoreCanvasScaler = true;
-            uiParticle.scale = 10;
+            // Refresh particles.
+            uiParticle.RefreshParticles();
         }
     }
 }
