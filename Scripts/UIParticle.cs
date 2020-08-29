@@ -15,7 +15,10 @@ namespace Coffee.UIExtensions
     [ExecuteInEditMode]
     [RequireComponent(typeof(RectTransform))]
     [RequireComponent(typeof(CanvasRenderer))]
-    public class UIParticle : MaskableGraphic, ISerializationCallbackReceiver
+    public class UIParticle : MaskableGraphic
+#if UNITY_EDITOR
+        , ISerializationCallbackReceiver
+#endif
     {
         [HideInInspector] [SerializeField] bool m_IsTrail = false;
 

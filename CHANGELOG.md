@@ -1,3 +1,10 @@
+# [3.0.0-preview.22](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.21...v3.0.0-preview.22) (2020-08-29)
+
+
+### Bug Fixes
+
+* build fails ([ac080a4](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/ac080a44e4d872bc3f784fc222cc74aac7e795e9)), closes [#85](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/85)
+
 # [3.0.0-preview.21](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.20...v3.0.0-preview.21) (2020-08-28)
 
 
