@@ -321,6 +321,8 @@ namespace Coffee.UIExtensions
                 return;
             }
 
+            m_IgnoreCanvasScaler = true;
+
             // refresh.
 #if UNITY_EDITOR
             if (!Application.isPlaying)

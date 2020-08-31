@@ -2,7 +2,7 @@
   "name": "com.coffee.ui-particle",
   "displayName": "UI Particle",
   "description": "This plugin provide a component to render particle effect for uGUI.\nThe particle rendering is maskable and sortable, without Camera, RenderTexture or Canvas.",
-  "version": "3.0.0-preview.22",
+  "version": "3.0.0-preview.23",
   "unity": "2018.2",
   "license": "MIT",
   "repository": {
@@ -20,6 +20,11 @@
       "displayName": "Demo",
       "description": "UI Particle Demo",
       "path": "Samples~/Demo"
+    },
+    {
+      "displayName": "Cartoon FX & War FX Demo",
+      "description": "Cartoon FX & War FX Demo",
+      "path": "Samples~/Cartoon FX & War FX Demo"
     }
   ]
 }

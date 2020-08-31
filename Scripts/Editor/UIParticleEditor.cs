@@ -14,14 +14,14 @@ namespace Coffee.UIExtensions
         //################################
         // Constant or Static Members.
         //################################
-        private static readonly GUIContent s_ContentAdvancedOptions = new GUIContent("Advanced Options");
+        private static readonly GUIContent s_ContentRenderingOrder = new GUIContent("Rendering Order");
+        private static readonly GUIContent s_ContentRefresh = new GUIContent("Refresh");
 
         private SerializedProperty _spScale;
         private SerializedProperty _spIgnoreCanvasScaler;
         private SerializedProperty _spAnimatableProperties;
 
         private ReorderableList _ro;
-        private bool _xyzMode;
 
         private static readonly List<string> s_MaskablePropertyNames = new List<string>
         {
@@ -54,17 +54,18 @@ namespace Coffee.UIExtensions
             {
                 rect.y += 1;
                 rect.height = EditorGUIUtility.singleLineHeight;
-                EditorGUI.PropertyField(rect, sp.GetArrayElementAtIndex(index), GUIContent.none);
+                EditorGUI.ObjectField(rect, sp.GetArrayElementAtIndex(index), GUIContent.none);
             };
             _ro.drawHeaderCallback += rect =>
             {
-                EditorGUI.LabelField(new Rect(rect.x, rect.y, 150, rect.height), "Rendering Order");
+                EditorGUI.LabelField(new Rect(rect.x, rect.y, 150, rect.height), s_ContentRenderingOrder);
 
-                if (!GUI.Button(new Rect(rect.width - 80, rect.y - 1, 80, rect.height), "Reset", EditorStyles.miniButton)) return;
-
-                foreach (UIParticle t in targets)
+                if (GUI.Button(new Rect(rect.width - 80, rect.y - 1, 80, rect.height), s_ContentRefresh, EditorStyles.miniButton))
                 {
-                    t.RefreshParticles();
+                    foreach (UIParticle t in targets)
+                    {
+                        t.RefreshParticles();
+                    }
                 }
             };
         }
@@ -78,10 +79,6 @@ namespace Coffee.UIExtensions
             if (current == null) return;
 
             serializedObject.Update();
-
-            // Advanced Options
-            EditorGUILayout.Space();
-            EditorGUILayout.LabelField(s_ContentAdvancedOptions, EditorStyles.boldLabel);
 
             // IgnoreCanvasScaler
             EditorGUILayout.PropertyField(_spIgnoreCanvasScaler);
@@ -99,7 +96,7 @@ namespace Coffee.UIExtensions
             {
                 foreach (var mat in current.materials)
                 {
-                   if (!mat || !mat.shader) continue;
+                    if (!mat || !mat.shader) continue;
                     var shader = mat.shader;
                     foreach (var propName in s_MaskablePropertyNames)
                     {
@@ -109,7 +106,6 @@ namespace Coffee.UIExtensions
                         break;
                     }
                 }
-
             }
 
             serializedObject.ApplyModifiedProperties();

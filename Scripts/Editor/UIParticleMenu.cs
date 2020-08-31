@@ -60,10 +60,16 @@ namespace Coffee.UIExtensions
             AssetDatabase.ImportAsset(dst, ImportAssetOptions.ImportRecursive);
         }
 
-        [MenuItem("Assets/Samples/Import UIParticle Sample")]
+        [MenuItem("Assets/Samples/Import UIParticle Demo")]
         static void ImportSample()
         {
             ImportSample("com.coffee.ui-particle", "Demo");
+        }
+
+        [MenuItem("Assets/Samples/Import UIParticle Demo (Cartoon FX & War FX Demo)")]
+        static void ImportSample_CFX()
+        {
+            ImportSample("com.coffee.ui-particle", "Cartoon FX & War FX Demo");
         }
 #endif
 

@@ -6,22 +6,19 @@ The particle rendering is maskable and sortable, without Camera, RenderTexture o
 
 [![](https://img.shields.io/npm/v/com.coffee.ui-particle?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.coffee.ui-particle/)
 [![](https://img.shields.io/github/v/release/mob-sakai/ParticleEffectForUGUI?include_prereleases)](https://github.com/mob-sakai/ParticleEffectForUGUI/releases)
-[![](https://img.shields.io/github/release-date/mob-sakai/ParticleEffectForUGUI.svg)](https://github.com/mob-sakai/ParticleEffectForUGUI/releases)  
-![](https://img.shields.io/badge/requirement-Unity%202018.2%2B-green.svg)
-[![](https://img.shields.io/github/license/mob-sakai/ParticleEffectForUGUI.svg)](https://github.com/mob-sakai/ParticleEffectForUGUI/blob/upm/LICENSE.md)
+[![](https://img.shields.io/github/release-date/mob-sakai/ParticleEffectForUGUI.svg)](https://github.com/mob-sakai/ParticleEffectForUGUI/releases)
+![](https://img.shields.io/badge/unity-2018.2%20or%20later-green.svg)
+[![](https://img.shields.io/github/license/mob-sakai/ParticleEffectForUGUI.svg)](https://github.com/mob-sakai/ParticleEffectForUGUI/blob/upm/LICENSE.txt)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-orange.svg)](http://makeapullrequest.com)
 [![](https://img.shields.io/twitter/follow/mob_sakai.svg?label=Follow&style=social)](https://twitter.com/intent/follow?screen_name=mob_sakai)
 
 
-
-<< [Description](#Description) | [WebGL Demo](#demo) | [Installation](#installation) | [Usage](#usage) | [Development Note](#development-note) | [Change log](https://github.com/mob-sakai/ParticleEffectForUGUI/blob/upm/CHANGELOG.md) >>
-
-### What's new? Please see [See changelog ![](https://img.shields.io/github/release-date/mob-sakai/ParticleEffectForUGUI.svg?label=last%20updated)](https://github.com/mob-sakai/ParticleEffectForUGUI/blob/upm/CHANGELOG.md)
-### Do you want to receive notifications for new releases? [Watch this repo ![](https://img.shields.io/github/watchers/mob-sakai/ParticleEffectForUGUI.svg?style=social&label=Watch)](https://github.com/mob-sakai/ParticleEffectForUGUI/subscription)
+<< [Description](#Description) | [Demo](#demo) | [Installation](#installation) | [Usage](#usage) | [Development Note](#development-note) | [Change log](https://github.com/mob-sakai/ParticleEffectForUGUI/blob/upm/CHANGELOG.md) >>
 
 
 
 <br><br><br><br>
+
 ## Description
 
 ![](https://user-images.githubusercontent.com/12690315/41771577-8da4b968-7650-11e8-9524-cd162c422d9d.gif)
@@ -44,39 +41,43 @@ Compares this "Baking mesh" approach with the conventional approach:
 #### Features
 
 * Easy to use: the package is out-of-the-box
-* Sort particle effects with uGUI
+* Sort particle effects with UI
 * No Camera, RenderTexture or Canvas are required
 * Masking with Mask or RectMask2D
 * Support Trail module
 * Change alpha with CanvasGroup
-* Scaling independent of Transform
 * No heavy allocation every frame
-* All ParticleSystem.ScalingModes and all Canvas.RenderModes are supported. They look almost the same in all modes.
-![](https://user-images.githubusercontent.com/12690315/49866926-6c22f500-fe4c-11e8-8393-d5a546e9e2d3.gif)
-* Scaled gizmo  
-![](https://user-images.githubusercontent.com/12690315/50343861-f31e4e80-056b-11e9-8f60-8bd0a8ff7adb.gif)
-* Animatable material property  
+* Support overlay, camera space and world space
+* Support changing material property with AnimationClip (AnimatableProperty)
 ![](https://user-images.githubusercontent.com/12690315/53286323-2d94a980-37b0-11e9-8afb-c4a207805ff2.gif)
 
 
 
 <br><br><br><br>
+
 ## Demo
 
-[WebGL Demo](http://mob-sakai.github.io/ParticleEffectForUGUI)
+* [WebGL Demo](http://mob-sakai.github.io/ParticleEffectForUGUI)
+* [WebGL Demo (Cartoon FX & War FX)](https://mob-sakai.github.io/Demos/ParticleEffectForUGUI_CFX)
+  * [Cartoon FX Free][CFX] & [War FX][WFX] (by [Jean Moreno (JMO)][JMO]) with UIParticle
+
+[CFX]: https://assetstore.unity.com/packages/vfx/particles/cartoon-fx-free-109565
+[WFX]: https://assetstore.unity.com/packages/vfx/particles/war-fx-5669
+[JMO]: https://assetstore.unity.com/publishers/1669
+
+![](https://user-images.githubusercontent.com/12690315/91664766-3e07ac00-eb2c-11ea-978b-ef723be80619.gif)
 
 
 
 <br><br><br><br>
-## System Requirements
 
-Unity 2018.2 or later versions.
-
-
-<br><br><br><br>
 ## Installation
 
-#### For Unity 2018.3 or later (Using OpenUPM)
+### Requirement
+
+* Unity 2018.2 or later
+
+### Using OpenUPM
 
 This package is available on [OpenUPM](https://openupm.com).  
 You can install it via [openupm-cli](https://github.com/openupm/openupm-cli).
@@ -84,8 +85,7 @@ You can install it via [openupm-cli](https://github.com/openupm/openupm-cli).
 openupm add com.coffee.ui-particle
 ```
 
-
-#### For Unity 2018.3 or later (Using Unity Package Manager)
+### Using Git
 
 Find the manifest.json file in the Packages folder of your project and edit it to look like this:
 ```js
@@ -103,7 +103,7 @@ To update the package, change suffix `#{version}` to the target version.
 
 Or, use [UpmGitExtension](https://github.com/mob-sakai/UpmGitExtension) to install and update the package.
 
-#### For Unity 2018.2
+### For Unity 2018.2
 
 Unity 2018.2 supports embedded packages.
 
@@ -114,9 +114,10 @@ Unity 2018.2 supports embedded packages.
 
 
 <br><br><br><br>
+
 ## How to play demo
 
-#### For Unity 2019.1 or later
+### For Unity 2019.1 or later
 
 1. Open `Package Manager` window
 2. Select `UI Particle` package in package list
@@ -124,7 +125,7 @@ Unity 2018.2 supports embedded packages.
 4. The demo project is imported into `Assets/Samples/UI Particle/{version}/Demo`
 5. Open `UIParticle_Demo` scene and play it
 
-#### For Unity 2018.4 or earlier
+### For Unity 2018.4 or earlier
 
 1. Select `Assets/Samples/UI Particle Demo` from menu
 2. The demo project is imported into `Assets/Samples/UI Particle/{version}/Demo`
@@ -133,25 +134,31 @@ Unity 2018.2 supports embedded packages.
 
 
 <br><br><br><br>
+
 ## Usage
 
-1. Add your particle effect to canvas.
+### Basically usage
+
+1. Select `Game Object/UI/ParticleSystem` to create UIParticle.
 2. (Option) If you want to mask particles, set **a UI shader** such as `UI/UIAdditive` to material for ParticleSystem.  
 ![](https://user-images.githubusercontent.com/12690315/42674022-134e3a40-86a9-11e8-8f44-a110d2f14185.gif)
-3. Add `UIParticle` component to root particle system of your effect from `Add Component` in inspector.  
-![](https://user-images.githubusercontent.com/12690315/41772125-5aca69c8-7652-11e8-8442-21f6015069a1.png)
-4. If your effect consists of multiple ParticleSystems, click "Fix".  
-![](https://user-images.githubusercontent.com/12690315/49148942-1c243880-f34c-11e8-9cf5-d871d65c4dbe.png)
-5. Adjust the Scale property to change the size of the effect.  
+3. Adjust the Scale property to change the size of the effect.  
 ![](https://user-images.githubusercontent.com/12690315/49148937-19c1de80-f34c-11e8-87fc-138192777540.gif)
-6.  Enjoy!
+
+### With VFX assets
+
+1. Select `Game Object/UI/ParticleSystem (Empty)` to create UIParticle.
+2. Drag & drop VFX asset on UIParticle.
+3. Click `Refresh` to setup.
+4. Adjust the Scale property to change the size of the effect.
 
 
 
 <br><br><br><br>
+
 ## Development Note
 
-#### Animatable material property
+### Animatable material property
 
 ![](https://user-images.githubusercontent.com/12690315/53286323-2d94a980-37b0-11e9-8afb-c4a207805ff2.gif)
 
@@ -170,28 +177,45 @@ To prevent this, Use "Animatable Material Property".
 
 
 <br><br><br><br>
-## License
 
-* MIT
-* © UTJ/UCL
+## Contributing
+
+### Issues
+
+Issues are very valuable to this project.
+
+- Ideas are a valuable source of contributions others can make
+- Problems show where this project is lacking
+- With a question you show where contributors can improve the user experience
+
+### Pull Requests
+
+Pull requests are, a great way to get your ideas into this repository.  
+See [CONTRIBUTING.md](/../../blob/develop/CONTRIBUTING.md).
+
+### Support
+
+This is an open source project that I am developing in my spare time.  
+If you like it, please support me.  
+With your support, I can spend more time on development. :)
+
+[![](https://user-images.githubusercontent.com/12690315/50731629-3b18b480-11ad-11e9-8fad-4b13f27969c1.png)](https://www.patreon.com/join/mob_sakai?)  
+[![](https://user-images.githubusercontent.com/12690315/66942881-03686280-f085-11e9-9586-fc0b6011029f.png)](https://github.com/users/mob-sakai/sponsorship)
 
 
 
 <br><br><br><br>
-## Support
 
-This is an open-source project that I am developing in my free time.  
-If you like it, you can support me.  
-By supporting, you let me spend more time working on better tools that you can use for free. :)
+## License
 
-[![become_a_patron_on_patreon](https://user-images.githubusercontent.com/12690315/50731629-3b18b480-11ad-11e9-8fad-4b13f27969c1.png)](https://www.patreon.com/join/2343451?)  
-[![become_a_sponsor_on_github](https://user-images.githubusercontent.com/12690315/66942881-03686280-f085-11e9-9586-fc0b6011029f.png)](https://github.com/users/mob-sakai/sponsorship)
+* MIT
+
 
 
 ## Author
 
 [mob-sakai](https://github.com/mob-sakai)
-[![](https://img.shields.io/twitter/follow/mob_sakai.svg?label=Follow&style=social)](https://twitter.com/intent/follow?screen_name=mob_sakai)  
+[![](https://img.shields.io/twitter/follow/mob_sakai.svg?label=Follow&style=social)](https://twitter.com/intent/follow?screen_name=mob_sakai)
 
 
 

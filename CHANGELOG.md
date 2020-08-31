@@ -1,3 +1,10 @@
+# [3.0.0-preview.23](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.22...v3.0.0-preview.23) (2020-08-31)
+
+
+### Bug Fixes
+
+* the default value of IgnoreCanvasScaler is true ([966fae1](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/966fae1d22a98259ec5aff68b4603b7c21dfdfc9))
+
 # [3.0.0-preview.22](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.21...v3.0.0-preview.22) (2020-08-29)
 
 
