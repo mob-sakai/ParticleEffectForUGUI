@@ -1,3 +1,10 @@
+# [3.0.0-preview.26](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.25...v3.0.0-preview.26) (2020-09-01)
+
+
+### Bug Fixes
+
+* in Unity 2018.2, PrefabStageUtility is not found ([0b6dcff](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/0b6dcff5d6356db497532daa0a26804852e8de24))
+
 # [3.0.0-preview.25](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.24...v3.0.0-preview.25) (2020-09-01)
 
 
