@@ -297,13 +297,6 @@ namespace Coffee.UIExtensions
         }
 
         /// <summary>
-        /// This function is called when the parent property of the transform of the GameObject has changed.
-        /// </summary>
-        protected override void OnTransformParentChanged()
-        {
-        }
-
-        /// <summary>
         /// Callback for when properties have been changed by animation.
         /// </summary>
         protected override void OnDidApplyAnimationProperties()

@@ -1,3 +1,10 @@
+# [3.0.0-preview.27](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.26...v3.0.0-preview.27) (2020-09-01)
+
+
+### Bug Fixes
+
+* not masked ([4ef5947](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/4ef5947baa325002aecd1ccbdc75056a6567f14b))
+
 # [3.0.0-preview.26](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.25...v3.0.0-preview.26) (2020-09-01)
 
 
