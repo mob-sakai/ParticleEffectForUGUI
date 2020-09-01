@@ -1,3 +1,4 @@
+using System;
 using UnityEditor;
 using UnityEngine;
 using System.Collections.Generic;
@@ -8,8 +9,9 @@ namespace Coffee.UIExtensions
 {
     internal class AnimatedPropertiesEditor
     {
-        static readonly List<string> s_ActiveNames = new List<string>();
-        static readonly System.Text.StringBuilder s_Sb = new System.Text.StringBuilder();
+        private static readonly List<string> s_ActiveNames = new List<string>();
+        private static readonly System.Text.StringBuilder s_Sb = new System.Text.StringBuilder();
+        private static readonly HashSet<string> s_Names = new HashSet<string>();
 
         private string _name;
         private ShaderPropertyType _type;
@@ -39,10 +41,8 @@ namespace Coffee.UIExtensions
             return s_Sb.ToString();
         }
 
-        public static void DrawAnimatableProperties(SerializedProperty sp, Material mat)
+        public static void DrawAnimatableProperties(SerializedProperty sp, Material[] mats)
         {
-            if (!mat || !mat.shader) return;
-
             bool isClicked;
             using (new EditorGUILayout.HorizontalScope(GUILayout.ExpandWidth(false)))
             {
@@ -72,17 +72,27 @@ namespace Coffee.UIExtensions
                 }
             }
 
-            for (var i = 0; i < ShaderUtil.GetPropertyCount(mat.shader); i++)
+            s_Names.Clear();
+            foreach (var mat in mats)
             {
-                var pName = ShaderUtil.GetPropertyName(mat.shader, i);
-                var type = (ShaderPropertyType) ShaderUtil.GetPropertyType(mat.shader, i);
-                AddMenu(gm, sp, new AnimatedPropertiesEditor {_name = pName, _type = type}, true);
+                if (!mat || !mat.shader) continue;
 
-                if (type != ShaderPropertyType.Texture) continue;
+                for (var i = 0; i < ShaderUtil.GetPropertyCount(mat.shader); i++)
+                {
+                    var pName = ShaderUtil.GetPropertyName(mat.shader, i);
+                    var type = (ShaderPropertyType) ShaderUtil.GetPropertyType(mat.shader, i);
+                    var name = string.Format("{0} ({1})", pName, type);
+                    if (s_Names.Contains(name)) continue;
+                    s_Names.Add(name);
 
-                AddMenu(gm, sp, new AnimatedPropertiesEditor {_name = pName + "_ST", _type = ShaderPropertyType.Vector}, true);
-                AddMenu(gm, sp, new AnimatedPropertiesEditor {_name = pName + "_HDR", _type = ShaderPropertyType.Vector}, true);
-                AddMenu(gm, sp, new AnimatedPropertiesEditor {_name = pName + "_TexelSize", _type = ShaderPropertyType.Vector}, true);
+                    AddMenu(gm, sp, new AnimatedPropertiesEditor {_name = pName, _type = type}, true);
+
+                    if (type != ShaderPropertyType.Texture) continue;
+
+                    AddMenu(gm, sp, new AnimatedPropertiesEditor {_name = pName + "_ST", _type = ShaderPropertyType.Vector}, true);
+                    AddMenu(gm, sp, new AnimatedPropertiesEditor {_name = pName + "_HDR", _type = ShaderPropertyType.Vector}, true);
+                    AddMenu(gm, sp, new AnimatedPropertiesEditor {_name = pName + "_TexelSize", _type = ShaderPropertyType.Vector}, true);
+                }
             }
 
             gm.ShowAsContext();

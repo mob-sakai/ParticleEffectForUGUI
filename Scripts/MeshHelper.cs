@@ -1,104 +1,106 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Profiling;
 
 namespace Coffee.UIExtensions
 {
     internal static class MeshHelper
     {
-        private static CombineInstance[] s_CombineInstances;
-        private static int s_TempIndex;
-        private static int s_CurrentIndex;
-        static readonly List<Color32> s_Colors = new List<Color32>();
-        private static int s_RefCount;
-        private static Matrix4x4 s_Transform;
-        public static uint activeMeshIndices { get; private set; }
+        public static long activeMeshIndices { get; private set; }
+        private static readonly List<CombineInstanceEx> s_CachedInstance;
+        private static int count;
 
-        public static void Register()
+        public static void Init()
         {
-            if (0 < s_RefCount++) return;
-            s_CombineInstances = new CombineInstance[8];
         }
 
-        public static void Unregister()
+        static MeshHelper()
         {
-            s_RefCount--;
-
-            if (0 < s_RefCount || s_CombineInstances == null) return;
-
-            for (var i = 0; i < s_CombineInstances.Length; i++)
+            s_CachedInstance = new List<CombineInstanceEx>(8);
+            for (var i = 0; i < 8; i++)
             {
-#if UNITY_EDITOR
-                if (!Application.isPlaying)
-                    Object.DestroyImmediate(s_CombineInstances[i].mesh);
-                else
-#endif
-                {
-                    Object.Destroy(s_CombineInstances[i].mesh);
-                }
+                s_CachedInstance.Add(new CombineInstanceEx());
+            }
+        }
+
+        private static CombineInstanceEx Get(int index, long hash)
+        {
+            if (0 < count && s_CachedInstance[count - 1].hash == hash)
+                return s_CachedInstance[count - 1];
+
+            if (s_CachedInstance.Count <= count)
+            {
+                var newInst = new CombineInstanceEx();
+                s_CachedInstance.Add(newInst);
             }
 
-            s_CombineInstances = null;
+            var inst = s_CachedInstance[count];
+            inst.hash = hash;
+            if (inst.index != -1) return inst;
+
+            inst.index = index;
+            count++;
+            return inst;
         }
 
-        public static Mesh GetTemporaryMesh(int index)
+        public static Mesh GetTemporaryMesh()
         {
-            if (s_CombineInstances.Length <= s_TempIndex) s_TempIndex = s_CombineInstances.Length - 1;
-            s_CurrentIndex = index;
-            activeMeshIndices += (uint)(1 << s_CurrentIndex);
-            s_CombineInstances[s_TempIndex].transform = s_Transform;
-            return s_CombineInstances[s_TempIndex++].mesh;
+            return MeshPool.Rent();
         }
 
-        public static void DiscardTemporaryMesh()
+        public static void Push(int index, long hash, Mesh mesh, Matrix4x4 transform)
         {
-            if (s_TempIndex == 0) return;
-            s_TempIndex--;
-            activeMeshIndices -= (uint)(1 << s_CurrentIndex);
-        }
+            if (mesh.vertexCount <= 0)
+            {
+                DiscardTemporaryMesh(mesh);
+                return;
+            }
 
-        public static void SetTransform(Matrix4x4 transform)
-        {
-            s_Transform = transform;
+            Profiler.BeginSample("[UIParticle] MeshHelper > Get CombineInstanceEx");
+            var inst = Get(index, hash);
+            Profiler.EndSample();
+
+            Profiler.BeginSample("[UIParticle] MeshHelper > Push To Mesh Helper");
+            inst.Push(mesh, transform);
+            Profiler.EndSample();
+
+            activeMeshIndices |= (long) 1 << inst.index;
         }
 
         public static void Clear()
         {
-            if (s_CombineInstances == null) return;
-            s_CurrentIndex = 0;
+            count = 0;
             activeMeshIndices = 0;
-            s_TempIndex = 0;
-            for (var i = 0; i < s_CombineInstances.Length; i++)
+            foreach (var inst in s_CachedInstance)
             {
-                if (!s_CombineInstances[i].mesh)
-                {
-                    var mesh = new Mesh();
-                    mesh.MarkDynamic();
-                    s_CombineInstances[i].mesh = mesh;
-                }
-                else
-                {
-                    s_CombineInstances[i].mesh.Clear(false);
-                }
+                inst.Clear();
             }
         }
 
         public static void CombineMesh(Mesh result)
         {
-            if (!result || s_TempIndex == 0) return;
+            if (count == 0) return;
 
-            result.CombineMeshes(s_CombineInstances, false, true);
+            for (var i = 0; i < count; i++)
+            {
+                Profiler.BeginSample("[UIParticle] MeshHelper > Combine Mesh Internal");
+                s_CachedInstance[i].Combine();
+                Profiler.EndSample();
+            }
+
+            Profiler.BeginSample("[UIParticle] MeshHelper > Combine Mesh");
+            var cis = CombineInstanceArrayPool.Get(s_CachedInstance, count);
+            result.CombineMeshes(cis, false, true);
+            cis.Clear();
+            Profiler.EndSample();
+
             result.RecalculateBounds();
         }
 
-        public static void ModifyColorSpaceToLinear(this Mesh self)
+        public static void DiscardTemporaryMesh(Mesh mesh)
         {
-            self.GetColors(s_Colors);
-
-            for (var i = 0; i < s_Colors.Count; i++)
-                s_Colors[i] = ((Color) s_Colors[i]).gamma;
-
-            self.SetColors(s_Colors);
-            s_Colors.Clear();
+            MeshPool.Return(mesh);
         }
     }
 }

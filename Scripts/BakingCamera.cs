@@ -45,7 +45,7 @@ namespace Coffee.UIExtensions
         }
 
         private Camera _camera;
-        private int _refCount;
+        // private int _refCount;
 
         private static BakingCamera Create()
         {
@@ -68,26 +68,6 @@ namespace Coffee.UIExtensions
         {
             if (this == s_Instance)
                 DontDestroyOnLoad(gameObject);
-        }
-
-        public static void Register()
-        {
-            Instance._refCount++;
-        }
-
-        public static void Unregister()
-        {
-            if (s_Instance == null) return;
-
-            Instance._refCount--;
-            if (0 < Instance._refCount) return;
-
-            if (Application.isPlaying)
-                Destroy(Instance.gameObject);
-            else
-                DestroyImmediate(Instance.gameObject);
-
-            s_Instance = null;
         }
 
         public static Camera GetCamera(Canvas canvas)

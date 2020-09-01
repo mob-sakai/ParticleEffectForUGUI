@@ -2,6 +2,7 @@ using UnityEditor;
 using UnityEditor.UI;
 using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditorInternal;
 using UnityEngine.UI;
 
@@ -100,7 +101,12 @@ namespace Coffee.UIExtensions
             EditorGUILayout.PropertyField(_spScale);
 
             // AnimatableProperties
-            AnimatedPropertiesEditor.DrawAnimatableProperties(_spAnimatableProperties, current.material);
+            var mats = current.particles
+                .Where(x => x)
+                .Select(x => x.GetComponent<ParticleSystemRenderer>().sharedMaterial)
+                .Where(x => x)
+                .ToArray();
+            AnimatedPropertiesEditor.DrawAnimatableProperties(_spAnimatableProperties, mats);
 
             _ro.DoLayoutList();
 
@@ -125,19 +131,21 @@ namespace Coffee.UIExtensions
 
             // Does the shader support UI masks?
 
-            if (FixButton(current.m_IsTrail,"This UIParticle component should be removed. The UIParticle for trails is no longer needed."))
+            if (FixButton(current.m_IsTrail, "This UIParticle component should be removed. The UIParticle for trails is no longer needed."))
             {
                 DestroyUIParticle(current);
                 return;
             }
+
             current.GetComponentsInParent(true, s_TempParents);
-            if (FixButton(1 < s_TempParents.Count,"This UIParticle component should be removed. The parent UIParticle exists."))
+            if (FixButton(1 < s_TempParents.Count, "This UIParticle component should be removed. The parent UIParticle exists."))
             {
                 DestroyUIParticle(current);
                 return;
             }
+
             current.GetComponentsInChildren(true, s_TempChildren);
-            if (FixButton(1 < s_TempChildren.Count,"The children UIParticle component should be removed."))
+            if (FixButton(1 < s_TempChildren.Count, "The children UIParticle component should be removed."))
             {
                 s_TempChildren.ForEach(child => DestroyUIParticle(child, true));
             }

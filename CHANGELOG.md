@@ -1,3 +1,10 @@
+# [3.0.0-preview.28](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.27...v3.0.0-preview.28) (2020-09-01)
+
+
+### Features
+
+* support AnimatableProperty for multiple materials ([062d988](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/062d9887fb8b096250ec3b43d9aa82637940a8bb))
+
 # [3.0.0-preview.27](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.26...v3.0.0-preview.27) (2020-09-01)
 
 
