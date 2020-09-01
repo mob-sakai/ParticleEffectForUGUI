@@ -1,3 +1,10 @@
+# [3.0.0-preview.29](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.28...v3.0.0-preview.29) (2020-09-01)
+
+
+### Features
+
+* material batching ([8f703e6](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/8f703e6d2c0e8229ca14b25638dae5d91a5658c3))
+
 # [3.0.0-preview.28](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.27...v3.0.0-preview.28) (2020-09-01)
 
 
