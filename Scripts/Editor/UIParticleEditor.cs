@@ -16,6 +16,9 @@ namespace Coffee.UIExtensions
         //################################
         private static readonly GUIContent s_ContentRenderingOrder = new GUIContent("Rendering Order");
         private static readonly GUIContent s_ContentRefresh = new GUIContent("Refresh");
+        private static readonly GUIContent s_ContentFix = new GUIContent("Fix");
+        private static readonly List<UIParticle> s_TempParents = new List<UIParticle>();
+        private static readonly List<UIParticle> s_TempChildren = new List<UIParticle>();
 
         private SerializedProperty _spScale;
         private SerializedProperty _spIgnoreCanvasScaler;
@@ -81,7 +84,17 @@ namespace Coffee.UIExtensions
             serializedObject.Update();
 
             // IgnoreCanvasScaler
-            EditorGUILayout.PropertyField(_spIgnoreCanvasScaler);
+            using (var ccs = new EditorGUI.ChangeCheckScope())
+            {
+                EditorGUILayout.PropertyField(_spIgnoreCanvasScaler);
+                if (ccs.changed)
+                {
+                    foreach (UIParticle p in targets)
+                    {
+                        p.ignoreCanvasScaler = _spIgnoreCanvasScaler.boolValue;
+                    }
+                }
+            }
 
             // Scale
             EditorGUILayout.PropertyField(_spScale);
@@ -90,6 +103,8 @@ namespace Coffee.UIExtensions
             AnimatedPropertiesEditor.DrawAnimatableProperties(_spAnimatableProperties, current.material);
 
             _ro.DoLayoutList();
+
+            serializedObject.ApplyModifiedProperties();
 
             // Does the shader support UI masks?
             if (current.maskable && current.GetComponentInParent<Mask>())
@@ -108,7 +123,46 @@ namespace Coffee.UIExtensions
                 }
             }
 
-            serializedObject.ApplyModifiedProperties();
+            // Does the shader support UI masks?
+
+            if (FixButton(current.m_IsTrail,"This UIParticle component should be removed. The UIParticle for trails is no longer needed."))
+            {
+                DestroyUIParticle(current);
+                return;
+            }
+            current.GetComponentsInParent(true, s_TempParents);
+            if (FixButton(1 < s_TempParents.Count,"This UIParticle component should be removed. The parent UIParticle exists."))
+            {
+                DestroyUIParticle(current);
+                return;
+            }
+            current.GetComponentsInChildren(true, s_TempChildren);
+            if (FixButton(1 < s_TempChildren.Count,"The children UIParticle component should be removed."))
+            {
+                s_TempChildren.ForEach(child => DestroyUIParticle(child, true));
+            }
+        }
+
+        void DestroyUIParticle(UIParticle p, bool ignoreCurrent = false)
+        {
+            if (!p || ignoreCurrent && target == p) return;
+
+            var cr = p.canvasRenderer;
+            DestroyImmediate(p);
+            DestroyImmediate(cr);
+        }
+
+        bool FixButton(bool show, string text)
+        {
+            if (!show) return false;
+            using (new EditorGUILayout.HorizontalScope(GUILayout.ExpandWidth(true)))
+            {
+                EditorGUILayout.HelpBox(text, MessageType.Warning, true);
+                using (new EditorGUILayout.VerticalScope())
+                {
+                    return GUILayout.Button(s_ContentFix, GUILayout.Width(30));
+                }
+            }
         }
     }
 }

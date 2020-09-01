@@ -1,3 +1,17 @@
+# [3.0.0-preview.24](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.23...v3.0.0-preview.24) (2020-09-01)
+
+
+### Bug Fixes
+
+* hide camera for baking ([30b4703](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/30b4703e2a1746efc4b7db154354f80fd0593b98))
+* In ignore canvas scaler mode, Transform.localScale is zero ([cc71f2b](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/cc71f2bdac1a61fd5e5fc85d0a69589e05a0f79d)), closes [#89](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/89)
+* In prefab mode, an error occurs ([a222f37](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/a222f3710b530c7fc9fab10f25bd28d820ffebe2)), closes [#88](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/88)
+
+
+### Features
+
+* remove menu in inspector ([e7f8f51](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/e7f8f512122a01423de415b55e3190d62bda146a))
+
 # [3.0.0-preview.23](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.22...v3.0.0-preview.23) (2020-08-31)
 
 

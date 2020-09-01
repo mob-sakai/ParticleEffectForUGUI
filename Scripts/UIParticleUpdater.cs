@@ -57,7 +57,7 @@ namespace Coffee.UIExtensions
 
         private static void Refresh(UIParticle particle)
         {
-            if (!particle) return;
+            if (!particle || !particle.canvas || !particle.canvasRenderer) return;
 
             Profiler.BeginSample("Modify scale");
             ModifyScale(particle);
@@ -130,8 +130,6 @@ namespace Coffee.UIExtensions
             // Clear mesh before bake.
             MeshHelper.Clear();
             particle.bakedMesh.Clear(false);
-
-            // if (!particle.isValid) return;
 
             // Get camera for baking mesh.
             var camera = BakingCamera.GetCamera(particle.canvas);

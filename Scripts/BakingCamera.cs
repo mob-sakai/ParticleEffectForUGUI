@@ -53,7 +53,6 @@ namespace Coffee.UIExtensions
 
             // This camera object is just for internal use
             gameObject.hideFlags = HideFlags.HideAndDontSave;
-            gameObject.hideFlags = HideFlags.DontSave;
 
             var inst = gameObject.AddComponent<BakingCamera>();
             inst._camera = gameObject.AddComponent<Camera>();
