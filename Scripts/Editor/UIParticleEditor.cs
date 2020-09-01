@@ -2,6 +2,7 @@ using UnityEditor;
 using UnityEditor.UI;
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEditor.Experimental.SceneManagement;
 using UnityEditorInternal;
 using UnityEngine.UI;
 
@@ -150,6 +151,12 @@ namespace Coffee.UIExtensions
             var cr = p.canvasRenderer;
             DestroyImmediate(p);
             DestroyImmediate(cr);
+
+            var stage = PrefabStageUtility.GetCurrentPrefabStage();
+            if (stage != null && stage.scene.isLoaded)
+            {
+                PrefabUtility.SaveAsPrefabAsset(stage.prefabContentsRoot, stage.prefabAssetPath);
+            }
         }
 
         bool FixButton(bool show, string text)

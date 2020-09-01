@@ -1,3 +1,10 @@
+# [3.0.0-preview.25](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.24...v3.0.0-preview.25) (2020-09-01)
+
+
+### Bug Fixes
+
+* removed UIParticle will be saved in prefab mode ([08e2d51](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/08e2d51c73a294d44974e7fba35e2477f04e6860))
+
 # [3.0.0-preview.24](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.23...v3.0.0-preview.24) (2020-09-01)
 
 
