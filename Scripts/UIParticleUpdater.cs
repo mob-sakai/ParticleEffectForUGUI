@@ -40,6 +40,7 @@ namespace Coffee.UIExtensions
 
         private static void Refresh()
         {
+            Profiler.BeginSample("[UIParticle] Refresh");
             for (var i = 0; i < s_ActiveParticles.Count; i++)
             {
                 try
@@ -51,6 +52,7 @@ namespace Coffee.UIExtensions
                     Debug.LogException(e);
                 }
             }
+            Profiler.EndSample();
         }
 
         private static void Refresh(UIParticle particle)

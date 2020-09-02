@@ -1,3 +1,15 @@
+# [3.0.0-preview.30](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.29...v3.0.0-preview.30) (2020-09-02)
+
+
+### Bug Fixes
+
+* ignore missing object on initialize ([8bd9b62](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/8bd9b621b9efcd242c410405d066494a1d53f9a3))
+
+
+### Features
+
+* add API to bind ParticleSystem object ([a77bbd3](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/a77bbd3a9a65d5fd1198bd8e580982ca8e07fca8))
+
 # [3.0.0-preview.29](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.28...v3.0.0-preview.29) (2020-09-01)
 
 

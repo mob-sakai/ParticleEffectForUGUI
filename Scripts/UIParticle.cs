@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -121,6 +122,43 @@ namespace Coffee.UIExtensions
         public void Stop()
         {
             particles.Exec(p => p.Stop());
+        }
+
+        public void SetParticleSystemInstance(GameObject instance)
+        {
+            SetParticleSystemInstance(instance, true);
+        }
+
+        public void SetParticleSystemInstance(GameObject instance, bool destroy)
+        {
+            if (!instance) return;
+
+            foreach (Transform child in transform)
+            {
+                var go = child.gameObject;
+                go.SetActive(false);
+                if (!destroy) continue;
+
+#if UNITY_EDITOR
+                if (!Application.isPlaying)
+                    DestroyImmediate(go);
+                else
+#endif
+                    Destroy(go);
+            }
+
+            var tr = instance.transform;
+            tr.SetParent(transform, false);
+            tr.localPosition = Vector3.zero;
+
+            RefreshParticles();
+        }
+
+        public void SetParticleSystemPrefab(GameObject prefab)
+        {
+            if (!prefab) return;
+
+            SetParticleSystemInstance(Instantiate(prefab.gameObject), true);
         }
 
         public void RefreshParticles()
@@ -321,7 +359,7 @@ namespace Coffee.UIExtensions
                 return;
             }
 
-            if (!this || 0 < particles.Count) return;
+            if (!this || particles.Any(x => x)) return;
 
             m_IgnoreCanvasScaler = true;
 
