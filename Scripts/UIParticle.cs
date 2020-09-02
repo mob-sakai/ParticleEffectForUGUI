@@ -129,7 +129,7 @@ namespace Coffee.UIExtensions
             SetParticleSystemInstance(instance, true);
         }
 
-        public void SetParticleSystemInstance(GameObject instance, bool destroy)
+        public void SetParticleSystemInstance(GameObject instance, bool destroyOldParticles)
         {
             if (!instance) return;
 
@@ -137,7 +137,7 @@ namespace Coffee.UIExtensions
             {
                 var go = child.gameObject;
                 go.SetActive(false);
-                if (!destroy) continue;
+                if (!destroyOldParticles) continue;
 
 #if UNITY_EDITOR
                 if (!Application.isPlaying)
@@ -151,7 +151,7 @@ namespace Coffee.UIExtensions
             tr.SetParent(transform, false);
             tr.localPosition = Vector3.zero;
 
-            RefreshParticles();
+            RefreshParticles(instance);
         }
 
         public void SetParticleSystemPrefab(GameObject prefab)
@@ -163,7 +163,13 @@ namespace Coffee.UIExtensions
 
         public void RefreshParticles()
         {
-            GetComponentsInChildren(particles);
+            RefreshParticles(gameObject);
+        }
+
+        public void RefreshParticles(GameObject root)
+        {
+            if (!root) return;
+            root.GetComponentsInChildren(particles);
 
             foreach (var ps in particles)
             {

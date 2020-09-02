@@ -1,3 +1,17 @@
+# [3.0.0-preview.31](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.30...v3.0.0-preview.31) (2020-09-02)
+
+
+### Bug Fixes
+
+* combine Instances error ([878f812](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/878f81202ac29a8a20f174efa916da64eef99e8a)), closes [#91](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/91)
+* in rare cases, the particle size is incorrect with camera-space mode ([90593ac](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/90593ac021ce19d164927e44804354535db047bb)), closes [#93](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/93)
+* trails material uses sprite texture ([9e65ee7](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/9e65ee7345e16b5124e94d26f5749999c648f677)), closes [#92](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/92)
+
+
+### Features
+
+* refresh children ParticleSystem with a gameObjects as root ([8bae1d0](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/8bae1d08cc6f00e2b8d6f336aad92233891da1e4))
+
 # [3.0.0-preview.30](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.29...v3.0.0-preview.30) (2020-09-02)
 
 

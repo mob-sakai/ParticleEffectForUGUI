@@ -240,6 +240,7 @@ namespace Coffee.UIExtensions
             // Combine
             Profiler.BeginSample("[UIParticle] Bake Mesh > CombineMesh");
             MeshHelper.CombineMesh(particle.bakedMesh);
+            MeshHelper.Clear();
             Profiler.EndSample();
         }
 

@@ -180,7 +180,7 @@ namespace Coffee.UIExtensions
 
             if (!mat) return 0;
 
-            var tex = self.GetTextureForSprite();
+            var tex = trail ? null : self.GetTextureForSprite();
             return ((long) mat.GetHashCode() << 32) + (tex ? tex.GetHashCode() : 0);
         }
 

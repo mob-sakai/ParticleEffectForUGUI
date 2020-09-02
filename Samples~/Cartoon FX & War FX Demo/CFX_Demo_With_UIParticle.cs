@@ -49,10 +49,8 @@ public class CFX_Demo_With_UIParticle : MonoBehaviour
         var particle = demo.GetType()
             .GetMethod("spawnParticle", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
             .Invoke(demo, new object[0]) as GameObject;
-        particle.transform.SetParent(UiParticle.transform, false);
         particle.transform.localScale = Vector3.one;
-        particle.transform.localPosition = Vector3.zero;
-        UiParticle.RefreshParticles();
+        UiParticle.SetParticleSystemInstance(particle);
     }
 
     public void SetCanvasWidth(int width)

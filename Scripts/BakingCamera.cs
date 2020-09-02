@@ -82,23 +82,12 @@ namespace Coffee.UIExtensions
 
             var camera = canvas.worldCamera;
             var transform = Instance.transform;
-            if (canvas.renderMode != RenderMode.ScreenSpaceOverlay && camera)
-            {
-                var cameraTr = camera.transform;
-                transform.SetPositionAndRotation(cameraTr.position, cameraTr.rotation);
+            var rotation = canvas.renderMode != RenderMode.ScreenSpaceOverlay && camera
+                ? camera.transform.rotation
+                : s_OrthoRotation;
 
-                Instance._camera.orthographic = camera.orthographic;
-                Instance._camera.orthographicSize = camera.orthographicSize;
-                Instance._camera.fieldOfView = camera.fieldOfView;
-                Instance._camera.nearClipPlane = camera.nearClipPlane;
-                Instance._camera.farClipPlane = camera.farClipPlane;
-                Instance._camera.rect = camera.rect;
-            }
-            else
-            {
-                Instance._camera.orthographic = true;
-                transform.SetPositionAndRotation(canvas.transform.position + s_OrthoPosition, s_OrthoRotation);
-            }
+            transform.SetPositionAndRotation(canvas.transform.position + s_OrthoPosition, rotation);
+            Instance._camera.orthographic = true;
 
             return Instance._camera;
         }
