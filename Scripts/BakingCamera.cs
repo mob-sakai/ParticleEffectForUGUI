@@ -86,8 +86,9 @@ namespace Coffee.UIExtensions
                 ? camera.transform.rotation
                 : s_OrthoRotation;
 
-            transform.SetPositionAndRotation(canvas.transform.position + s_OrthoPosition, rotation);
+            transform.SetPositionAndRotation(s_OrthoPosition, rotation);
             Instance._camera.orthographic = true;
+            Instance._camera.farClipPlane = 2000f;
 
             return Instance._camera;
         }

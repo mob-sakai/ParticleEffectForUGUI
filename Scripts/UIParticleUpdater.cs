@@ -79,7 +79,7 @@ namespace Coffee.UIExtensions
             Profiler.EndSample();
 
             Profiler.BeginSample("[UIParticle] Update Animatable Material Properties");
-            // UpdateAnimatableMaterialProperties(particle);
+            particle.UpdateMaterialProperties();
             Profiler.EndSample();
         }
 

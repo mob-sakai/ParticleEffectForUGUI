@@ -1,3 +1,10 @@
+# [3.0.0-preview.32](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.31...v3.0.0-preview.32) (2020-09-14)
+
+
+### Bug Fixes
+
+* animatable properties not working ([5b8b0bd](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/5b8b0bd28b251a7ea6e0cfa0c4b69bd7f9c4d953)), closes [#95](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/95)
+
 # [3.0.0-preview.31](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.30...v3.0.0-preview.31) (2020-09-02)
 
 

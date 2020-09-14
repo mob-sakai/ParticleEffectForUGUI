@@ -272,6 +272,33 @@ namespace Coffee.UIExtensions
             return baseMaterial;
         }
 
+        internal void UpdateMaterialProperties()
+        {
+            if (m_AnimatableProperties.Length == 0) return;
+
+            //
+            var materialCount = Mathf.Max(8, activeMeshIndices.BitCount());
+            canvasRenderer.materialCount = materialCount;
+            var j = 0;
+            for (var i = 0; i < particles.Count; i++)
+            {
+                if (materialCount <= j) break;
+                var ps = particles[i];
+                if (!ps) continue;
+
+                var r = ps.GetComponent<ParticleSystemRenderer>();
+                r.GetSharedMaterials(s_TempMaterials);
+
+                // Main
+                var bit = (long) 1 << (i * 2);
+                if (0 < (activeMeshIndices & bit) && 0 < s_TempMaterials.Count)
+                {
+                    UpdateMaterialProperties(r, j);
+                    j++;
+                }
+            }
+        }
+
         internal void UpdateMaterialProperties(Renderer r, int index)
         {
             if (m_AnimatableProperties.Length == 0 || canvasRenderer.materialCount <= index) return;
