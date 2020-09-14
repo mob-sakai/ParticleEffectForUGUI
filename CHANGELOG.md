@@ -1,3 +1,10 @@
+# [3.0.0-preview.33](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.32...v3.0.0-preview.33) (2020-09-14)
+
+
+### Bug Fixes
+
+* if the package was installed via openupm, an unintended directory 'Samples' was included ([1913de5](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/1913de557743b9480f72c5378d13c284a4ac93f9))
+
 # [3.0.0-preview.32](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.31...v3.0.0-preview.32) (2020-09-14)
 
 
