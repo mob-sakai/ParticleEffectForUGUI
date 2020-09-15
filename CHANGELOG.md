@@ -1,3 +1,10 @@
+# [3.0.0-preview.34](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.33...v3.0.0-preview.34) (2020-09-15)
+
+
+### Bug Fixes
+
+* not working as expected in world simulation space ([683fcb4](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/683fcb4ecdf8bfa0994571f5d6c3dd2bc242ca2a)), closes [#98](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/98)
+
 # [3.0.0-preview.33](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.32...v3.0.0-preview.33) (2020-09-14)
 
 

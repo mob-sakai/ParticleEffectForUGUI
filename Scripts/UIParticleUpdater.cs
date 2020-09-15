@@ -136,13 +136,14 @@ namespace Coffee.UIExtensions
             var root = particle.transform;
             var rootMatrix = Matrix4x4.Rotate(root.rotation).inverse
                              * Matrix4x4.Scale(root.lossyScale).inverse;
-            var scaleMatrix = particle.ignoreCanvasScaler
-                ? Matrix4x4.Scale(particle.canvas.rootCanvas.transform.localScale.x * particle.scale * Vector3.one)
-                : Matrix4x4.Scale(particle.scale * Vector3.one);
+            var scale = particle.ignoreCanvasScaler
+                ? particle.canvas.rootCanvas.transform.localScale.x * particle.scale
+                : particle.scale;
+            var scaleMatrix = Matrix4x4.Scale(scale * Vector3.one);
 
             // Cache position
             var position = particle.transform.position;
-            var diff = (position - particle.cachedPosition) * (1 - 1 / particle.scale);
+            var diff = (position - particle.cachedPosition) * (1 - 1 / scale);
             particle.cachedPosition = position;
 
             for (var i = 0; i < particle.particles.Count; i++)
