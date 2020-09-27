@@ -1,3 +1,10 @@
+# [3.0.0-preview.35](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.34...v3.0.0-preview.35) (2020-09-27)
+
+
+### Bug Fixes
+
+* an error happens during loading scene in editor ([ab9d9aa](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/ab9d9aa7b3afcdbdda00004f7af3fd4827aaea54)), closes [#101](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/101)
+
 # [3.0.0-preview.34](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.33...v3.0.0-preview.34) (2020-09-15)
 
 

@@ -411,6 +411,7 @@ namespace Coffee.UIExtensions
 #if UNITY_EDITOR
         void ISerializationCallbackReceiver.OnBeforeSerialize()
         {
+            if (Application.isPlaying) return;
             InitializeIfNeeded();
         }
 
@@ -418,7 +419,8 @@ namespace Coffee.UIExtensions
         {
             UnityEditor.EditorApplication.delayCall += () =>
             {
-                if (this) InitializeIfNeeded();
+                if (Application.isPlaying || !this) return;
+                InitializeIfNeeded();
             };
         }
 #endif
