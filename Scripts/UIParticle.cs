@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using Coffee.UIParticleExtensions;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Serialization;

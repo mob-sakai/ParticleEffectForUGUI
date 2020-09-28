@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 
-namespace Coffee.UIExtensions
+namespace Coffee.UIParticleExtensions
 {
     internal static class SpriteExtensions
     {

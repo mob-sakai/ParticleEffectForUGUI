@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Profiling;
 
-namespace Coffee.UIExtensions
+namespace Coffee.UIParticleExtensions
 {
     internal static class MeshHelper
     {

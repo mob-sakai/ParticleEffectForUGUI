@@ -1,3 +1,11 @@
+# [3.0.0-preview.36](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.35...v3.0.0-preview.36) (2020-09-28)
+
+
+### Bug Fixes
+
+* do not bake particle system to mesh when the alpha is zero ([1775713](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/1775713c2dbeef09ad3eb1f49b53cf44bf61d535)), closes [#102](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/102)
+* in Unity 2018.x, sample import failed on Windows ([f5861b0](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/f5861b0add1477987d6b9a3db26979fde50930ad))
+
 # [3.0.0-preview.35](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.34...v3.0.0-preview.35) (2020-09-27)
 
 

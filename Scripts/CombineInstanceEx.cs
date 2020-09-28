@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace Coffee.UIExtensions
+namespace Coffee.UIParticleExtensions
 {
     internal class CombineInstanceEx
     {

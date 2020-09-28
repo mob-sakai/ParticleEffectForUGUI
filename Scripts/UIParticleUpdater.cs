@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Coffee.UIParticleExtensions;
 using UnityEngine;
 using UnityEngine.Profiling;
 
@@ -195,6 +196,10 @@ namespace Coffee.UIExtensions
                     currentPs.SetParticles(s_Particles, count);
                     Profiler.EndSample();
                 }
+
+                // #102: Do not bake particle system to mesh when the alpha is zero.
+                if (Mathf.Approximately( particle.canvasRenderer.GetInheritedAlpha(), 0))
+                    continue;
 
                 // Bake main particles.
                 var r = currentPs.GetComponent<ParticleSystemRenderer>();
