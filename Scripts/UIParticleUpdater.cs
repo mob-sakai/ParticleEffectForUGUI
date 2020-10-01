@@ -6,7 +6,7 @@ using UnityEngine.Profiling;
 
 namespace Coffee.UIExtensions
 {
-    public static class UIParticleUpdater
+    internal static class UIParticleUpdater
     {
         static readonly List<UIParticle> s_ActiveParticles = new List<UIParticle>();
         static MaterialPropertyBlock s_Mpb;

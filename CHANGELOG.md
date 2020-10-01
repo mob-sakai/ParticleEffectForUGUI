@@ -1,3 +1,10 @@
+# [3.0.0-preview.37](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.36...v3.0.0-preview.37) (2020-10-01)
+
+
+### Bug Fixes
+
+* fix menus ([5fa12b5](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/5fa12b5338a90764a3bf384dcd3911f2ab4eba61))
+
 # [3.0.0-preview.36](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.35...v3.0.0-preview.36) (2020-09-28)
 
 
