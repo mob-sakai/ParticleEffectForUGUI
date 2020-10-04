@@ -18,6 +18,10 @@ namespace Coffee.UIExtensions
         private static readonly GUIContent s_ContentRenderingOrder = new GUIContent("Rendering Order");
         private static readonly GUIContent s_ContentRefresh = new GUIContent("Refresh");
         private static readonly GUIContent s_ContentFix = new GUIContent("Fix");
+        private static readonly GUIContent s_ContentMaterial = new GUIContent("Material");
+        private static readonly GUIContent s_ContentTrailMaterial = new GUIContent("Trail Material");
+        private static readonly GUIContent s_Content3D = new GUIContent("3D");
+        private static readonly GUIContent s_ContentScale = new GUIContent("Scale");
         private static readonly List<UIParticle> s_TempParents = new List<UIParticle>();
         private static readonly List<UIParticle> s_TempChildren = new List<UIParticle>();
 
@@ -26,6 +30,7 @@ namespace Coffee.UIExtensions
         private SerializedProperty _spAnimatableProperties;
 
         private ReorderableList _ro;
+        private bool _xyzMode;
 
         private static readonly List<string> s_MaskablePropertyNames = new List<string>
         {
@@ -47,24 +52,48 @@ namespace Coffee.UIExtensions
         protected override void OnEnable()
         {
             base.OnEnable();
-            _spScale = serializedObject.FindProperty("m_Scale");
+            _spScale = serializedObject.FindProperty("m_Scale3D");
             _spIgnoreCanvasScaler = serializedObject.FindProperty("m_IgnoreCanvasScaler");
             _spAnimatableProperties = serializedObject.FindProperty("m_AnimatableProperties");
 
             var sp = serializedObject.FindProperty("m_Particles");
-            _ro = new ReorderableList(sp.serializedObject, sp, true, true, false, false);
-            _ro.elementHeight = EditorGUIUtility.singleLineHeight + 4;
+            _ro = new ReorderableList(sp.serializedObject, sp, true, true, true, true);
+            _ro.elementHeight = EditorGUIUtility.singleLineHeight * 3 + 4;
             _ro.drawElementCallback = (rect, index, active, focused) =>
             {
+                EditorGUI.BeginDisabledGroup(sp.hasMultipleDifferentValues);
                 rect.y += 1;
                 rect.height = EditorGUIUtility.singleLineHeight;
-                EditorGUI.ObjectField(rect, sp.GetArrayElementAtIndex(index), GUIContent.none);
+                var p = sp.GetArrayElementAtIndex(index);
+                EditorGUI.ObjectField(rect, p, GUIContent.none);
+
+                rect.x += 15;
+                rect.width -= 15;
+                var ps = p.objectReferenceValue as ParticleSystem;
+                var materials = ps
+                    ? new SerializedObject(ps.GetComponent<ParticleSystemRenderer>()).FindProperty("m_Materials")
+                    : null;
+                rect.y += rect.height + 1;
+                MaterialField(rect, s_ContentMaterial, materials, 0);
+                rect.y += rect.height + 1;
+                MaterialField(rect, s_ContentTrailMaterial, materials, 1);
+                EditorGUI.EndDisabledGroup();
+                if (materials != null)
+                {
+                    materials.serializedObject.ApplyModifiedProperties();
+                }
             };
             _ro.drawHeaderCallback += rect =>
             {
                 EditorGUI.LabelField(new Rect(rect.x, rect.y, 150, rect.height), s_ContentRenderingOrder);
 
-                if (GUI.Button(new Rect(rect.width - 80, rect.y - 1, 80, rect.height), s_ContentRefresh, EditorStyles.miniButton))
+                #if UNITY_2019_3_OR_NEWER
+                rect = new Rect(rect.width - 55, rect.y, 80, rect.height);
+                #else
+                rect = new Rect(rect.width - 55, rect.y - 1, 80, rect.height);
+                #endif
+
+                if (GUI.Button(rect, s_ContentRefresh, EditorStyles.miniButton))
                 {
                     foreach (UIParticle t in targets)
                     {
@@ -72,6 +101,20 @@ namespace Coffee.UIExtensions
                     }
                 }
             };
+        }
+
+        private static void MaterialField(Rect rect, GUIContent label, SerializedProperty sp, int index)
+        {
+            if (sp == null || sp.arraySize <= index)
+            {
+                EditorGUI.BeginDisabledGroup(true);
+                EditorGUI.ObjectField(rect, label, null, typeof(Material), true);
+                EditorGUI.EndDisabledGroup();
+            }
+            else
+            {
+                EditorGUI.PropertyField(rect, sp.GetArrayElementAtIndex(index), label);
+            }
         }
 
         /// <summary>
@@ -98,7 +141,7 @@ namespace Coffee.UIExtensions
             }
 
             // Scale
-            EditorGUILayout.PropertyField(_spScale);
+            _xyzMode = DrawFloatOrVector3Field(_spScale, _xyzMode);
 
             // AnimatableProperties
             var mats = current.particles
@@ -106,8 +149,17 @@ namespace Coffee.UIExtensions
                 .Select(x => x.GetComponent<ParticleSystemRenderer>().sharedMaterial)
                 .Where(x => x)
                 .ToArray();
-            AnimatedPropertiesEditor.DrawAnimatableProperties(_spAnimatableProperties, mats);
 
+            // Animated properties
+            EditorGUI.BeginChangeCheck();
+            AnimatedPropertiesEditor.DrawAnimatableProperties(_spAnimatableProperties, mats);
+            if (EditorGUI.EndChangeCheck())
+            {
+                foreach (UIParticle t in targets)
+                    t.SetMaterialDirty();
+            }
+
+            // Target ParticleSystems.
             _ro.DoLayoutList();
 
             serializedObject.ApplyModifiedProperties();
@@ -179,6 +231,43 @@ namespace Coffee.UIExtensions
                     return GUILayout.Button(s_ContentFix, GUILayout.Width(30));
                 }
             }
+        }
+
+        private static bool DrawFloatOrVector3Field(SerializedProperty sp, bool showXyz)
+        {
+            var x = sp.FindPropertyRelative("x");
+            var y = sp.FindPropertyRelative("y");
+            var z = sp.FindPropertyRelative("z");
+
+            showXyz |= !Mathf.Approximately(x.floatValue, y.floatValue) ||
+                       !Mathf.Approximately(y.floatValue, z.floatValue) ||
+                       y.hasMultipleDifferentValues ||
+                       z.hasMultipleDifferentValues;
+
+            EditorGUILayout.BeginHorizontal();
+            if (showXyz)
+            {
+                EditorGUILayout.PropertyField(sp);
+            }
+            else
+            {
+                EditorGUI.BeginChangeCheck();
+                EditorGUILayout.PropertyField(x, s_ContentScale);
+                if (EditorGUI.EndChangeCheck())
+                    z.floatValue = y.floatValue = x.floatValue;
+            }
+
+            x.floatValue = Mathf.Max(0.001f, x.floatValue);
+            y.floatValue = Mathf.Max(0.001f, y.floatValue);
+            z.floatValue = Mathf.Max(0.001f, z.floatValue);
+
+            EditorGUI.BeginChangeCheck();
+            showXyz = GUILayout.Toggle(showXyz, s_Content3D, EditorStyles.miniButton, GUILayout.Width(30));
+            if (EditorGUI.EndChangeCheck() && !showXyz)
+                z.floatValue = y.floatValue = x.floatValue;
+            EditorGUILayout.EndHorizontal();
+
+            return showXyz;
         }
     }
 }

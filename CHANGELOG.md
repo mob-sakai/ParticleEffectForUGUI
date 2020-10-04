@@ -1,3 +1,17 @@
+# [3.0.0-preview.38](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.37...v3.0.0-preview.38) (2020-10-04)
+
+
+### Bug Fixes
+
+* delete unused file in package ([2e69974](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/2e699749a8f0f620505621a13a628aa87f192875))
+* material dirty on validate (on editor) ([fa34301](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/fa3430130cdffa3f934e926645958ad9f19edc5d))
+
+
+### Features
+
+* display material properties in inspector ([313c1fc](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/313c1fc159429034f84b2e7c30424158c43b71e9)), closes [#104](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/104)
+* support 3D scaling ([a508c3b](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/a508c3bb86ad6694722868303385b20adc914134)), closes [#105](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/105)
+
 # [3.0.0-preview.37](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.36...v3.0.0-preview.37) (2020-10-01)
 
 

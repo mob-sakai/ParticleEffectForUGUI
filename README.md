@@ -121,7 +121,8 @@ Unity 2018.2 supports embedded packages.
 
 1. Open `Package Manager` window
 2. Select `UI Particle` package in package list
-3. Click `Import Sample` button
+3. Click `Import Sample` button  
+![demo](https://user-images.githubusercontent.com/12690315/95017806-83bd1480-0696-11eb-8c24-c56f45ab1ac2.png)
 4. The demo project is imported into `Assets/Samples/UI Particle/{version}/Demo`
 5. Open `UIParticle_Demo` scene and play it
 
@@ -137,22 +138,58 @@ Unity 2018.2 supports embedded packages.
 
 ## Usage
 
+### UIParticle component
+
+`UIParticle` controls the ParticleSystems that is attached to its own game objects and child game objects.
+
+| Properties | Screenshot |
+| -- | -- |
+| **Ignore Canvas Scale:** Ignore the scale of the root canvas. This prevents it from displaying small even in hierarchy scaling mode of ParticleSystem. <br>**Scale:** Scale the rendering. When the `3D` toggle is enabled, 3D scale (x,y,z) is supported. <br>**AnimatableProperties:** If you want update material properties (e.g. `_MainTex_ST`, `_Color`) in AnimationClip, use this to mark the changes. <br>**Rendering Order:** The ParticleSystems to be rendered. You can change the rendering order and the materials. | ![][inspector] |
+
+[inspector]:https://user-images.githubusercontent.com/12690315/95017219-1cea2c00-0693-11eb-9490-c52b8d0fdbb6.png
+
+NOTE: Press `Refresh` button to reconstruct rendering order based on children ParticleSystem's sorting order and z position.
+
+<br><br>
+
 ### Basically usage
 
-1. Select `Game Object/UI/ParticleSystem` to create UIParticle.
-2. (Option) If you want to mask particles, set **a UI shader** such as `UI/UIAdditive` to material for ParticleSystem.  
-![](https://user-images.githubusercontent.com/12690315/42674022-134e3a40-86a9-11e8-8f44-a110d2f14185.gif)
-3. Adjust the Scale property to change the size of the effect.  
-![](https://user-images.githubusercontent.com/12690315/49148937-19c1de80-f34c-11e8-87fc-138192777540.gif)
+1. Select `Game Object/UI/ParticleSystem` to create UIParticle with a ParticleSystem.  
+![particle](https://user-images.githubusercontent.com/12690315/95007361-cad0e880-0649-11eb-8835-f145d62c5977.png)
+2. Adjust the ParticleSystem as you like.  
+![particle1](https://user-images.githubusercontent.com/12690315/95007359-ca385200-0649-11eb-8383-627c9750bda8.png)
 
-### With VFX assets
+<br><br>
 
-1. Select `Game Object/UI/ParticleSystem (Empty)` to create UIParticle.
-2. Drag & drop VFX asset on UIParticle.
-3. Click `Refresh` to setup.
-4. Adjust the Scale property to change the size of the effect.
+### With your ParticleSystem prefab
+
+1. Select `Game Object/UI/ParticleSystem (Empty)` to create UIParticle.  
+![empty](https://user-images.githubusercontent.com/12690315/95007362-cb697f00-0649-11eb-8a09-29b0a13791e4.png)
+2. Drag & drop your ParticleSystem prefab on UIParticle.  
+![particle3](https://user-images.githubusercontent.com/12690315/95007356-c6a4cb00-0649-11eb-9316-562f4bce3f31.png)
+
+<br><br>
+
+### With `Mask` or `MaskRect2D` component
+
+If you want to mask particles, set a stencil supported shader (such as `UI/UIAdditive`) to material for ParticleSystem.
+
+![](https://user-images.githubusercontent.com/12690315/95017591-3b512700-0695-11eb-864e-04166ea1809a.png)
 
 
+<br><br>
+
+### Script usage
+
+```cs
+// Instant ParticleSystem prefab with UIParticle on runtime.
+var go = GameObject.Instantiate(prefab);
+var uiParticle = go.AddComponent<UIParticle>();
+
+// Play/Stop the controled ParticleSystems.
+uiParticle.Play();
+uiParticle.Stop();
+```
 
 <br><br><br><br>
 
@@ -224,5 +261,4 @@ With your support, I can spend more time on development. :)
 * GitHub page : https://github.com/mob-sakai/ParticleEffectForUGUI
 * Releases : https://github.com/mob-sakai/ParticleEffectForUGUI/releases
 * Issue tracker : https://github.com/mob-sakai/ParticleEffectForUGUI/issues
-* Current project : https://github.com/mob-sakai/ParticleEffectForUGUI/projects/1
 * Change log : https://github.com/mob-sakai/ParticleEffectForUGUI/blob/upm/CHANGELOG.md

@@ -30,6 +30,9 @@ namespace Coffee.UIExtensions
         [Tooltip("Particle effect scale")] [SerializeField]
         float m_Scale = 100;
 
+        [Tooltip("Particle effect scale")] [SerializeField]
+        private Vector3 m_Scale3D;
+
         [Tooltip("Animatable material properties. If you want to change the material properties of the ParticleSystem in Animation, enable it.")] [SerializeField]
         internal AnimatableProperty[] m_AnimatableProperties = new AnimatableProperty[0];
 
@@ -74,8 +77,27 @@ namespace Coffee.UIExtensions
         /// </summary>
         public float scale
         {
-            get { return m_Scale; }
-            set { m_Scale = Mathf.Max(0.001f, value); }
+            get { return m_Scale3D.x; }
+            set
+            {
+                m_Scale = Mathf.Max(0.001f, value);
+                m_Scale3D = new Vector3(m_Scale, m_Scale, m_Scale);
+            }
+        }
+
+        /// <summary>
+        /// Particle effect scale.
+        /// </summary>
+        public Vector3 scale3D
+        {
+            get { return m_Scale3D; }
+            set
+            {
+                if (m_Scale3D == value) return;
+                m_Scale3D.x = Mathf.Max(0.001f, value.x);
+                m_Scale3D.y = Mathf.Max(0.001f, value.y);
+                m_Scale3D.z = Mathf.Max(0.001f, value.z);
+            }
         }
 
         internal Mesh bakedMesh
@@ -410,6 +432,14 @@ namespace Coffee.UIExtensions
         }
 
 #if UNITY_EDITOR
+        protected override void OnValidate()
+        {
+            SetLayoutDirty();
+            SetVerticesDirty();
+            m_ShouldRecalculateStencil = true;
+            RecalculateClipping();
+        }
+
         void ISerializationCallbackReceiver.OnBeforeSerialize()
         {
             if (Application.isPlaying) return;
@@ -418,6 +448,11 @@ namespace Coffee.UIExtensions
 
         void ISerializationCallbackReceiver.OnAfterDeserialize()
         {
+            if (m_Scale3D == Vector3.zero)
+            {
+                scale = m_Scale;
+            }
+
             UnityEditor.EditorApplication.delayCall += () =>
             {
                 if (Application.isPlaying || !this) return;
