@@ -1,4 +1,4 @@
-ParticleEffectForUGUI
+Particle Effect For UGUI (UI Particle)
 ===
 
 This plugin provide a component to render particle effect for uGUI in Unity 2018.2 or later.  
@@ -6,11 +6,12 @@ The particle rendering is maskable and sortable, without Camera, RenderTexture o
 
 [![](https://img.shields.io/npm/v/com.coffee.ui-particle?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.coffee.ui-particle/)
 [![](https://img.shields.io/github/v/release/mob-sakai/ParticleEffectForUGUI?include_prereleases)](https://github.com/mob-sakai/ParticleEffectForUGUI/releases)
-[![](https://img.shields.io/github/release-date/mob-sakai/ParticleEffectForUGUI.svg)](https://github.com/mob-sakai/ParticleEffectForUGUI/releases)
-![](https://img.shields.io/badge/unity-2018.2%20or%20later-green.svg)
-[![](https://img.shields.io/github/license/mob-sakai/ParticleEffectForUGUI.svg)](https://github.com/mob-sakai/ParticleEffectForUGUI/blob/upm/LICENSE.txt)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-orange.svg)](http://makeapullrequest.com)
-[![](https://img.shields.io/twitter/follow/mob_sakai.svg?label=Follow&style=social)](https://twitter.com/intent/follow?screen_name=mob_sakai)
+[![](https://img.shields.io/github/release-date/mob-sakai/ParticleEffectForUGUI.svg)](https://github.com/mob-sakai/ParticleEffectForUGUI/releases)  [![](https://img.shields.io/github/license/mob-sakai/ParticleEffectForUGUI.svg)](https://github.com/mob-sakai/ParticleEffectForUGUI/blob/master/LICENSE.txt)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-orange.svg)](http://makeapullrequest.com)  
+![](https://img.shields.io/badge/Unity%202018.2+-supported-blue.svg)
+![](https://img.shields.io/badge/Unity%202019.x-supported-blue.svg)
+![](https://img.shields.io/badge/Unity%202020.x-supported-blue.svg)  
+![](https://img.shields.io/badge/Universal%20Rendering%20Pipeline-supported-blue.svg)
 
 
 << [Description](#Description) | [Demo](#demo) | [Installation](#installation) | [Usage](#usage) | [Development Note](#development-note) | [Change log](https://github.com/mob-sakai/ParticleEffectForUGUI/blob/upm/CHANGELOG.md) >>
@@ -48,7 +49,7 @@ Compares this "Baking mesh" approach with the conventional approach:
 * Change alpha with CanvasGroup
 * No heavy allocation every frame
 * Support overlay, camera space and world space
-* Support changing material property with AnimationClip (AnimatableProperty)
+* Support changing material property with AnimationClip (AnimatableProperty)  
 ![](https://user-images.githubusercontent.com/12690315/53286323-2d94a980-37b0-11e9-8afb-c4a207805ff2.gif)
 
 
@@ -75,9 +76,12 @@ Compares this "Baking mesh" approach with the conventional approach:
 
 ### Requirement
 
-* Unity 2018.2 or later
+![](https://img.shields.io/badge/Unity%202018.2+-supported-blue.svg)
+![](https://img.shields.io/badge/Unity%202019.x-supported-blue.svg)
+![](https://img.shields.io/badge/Unity%202020.x-supported-blue.svg)  
+![](https://img.shields.io/badge/Universal%20Rendering%20Pipeline-supported-blue.svg)
 
-### Using OpenUPM
+### Using OpenUPM (Recomended)
 
 This package is available on [OpenUPM](https://openupm.com).  
 You can install it via [openupm-cli](https://github.com/openupm/openupm-cli).
@@ -87,15 +91,12 @@ openupm add com.coffee.ui-particle
 
 ### Using Git
 
-Find the manifest.json file in the Packages folder of your project and edit it to look like this:
-```js
-{
-  "dependencies": {
-    "com.coffee.ui-particle": "https://github.com/mob-sakai/ParticleEffectForUGUI.git",
-    ...
-  },
-}
-```
+Find the manifest.json file in the Packages folder of your project and add a line to `dependencies` field.
+
+* Major version:  
+`"com.coffee.ui-particle": "https://github.com/mob-sakai/ParticleEffectForUGUI.git"`
+* Preview version:  
+`"com.coffee.ui-particle": "https://github.com/mob-sakai/ParticleEffectForUGUI.git#preview"`
 
 To update the package, change suffix `#{version}` to the target version.
 
@@ -131,6 +132,11 @@ Unity 2018.2 supports embedded packages.
 1. Select `Assets/Samples/UI Particle Demo` from menu
 2. The demo project is imported into `Assets/Samples/UI Particle/{version}/Demo`
 3. Open `UIParticle_Demo` scene and play it
+
+### About `Cartoon FX & War Fx Demo`
+
+* It requires free assets ([Cartoon FX Free][CFX] & [War FX][WFX])
+  * by [Jean Moreno (JMO)][JMO]
 
 
 
@@ -251,8 +257,7 @@ With your support, I can spend more time on development. :)
 
 ## Author
 
-[mob-sakai](https://github.com/mob-sakai)
-[![](https://img.shields.io/twitter/follow/mob_sakai.svg?label=Follow&style=social)](https://twitter.com/intent/follow?screen_name=mob_sakai)
+* ![](https://user-images.githubusercontent.com/12690315/96986908-434a0b80-155d-11eb-8275-85138ab90afa.png) [mob-sakai](https://github.com/mob-sakai) [![](https://img.shields.io/twitter/follow/mob_sakai.svg?label=Follow&style=social)](https://twitter.com/intent/follow?screen_name=mob_sakai) ![GitHub followers](https://img.shields.io/github/followers/mob-sakai?style=social)
 
 
 
