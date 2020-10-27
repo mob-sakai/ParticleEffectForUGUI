@@ -417,8 +417,6 @@ namespace Coffee.UIExtensions
 
             if (!this || particles.Any(x => x)) return;
 
-            m_IgnoreCanvasScaler = true;
-
             // refresh.
 #if UNITY_EDITOR
             if (!Application.isPlaying)
