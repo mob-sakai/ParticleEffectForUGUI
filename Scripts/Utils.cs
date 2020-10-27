@@ -163,11 +163,20 @@ namespace Coffee.UIParticleExtensions
                 var pa = tr.InverseTransformPoint(a.transform.position).z;
                 var pb = tr.InverseTransformPoint(b.transform.position).z;
 
-                return Mathf.Approximately(pa, pb)
-                    ? 0
-                    : pa < pb
-                        ? 1
-                        : -1;
+                if (!Mathf.Approximately(pa, pb))
+                    return pa < pb ? 1 : -1;
+
+                var aQueue = ra.sharedMaterial.renderQueue;
+                var bQueue = rb.sharedMaterial.renderQueue;
+                if (aQueue != bQueue)
+                    return aQueue < bQueue ? 1 : -1;
+
+                var aHash = ra.sharedMaterial.GetHashCode();
+                var bHash = rb.sharedMaterial.GetHashCode();
+                if (aHash != bHash)
+                    return aHash < bHash ? 1 : -1;
+
+                return 0;
             });
         }
 
