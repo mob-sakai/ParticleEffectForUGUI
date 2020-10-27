@@ -1,3 +1,23 @@
+# [3.0.0](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/2.3.0...3.0.0) (2020-10-27)
+
+
+### Bug Fixes
+
+* IgnoreCanvasScaler may be enabled unintentionally ([d9f9244](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/d9f9244e49127bea405c3cb802b588c1eae00831))
+* update release workflow ([37ff06d](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/37ff06dd122365a36611cbf53700d5df99d126ad))
+
+
+### Features
+
+* cache modified material ([6b397f3](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/6b397f39b89f40c4aae9c9f56706b3bc68a376be)), closes [#94](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/94)
+* improve the material batching ([4be5666](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/4be56669fb764bf61c0246a6e56d18640053b565))
+* un-limit on the number of mesh instances ([f133881](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/f1338813ca85d305f334799b78154e03b0aff60c))
+
+
+### BREAKING CHANGES
+
+* The development branch name has been changed. Most cases are unaffected.
+
 # [3.0.0-preview.38](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.37...v3.0.0-preview.38) (2020-10-04)
 
 
