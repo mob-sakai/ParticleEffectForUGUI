@@ -4,7 +4,47 @@
 ### Bug Fixes
 
 * IgnoreCanvasScaler may be enabled unintentionally ([d9f9244](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/d9f9244e49127bea405c3cb802b588c1eae00831))
-* update release workflow ([37ff06d](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/37ff06dd122365a36611cbf53700d5df99d126ad))
+* an error happens during loading scene in editor ([ab9d9aa](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/ab9d9aa7b3afcdbdda00004f7af3fd4827aaea54)), closes [#101](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/101)
+* not working as expected in world simulation space ([683fcb4](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/683fcb4ecdf8bfa0994571f5d6c3dd2bc242ca2a)), closes [#98](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/98)
+* if the package was installed via openupm, an unintended directory 'Samples' was included ([1913de5](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/1913de557743b9480f72c5378d13c284a4ac93f9))
+* animatable properties not working ([5b8b0bd](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/5b8b0bd28b251a7ea6e0cfa0c4b69bd7f9c4d953)), closes [#95](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/95)
+* combine Instances error ([878f812](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/878f81202ac29a8a20f174efa916da64eef99e8a)), closes [#91](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/91)
+* in rare cases, the particle size is incorrect with camera-space mode ([90593ac](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/90593ac021ce19d164927e44804354535db047bb)), closes [#93](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/93)
+* trails material uses sprite texture ([9e65ee7](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/9e65ee7345e16b5124e94d26f5749999c648f677)), closes [#92](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/92)
+* ignore missing object on initialize ([8bd9b62](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/8bd9b621b9efcd242c410405d066494a1d53f9a3))
+* not masked ([4ef5947](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/4ef5947baa325002aecd1ccbdc75056a6567f14b))
+* in Unity 2018.2, PrefabStageUtility is not found ([0b6dcff](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/0b6dcff5d6356db497532daa0a26804852e8de24))
+* removed UIParticle will be saved in prefab mode ([08e2d51](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/08e2d51c73a294d44974e7fba35e2477f04e6860))
+* hide camera for baking ([30b4703](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/30b4703e2a1746efc4b7db154354f80fd0593b98))
+* In ignore canvas scaler mode, Transform.localScale is zero ([cc71f2b](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/cc71f2bdac1a61fd5e5fc85d0a69589e05a0f79d)), closes [#89](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/89)
+* In prefab mode, an error occurs ([a222f37](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/a222f3710b530c7fc9fab10f25bd28d820ffebe2)), closes [#88](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/88)
+* the default value of IgnoreCanvasScaler is true ([966fae1](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/966fae1d22a98259ec5aff68b4603b7c21dfdfc9))
+* build fails ([ac080a4](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/ac080a44e4d872bc3f784fc222cc74aac7e795e9)), closes [#85](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/85)
+* if in the mask, rendering material will be destroyed ([0db40cf](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/0db40cf160b2a5a27c83ef15d648b2771a47b51a))
+* baking camera settings for camera space ([436c5e4](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/436c5e47f75c3e167dcd77c188847e9d7d6ea68d))
+* fix local simulation ([7add9de](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/7add9defb70be29ddbe536d854591c2e0d9e83fa))
+* fix camera for baking mesh ([6395a4f](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/6395a4fa744a46551593185711d6545a94d8b456))
+* The type or namespace name 'U2D' does not exist in the namespace 'UnityEditor.Experimental' in Unity 2019.3 or later ([930199e](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/930199e5e42920825b27d5bf3e2b2a4bda77fa14)), closes [#82](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/82)
+* texture sheet animation module Sprite mode not working ([30d1d5d](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/30d1d5d3cc67234a8cd985e98f181aff2a8bd8ef)), closes [#79](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/79)
+* An exception in the OnSceneGUI caused the scale of the transformation to change unintentionally ([75413e0](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/75413e0e2cff42a85b73b33e17e0bb6344ecc8f6))
+* read-only properties in the inspector ([f012b23](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/f012b238d97aad3fdc3107b1f9a197de869c43e6))
+* Added CanvasRenderer as a required component ([a8950f6](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/a8950f65c817be04b0be222c9728c716fdd7c658))
+* If sprite is null, a null exception is thrown ([50c6e98](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/50c6e980ca37dda1bece5252162fa05ca3472ee8))
+* fix displayed version in readme ([c29bbdd](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/c29bbddf8ad9a251d5f472b77cf85b3d432bba71))
+* abnormal Mesh Bounds with Particle Trails ([518a749](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/518a7497105a114a0f6b1782df0c35ba0aecfab2)), closes [#61](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/61)
+* multiple UIParticleOverlayCamera in scene ([3f09395](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/3f093958b3353463d6c5bd29ef3338203d4e41d7)), closes [#73](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/73)
+* add package keywords ([49d8f3f](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/49d8f3fe4c76cf6bd2cd5b6134ee23134532da8e))
+* particles not visible if scale.z is 0 ([35718e0](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/35718e099acbb04fdadf131c7e4d2e6c3f4a1756)), closes [#64](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/64)
+* remove unnecessary scripts ([0a43740](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/0a4374099dc3151e7f1a3a24a6ce6c39a968e163))
+* workaround for [#70](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/70) ([4bbcc33](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/4bbcc334abb7cd6db2897fad0bda219d5ea73530))
+* change the text in the inspector to make it more understandable. ([7ca0b6f](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/7ca0b6fa34c1168ef103992e1c69b68631b3bc60)), closes [#66](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/66)
+* editor crashes when mesh is set to null when ParticleSystem.RenderMode=Mesh ([e5ebadd](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/e5ebadd84731716f82c63ac5ba3eb676720e3ad6)), closes [#69](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/69)
+* getting massive errors on editor ([ef82fa8](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/ef82fa82a69894e643f0d257f99eb9177785f697)), closes [#67](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/67)
+* heavy editor UI ([d3b470a](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/d3b470a2be3a21add9e126b357e46bdfaa6f16c8))
+* remove a menu to add overlay camera ([f5d3b6e](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/f5d3b6edb5687c4d465992ef5c3c0d54f7b36d74))
+* rotating the particle rect may cause out of bounds ([3439842](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/3439842119f334b50910c0a983e561944cc792a2)), closes [#55](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/55)
+* scale will be decrease on editor ([0c59846](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/0c59846f11438b12caad04ae5d5b544a28883ea6))
+* UI darker than normal when change to linear color space ([db4d8a7](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/db4d8a742ca36c8dd2de6936b9cf2912c72d4b9f)), closes [#57](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/57)
 
 
 ### Features
@@ -12,11 +52,34 @@
 * cache modified material ([6b397f3](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/6b397f39b89f40c4aae9c9f56706b3bc68a376be)), closes [#94](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/94)
 * improve the material batching ([4be5666](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/4be56669fb764bf61c0246a6e56d18640053b565))
 * un-limit on the number of mesh instances ([f133881](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/f1338813ca85d305f334799b78154e03b0aff60c))
+* refresh children ParticleSystem with a gameObjects as root ([8bae1d0](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/8bae1d08cc6f00e2b8d6f336aad92233891da1e4))
+* add API to bind ParticleSystem object ([a77bbd3](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/a77bbd3a9a65d5fd1198bd8e580982ca8e07fca8))
+* material batching ([8f703e6](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/8f703e6d2c0e8229ca14b25638dae5d91a5658c3))
+* support AnimatableProperty for multiple materials ([062d988](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/062d9887fb8b096250ec3b43d9aa82637940a8bb))
+* remove menu in inspector ([e7f8f51](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/e7f8f512122a01423de415b55e3190d62bda146a))
+* add menu to create UIParticle ([2fa1843](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/2fa18431f0c8c4aeadfdd1cb98eeeef5ac6970a0))
+* add play/pause/stop api ([f09a386](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/f09a386bc59fbab8143f7f0b814c8684aea7f27c))
+* support for changing rendering orders ([745d4a5](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/745d4a598846b3e77d1071433079fdd5140921a8))
+* Support for child ParticleSystem rendering ([4ee90be](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/4ee90be17c68bf405f81f432615a3eebaa022366))
+* UIParticle for trail is no longer needed ([466e43c](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/466e43cf931d211907419f804a90776a0d9f4906))
+* add menu to create UIParticle ([14f1c78](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/14f1c782ff0f2b67d85d7c9ad0cf662da1dd1fc6))
+* Combine baked meshes to improve performance ([633d058](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/633d058756fde776a7e5192a0f023adf6eb0ca7b))
+* improve performance ([77c056a](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/77c056ad5f2918efe457883f3b0361f952600568))
+* optimization for vertices transforms and adding node for trails ([e070e8d](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/e070e8d5ee205c25a1e3be5d3178821d4a8265d0)), closes [#75](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/75)
+* option to ignoring canvas scaling ([fe85fed](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/fe85fed3c0ad2881578ff68722863d65dfa4db7a))
+* support 3d scaling ([42a84bc](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/42a84bc5e130aed3cf5e57dcd6a9d8dc94deb641))
+* support custom simulation space ([a83e647](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/a83e64761c008e88ff328a2609118806e97f19cf)), closes [#78](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/78)
+* support for particle systems including trail only ([f389d39](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/f389d39953c85b97482b12d1c8578ecaeddacd18)), closes [#61](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/61)
+* add support for SpriteAtlas ([b31e325](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/b31e325bb1ef0856cb1ac4c4b0c4da0f1578b8ba))
+* add menu to import sample ([b8b1827](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/b8b18273185769235101da01f5bbadbac188e387))
 
 
 ### BREAKING CHANGES
 
 * The development branch name has been changed. Most cases are unaffected.
+* The child UIParticle is no longer needed.
+* The bake-task has changed significantly. It may look different from previous versions.
+* update develop environment to Unity 2018.3. Unity 2018.2 will continue to be supported.
 
 # [3.0.0-preview.38](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v3.0.0-preview.37...v3.0.0-preview.38) (2020-10-04)
 
