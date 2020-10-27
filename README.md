@@ -81,7 +81,7 @@ Compares this "Baking mesh" approach with the conventional approach:
 ![](https://img.shields.io/badge/Unity%202020.x-supported-blue.svg)  
 ![](https://img.shields.io/badge/Universal%20Rendering%20Pipeline-supported-blue.svg)
 
-### Using OpenUPM (Recomended)
+### Using OpenUPM
 
 This package is available on [OpenUPM](https://openupm.com).  
 You can install it via [openupm-cli](https://github.com/openupm/openupm-cli).
@@ -93,9 +93,9 @@ openupm add com.coffee.ui-particle
 
 Find the manifest.json file in the Packages folder of your project and add a line to `dependencies` field.
 
-* Major version:  
+* Major version: ![](https://img.shields.io/github/v/release/mob-sakai/ParticleEffectForUGUI)  
 `"com.coffee.ui-particle": "https://github.com/mob-sakai/ParticleEffectForUGUI.git"`
-* Preview version:  
+* Preview version: ![](https://img.shields.io/github/v/release/mob-sakai/ParticleEffectForUGUI?include_prereleases)  
 `"com.coffee.ui-particle": "https://github.com/mob-sakai/ParticleEffectForUGUI.git#preview"`
 
 To update the package, change suffix `#{version}` to the target version.
