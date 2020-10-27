@@ -53,6 +53,7 @@ namespace Coffee.UIExtensions
                     Debug.LogException(e);
                 }
             }
+
             Profiler.EndSample();
         }
 
@@ -140,7 +141,7 @@ namespace Coffee.UIExtensions
             var rootMatrix = Matrix4x4.Rotate(root.rotation).inverse
                              * Matrix4x4.Scale(root.lossyScale).inverse;
             var scale = particle.ignoreCanvasScaler
-                ? Vector3.Scale( particle.canvas.rootCanvas.transform.localScale, particle.scale3D)
+                ? Vector3.Scale(particle.canvas.rootCanvas.transform.localScale, particle.scale3D)
                 : particle.scale3D;
             var scaleMatrix = Matrix4x4.Scale(scale);
 
@@ -211,7 +212,7 @@ namespace Coffee.UIExtensions
                 }
 
                 // #102: Do not bake particle system to mesh when the alpha is zero.
-                if (Mathf.Approximately( particle.canvasRenderer.GetInheritedAlpha(), 0))
+                if (Mathf.Approximately(particle.canvasRenderer.GetInheritedAlpha(), 0))
                     continue;
 
                 // Bake main particles.
