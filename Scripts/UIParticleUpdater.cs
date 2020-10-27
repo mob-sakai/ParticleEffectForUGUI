@@ -129,8 +129,10 @@ namespace Coffee.UIExtensions
         private static void BakeMesh(UIParticle particle)
         {
             // Clear mesh before bake.
+            Profiler.BeginSample("[UIParticle] Bake Mesh > Clear mesh before bake");
             MeshHelper.Clear();
             particle.bakedMesh.Clear(false);
+            Profiler.EndSample();
 
             // Get camera for baking mesh.
             var camera = BakingCamera.GetCamera(particle.canvas);
@@ -153,11 +155,17 @@ namespace Coffee.UIExtensions
 
             for (var i = 0; i < particle.particles.Count; i++)
             {
+                Profiler.BeginSample("[UIParticle] Bake Mesh > Push index");
+                MeshHelper.activeMeshIndices.Add(false);
+                MeshHelper.activeMeshIndices.Add(false);
+                Profiler.EndSample();
+
                 // No particle to render.
                 var currentPs = particle.particles[i];
                 if (!currentPs || !currentPs.IsAlive() || currentPs.particleCount == 0) continue;
 
                 // Calc matrix.
+                Profiler.BeginSample("[UIParticle] Bake Mesh > Calc matrix");
                 var matrix = rootMatrix;
                 if (currentPs.transform != root)
                 {
@@ -177,6 +185,7 @@ namespace Coffee.UIExtensions
                 }
 
                 matrix = scaleMatrix * matrix;
+                Profiler.EndSample();
 
                 // Extra world simulation.
                 if (currentPs.main.simulationSpace == ParticleSystemSimulationSpace.World && 0 < diff.sqrMagnitude)
@@ -245,7 +254,9 @@ namespace Coffee.UIExtensions
             }
 
             // Set active indices.
+            Profiler.BeginSample("[UIParticle] Bake Mesh > Set active indices");
             particle.activeMeshIndices = MeshHelper.activeMeshIndices;
+            Profiler.EndSample();
 
             // Combine
             Profiler.BeginSample("[UIParticle] Bake Mesh > CombineMesh");

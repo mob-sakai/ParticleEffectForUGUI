@@ -6,12 +6,13 @@ namespace Coffee.UIParticleExtensions
 {
     internal static class MeshHelper
     {
-        public static long activeMeshIndices { get; private set; }
+        public static List<bool> activeMeshIndices { get; private set; }
         private static readonly List<CombineInstanceEx> s_CachedInstance;
         private static int count;
 
         public static void Init()
         {
+            activeMeshIndices = new List<bool>();
         }
 
         static MeshHelper()
@@ -64,13 +65,13 @@ namespace Coffee.UIParticleExtensions
             inst.Push(mesh, transform);
             Profiler.EndSample();
 
-            activeMeshIndices |= (long) 1 << inst.index;
+            activeMeshIndices[inst.index] = true;
         }
 
         public static void Clear()
         {
             count = 0;
-            activeMeshIndices = 0;
+            activeMeshIndices.Clear();
             foreach (var inst in s_CachedInstance)
             {
                 inst.Clear();

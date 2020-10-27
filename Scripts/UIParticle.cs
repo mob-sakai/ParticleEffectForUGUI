@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using Coffee.UIParticleExtensions;
 using UnityEngine;
@@ -44,7 +43,7 @@ namespace Coffee.UIExtensions
         private Mesh _bakedMesh;
         private readonly List<Material> _modifiedMaterials = new List<Material>();
         private readonly List<Material> _maskMaterials = new List<Material>();
-        private long _activeMeshIndices;
+        private readonly List<bool> _activeMeshIndices = new List<bool>();
         private Vector3 _cachedPosition;
         private static readonly List<Material> s_TempMaterials = new List<Material>(2);
         private static MaterialPropertyBlock s_Mpb;
@@ -117,13 +116,14 @@ namespace Coffee.UIExtensions
             get { return _modifiedMaterials; }
         }
 
-        internal long activeMeshIndices
+        public List<bool> activeMeshIndices
         {
             get { return _activeMeshIndices; }
             set
             {
-                if (_activeMeshIndices == value) return;
-                _activeMeshIndices = value;
+                if (_activeMeshIndices.SequenceEqualFast(value)) return;
+                _activeMeshIndices.Clear();
+                _activeMeshIndices.AddRange(value);
                 UpdateMaterial();
             }
         }
@@ -228,9 +228,9 @@ namespace Coffee.UIExtensions
             }
 
             // No mesh to render.
-            if (activeMeshIndices == 0 || !isActiveAndEnabled || particles.Count == 0)
+            var count = activeMeshIndices.CountFast();
+            if (count == 0 || !isActiveAndEnabled || particles.Count == 0)
             {
-                _activeMeshIndices = 0;
                 canvasRenderer.Clear();
 
                 foreach (var m in s_PrevMaskMaterials)
@@ -242,7 +242,7 @@ namespace Coffee.UIExtensions
             }
 
             //
-            var materialCount = Mathf.Max(8, activeMeshIndices.BitCount());
+            var materialCount = Mathf.Max(8, count);
             canvasRenderer.materialCount = materialCount;
             var j = 0;
             for (var i = 0; i < particles.Count; i++)
@@ -255,8 +255,8 @@ namespace Coffee.UIExtensions
                 r.GetSharedMaterials(s_TempMaterials);
 
                 // Main
-                var bit = (long) 1 << (i * 2);
-                if (0 < (activeMeshIndices & bit) && 0 < s_TempMaterials.Count)
+                var index = i * 2;
+                if (activeMeshIndices[index] && 0 < s_TempMaterials.Count)
                 {
                     var mat = GetModifiedMaterial(s_TempMaterials[0], ps.GetTextureForSprite());
                     canvasRenderer.SetMaterial(mat, j);
@@ -265,9 +265,9 @@ namespace Coffee.UIExtensions
                 }
 
                 // Trails
+                index++;
                 if (materialCount <= j) break;
-                bit <<= 1;
-                if (0 < (activeMeshIndices & bit) && 1 < s_TempMaterials.Count)
+                if (activeMeshIndices[index] && 1 < s_TempMaterials.Count)
                 {
                     var mat = GetModifiedMaterial(s_TempMaterials[1], null);
                     canvasRenderer.SetMaterial(mat, j++);
@@ -303,7 +303,8 @@ namespace Coffee.UIExtensions
             if (m_AnimatableProperties.Length == 0) return;
 
             //
-            var materialCount = Mathf.Max(8, activeMeshIndices.BitCount());
+            var count = activeMeshIndices.CountFast();
+            var materialCount = Mathf.Max(8, count);
             canvasRenderer.materialCount = materialCount;
             var j = 0;
             for (var i = 0; i < particles.Count; i++)
@@ -316,8 +317,7 @@ namespace Coffee.UIExtensions
                 r.GetSharedMaterials(s_TempMaterials);
 
                 // Main
-                var bit = (long) 1 << (i * 2);
-                if (0 < (activeMeshIndices & bit) && 0 < s_TempMaterials.Count)
+                if (activeMeshIndices[i * 2] && 0 < s_TempMaterials.Count)
                 {
                     UpdateMaterialProperties(r, j);
                     j++;
@@ -350,7 +350,7 @@ namespace Coffee.UIExtensions
         protected override void OnEnable()
         {
             _cachedPosition = transform.localPosition;
-            _activeMeshIndices = 0;
+            activeMeshIndices.Clear();
 
             UIParticleUpdater.Register(this);
             particles.Exec(p => p.GetComponent<ParticleSystemRenderer>().enabled = false);
@@ -418,7 +418,7 @@ namespace Coffee.UIExtensions
                 return;
             }
 
-            if (!this || particles.Any(x => x)) return;
+            if (!this || particles.AnyFast()) return;
 
             // refresh.
 #if UNITY_EDITOR

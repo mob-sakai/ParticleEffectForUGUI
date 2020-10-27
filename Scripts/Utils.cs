@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Coffee.UIParticleExtensions
 {
@@ -30,13 +31,38 @@ namespace Coffee.UIParticleExtensions
 #endif
     }
 
-    internal static class LongExtensions
+    internal static class ListExtensions
     {
-        public static int BitCount(this long self)
+        public static bool SequenceEqualFast(this List<bool> self, List<bool> value)
         {
-            self = self - ((self >> 1) & 0x5555555555555555L);
-            self = (self & 0x3333333333333333L) + ((self >> 2) & 0x3333333333333333L);
-            return (int) (unchecked(((self + (self >> 4)) & 0xF0F0F0F0F0F0F0FL) * 0x101010101010101L) >> 56);
+            if (self.Count != value.Count) return false;
+            for (var i = 0; i < self.Count; ++i)
+            {
+                if (self[i] != value[i]) return false;
+            }
+
+            return true;
+        }
+
+        public static int CountFast(this List<bool> self)
+        {
+            var count = 0;
+            for (var i = 0; i < self.Count; ++i)
+            {
+                if (self[i]) count++;
+            }
+
+            return count;
+        }
+
+        public static bool AnyFast<T>(this List<T> self) where T : Object
+        {
+            for (var i = 0; i < self.Count; ++i)
+            {
+                if (self[i]) return true;
+            }
+
+            return false;
         }
     }
 
@@ -107,24 +133,28 @@ namespace Coffee.UIParticleExtensions
 
     internal static class CombineInstanceArrayPool
     {
-        private static readonly List<CombineInstance[]> s_Pool;
+        private static readonly Dictionary<int, CombineInstance[]> s_Pool;
 
         public static void Init()
         {
+            s_Pool.Clear();
         }
 
         static CombineInstanceArrayPool()
         {
-            s_Pool = new List<CombineInstance[]>(32);
-            for (var i = 0; i < 32; i++)
-            {
-                s_Pool.Add(new CombineInstance[i]);
-            }
+            s_Pool = new Dictionary<int, CombineInstance[]>();
         }
 
         public static CombineInstance[] Get(List<CombineInstance> src)
         {
-            var dst = s_Pool[src.Count];
+            CombineInstance[] dst;
+            var count = src.Count;
+            if (!s_Pool.TryGetValue(count, out dst))
+            {
+                dst = new CombineInstance[count];
+                s_Pool.Add(count, dst);
+            }
+
             for (var i = 0; i < src.Count; i++)
             {
                 dst[i].mesh = src[i].mesh;
@@ -136,7 +166,13 @@ namespace Coffee.UIParticleExtensions
 
         public static CombineInstance[] Get(List<CombineInstanceEx> src, int count)
         {
-            var dst = s_Pool[count];
+            CombineInstance[] dst;
+            if (!s_Pool.TryGetValue(count, out dst))
+            {
+                dst = new CombineInstance[count];
+                s_Pool.Add(count, dst);
+            }
+
             for (var i = 0; i < count; i++)
             {
                 dst[i].mesh = src[i].mesh;
