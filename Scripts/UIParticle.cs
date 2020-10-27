@@ -48,6 +48,8 @@ namespace Coffee.UIExtensions
         private Vector3 _cachedPosition;
         private static readonly List<Material> s_TempMaterials = new List<Material>(2);
         private static MaterialPropertyBlock s_Mpb;
+        private static readonly List<Material> s_PrevMaskMaterials = new List<Material>();
+        private static readonly List<Material> s_PrevModifiedMaterials = new List<Material>();
 
 
         /// <summary>
@@ -210,21 +212,11 @@ namespace Coffee.UIExtensions
         protected override void UpdateMaterial()
         {
             // Clear mask materials.
-            for (var i = 0; i < _maskMaterials.Count; i++)
-            {
-                StencilMaterial.Remove(_maskMaterials[i]);
-                _maskMaterials[i] = null;
-            }
-
+            s_PrevMaskMaterials.AddRange(_maskMaterials);
             _maskMaterials.Clear();
 
             // Clear modified materials.
-            for (var i = 0; i < _modifiedMaterials.Count; i++)
-            {
-                DestroyImmediate(_modifiedMaterials[i]);
-                _modifiedMaterials[i] = null;
-            }
-
+            s_PrevModifiedMaterials.AddRange(_modifiedMaterials);
             _modifiedMaterials.Clear();
 
             // Recalculate stencil value.
@@ -240,6 +232,12 @@ namespace Coffee.UIExtensions
             {
                 _activeMeshIndices = 0;
                 canvasRenderer.Clear();
+
+                foreach (var m in s_PrevMaskMaterials)
+                    StencilMaterial.Remove(m);
+
+                foreach (var m in s_PrevModifiedMaterials)
+                    ModifiedMaterial.Remove(m);
                 return;
             }
 
@@ -275,6 +273,12 @@ namespace Coffee.UIExtensions
                     canvasRenderer.SetMaterial(mat, j++);
                 }
             }
+
+            foreach (var m in s_PrevMaskMaterials)
+                StencilMaterial.Remove(m);
+
+            foreach (var m in s_PrevModifiedMaterials)
+                ModifiedMaterial.Remove(m);
         }
 
         private Material GetModifiedMaterial(Material baseMaterial, Texture2D texture)
@@ -287,10 +291,9 @@ namespace Coffee.UIExtensions
 
             if (texture == null && m_AnimatableProperties.Length == 0) return baseMaterial;
 
-            baseMaterial = new Material(baseMaterial);
+            var id = m_AnimatableProperties.Length == 0 ? 0 : GetInstanceID();
+            baseMaterial = ModifiedMaterial.Add(baseMaterial, texture, id);
             _modifiedMaterials.Add(baseMaterial);
-            if (texture)
-                baseMaterial.mainTexture = texture;
 
             return baseMaterial;
         }
