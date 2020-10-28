@@ -38,6 +38,11 @@ namespace Coffee.UIExtensions
         [Tooltip("Particles")] [SerializeField]
         private List<ParticleSystem> m_Particles = new List<ParticleSystem>();
 
+#if !UNITY_2019_4_OR_NEWER
+        [SerializeField]
+        private bool m_Maskable = true;
+#endif
+
         private bool _shouldBeRemoved;
         private DrivenRectTransformTracker _tracker;
         private Mesh _bakedMesh;
@@ -350,6 +355,9 @@ namespace Coffee.UIExtensions
         /// </summary>
         protected override void OnEnable()
         {
+#if !UNITY_2019_4_OR_NEWER
+            maskable = m_Maskable;
+#endif
             _cachedPosition = transform.localPosition;
             activeMeshIndices.Clear();
 
@@ -440,6 +448,9 @@ namespace Coffee.UIExtensions
             SetVerticesDirty();
             m_ShouldRecalculateStencil = true;
             RecalculateClipping();
+#if !UNITY_2019_4_OR_NEWER
+            maskable = m_Maskable;
+#endif
         }
 
         void ISerializationCallbackReceiver.OnBeforeSerialize()

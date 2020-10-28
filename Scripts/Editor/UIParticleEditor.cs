@@ -25,6 +25,7 @@ namespace Coffee.UIExtensions
         private static readonly List<UIParticle> s_TempParents = new List<UIParticle>();
         private static readonly List<UIParticle> s_TempChildren = new List<UIParticle>();
 
+        private SerializedProperty _spMaskable;
         private SerializedProperty _spScale;
         private SerializedProperty _spIgnoreCanvasScaler;
         private SerializedProperty _spAnimatableProperties;
@@ -52,6 +53,7 @@ namespace Coffee.UIExtensions
         protected override void OnEnable()
         {
             base.OnEnable();
+            _spMaskable = serializedObject.FindProperty("m_Maskable");
             _spScale = serializedObject.FindProperty("m_Scale3D");
             _spIgnoreCanvasScaler = serializedObject.FindProperty("m_IgnoreCanvasScaler");
             _spAnimatableProperties = serializedObject.FindProperty("m_AnimatableProperties");
@@ -126,6 +128,9 @@ namespace Coffee.UIExtensions
             if (current == null) return;
 
             serializedObject.Update();
+
+            // Maskable
+            EditorGUILayout.PropertyField(_spMaskable);
 
             // IgnoreCanvasScaler
             using (var ccs = new EditorGUI.ChangeCheckScope())
