@@ -1,5 +1,3 @@
-# Secrets
-#   ULF_REPO: Git repository url contains ulf files. https://mob-sakai:{{token}}@github.com/mob-sakai/ulfs.git
 name: unity-test
 
 on:
@@ -14,29 +12,20 @@ on:
       - synchronize
 
 jobs:
-  release-test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-
-      - run: |
-          npm i --no-save https://gist.github.com/mob-sakai/c90044338361af97a7e8c8a78425bdb3
-          npx semantic-release -e @mob-sakai/semantic-release-upm --dry-run --branches develop
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-
   unity-test:
     strategy:
       fail-fast: false
       matrix:
         unity:
           [
+            "2018.3.14f1",
             "2018.4.25f1",
-            "2019.4.10f1",
+            "2019.1.14f1",
+            "2019.2.11f1",
+            "2019.3.15f1",
+            "2019.4.8f1",
             "2020.1.5f1",
           ]
-    env:
-      RUN_UNITY: "xvfb-run --auto-servernum --server-args='-screen 0 640x480x24' /opt/Unity/Editor/Unity -batchmode -nographics -silent-crashes -logFile -projectPath ."
 
     runs-on: ubuntu-latest
     container:
@@ -48,41 +37,13 @@ jobs:
       - name: Activate Unity Editor
         id: activation
         run: |
-          # Clone ulfs.
-          apt-get update
-          apt-get install software-properties-common -y
-          apt-add-repository ppa:git-core/ppa -y
-          apt-get update
-          apt-get install git -y
-          git clone --depth 1 ${ULF_REPO} .ulfs
-
-          # Activate with ulf.
-          ULF_FILE=.ulfs/Unity_v${UNITY_VERSION}.ulf
-          echo $ULF_FILE
-          if [ -e ${ULF_FILE} ]; then
-            /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -manualLicenseFile ${ULF_FILE} \
-              | grep -E 'LICENSE SYSTEM.*\w{32} != \w{32}' && FAILED=true
-          else
-            echo "::error:: ulf file '${ULF_FILE}' is not found."
-            FAILED=true
-          fi
-
-          # Activation failed.
-          if [ $FAILED ]; then
-            echo "::error:: the unity activation may have failed. manual activation is required.%0A \
-              1. download the artifact's .alf file.%0A \
-              2. Go to https://license.unity3d.com/manual to activate manually.%0A \
-              3. Generate a .ulf file from the .alf file and download it.%0A \
-              4. Rename .ulf to 'Unity_v${UNITY_VERSION}.ulf'.%0A \
-              5. Add file to ulfs repository.%0A \
-              5. Re-run the jobs."
-
-            /opt/Unity/Editor/Unity -quit -batchmode -nographics -logFile -createManualActivationFile
-            exit 1
-          fi
-        env:
-          ULF_REPO: ${{ secrets.ULF_REPO }}
-          UNITY_VERSION: ${{ matrix.unity }}
+          apt-get update > /dev/null
+          apt-get install software-properties-common -y > /dev/null
+          apt-add-repository ppa:git-core/ppa -y > /dev/null
+          apt-get update > /dev/null
+          apt-get install git -y > /dev/null
+          git clone https://gist.github.com/135c940b45ec4e385861c8711777db7f.git .ulfs
+          chmod 755 .ulfs/activate.sh && .ulfs/activate.sh ${{ matrix.unity }}
 
       # (On failed activation) Upload unity activation file
       - name: Upload unity activation file
@@ -92,40 +53,46 @@ jobs:
           name: Unity_v${{ matrix.unity }}.alf
           path: ./*.alf
 
-      # Setup testspace
-      - uses: testspace-com/setup-testspace@v1
-        with:
-          domain: ${{ github.repository_owner }}
-
       # Checkout sandbox project
       - uses: actions/checkout@v2
         with:
           ref: "sandbox"
           submodules: "true"
-          fetch-depth: "1"
 
       # Update package submodule
       - name: "Update package submodule"
         working-directory: Packages/dev
         run: git checkout ${{ github.head_ref }}
 
+      # Install codecoverage package
+      - name: "Install codecoverage package"
+        if: always() && steps.activation.conclusion == 'success'
+        run: |
+          [ -n "`echo ${{ matrix.unity }} | grep -e '\(2017.\|2018.\|2019.1.\|2019.2.\)'`" ] && exit 0
+          npm i -g openupm-cli
+          openupm add com.unity.testtools.codecoverage
+
       # Run playmode tests
       - name: "Run playmode tests"
         if: always() && steps.activation.conclusion == 'success'
         run: |
-          # Install codecoverage
-          if [ -z "`echo ${{ matrix.unity }} | grep 2018.`" ]; then
-            npm i -g openupm-cli
-            openupm add com.unity.testtools.codecoverage
-          fi
-
-          $RUN_UNITY -runTests -testPlatform playmode -enableCodeCoverage || exit 0
+          xvfb-run --auto-servernum --server-args='-screen 0 640x480x24' \
+            /opt/Unity/Editor/Unity -batchmode -nographics -silent-crashes -logFile -projectPath . \
+            -runTests -testPlatform playmode -enableCodeCoverage
 
       # Run editmode tests
       - name: "Run editmode tests"
         if: always() && steps.activation.conclusion == 'success'
         run: |
-          $RUN_UNITY -runTests -testPlatform editmode -enableCodeCoverage || exit 0
+          xvfb-run --auto-servernum --server-args='-screen 0 640x480x24' \
+            /opt/Unity/Editor/Unity -batchmode -nographics -silent-crashes -logFile -projectPath . \
+            -runTests -testPlatform editmode -enableCodeCoverage
+
+      # Setup testspace
+      - uses: testspace-com/setup-testspace@v1
+        if: always() && steps.activation.conclusion == 'success'
+        with:
+          domain: ${{ github.repository_owner }}
 
       # Push test results
       - name: Push test results
