@@ -21,7 +21,3 @@ jobs:
           npx semantic-release -e @mob-sakai/semantic-release-upm
         env:
           GITHUB_TOKEN: ${{ github.token }}
-      
-      - run: cat package.json
-      
-      - run: ls

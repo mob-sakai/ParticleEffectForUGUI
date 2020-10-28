@@ -21,13 +21,9 @@ jobs:
 
       - run: |
           npm i --no-save https://gist.github.com/mob-sakai/c90044338361af97a7e8c8a78425bdb3
-          npx semantic-release -e @mob-sakai/semantic-release-upm --dry-run --debug --branches develop
+          npx semantic-release -e @mob-sakai/semantic-release-upm --dry-run --branches develop
         env:
           GITHUB_TOKEN: ${{ github.token }}
-      
-      - run: cat package.json
-      
-      - run: ls
 
   unity-test:
     strategy:
