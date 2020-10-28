@@ -256,6 +256,7 @@ namespace Coffee.UIExtensions
 
                 // Main
                 var index = i * 2;
+                if (activeMeshIndices.Count <= index) break;
                 if (activeMeshIndices[index] && 0 < s_TempMaterials.Count)
                 {
                     var mat = GetModifiedMaterial(s_TempMaterials[0], ps.GetTextureForSprite());
@@ -266,7 +267,7 @@ namespace Coffee.UIExtensions
 
                 // Trails
                 index++;
-                if (materialCount <= j) break;
+                if (activeMeshIndices.Count <= index || materialCount <= j) break;
                 if (activeMeshIndices[index] && 1 < s_TempMaterials.Count)
                 {
                     var mat = GetModifiedMaterial(s_TempMaterials[1], null);
