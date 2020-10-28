@@ -190,30 +190,52 @@ namespace Coffee.UIParticleExtensions
             self.Sort((a, b) =>
             {
                 var tr = transform;
-                var ra = a.GetComponent<ParticleSystemRenderer>();
-                var rb = b.GetComponent<ParticleSystemRenderer>();
+                var aRenderer = a.GetComponent<ParticleSystemRenderer>();
+                var bRenderer = b.GetComponent<ParticleSystemRenderer>();
 
-                if (!Mathf.Approximately(ra.sortingFudge, rb.sortingFudge))
-                    return ra.sortingFudge < rb.sortingFudge ? 1 : -1;
+                // Render queue: ascending
+                var aMat = aRenderer.sharedMaterial;
+                var bMat = bRenderer.sharedMaterial;
+                if (aMat.renderQueue != bMat.renderQueue)
+                    return aMat.renderQueue - bMat.renderQueue;
 
-                var pa = tr.InverseTransformPoint(a.transform.position).z;
-                var pb = tr.InverseTransformPoint(b.transform.position).z;
+                // Sorting layer: ascending
+                if (aRenderer.sortingLayerID != bRenderer.sortingLayerID)
+                    return aRenderer.sortingLayerID - bRenderer.sortingLayerID;
 
-                if (!Mathf.Approximately(pa, pb))
-                    return pa < pb ? 1 : -1;
+                // Sorting order: ascending
+                if (aRenderer.sortingOrder != bRenderer.sortingOrder)
+                    return aRenderer.sortingOrder - bRenderer.sortingOrder;
 
-                var aQueue = ra.sharedMaterial.renderQueue;
-                var bQueue = rb.sharedMaterial.renderQueue;
-                if (aQueue != bQueue)
-                    return aQueue < bQueue ? 1 : -1;
+                // Z position & sortingFudge: descending
+                var aTransform = a.transform;
+                var bTransform = b.transform;
+                var aPos = tr.InverseTransformPoint(aTransform.position).z+ aRenderer.sortingFudge;
+                var bPos = tr.InverseTransformPoint(bTransform.position).z+ bRenderer.sortingFudge;
+                if (!Mathf.Approximately(aPos, bPos))
+                    return (int)Mathf.Sign(bPos - aPos);
 
-                var aHash = ra.sharedMaterial.GetHashCode();
-                var bHash = rb.sharedMaterial.GetHashCode();
-                if (aHash != bHash)
-                    return aHash < bHash ? 1 : -1;
+                // Material instance ID: match
+                if (aMat.GetInstanceID() == bMat.GetInstanceID())
+                    return 0;
 
-                return 0;
+                // Transform: ascending
+                return TransformCompare(aTransform, bTransform);
             });
+        }
+
+        private static int TransformCompare(Transform a, Transform b)
+        {
+            while (true)
+            {
+                if (!a && !b) return 0;
+                if (!a) return -1;
+                if (!b) return 1;
+                if (a.parent == b.parent) return a.GetSiblingIndex() - b.GetSiblingIndex();
+
+                a = a.parent;
+                b = b.parent;
+            }
         }
 
         public static long GetMaterialHash(this ParticleSystem self, bool trail)
