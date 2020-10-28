@@ -1,6 +1,8 @@
 Particle Effect For UGUI (UI Particle)
 ===
 
+**:warning: NOTE: Do not use [the obsolete tags and branches](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/108) to reference the package. They will be removed in near future. :warning:**
+
 This plugin provide a component to render particle effect for uGUI in Unity 2018.2 or later.  
 The particle rendering is maskable and sortable, without Camera, RenderTexture or Canvas.
 
