@@ -60,7 +60,7 @@ Compares this "Baking mesh" approach with the conventional approach:
 
 ## Demo
 
-* [WebGL Demo](http://mob-sakai.github.io/ParticleEffectForUGUI)
+* [WebGL Demo](https://mob-sakai.github.io/Demos/ParticleEffectForUGUI)
 * [WebGL Demo (Cartoon FX & War FX)](https://mob-sakai.github.io/Demos/ParticleEffectForUGUI_CFX)
   * [Cartoon FX Free][CFX] & [War FX][WFX] (by [Jean Moreno (JMO)][JMO]) with UIParticle
 
