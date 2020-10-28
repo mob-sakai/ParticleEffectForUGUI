@@ -1,3 +1,15 @@
+# [3.1.0](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/3.0.1...3.1.0) (2020-10-28)
+
+
+### Bug Fixes
+
+* compile error in 2018.2 ([82f81ef](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/82f81efd7e4ea06465e24f44f96d9726a1a60cc8))
+
+
+### Features
+
+* maskable option to ignore masking ([af5f7e9](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/af5f7e90b0570d5c7fcf045fd6b81036a060e493)), closes [#109](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/109)
+
 ## [3.0.1](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/3.0.0...3.0.1) (2020-10-28)
 
 
