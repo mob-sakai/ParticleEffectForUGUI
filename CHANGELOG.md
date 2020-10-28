@@ -1,3 +1,11 @@
+## [3.0.1](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/3.0.0...3.0.1) (2020-10-28)
+
+
+### Bug Fixes
+
+* fix the sorting algorithm ([7acbf22](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/7acbf22b4de7c3b5251fbb720bb5b575946622f6))
+* in rare cases, an IndexOutOfRangeException is thrown ([f7eac0a](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/f7eac0a34f07767dc04e035f97179cc30935284f))
+
 # [3.0.0](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/2.3.0...3.0.0) (2020-10-27)
 
 
