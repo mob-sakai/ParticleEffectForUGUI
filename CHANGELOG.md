@@ -1,3 +1,11 @@
+## [3.1.1](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/3.1.0...3.1.1) (2020-11-09)
+
+
+### Bug Fixes
+
+* error on build in Unity 2019.3.11-15 ([68669c7](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/68669c739676f2354db4913a0e2296ab1715ee1f)), closes [#114](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/114)
+* null Reference when creating New Scene after Prefab was open in PrefabMode ([22bcecd](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/22bcecd0abd6ad651fcf066e5c9efe9a43fd217a)), closes [#111](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/111)
+
 # [3.1.0](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/3.0.1...3.1.0) (2020-10-28)
 
 
