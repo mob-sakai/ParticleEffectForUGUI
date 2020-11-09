@@ -59,7 +59,7 @@ namespace Coffee.UIExtensions
 
         private static void Refresh(UIParticle particle)
         {
-            if (!particle || !particle.canvas || !particle.canvasRenderer) return;
+            if (!particle || !particle.bakedMesh || !particle.canvas || !particle.canvasRenderer) return;
 
             Profiler.BeginSample("[UIParticle] Modify scale");
             ModifyScale(particle);
