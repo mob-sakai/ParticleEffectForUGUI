@@ -1,3 +1,6 @@
+#if UNITY_2019_3_11 || UNITY_2019_3_12 || UNITY_2019_3_13 || UNITY_2019_3_14 || UNITY_2019_3_15 || UNITY_2019_4_OR_NEWER
+#define SERIALIZE_FIELD_MASKABLE
+#endif
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Coffee.UIParticleExtensions;
@@ -38,7 +41,7 @@ namespace Coffee.UIExtensions
         [Tooltip("Particles")] [SerializeField]
         private List<ParticleSystem> m_Particles = new List<ParticleSystem>();
 
-#if !UNITY_2019_4_OR_NEWER
+#if !SERIALIZE_FIELD_MASKABLE
         [SerializeField]
         private bool m_Maskable = true;
 #endif
@@ -355,7 +358,7 @@ namespace Coffee.UIExtensions
         /// </summary>
         protected override void OnEnable()
         {
-#if !UNITY_2019_4_OR_NEWER
+#if !SERIALIZE_FIELD_MASKABLE
             maskable = m_Maskable;
 #endif
             _cachedPosition = transform.localPosition;
@@ -448,7 +451,7 @@ namespace Coffee.UIExtensions
             SetVerticesDirty();
             m_ShouldRecalculateStencil = true;
             RecalculateClipping();
-#if !UNITY_2019_4_OR_NEWER
+#if !SERIALIZE_FIELD_MASKABLE
             maskable = m_Maskable;
 #endif
         }
