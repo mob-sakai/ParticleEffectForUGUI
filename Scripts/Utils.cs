@@ -210,10 +210,10 @@ namespace Coffee.UIParticleExtensions
                 // Z position & sortingFudge: descending
                 var aTransform = a.transform;
                 var bTransform = b.transform;
-                var aPos = tr.InverseTransformPoint(aTransform.position).z+ aRenderer.sortingFudge;
-                var bPos = tr.InverseTransformPoint(bTransform.position).z+ bRenderer.sortingFudge;
+                var aPos = tr.InverseTransformPoint(aTransform.position).z + aRenderer.sortingFudge;
+                var bPos = tr.InverseTransformPoint(bTransform.position).z + bRenderer.sortingFudge;
                 if (!Mathf.Approximately(aPos, bPos))
-                    return (int)Mathf.Sign(bPos - aPos);
+                    return (int) Mathf.Sign(bPos - aPos);
 
                 // Material instance ID: match
                 if (aMat.GetInstanceID() == bMat.GetInstanceID())

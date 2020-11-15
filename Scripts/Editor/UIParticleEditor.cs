@@ -89,11 +89,11 @@ namespace Coffee.UIExtensions
             {
                 EditorGUI.LabelField(new Rect(rect.x, rect.y, 150, rect.height), s_ContentRenderingOrder);
 
-                #if UNITY_2019_3_OR_NEWER
+#if UNITY_2019_3_OR_NEWER
                 rect = new Rect(rect.width - 55, rect.y, 80, rect.height);
-                #else
+#else
                 rect = new Rect(rect.width - 55, rect.y - 1, 80, rect.height);
-                #endif
+#endif
 
                 if (GUI.Button(rect, s_ContentRefresh, EditorStyles.miniButton))
                 {

@@ -42,8 +42,7 @@ namespace Coffee.UIExtensions
         private List<ParticleSystem> m_Particles = new List<ParticleSystem>();
 
 #if !SERIALIZE_FIELD_MASKABLE
-        [SerializeField]
-        private bool m_Maskable = true;
+        [SerializeField] private bool m_Maskable = true;
 #endif
 
         private bool _shouldBeRemoved;
