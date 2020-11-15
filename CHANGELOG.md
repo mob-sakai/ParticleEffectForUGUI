@@ -1,3 +1,10 @@
+# [3.2.0](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/3.1.1...3.2.0) (2020-11-15)
+
+
+### Features
+
+* compatibility with other IMaterialModifier ([08273cb](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/08273cb0c340ccb4f35120dc804c37d758da9ce1)), closes [#115](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/115)
+
 ## [3.1.1](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/3.1.0...3.1.1) (2020-11-09)
 
 
