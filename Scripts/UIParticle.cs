@@ -245,12 +245,7 @@ namespace Coffee.UIExtensions
             if (count == 0 || !isActiveAndEnabled || particles.Count == 0)
             {
                 canvasRenderer.Clear();
-
-                foreach (var m in s_PrevMaskMaterials)
-                    StencilMaterial.Remove(m);
-
-                foreach (var m in s_PrevModifiedMaterials)
-                    ModifiedMaterial.Remove(m);
+                ClearPreviousMaterials();
                 return;
             }
 
@@ -293,11 +288,18 @@ namespace Coffee.UIExtensions
                 }
             }
 
+            ClearPreviousMaterials();
+        }
+
+        private void ClearPreviousMaterials()
+        {
             foreach (var m in s_PrevMaskMaterials)
                 StencilMaterial.Remove(m);
+            s_PrevMaskMaterials.Clear();
 
             foreach (var m in s_PrevModifiedMaterials)
                 ModifiedMaterial.Remove(m);
+            s_PrevModifiedMaterials.Clear();
         }
 
         private Material GetModifiedMaterial(Material baseMaterial, Texture2D texture)
