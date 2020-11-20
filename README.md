@@ -95,14 +95,11 @@ openupm add com.coffee.ui-particle
 
 Find the manifest.json file in the Packages folder of your project and add a line to `dependencies` field.
 
-* Major version: ![](https://img.shields.io/github/v/release/mob-sakai/ParticleEffectForUGUI)  
-`"com.coffee.ui-particle": "https://github.com/mob-sakai/ParticleEffectForUGUI.git"`
-* Preview version: ![](https://img.shields.io/github/v/release/mob-sakai/ParticleEffectForUGUI?include_prereleases)  
-`"com.coffee.ui-particle": "https://github.com/mob-sakai/ParticleEffectForUGUI.git#preview"`
+* `"com.coffee.ui-particle": "https://github.com/mob-sakai/ParticleEffectForUGUI.git"`
 
 To update the package, change suffix `#{version}` to the target version.
 
-* e.g. `"com.coffee.ui-particle": "https://github.com/mob-sakai/ParticleEffectForUGUI.git#3.0.0",`
+* `"com.coffee.ui-particle": "https://github.com/mob-sakai/ParticleEffectForUGUI.git#3.3.0",`
 
 Or, use [UpmGitExtension](https://github.com/mob-sakai/UpmGitExtension) to install and update the package.
 
@@ -150,11 +147,16 @@ Unity 2018.2 supports embedded packages.
 
 `UIParticle` controls the ParticleSystems that is attached to its own game objects and child game objects.
 
-| Properties | Screenshot |
-| -- | -- |
-| **Ignore Canvas Scale:** Ignore the scale of the root canvas. This prevents it from displaying small even in hierarchy scaling mode of ParticleSystem. <br>**Scale:** Scale the rendering. When the `3D` toggle is enabled, 3D scale (x,y,z) is supported. <br>**AnimatableProperties:** If you want update material properties (e.g. `_MainTex_ST`, `_Color`) in AnimationClip, use this to mark the changes. <br>**Rendering Order:** The ParticleSystems to be rendered. You can change the rendering order and the materials. | ![][inspector] |
+![](https://user-images.githubusercontent.com/12690315/99765566-af129a80-2b42-11eb-88f6-661182d0b619.png)
 
-[inspector]:https://user-images.githubusercontent.com/12690315/95017219-1cea2c00-0693-11eb-9490-c52b8d0fdbb6.png
+| Properties | Description |
+| -- | -- |
+| Maskable | Does this graphic allow masking. |
+| Ignore Canvas Scale | Ignore the scale of the root canvas.<br>This prevents it from displaying small even in hierarchy scaling mode of `ParticleSystem`. |
+| Scale | Scale the rendering.<br>When the `3D` toggle is enabled, 3D scale (x,y,z) is supported. |
+| Animatable Properties | If you want update material properties (e.g. `_MainTex_ST`, `_Color`) in AnimationClip, use this to mark the changes. |
+| Shrink By Material | Shrink rendering by material.<br>Performance will be improved, but in some cases the rendering is not correct. |
+| Rendering Order | The ParticleSystems to be rendered.<br>You can change the rendering order and the materials. |
 
 NOTE: Press `Refresh` button to reconstruct rendering order based on children ParticleSystem's sorting order and z position.
 
