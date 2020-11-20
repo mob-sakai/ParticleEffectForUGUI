@@ -1,3 +1,17 @@
+# [3.3.0](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/3.2.0...3.3.0) (2020-11-20)
+
+
+### Bug Fixes
+
+* the particles may disappear unintentionally ([2ec81da](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/2ec81da04877d63593dd863133b6da149dcd79e6)), closes [#117](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/117)
+
+
+### Features
+
+* ignore rendering of particle systems that do not have a SharedMaterial and TrailMaterial ([08c4aba](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/08c4aba8ab9b5a041d4350a72dae62d25530afca)), closes [#118](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/118)
+* show/hide materials in inspector ([4b4aebf](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/4b4aebff8cdaff9acc696a1094e170e65631135f))
+* shrink rendering by material ([46a7ddd](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/46a7dddd11c3e030192cd998ae1a79441f5e5c14)), closes [#113](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/113)
+
 # [3.2.0](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/3.1.1...3.2.0) (2020-11-15)
 
 
