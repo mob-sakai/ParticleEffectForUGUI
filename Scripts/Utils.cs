@@ -194,8 +194,12 @@ namespace Coffee.UIParticleExtensions
                 var bRenderer = b.GetComponent<ParticleSystemRenderer>();
 
                 // Render queue: ascending
-                var aMat = aRenderer.sharedMaterial;
-                var bMat = bRenderer.sharedMaterial;
+                var aMat = aRenderer.sharedMaterial ?? aRenderer.trailMaterial;
+                var bMat = bRenderer.sharedMaterial ?? bRenderer.trailMaterial;
+                if (!aMat && !bMat) return 0;
+                if (!aMat) return -1;
+                if (!bMat) return 1;
+
                 if (aMat.renderQueue != bMat.renderQueue)
                     return aMat.renderQueue - bMat.renderQueue;
 
