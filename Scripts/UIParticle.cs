@@ -41,6 +41,9 @@ namespace Coffee.UIExtensions
         [Tooltip("Particles")] [SerializeField]
         private List<ParticleSystem> m_Particles = new List<ParticleSystem>();
 
+        [Tooltip("Shrink rendering by material on refresh.\nNOTE: Performance will be improved, but in some cases the rendering is not correct.")] [SerializeField]
+        bool m_ShrinkByMaterial = false;
+
 #if !SERIALIZE_FIELD_MASKABLE
         [SerializeField] private bool m_Maskable = true;
 #endif
@@ -78,6 +81,17 @@ namespace Coffee.UIExtensions
                 _tracker.Clear();
                 if (isActiveAndEnabled && m_IgnoreCanvasScaler)
                     _tracker.Add(this, rectTransform, DrivenTransformProperties.Scale);
+            }
+        }
+
+        public bool shrinkByMaterial
+        {
+            get { return m_ShrinkByMaterial; }
+            set
+            {
+                if (m_ShrinkByMaterial == value) return;
+                m_ShrinkByMaterial = value;
+                RefreshParticles();
             }
         }
 
@@ -217,7 +231,7 @@ namespace Coffee.UIExtensions
             }
 
             particles.Exec(p => p.GetComponent<ParticleSystemRenderer>().enabled = !enabled);
-            particles.SortForRendering(transform);
+            particles.SortForRendering(transform, m_ShrinkByMaterial);
 
             SetMaterialDirty();
         }
