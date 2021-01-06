@@ -224,17 +224,10 @@ namespace Coffee.UIParticleExtensions
                     return (int) Mathf.Sign(bPos - aPos);
 
                 return (int) Mathf.Sign(GetIndex(self, a) - GetIndex(self, b));
-
-                // Material instance ID: match
-                // if (aMat.GetInstanceID() == bMat.GetInstanceID())
-                // return 0;
-
-                // Transform: ascending
-                // return TransformCompare(aTransform, bTransform);
             });
         }
 
-        private static int GetIndex(IReadOnlyList<ParticleSystem> list, Object ps)
+        private static int GetIndex(IList<ParticleSystem> list, Object ps)
         {
             for (var i = 0; i < list.Count; i++)
             {
@@ -243,20 +236,6 @@ namespace Coffee.UIParticleExtensions
 
             return 0;
         }
-
-        // private static int TransformCompare(Transform a, Transform b)
-        // {
-        //     while (true)
-        //     {
-        //         if (!a && !b) return 0;
-        //         if (!a) return -1;
-        //         if (!b) return 1;
-        //         if (a.parent == b.parent) return a.GetSiblingIndex() - b.GetSiblingIndex();
-        //
-        //         a = a.parent;
-        //         b = b.parent;
-        //     }
-        // }
 
         public static long GetMaterialHash(this ParticleSystem self, bool trail)
         {
