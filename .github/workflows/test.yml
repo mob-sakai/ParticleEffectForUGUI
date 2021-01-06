@@ -1,0 +1,96 @@
+# Secrets
+#   UNITY_LICENSE:
+name: test
+
+on:
+  push:
+    branches:
+      - develop
+    tags:
+      - "!*"
+  pull_request:
+    types:
+      - opened
+      - synchronize
+
+jobs:
+  unity-test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        unityVersion: [
+            "2018.3.14f1",
+            "2018.4.30f1",
+            "2019.1.14f1",
+            "2019.2.21f1",
+            "2019.3.15f1",
+            "2019.4.16f1",
+            "2020.1.17f1",
+            "2020.2.1f1",
+          ]
+    env:
+      UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+
+    steps:
+      # Checkout sandbox project
+      - uses: actions/checkout@v2
+        with:
+          ref: sandbox
+          submodules: true
+          fetch-depth: 0
+
+      # Update package submodule
+      - name: "Update package submodule"
+        working-directory: Packages/dev
+        run: git checkout ${{ github.sha }}
+
+      - uses: actions/cache@v2
+        with:
+          path: Library
+          key: Library-${{ matrix.unityVersion }}-${{ github.sha }}
+          restore-keys: |
+            Library-${{ matrix.unityVersion }}-
+            Library-
+
+      # Install codecoverage package
+      - name: "Install codecoverage package"
+        if: startsWith(matrix.unityVersion, '2019.4.')
+        run: |
+          npx openupm-cli add -f com.unity.testtools.codecoverage@0.4.0-preview
+
+      # Run tests
+      - name: "Run tests"
+        uses: game-ci/unity-test-runner@main
+        with:
+          unityVersion: ${{ matrix.unityVersion }}
+          customImage: ghcr.io/mob-sakai/unity3d:${{ matrix.unityVersion }}
+          customParameters: -enableCodeCoverage
+          # customParameters: -enableCodeCoverage -coverageOptions assemblyFilters:+CSharpCompilerSettings_,-*-CSharp,-*.Tests,-IgnoreAccessibility
+
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: TestResults-${{ matrix.unityVersion }}
+          path: |
+            artifacts/*.xml
+            CodeCoverage/**/TestCoverageResults_*.xml
+
+  publish:
+    needs: unity-test
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      
+      - uses: actions/download-artifact@v2
+        with:
+          path: artifacts
+      
+      - uses: testspace-com/setup-testspace@v1
+        with:
+          domain: ${{github.repository_owner}}
+
+      - name: Push test results
+        if: always()
+        run: |
+          testspace `find . -name '*.xml' | tr '\n' ' '`
