@@ -1,3 +1,11 @@
+## [3.3.1](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/3.3.0...3.3.1) (2021-02-01)
+
+
+### Bug Fixes
+
+* ignore material check and transform check ([d11cd0a](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/d11cd0a06d76a32b2a119387bddc34c703b9b497)), closes [#119](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/119)
+* the trail is incorrect in SimulationSpace.Local ([9313489](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/9313489552b30f2e2b0b42a641f5e0502995b03d))
+
 # [3.3.0](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/3.2.0...3.3.0) (2020-11-20)
 
 
