@@ -1,3 +1,11 @@
+## [3.3.2](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/3.3.1...3.3.2) (2021-02-01)
+
+
+### Bug Fixes
+
+* _cachedPosition defaults to localPosition ([c0aa89b](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/c0aa89bd6f7847723a4702b6ca70fa202e8a8304)), closes [#121](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/121)
+* submeshes can't over 8 ([2a1f334](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/2a1f3345bacdecf38e8890781a181a1392224e35)), closes [#122](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/122)
+
 ## [3.3.1](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/3.3.0...3.3.1) (2021-02-01)
 
 
