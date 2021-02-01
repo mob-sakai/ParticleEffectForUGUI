@@ -222,6 +222,7 @@ namespace Coffee.UIExtensions
         {
             if (!root) return;
             root.GetComponentsInChildren(particles);
+            particles.RemoveAll(x => x.GetComponentInParent<UIParticle>() != this);
 
             foreach (var ps in particles)
             {
@@ -442,14 +443,6 @@ namespace Coffee.UIExtensions
             if (enabled && m_IsTrail)
             {
                 UnityEngine.Debug.LogWarningFormat(this, "[UIParticle] The UIParticle component should be removed: {0}\nReason: UIParticle for trails is no longer needed.", name);
-                gameObject.hideFlags = HideFlags.None;
-                _shouldBeRemoved = true;
-                enabled = false;
-                return;
-            }
-            else if (enabled && transform.parent && transform.parent.GetComponentInParent<UIParticle>())
-            {
-                UnityEngine.Debug.LogWarningFormat(this, "[UIParticle] The UIParticle component should be removed: {0}\nReason: The parent UIParticle exists.", name);
                 gameObject.hideFlags = HideFlags.None;
                 _shouldBeRemoved = true;
                 enabled = false;
