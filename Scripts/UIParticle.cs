@@ -387,7 +387,7 @@ namespace Coffee.UIExtensions
 #if !SERIALIZE_FIELD_MASKABLE
             maskable = m_Maskable;
 #endif
-            _cachedPosition = transform.localPosition;
+            _cachedPosition = transform.position;
             activeMeshIndices.Clear();
 
             UIParticleUpdater.Register(this);
