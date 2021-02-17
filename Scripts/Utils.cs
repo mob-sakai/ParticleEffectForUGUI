@@ -65,6 +65,16 @@ namespace Coffee.UIParticleExtensions
 
             return false;
         }
+
+        public static bool AnyFast<T>(this List<T> self, Predicate<T> predicate) where T : Object
+        {
+            for (var i = 0; i < self.Count; ++i)
+            {
+                if (self[i] && predicate(self[i])) return true;
+            }
+
+            return false;
+        }
     }
 
     internal static class MeshExtensions

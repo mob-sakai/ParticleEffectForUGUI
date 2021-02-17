@@ -1,6 +1,7 @@
 #if UNITY_2019_3_11 || UNITY_2019_3_12 || UNITY_2019_3_13 || UNITY_2019_3_14 || UNITY_2019_3_15 || UNITY_2019_4_OR_NEWER
 #define SERIALIZE_FIELD_MASKABLE
 #endif
+using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Coffee.UIParticleExtensions;
@@ -60,6 +61,7 @@ namespace Coffee.UIExtensions
         private static readonly List<Material> s_PrevMaskMaterials = new List<Material>();
         private static readonly List<Material> s_PrevModifiedMaterials = new List<Material>();
         private static readonly List<Component> s_Components = new List<Component>();
+        private static readonly List<ParticleSystem> s_ParticleSystems = new List<ParticleSystem>();
 
 
         /// <summary>
@@ -405,6 +407,22 @@ namespace Coffee.UIExtensions
             base.OnEnable();
 
             InitializeIfNeeded();
+        }
+
+        private new IEnumerator Start()
+        {
+            // #148: Particle Sub Emitter not showing when start game
+            var hasPlayingSubEmitter = particles.AnyFast(ps =>
+            {
+                ps.GetComponentsInChildren(false, s_ParticleSystems);
+                return s_ParticleSystems.AnyFast(p => p.isPlaying && p.subEmitters.enabled);
+            });
+            s_ParticleSystems.Clear();
+            if (!hasPlayingSubEmitter) yield break;
+
+            Stop();
+            yield return null;
+            Play();
         }
 
         /// <summary>
