@@ -266,7 +266,7 @@ namespace Coffee.UIExtensions
 
             //
             GetComponents(typeof(IMaterialModifier), s_Components);
-            var materialCount = Mathf.Max(8, count);
+            var materialCount = Mathf.Min(8, count);
             canvasRenderer.materialCount = materialCount;
             var j = 0;
             for (var i = 0; i < particles.Count; i++)
