@@ -260,9 +260,9 @@ namespace Coffee.UIExtensions
                     z.floatValue = y.floatValue = x.floatValue;
             }
 
-            x.floatValue = Mathf.Max(0.001f, x.floatValue);
-            y.floatValue = Mathf.Max(0.001f, y.floatValue);
-            z.floatValue = Mathf.Max(0.001f, z.floatValue);
+            if (x.floatValue < 0.001f) x.floatValue = 0.001f;
+            if (y.floatValue < 0.001f) y.floatValue = 0.001f;
+            if (z.floatValue < 0.001f) z.floatValue = 0.001f;
 
             EditorGUI.BeginChangeCheck();
             showXyz = GUILayout.Toggle(showXyz, s_Content3D, EditorStyles.miniButton, GUILayout.Width(30));
