@@ -29,8 +29,6 @@ jobs:
             "2020.1.17f1",
             "2020.2.1f1",
           ]
-    env:
-      UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
 
     steps:
       # Checkout sandbox project
@@ -64,9 +62,9 @@ jobs:
         uses: game-ci/unity-test-runner@main
         with:
           unityVersion: ${{ matrix.unityVersion }}
-          customImage: ghcr.io/mob-sakai/unity3d:${{ matrix.unityVersion }}
-          customParameters: -enableCodeCoverage
-          # customParameters: -enableCodeCoverage -coverageOptions assemblyFilters:+CSharpCompilerSettings_,-*-CSharp,-*.Tests,-IgnoreAccessibility
+          customParameters: -nographics -enableCodeCoverage -coverageOptions assemblyFilters:+Coffee.UIParticle.*Tests
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
 
       - uses: actions/upload-artifact@v2
         if: always()
