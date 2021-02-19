@@ -250,19 +250,26 @@ namespace Coffee.UIExtensions
             EditorGUILayout.BeginHorizontal();
             if (showXyz)
             {
+                EditorGUI.BeginChangeCheck();
                 EditorGUILayout.PropertyField(sp);
+                if (EditorGUI.EndChangeCheck())
+                {
+                    x.floatValue = Mathf.Max(0.001f, x.floatValue);
+                    y.floatValue = Mathf.Max(0.001f, y.floatValue);
+                    z.floatValue = Mathf.Max(0.001f, z.floatValue);
+                }
             }
             else
             {
                 EditorGUI.BeginChangeCheck();
                 EditorGUILayout.PropertyField(x, s_ContentScale);
                 if (EditorGUI.EndChangeCheck())
-                    z.floatValue = y.floatValue = x.floatValue;
+                {
+                    x.floatValue = Mathf.Max(0.001f, x.floatValue);
+                    y.floatValue = Mathf.Max(0.001f, x.floatValue);
+                    z.floatValue = Mathf.Max(0.001f, x.floatValue);
+                }
             }
-
-            x.floatValue = Mathf.Max(0.001f, x.floatValue);
-            y.floatValue = Mathf.Max(0.001f, y.floatValue);
-            z.floatValue = Mathf.Max(0.001f, z.floatValue);
 
             EditorGUI.BeginChangeCheck();
             showXyz = GUILayout.Toggle(showXyz, s_Content3D, EditorStyles.miniButton, GUILayout.Width(30));
