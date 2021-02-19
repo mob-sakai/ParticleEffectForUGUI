@@ -12,12 +12,13 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
-    if: "! contains(github.event.head_commit.message, '[skip ci]') && ! contains(github.event.head_commit.message, '[ci skip]')"
     steps:
       - uses: actions/checkout@v2
 
-      - run: |
-          npm i --no-save https://gist.github.com/mob-sakai/c90044338361af97a7e8c8a78425bdb3
-          npx semantic-release -e @mob-sakai/semantic-release-upm
+      - uses: cycjimmy/semantic-release-action@v2
+        with:
+          extra_plugins: |
+            @semantic-release/changelog
+            @semantic-release/git
         env:
           GITHUB_TOKEN: ${{ github.token }}
