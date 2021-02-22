@@ -1,3 +1,12 @@
+## [3.3.4](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/3.3.3...3.3.4) (2021-02-22)
+
+
+### Bug Fixes
+
+* Multiselecting sets all scales to the same value ([13223b2](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/13223b2d747609cf88b424ad590bda7f857b387d))
+* support sub emitter with 'PlayOnAwake' ([d5ce78a](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/d5ce78ae5acf2740ba7fdc6cde9f197c4e165484))
+* The maximum material count is 8 ([3bb5241](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/3bb52412751360409747192150188ae904f2c3d3))
+
 ## [3.3.3](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/3.3.2...3.3.3) (2021-02-03)
 
 
