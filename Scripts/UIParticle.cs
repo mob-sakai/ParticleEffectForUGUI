@@ -178,6 +178,11 @@ namespace Coffee.UIExtensions
             particles.Exec(p => p.Stop());
         }
 
+        public void Clear()
+        {
+            particles.Exec(p => p.Clear());
+        }
+
         public void SetParticleSystemInstance(GameObject instance)
         {
             SetParticleSystemInstance(instance, true);
@@ -411,17 +416,20 @@ namespace Coffee.UIExtensions
 
         private new IEnumerator Start()
         {
+            // #147: ParticleSystem creates Particles in wrong position during prewarm
             // #148: Particle Sub Emitter not showing when start game
-            var hasPlayingSubEmitter = particles.AnyFast(ps =>
+            var delayToPlay = particles.AnyFast(ps =>
             {
                 ps.GetComponentsInChildren(false, s_ParticleSystems);
-                return s_ParticleSystems.AnyFast(p => p.isPlaying && p.subEmitters.enabled);
+                return s_ParticleSystems.AnyFast(p => p.isPlaying && (p.subEmitters.enabled || p.main.prewarm));
             });
             s_ParticleSystems.Clear();
-            if (!hasPlayingSubEmitter) yield break;
+            if (!delayToPlay) yield break;
 
             Stop();
+            Clear();
             yield return null;
+
             Play();
         }
 
