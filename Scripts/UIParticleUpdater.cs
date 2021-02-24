@@ -154,6 +154,9 @@ namespace Coffee.UIExtensions
 
             particle.cachedPosition = position;
 
+            if (particle.activeMeshIndices.CountFast() == 0)
+                diff = Vector3.zero;
+
             for (var i = 0; i < particle.particles.Count; i++)
             {
                 Profiler.BeginSample("[UIParticle] Bake Mesh > Push index");
