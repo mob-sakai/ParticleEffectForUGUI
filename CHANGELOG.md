@@ -1,3 +1,11 @@
+## [3.3.5](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/3.3.4...3.3.5) (2021-02-28)
+
+
+### Bug Fixes
+
+* fix cached position for pre-warmed particles ([e3f42d7](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/e3f42d747a7fd973b5813cc72a9444943a6c3ad0))
+* ParticleSystem creates particles in wrong position during pre-warm ([b93e0e4](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/b93e0e4701c7011176eeec5c109dda7f4ea632e0)), closes [#147](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/147)
+
 ## [3.3.4](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/3.3.3...3.3.4) (2021-02-22)
 
 
