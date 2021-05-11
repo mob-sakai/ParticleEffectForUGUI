@@ -2,6 +2,7 @@
 
 namespace Coffee.UIParticleExtensions
 {
+    [AddComponentMenu("")]
     internal class BakingCamera : MonoBehaviour
     {
         static BakingCamera s_Instance;
