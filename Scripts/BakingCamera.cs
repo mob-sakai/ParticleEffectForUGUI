@@ -45,7 +45,6 @@ namespace Coffee.UIParticleExtensions
         }
 
         private Camera _camera;
-        // private int _refCount;
 
         private static BakingCamera Create()
         {
