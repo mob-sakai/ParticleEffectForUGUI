@@ -1,3 +1,11 @@
+## [3.3.6](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/3.3.5...3.3.6) (2021-05-11)
+
+
+### Bug Fixes
+
+* In rare cases, the generated camera (for baking) will not be deactivated ([12c748a](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/12c748a8cd4adfd2dc5f085cec77050431f261a4))
+* remove from "Add Component" menu ([476c402](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/476c4027ff5f70fb9b4c026dd5fc59bf5a876227))
+
 ## [3.3.5](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/3.3.4...3.3.5) (2021-02-28)
 
 
