@@ -40,7 +40,7 @@ namespace Coffee.UIParticleExtensions
                 // Find instance in scene, or create new one.
                 return s_Instance
                     ? s_Instance
-                    : (s_Instance = FindObjectOfType<BakingCamera>() ?? Create());
+                    : (s_Instance = Create());
             }
         }
 
@@ -55,6 +55,7 @@ namespace Coffee.UIParticleExtensions
 
             var inst = gameObject.AddComponent<BakingCamera>();
             inst._camera = gameObject.AddComponent<Camera>();
+            inst._camera.enabled = false;
             inst._camera.orthographic = true;
 
             // Turn camera off because particle mesh baker will use only camera matrix
