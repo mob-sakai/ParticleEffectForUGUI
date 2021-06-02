@@ -1,3 +1,10 @@
+## [3.3.7](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/3.3.6...3.3.7) (2021-06-02)
+
+
+### Bug Fixes
+
+* Refresh() will be called multiple times in the same frame, due to external assets ([0b9d80d](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/0b9d80da939580c72ca1471081d7a034edc985d4))
+
 ## [3.3.6](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/3.3.5...3.3.6) (2021-05-11)
 
 
