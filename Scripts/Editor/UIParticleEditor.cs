@@ -22,8 +22,6 @@ namespace Coffee.UIExtensions
         private static readonly GUIContent s_ContentTrailMaterial = new GUIContent("Trail Material");
         private static readonly GUIContent s_Content3D = new GUIContent("3D");
         private static readonly GUIContent s_ContentScale = new GUIContent("Scale");
-        private static readonly List<UIParticle> s_TempParents = new List<UIParticle>();
-        private static readonly List<UIParticle> s_TempChildren = new List<UIParticle>();
 
         private SerializedProperty _spMaskable;
         private SerializedProperty _spScale;
