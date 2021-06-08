@@ -1,3 +1,10 @@
+## [3.3.8](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/3.3.7...3.3.8) (2021-06-08)
+
+
+### Bug Fixes
+
+* improve performance ([e352d15](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/e352d153cef8c1efb2792e35010d7eed1e31a040))
+
 ## [3.3.7](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/3.3.6...3.3.7) (2021-06-02)
 
 
