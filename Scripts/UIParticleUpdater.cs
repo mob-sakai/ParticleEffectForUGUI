@@ -74,12 +74,12 @@ namespace Coffee.UIExtensions
             BakeMesh(particle);
             Profiler.EndSample();
 
-            if (QualitySettings.activeColorSpace == ColorSpace.Linear)
-            {
-                Profiler.BeginSample("[UIParticle] Modify color space to linear");
-                particle.bakedMesh.ModifyColorSpaceToLinear();
-                Profiler.EndSample();
-            }
+            // if (QualitySettings.activeColorSpace == ColorSpace.Linear)
+            // {
+            //     Profiler.BeginSample("[UIParticle] Modify color space to linear");
+            //     particle.bakedMesh.ModifyColorSpaceToLinear();
+            //     Profiler.EndSample();
+            // }
 
             Profiler.BeginSample("[UIParticle] Set mesh to CanvasRenderer");
             particle.canvasRenderer.SetMesh(particle.bakedMesh);
