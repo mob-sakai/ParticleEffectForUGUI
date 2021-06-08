@@ -104,7 +104,8 @@ namespace Coffee.UIParticleExtensions
 
     internal static class MeshPool
     {
-        private static readonly Stack<Mesh> s_Pool = new Stack<Mesh>();
+        private static readonly Stack<Mesh> s_Pool = new Stack<Mesh>(32);
+        private static readonly HashSet<int> s_HashPool = new HashSet<int>();
 
         public static void Init()
         {
@@ -117,6 +118,7 @@ namespace Coffee.UIParticleExtensions
                 var m = new Mesh();
                 m.MarkDynamic();
                 s_Pool.Push(m);
+                s_HashPool.Add(m.GetInstanceID());
             }
         }
 
@@ -126,7 +128,11 @@ namespace Coffee.UIParticleExtensions
             while (0 < s_Pool.Count)
             {
                 m = s_Pool.Pop();
-                if (m) return m;
+                if (m)
+                {
+                    s_HashPool.Remove(m.GetInstanceID());
+                    return m;
+                }
             }
 
             m = new Mesh();
@@ -136,9 +142,14 @@ namespace Coffee.UIParticleExtensions
 
         public static void Return(Mesh mesh)
         {
-            if (!mesh || s_Pool.Contains(mesh)) return;
+            if (!mesh) return;
+
+            var id = mesh.GetInstanceID();
+            if (s_HashPool.Contains(id)) return;
+
             mesh.Clear(false);
             s_Pool.Push(mesh);
+            s_HashPool.Add(id);
         }
     }
 
