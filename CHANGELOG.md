@@ -1,3 +1,10 @@
+## [3.3.9](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/3.3.8...3.3.9) (2021-08-02)
+
+
+### Bug Fixes
+
+* fix for warning CS0618 ([61760d9](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/61760d940cdd4baacaa196ac1631a0a1a40b7204))
+
 ## [3.3.8](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/3.3.7...3.3.8) (2021-06-08)
 
 
