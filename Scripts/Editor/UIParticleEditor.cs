@@ -216,7 +216,12 @@ namespace Coffee.UIExtensions
             var stage = UnityEditor.Experimental.SceneManagement.PrefabStageUtility.GetCurrentPrefabStage();
             if (stage != null && stage.scene.isLoaded)
             {
-                PrefabUtility.SaveAsPrefabAsset(stage.prefabContentsRoot, stage.prefabAssetPath);
+#if UNITY_2020_1_OR_NEWER
+				string prefabAssetPath = stage.assetPath;
+#else
+				string prefabAssetPath = stage.prefabAssetPath;
+#endif
+				PrefabUtility.SaveAsPrefabAsset(stage.prefabContentsRoot, prefabAssetPath);
             }
 #endif
         }
