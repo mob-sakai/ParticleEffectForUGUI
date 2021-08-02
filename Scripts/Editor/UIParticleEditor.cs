@@ -217,11 +217,11 @@ namespace Coffee.UIExtensions
             if (stage != null && stage.scene.isLoaded)
             {
 #if UNITY_2020_1_OR_NEWER
-				string prefabAssetPath = stage.assetPath;
+                string prefabAssetPath = stage.assetPath;
 #else
-				string prefabAssetPath = stage.prefabAssetPath;
+                string prefabAssetPath = stage.prefabAssetPath;
 #endif
-				PrefabUtility.SaveAsPrefabAsset(stage.prefabContentsRoot, prefabAssetPath);
+                PrefabUtility.SaveAsPrefabAsset(stage.prefabContentsRoot, prefabAssetPath);
             }
 #endif
         }
