@@ -7,7 +7,6 @@ using System.Runtime.CompilerServices;
 using Coffee.UIParticleExtensions;
 using UnityEngine;
 using UnityEngine.Rendering;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 [assembly: InternalsVisibleTo("Coffee.UIParticle.Editor")]
@@ -21,9 +20,6 @@ namespace Coffee.UIExtensions
     [RequireComponent(typeof(RectTransform))]
     [RequireComponent(typeof(CanvasRenderer))]
     public class UIParticle : MaskableGraphic
-#if UNITY_EDITOR
-        , ISerializationCallbackReceiver
-#endif
     {
         [HideInInspector] [SerializeField] internal bool m_IsTrail = false;
 
@@ -462,26 +458,6 @@ namespace Coffee.UIExtensions
 #if !SERIALIZE_FIELD_MASKABLE
             maskable = m_Maskable;
 #endif
-        }
-
-        void ISerializationCallbackReceiver.OnBeforeSerialize()
-        {
-            if (Application.isPlaying) return;
-            InitializeIfNeeded();
-        }
-
-        void ISerializationCallbackReceiver.OnAfterDeserialize()
-        {
-            if (m_Scale3D == Vector3.zero)
-            {
-                scale = m_Scale;
-            }
-
-            UnityEditor.EditorApplication.delayCall += () =>
-            {
-                if (Application.isPlaying || !this) return;
-                InitializeIfNeeded();
-            };
         }
 #endif
     }
