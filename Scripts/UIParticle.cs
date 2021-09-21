@@ -44,7 +44,6 @@ namespace Coffee.UIExtensions
         private readonly List<Material> _modifiedMaterials = new List<Material>();
         private readonly List<Material> _maskMaterials = new List<Material>();
         private readonly List<bool> _activeMeshIndices = new List<bool>();
-        private Vector3 _cachedPosition;
         private static readonly List<Material> s_TempMaterials = new List<Material>(2);
         private static MaterialPropertyBlock s_Mpb;
         private static readonly List<Material> s_PrevMaskMaterials = new List<Material>();
@@ -121,12 +120,6 @@ namespace Coffee.UIExtensions
                 _activeMeshIndices.AddRange(value);
                 UpdateMaterial();
             }
-        }
-
-        internal Vector3 cachedPosition
-        {
-            get { return _cachedPosition; }
-            set { _cachedPosition = value; }
         }
 
         public void Play()
