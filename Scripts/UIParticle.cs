@@ -24,7 +24,7 @@ namespace Coffee.UIExtensions
         [HideInInspector] [SerializeField] internal bool m_IsTrail = false;
 
         [Tooltip("Particle effect scale")] [SerializeField]
-        private Vector3 m_Scale3D = new Vector3(10, 10, 10);
+        private Vector3 m_Scale3D = new Vector3(1, 1, 1);
 
         [Tooltip("Animatable material properties. If you want to change the material properties of the ParticleSystem in Animation, enable it.")] [SerializeField]
         internal AnimatableProperty[] m_AnimatableProperties = new AnimatableProperty[0];
