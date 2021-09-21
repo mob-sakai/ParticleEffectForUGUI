@@ -238,14 +238,7 @@ namespace Coffee.UIExtensions
             EditorGUILayout.BeginHorizontal();
             if (showXyz)
             {
-                EditorGUI.BeginChangeCheck();
                 EditorGUILayout.PropertyField(sp);
-                if (EditorGUI.EndChangeCheck())
-                {
-                    x.floatValue = Mathf.Max(0.001f, x.floatValue);
-                    y.floatValue = Mathf.Max(0.001f, y.floatValue);
-                    z.floatValue = Mathf.Max(0.001f, z.floatValue);
-                }
             }
             else
             {
@@ -253,9 +246,7 @@ namespace Coffee.UIExtensions
                 EditorGUILayout.PropertyField(x, s_ContentScale);
                 if (EditorGUI.EndChangeCheck())
                 {
-                    x.floatValue = Mathf.Max(0.001f, x.floatValue);
-                    y.floatValue = Mathf.Max(0.001f, x.floatValue);
-                    z.floatValue = Mathf.Max(0.001f, x.floatValue);
+                    y.floatValue = z.floatValue = x.floatValue;
                 }
             }
 

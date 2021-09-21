@@ -28,10 +28,7 @@ namespace Coffee.UIExtensions
         [HideInInspector] [SerializeField] internal bool m_IsTrail = false;
 
         [Tooltip("Particle effect scale")] [SerializeField]
-        float m_Scale = 100;
-
-        [Tooltip("Particle effect scale")] [SerializeField]
-        private Vector3 m_Scale3D;
+        private Vector3 m_Scale3D = new Vector3(10, 10, 10);
 
         [Tooltip("Animatable material properties. If you want to change the material properties of the ParticleSystem in Animation, enable it.")] [SerializeField]
         internal AnimatableProperty[] m_AnimatableProperties = new AnimatableProperty[0];
@@ -86,11 +83,7 @@ namespace Coffee.UIExtensions
         public float scale
         {
             get { return m_Scale3D.x; }
-            set
-            {
-                m_Scale = Mathf.Max(0.001f, value);
-                m_Scale3D = new Vector3(m_Scale, m_Scale, m_Scale);
-            }
+            set { m_Scale3D = new Vector3(value, value, value); }
         }
 
         /// <summary>
@@ -99,13 +92,7 @@ namespace Coffee.UIExtensions
         public Vector3 scale3D
         {
             get { return m_Scale3D; }
-            set
-            {
-                if (m_Scale3D == value) return;
-                m_Scale3D.x = Mathf.Max(0.001f, value.x);
-                m_Scale3D.y = Mathf.Max(0.001f, value.y);
-                m_Scale3D.z = Mathf.Max(0.001f, value.z);
-            }
+            set { m_Scale3D = value; }
         }
 
         internal Mesh bakedMesh
