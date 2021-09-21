@@ -118,8 +118,6 @@ namespace Coffee.UIExtensions
             particle.bakedMesh.Clear(false);
             Profiler.EndSample();
 
-            // Get camera for baking mesh.
-            var camera = BakingCamera.GetCamera(particle.canvas);
             var root = particle.transform;
             var rootMatrix = Matrix4x4.Rotate(root.rotation).inverse
                              * Matrix4x4.Scale(root.lossyScale).inverse;
@@ -213,7 +211,11 @@ namespace Coffee.UIExtensions
                     if (hash != 0)
                     {
                         var m = MeshHelper.GetTemporaryMesh();
-                        r.BakeMesh(m, camera, true);
+                        if (camera)
+                            r.BakeMesh(m, camera, true);
+                        else
+                            r.BakeMesh(m, true);
+
                         MeshHelper.Push(i * 2, hash, m, matrix);
                     }
 
@@ -234,7 +236,11 @@ namespace Coffee.UIExtensions
                         var m = MeshHelper.GetTemporaryMesh();
                         try
                         {
-                            r.BakeTrailsMesh(m, camera, true);
+                            if (camera)
+                                r.BakeTrailsMesh(m, camera, true);
+                            else
+                                r.BakeTrailsMesh(m, true);
+
                             MeshHelper.Push(i * 2 + 1, hash, m, matrix);
                         }
                         catch
