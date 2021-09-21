@@ -95,7 +95,18 @@ namespace Coffee.UIParticleExtensions
             cis.Clear();
             Profiler.EndSample();
 
+            Profiler.BeginSample("[UIParticle] MeshHelper > Recalculate Bounds");
             result.RecalculateBounds();
+            Profiler.EndSample();
+
+            var bounds =  result.bounds;
+            var center = bounds.center;
+            center.z = 0;
+            bounds.center = center;
+            var extents = bounds.extents;
+            extents.z = 0;
+            bounds.extents = extents;
+            result.bounds = bounds;
         }
 
         public static void DiscardTemporaryMesh(Mesh mesh)
