@@ -32,8 +32,8 @@ namespace Coffee.UIExtensions
         [Tooltip("Particles")] [SerializeField]
         private List<ParticleSystem> m_Particles = new List<ParticleSystem>();
 
-        [Tooltip("Shrink rendering by material on refresh.\nNOTE: Performance will be improved, but in some cases the rendering is not correct.")] [SerializeField]
-        bool m_ShrinkByMaterial = false;
+        [Tooltip("Shrink rendering by material on refresh.\nNOTE: This option will improve canvas batching and performance, but in some cases the rendering is not correct.")] [SerializeField]
+        private bool m_ShrinkByMaterial = true;
 
 #if !SERIALIZE_FIELD_MASKABLE
         [SerializeField] private bool m_Maskable = true;
