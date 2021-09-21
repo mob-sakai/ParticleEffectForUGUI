@@ -25,7 +25,6 @@ namespace Coffee.UIExtensions
 
         private SerializedProperty _spMaskable;
         private SerializedProperty _spScale;
-        private SerializedProperty _spIgnoreCanvasScaler;
         private SerializedProperty _spAnimatableProperties;
         private SerializedProperty _spShrinkByMaterial;
 
@@ -55,7 +54,6 @@ namespace Coffee.UIExtensions
             base.OnEnable();
             _spMaskable = serializedObject.FindProperty("m_Maskable");
             _spScale = serializedObject.FindProperty("m_Scale3D");
-            _spIgnoreCanvasScaler = serializedObject.FindProperty("m_IgnoreCanvasScaler");
             _spAnimatableProperties = serializedObject.FindProperty("m_AnimatableProperties");
             _spShrinkByMaterial = serializedObject.FindProperty("m_ShrinkByMaterial");
             _showMaterials = EditorPrefs.GetBool("Coffee.UIExtensions.UIParticleEditor._showMaterials", true);
@@ -137,19 +135,6 @@ namespace Coffee.UIExtensions
 
             // Maskable
             EditorGUILayout.PropertyField(_spMaskable);
-
-            // IgnoreCanvasScaler
-            using (var ccs = new EditorGUI.ChangeCheckScope())
-            {
-                EditorGUILayout.PropertyField(_spIgnoreCanvasScaler);
-                if (ccs.changed)
-                {
-                    foreach (UIParticle p in targets)
-                    {
-                        p.ignoreCanvasScaler = _spIgnoreCanvasScaler.boolValue;
-                    }
-                }
-            }
 
             // Scale
             _xyzMode = DrawFloatOrVector3Field(_spScale, _xyzMode);

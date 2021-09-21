@@ -27,9 +27,6 @@ namespace Coffee.UIExtensions
     {
         [HideInInspector] [SerializeField] internal bool m_IsTrail = false;
 
-        [Tooltip("Ignore canvas scaler")] [SerializeField] [FormerlySerializedAs("m_IgnoreParent")]
-        bool m_IgnoreCanvasScaler = true;
-
         [Tooltip("Particle effect scale")] [SerializeField]
         float m_Scale = 100;
 
@@ -50,7 +47,6 @@ namespace Coffee.UIExtensions
 #endif
 
         private bool _shouldBeRemoved;
-        private DrivenRectTransformTracker _tracker;
         private Mesh _bakedMesh;
         private readonly List<Material> _modifiedMaterials = new List<Material>();
         private readonly List<Material> _maskMaterials = new List<Material>();
@@ -71,19 +67,6 @@ namespace Coffee.UIExtensions
         {
             get { return false; }
             set { }
-        }
-
-        public bool ignoreCanvasScaler
-        {
-            get { return m_IgnoreCanvasScaler; }
-            set
-            {
-                // if (m_IgnoreCanvasScaler == value) return;
-                m_IgnoreCanvasScaler = value;
-                _tracker.Clear();
-                if (isActiveAndEnabled && m_IgnoreCanvasScaler)
-                    _tracker.Add(this, rectTransform, DrivenTransformProperties.Scale);
-            }
         }
 
         public bool shrinkByMaterial
@@ -400,11 +383,6 @@ namespace Coffee.UIExtensions
             UIParticleUpdater.Register(this);
             particles.Exec(p => p.GetComponent<ParticleSystemRenderer>().enabled = false);
 
-            if (isActiveAndEnabled && m_IgnoreCanvasScaler)
-            {
-                _tracker.Add(this, rectTransform, DrivenTransformProperties.Scale);
-            }
-
             // Create objects.
             _bakedMesh = MeshPool.Rent();
 
@@ -440,7 +418,6 @@ namespace Coffee.UIExtensions
             UIParticleUpdater.Unregister(this);
             if (!_shouldBeRemoved)
                 particles.Exec(p => p.GetComponent<ParticleSystemRenderer>().enabled = true);
-            _tracker.Clear();
 
             // Destroy object.
             MeshPool.Return(_bakedMesh);

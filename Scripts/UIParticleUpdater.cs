@@ -66,10 +66,6 @@ namespace Coffee.UIExtensions
         {
             if (!particle || !particle.bakedMesh || !particle.canvas || !particle.canvasRenderer) return;
 
-            Profiler.BeginSample("[UIParticle] Modify scale");
-            ModifyScale(particle);
-            Profiler.EndSample();
-
             Profiler.BeginSample("[UIParticle] Bake mesh");
             BakeMesh(particle);
             Profiler.EndSample();
@@ -88,24 +84,6 @@ namespace Coffee.UIExtensions
             Profiler.BeginSample("[UIParticle] Update Animatable Material Properties");
             particle.UpdateMaterialProperties();
             Profiler.EndSample();
-        }
-
-        private static void ModifyScale(UIParticle particle)
-        {
-            if (!particle.ignoreCanvasScaler || !particle.canvas) return;
-
-            // Ignore Canvas scaling.
-            var s = particle.canvas.rootCanvas.transform.localScale;
-            var modifiedScale = new Vector3(
-                Mathf.Approximately(s.x, 0) ? 1 : 1 / s.x,
-                Mathf.Approximately(s.y, 0) ? 1 : 1 / s.y,
-                Mathf.Approximately(s.z, 0) ? 1 : 1 / s.z);
-
-            // Scale is already modified.
-            var transform = particle.transform;
-            if (Mathf.Approximately((transform.localScale - modifiedScale).sqrMagnitude, 0)) return;
-
-            transform.localScale = modifiedScale;
         }
 
         private static Matrix4x4 GetScaledMatrix(ParticleSystem particle)
