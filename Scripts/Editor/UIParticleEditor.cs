@@ -30,7 +30,6 @@ namespace Coffee.UIExtensions
 
         private ReorderableList _ro;
         private bool _xyzMode;
-        private bool _showMaterials;
 
         private static readonly List<string> s_MaskablePropertyNames = new List<string>
         {
@@ -59,51 +58,46 @@ namespace Coffee.UIExtensions
             _showMaterials = EditorPrefs.GetBool("Coffee.UIExtensions.UIParticleEditor._showMaterials", true);
 
             var sp = serializedObject.FindProperty("m_Particles");
-            _ro = new ReorderableList(sp.serializedObject, sp, true, true, true, true);
-            _ro.elementHeight = EditorGUIUtility.singleLineHeight * 3 + 4;
-            _ro.elementHeightCallback = _ => _showMaterials
-                ? 3 * (EditorGUIUtility.singleLineHeight + 2)
-                : EditorGUIUtility.singleLineHeight + 2;
-            _ro.drawElementCallback = (rect, index, active, focused) =>
+            _ro = new ReorderableList(sp.serializedObject, sp, true, true, true, true)
             {
-                EditorGUI.BeginDisabledGroup(sp.hasMultipleDifferentValues);
-                rect.y += 1;
-                rect.height = EditorGUIUtility.singleLineHeight;
-                var p = sp.GetArrayElementAtIndex(index);
-                EditorGUI.ObjectField(rect, p, GUIContent.none);
-                if (!_showMaterials) return;
-
-                rect.x += 15;
-                rect.width -= 15;
-                var ps = p.objectReferenceValue as ParticleSystem;
-                var materials = ps
-                    ? new SerializedObject(ps.GetComponent<ParticleSystemRenderer>()).FindProperty("m_Materials")
-                    : null;
-                rect.y += rect.height + 1;
-                MaterialField(rect, s_ContentMaterial, materials, 0);
-                rect.y += rect.height + 1;
-                MaterialField(rect, s_ContentTrailMaterial, materials, 1);
-                EditorGUI.EndDisabledGroup();
-                if (materials != null)
+                elementHeight = EditorGUIUtility.singleLineHeight * 3 + 4,
+                elementHeightCallback = _ => 3 * (EditorGUIUtility.singleLineHeight + 2),
+                drawElementCallback = (rect, index, active, focused) =>
                 {
-                    materials.serializedObject.ApplyModifiedProperties();
-                }
-            };
-            _ro.drawHeaderCallback += rect =>
-            {
-#if !UNITY_2019_3_OR_NEWER
-                rect.y -= 1;
-#endif
-                EditorGUI.LabelField(new Rect(rect.x, rect.y, 150, rect.height), s_ContentRenderingOrder);
-
-                var content = EditorGUIUtility.IconContent(_showMaterials ? "VisibilityOn" : "VisibilityOff");
-                _showMaterials = GUI.Toggle(new Rect(rect.width - 55, rect.y, 24, 20), _showMaterials, content, EditorStyles.label);
-
-                if (GUI.Button(new Rect(rect.width - 35, rect.y, 60, rect.height), s_ContentRefresh, EditorStyles.miniButton))
-                {
-                    foreach (UIParticle t in targets)
+                    EditorGUI.BeginDisabledGroup(sp.hasMultipleDifferentValues);
+                    rect.y += 1;
+                    rect.height = EditorGUIUtility.singleLineHeight;
+                    var p = sp.GetArrayElementAtIndex(index);
+                    EditorGUI.ObjectField(rect, p, GUIContent.none);
+                    rect.x += 15;
+                    rect.width -= 15;
+                    var ps = p.objectReferenceValue as ParticleSystem;
+                    var materials = ps
+                        ? new SerializedObject(ps.GetComponent<ParticleSystemRenderer>()).FindProperty("m_Materials")
+                        : null;
+                    rect.y += rect.height + 1;
+                    MaterialField(rect, s_ContentMaterial, materials, 0);
+                    rect.y += rect.height + 1;
+                    MaterialField(rect, s_ContentTrailMaterial, materials, 1);
+                    EditorGUI.EndDisabledGroup();
+                    if (materials != null)
                     {
-                        t.RefreshParticles();
+                        materials.serializedObject.ApplyModifiedProperties();
+                    }
+                },
+                drawHeaderCallback = rect =>
+                {
+#if !UNITY_2019_3_OR_NEWER
+                    rect.y -= 1;
+#endif
+                    EditorGUI.LabelField(new Rect(rect.x, rect.y, 150, rect.height), s_ContentRenderingOrder);
+
+                    if (GUI.Button(new Rect(rect.width - 35, rect.y, 60, rect.height), s_ContentRefresh, EditorStyles.miniButton))
+                    {
+                        foreach (UIParticle t in targets)
+                        {
+                            t.RefreshParticles();
+                        }
                     }
                 }
             };
