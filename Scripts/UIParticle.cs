@@ -61,6 +61,10 @@ namespace Coffee.UIExtensions
             set { }
         }
 
+        /// <summary>
+        /// Shrink rendering by material on refresh.
+        /// NOTE: This option will improve canvas batching and performance, but in some cases the rendering is not correct.
+        /// </summary>
         public bool shrinkByMaterial
         {
             get { return m_ShrinkByMaterial; }
@@ -124,7 +128,10 @@ namespace Coffee.UIExtensions
 
         public void Play()
         {
-            particles.Exec(p => p.Play());
+            particles.Exec(p =>
+            {
+                p.Simulate(0, false, true);
+            });
         }
 
         public void Pause()
@@ -193,7 +200,7 @@ namespace Coffee.UIExtensions
             foreach (var ps in particles)
             {
                 var tsa = ps.textureSheetAnimation;
-                if (tsa.mode == ParticleSystemAnimationMode.Sprites && tsa.uvChannelMask == (UVChannelFlags) 0)
+                if (tsa.mode == ParticleSystemAnimationMode.Sprites && tsa.uvChannelMask == 0)
                     tsa.uvChannelMask = UVChannelFlags.UV0;
             }
 
@@ -302,10 +309,10 @@ namespace Coffee.UIExtensions
 
         internal void UpdateMaterialProperties()
         {
-            if (m_AnimatableProperties.Length == 0) return;
+            var count = activeMeshIndices.CountFast();
+            if (m_AnimatableProperties.Length == 0 || count == 0) return;
 
             //
-            var count = activeMeshIndices.CountFast();
             var materialCount = Mathf.Max(8, count);
             canvasRenderer.materialCount = materialCount;
             var j = 0;
@@ -374,7 +381,7 @@ namespace Coffee.UIExtensions
             var delayToPlay = particles.AnyFast(ps =>
             {
                 ps.GetComponentsInChildren(false, s_ParticleSystems);
-                return s_ParticleSystems.AnyFast(p => p.isPlaying && (p.subEmitters.enabled || p.main.prewarm));
+                return s_ParticleSystems.AnyFast(p => p.isPlaying); //&& (p.subEmitters.enabled || p.main.prewarm));
             });
             s_ParticleSystems.Clear();
             if (!delayToPlay) yield break;
@@ -442,15 +449,21 @@ namespace Coffee.UIExtensions
         }
 
 #if UNITY_EDITOR
+        protected override void Reset()
+        {
+            InitializeIfNeeded();
+            base.Reset();
+        }
+
         protected override void OnValidate()
         {
+#if !SERIALIZE_FIELD_MASKABLE
+            maskable = m_Maskable;
+#endif
             SetLayoutDirty();
             SetVerticesDirty();
             m_ShouldRecalculateStencil = true;
             RecalculateClipping();
-#if !SERIALIZE_FIELD_MASKABLE
-            maskable = m_Maskable;
-#endif
         }
 #endif
     }
