@@ -212,8 +212,12 @@ namespace Coffee.UIExtensions
             DestroyImmediate(p);
             DestroyImmediate(cr);
 
-#if UNITY_2018_3_OR_NEWER
+#if UNITY_2021_2_OR_NEWER
+            var stage = UnityEditor.SceneManagement.PrefabStageUtility.GetCurrentPrefabStage();
+#elif UNITY_2018_3_OR_NEWER
             var stage = UnityEditor.Experimental.SceneManagement.PrefabStageUtility.GetCurrentPrefabStage();
+#endif
+#if UNITY_2018_3_OR_NEWER
             if (stage != null && stage.scene.isLoaded)
             {
 #if UNITY_2020_1_OR_NEWER
