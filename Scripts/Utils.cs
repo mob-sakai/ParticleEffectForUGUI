@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
@@ -6,7 +7,69 @@ using Object = UnityEngine.Object;
 
 namespace Coffee.UIParticleExtensions
 {
-    internal static class Vector3Extensions
+    internal static class ListPool
+    {
+        private static readonly Dictionary<Type, object> _pools = new Dictionary<Type, object>();
+
+        public static List<T> Rent<T>()
+        {
+            return GetListPool<T>().Rent();
+
+        }
+
+        public static void Return<T>(List<T> insance)
+        {
+            GetListPool<T>().Return(insance);
+        }
+
+        private static ObjectPool<List<T>> GetListPool<T>()
+        {
+            object pool;
+            if (!_pools.TryGetValue(typeof(T), out pool))
+            {
+                pool = new ObjectPool<List<T>>(() => new List<T>(), x => true, x => x.Clear());
+                _pools.Add(typeof(T), pool);
+            }
+            return pool as ObjectPool<List<T>>;
+        }
+    }
+
+    internal class ObjectPool<T>
+    {
+        private readonly Stack<T> _pool = new Stack<T>(32);
+        private readonly Func<T> _onCreate;
+        private readonly Predicate<T> _onValid;
+        private readonly Action<T> _onReturn;
+
+        public ObjectPool(Func<T> onCreate, Predicate<T> onValid, Action<T> onReturn)
+        {
+            _onCreate = onCreate;
+            _onValid = onValid;
+            _onReturn = onReturn;
+        }
+
+        public T Rent()
+        {
+            while (0 < _pool.Count)
+            {
+                var instance = _pool.Pop();
+                if (_onValid(instance))
+                    return instance;
+            }
+
+            return _onCreate();
+        }
+
+        public void Return(T instance)
+        {
+            if (instance == null || _pool.Contains(instance)) return;
+
+            _onReturn(instance);
+            _pool.Push(instance);
+        }
+    }
+
+    public static class Vector3Extensions
     {
         public static Vector3 Inverse(this Vector3 self)
         {

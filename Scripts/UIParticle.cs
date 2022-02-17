@@ -41,11 +41,11 @@ namespace Coffee.UIExtensions
 
         private bool _shouldBeRemoved;
         private Mesh _bakedMesh;
-        private readonly List<Material> _modifiedMaterials = new List<Material>();
-        private readonly List<Material> _maskMaterials = new List<Material>();
-        private readonly List<bool> _activeMeshIndices = new List<bool>();
-        private static readonly List<Material> s_TempMaterials = new List<Material>(2);
+        private List<Material> _modifiedMaterials;
+        private List<Material> _maskMaterials;
+        private List<bool> _activeMeshIndices;
         private static MaterialPropertyBlock s_Mpb;
+        private static readonly List<Material> s_TempMaterials = new List<Material>(2);
         private static readonly List<Material> s_PrevMaskMaterials = new List<Material>();
         private static readonly List<Material> s_PrevModifiedMaterials = new List<Material>();
         private static readonly List<Component> s_Components = new List<Component>();
@@ -259,7 +259,7 @@ namespace Coffee.UIExtensions
                 {
                     var mat = GetModifiedMaterial(s_TempMaterials[0], ps.GetTextureForSprite());
                     for (var k = 1; k < s_Components.Count; k++)
-                        mat = (s_Components[k] as IMaterialModifier).GetModifiedMaterial(mat);
+                        mat = ((IMaterialModifier)s_Components[k]).GetModifiedMaterial(mat);
                     canvasRenderer.SetMaterial(mat, j);
                     UpdateMaterialProperties(r, j);
                     j++;
@@ -272,7 +272,7 @@ namespace Coffee.UIExtensions
                 {
                     var mat = GetModifiedMaterial(s_TempMaterials[1], null);
                     for (var k = 1; k < s_Components.Count; k++)
-                        mat = (s_Components[k] as IMaterialModifier).GetModifiedMaterial(mat);
+                        mat = ((IMaterialModifier)s_Components[k]).GetModifiedMaterial(mat);
                     canvasRenderer.SetMaterial(mat, j++);
                 }
             }
@@ -362,7 +362,10 @@ namespace Coffee.UIExtensions
 #if !SERIALIZE_FIELD_MASKABLE
             maskable = m_Maskable;
 #endif
-            activeMeshIndices.Clear();
+
+            _modifiedMaterials = ListPool.Rent<Material>();
+            _maskMaterials = ListPool.Rent<Material>();
+            _activeMeshIndices = ListPool.Rent<bool>();
 
             UIParticleUpdater.Register(this);
             particles.Exec(p => p.GetComponent<ParticleSystemRenderer>().enabled = false);
@@ -406,6 +409,16 @@ namespace Coffee.UIExtensions
             // Destroy object.
             MeshPool.Return(_bakedMesh);
             _bakedMesh = null;
+
+            activeMeshIndices.Clear();
+            UpdateMaterial();
+
+            ListPool.Return(_modifiedMaterials);
+            ListPool.Return(_maskMaterials);
+            ListPool.Return(_activeMeshIndices);
+            _modifiedMaterials = null;
+            _maskMaterials = null;
+            _activeMeshIndices = null;
 
             base.OnDisable();
         }
