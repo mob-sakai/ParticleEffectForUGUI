@@ -131,6 +131,7 @@ namespace Coffee.UIExtensions
             particles.Exec(p =>
             {
                 p.Simulate(0, false, true);
+                Debug.Log(p.particleCount);
             });
         }
 
