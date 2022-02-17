@@ -1,3 +1,11 @@
+## [3.3.10](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/3.3.9...3.3.10) (2022-02-17)
+
+
+### Bug Fixes
+
+* annoying warning for [ExecuteInEditMode] ([b6b2c72](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/b6b2c72b198566e2880a22831c937eff7e9eff28)), closes [#180](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/180)
+* PrefabStageUtility class is not experimental after 2021.2 ([0fd5d7a](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/0fd5d7affe707fa9e92abd6e192bf400dfb1a80a))
+
 ## [3.3.9](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/3.3.8...3.3.9) (2021-08-02)
 
 
