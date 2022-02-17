@@ -7,7 +7,7 @@ using UnityEngine.UI;
 namespace Coffee.UIExtensions.Demos
 {
 #if UNITY_5_3_OR_NEWER
-    [ExecuteInEditMode]
+    [ExecuteAlways]
     [RequireComponent(typeof(CanvasRenderer), typeof(ParticleSystem))]
     public class UIParticleSystem_Demo : MaskableGraphic
     {
