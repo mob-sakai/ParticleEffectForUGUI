@@ -230,7 +230,7 @@ namespace Coffee.UIParticleExtensions
 
                 // Sorting layer: ascending
                 if (aRenderer.sortingLayerID != bRenderer.sortingLayerID)
-                    return aRenderer.sortingLayerID - bRenderer.sortingLayerID;
+                    return SortingLayer.GetLayerValueFromID(aRenderer.sortingLayerID) - SortingLayer.GetLayerValueFromID(bRenderer.sortingLayerID);
 
                 // Sorting order: ascending
                 if (aRenderer.sortingOrder != bRenderer.sortingOrder)
