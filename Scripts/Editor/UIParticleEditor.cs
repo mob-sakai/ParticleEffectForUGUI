@@ -30,8 +30,7 @@ namespace Coffee.UIExtensions
         private SerializedProperty _spShrinkByMaterial;
 
         private ReorderableList _ro;
-        private bool _xyzMode;
-        private bool _showMaterials;
+        static private bool _xyzMode;
 
         private static readonly List<string> s_MaskablePropertyNames = new List<string>
         {
@@ -58,14 +57,11 @@ namespace Coffee.UIExtensions
             _spIgnoreCanvasScaler = serializedObject.FindProperty("m_IgnoreCanvasScaler");
             _spAnimatableProperties = serializedObject.FindProperty("m_AnimatableProperties");
             _spShrinkByMaterial = serializedObject.FindProperty("m_ShrinkByMaterial");
-            _showMaterials = EditorPrefs.GetBool("Coffee.UIExtensions.UIParticleEditor._showMaterials", true);
 
             var sp = serializedObject.FindProperty("m_Particles");
             _ro = new ReorderableList(sp.serializedObject, sp, true, true, true, true);
             _ro.elementHeight = EditorGUIUtility.singleLineHeight * 3 + 4;
-            _ro.elementHeightCallback = _ => _showMaterials
-                ? 3 * (EditorGUIUtility.singleLineHeight + 2)
-                : EditorGUIUtility.singleLineHeight + 2;
+            _ro.elementHeightCallback = _ => 3 * (EditorGUIUtility.singleLineHeight + 2);
             _ro.drawElementCallback = (rect, index, active, focused) =>
             {
                 EditorGUI.BeginDisabledGroup(sp.hasMultipleDifferentValues);
@@ -73,8 +69,6 @@ namespace Coffee.UIExtensions
                 rect.height = EditorGUIUtility.singleLineHeight;
                 var p = sp.GetArrayElementAtIndex(index);
                 EditorGUI.ObjectField(rect, p, GUIContent.none);
-                if (!_showMaterials) return;
-
                 rect.x += 15;
                 rect.width -= 15;
                 var ps = p.objectReferenceValue as ParticleSystem;
@@ -97,9 +91,6 @@ namespace Coffee.UIExtensions
                 rect.y -= 1;
 #endif
                 EditorGUI.LabelField(new Rect(rect.x, rect.y, 150, rect.height), s_ContentRenderingOrder);
-
-                var content = EditorGUIUtility.IconContent(_showMaterials ? "VisibilityOn" : "VisibilityOff");
-                _showMaterials = GUI.Toggle(new Rect(rect.width - 55, rect.y, 24, 20), _showMaterials, content, EditorStyles.label);
 
                 if (GUI.Button(new Rect(rect.width - 35, rect.y, 60, rect.height), s_ContentRefresh, EditorStyles.miniButton))
                 {
