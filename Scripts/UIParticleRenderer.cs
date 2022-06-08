@@ -26,6 +26,7 @@ namespace Coffee.UIExtensions
         private Material _modifiedMaterial;
         private Vector3 _prevScale;
         private Vector3 _prevPsPos;
+        private Vector2Int _prevScreenSize;
         private bool _delay = false;
         private bool _prewarm = false;
 
@@ -144,6 +145,7 @@ namespace Coffee.UIExtensions
 
             _prevScale = GetWorldScale();
             _prevPsPos = _particleSystem.transform.position;
+            _prevScreenSize = new Vector2Int(Screen.width, Screen.height);
             _delay = true;
 
             canvasRenderer.SetTexture(null);
@@ -188,7 +190,13 @@ namespace Coffee.UIExtensions
                 else
 #endif
                 {
+                    ResolveResolutionChange(psPos, scale);
                     Simulate(scale, _parent.isPaused || _delay);
+
+                    if (_delay && !_parent.isPaused)
+                    {
+                        Simulate(scale, _parent.isPaused);
+                    }
 
                     // When the ParticleSystem simulation is complete, stop it.
                     if (!main.loop && main.duration <= _particleSystem.time && (_particleSystem.IsAlive() || _particleSystem.particleCount == 0))
@@ -318,6 +326,43 @@ namespace Coffee.UIExtensions
                 default:
                     throw new System.NotSupportedException();
             }
+        }
+
+        /// <summary>
+        /// For world simulation, interpolate particle positions when the screen size is changed.
+        /// </summary>
+        /// <param name="psPos"></param>
+        /// <param name="scale"></param>
+        private void ResolveResolutionChange(Vector3 psPos, Vector3 scale)
+        {
+            var screenSize = new Vector2Int(Screen.width, Screen.height);
+            if ((_prevScreenSize != screenSize || _prevScale != scale) && _particleSystem.main.simulationSpace == ParticleSystemSimulationSpace.World && _parent.uiScaling)
+            {
+                // Update particle array size and get particles.
+                var size = _particleSystem.particleCount;
+                if (s_Particles.Length < size)
+                {
+                    s_Particles = new ParticleSystem.Particle[Mathf.NextPowerOfTwo(size)];
+                }
+                _particleSystem.GetParticles(s_Particles, size);
+
+                // Resolusion resolver:
+                // (psPos / scale) / (prevPsPos / prevScale) -> psPos * scale.inv * prevPsPos.inv * prevScale
+                var modifier = psPos.GetScaled(scale.Inverse(), _prevPsPos.Inverse(), _prevScale);
+                for (var i = 0; i < size; i++)
+                {
+                    var particle = s_Particles[i];
+                    particle.position = particle.position.GetScaled(modifier);
+                    s_Particles[i] = particle;
+                }
+                _particleSystem.SetParticles(s_Particles, size);
+
+                // Delay: Do not progress in the frame where the resolution has been changed.
+                _delay = true;
+                _prevScale = scale;
+                _prevPsPos = psPos;
+            }
+            _prevScreenSize = screenSize;
         }
 
         private void Simulate(Vector3 scale, bool paused)
