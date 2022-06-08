@@ -1,3 +1,6 @@
+#if UNITY_2019_3_11 || UNITY_2019_3_12 || UNITY_2019_3_13 || UNITY_2019_3_14 || UNITY_2019_3_15 || UNITY_2019_4_OR_NEWER
+#define SERIALIZE_FIELD_MASKABLE
+#endif
 using UnityEditor;
 using UnityEditor.UI;
 using UnityEngine;
@@ -5,6 +8,12 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditorInternal;
 using UnityEngine.UI;
+using System;
+#if UNITY_2021_2_OR_NEWER
+using UnityEditor.Overlays;
+#else
+using System.Reflection;
+#endif
 
 namespace Coffee.UIExtensions
 {
@@ -12,6 +21,26 @@ namespace Coffee.UIExtensions
     [CanEditMultipleObjects]
     internal class UIParticleEditor : GraphicEditor
     {
+#if UNITY_2021_2_OR_NEWER
+#if UNITY_2022_1_OR_NEWER
+        [Overlay(typeof(SceneView), "Scene View/UI Particles", "UI Particles", true, defaultDockPosition = DockPosition.Bottom, defaultDockZone = DockZone.Floating, defaultLayout = Layout.Panel)]
+#else
+        [Overlay(typeof(SceneView), "Scene View/UI Particles", "UI Particles", true)]
+#endif
+        private class UIParticleOverlay : IMGUIOverlay, ITransientOverlay
+        {
+            public bool visible => s_SerializedObject != null;
+
+            public override void OnGUI()
+            {
+                if (visible)
+                {
+                    WindowFunction(null, null);
+                }
+            }
+        }
+#endif
+
         //################################
         // Constant or Static Members.
         //################################
@@ -22,8 +51,11 @@ namespace Coffee.UIExtensions
         private static readonly GUIContent s_ContentTrailMaterial = new GUIContent("Trail Material");
         private static readonly GUIContent s_Content3D = new GUIContent("3D");
         private static readonly GUIContent s_ContentScale = new GUIContent("Scale");
+        private static SerializedObject s_SerializedObject;
 
+#if !SERIALIZE_FIELD_MASKABLE
         private SerializedProperty m_Maskable;
+#endif
         private SerializedProperty m_Scale3D;
         private SerializedProperty m_AnimatableProperties;
 
@@ -40,6 +72,53 @@ namespace Coffee.UIExtensions
             "_ColorMask",
         };
 
+
+        [InitializeOnLoadMethod]
+        static void Init()
+        {
+#if !UNITY_2021_2_OR_NEWER
+            // static void Window(GUIContent title, WindowFunction sceneViewFunc, int order, UnityEngine.Object target, WindowDisplayOption option)
+            var miSceneViewOverlayWindow = Type.GetType("UnityEditor.SceneViewOverlay, UnityEditor")
+                .GetMethods(BindingFlags.Public | BindingFlags.Static)
+                .First(x => x.Name == "Window" && x.GetParameters().Length == 5);
+            var windowFunction = (Action<UnityEngine.Object, SceneView>)WindowFunction;
+            var windowFunctionType = Type.GetType("UnityEditor.SceneViewOverlay+WindowFunction, UnityEditor");
+            var windowFunctionDelegate = Delegate.CreateDelegate(windowFunctionType, windowFunction.Method);
+            var windowTitle = new GUIContent(ObjectNames.NicifyVariableName(typeof(UIParticle).Name));
+            var sceneViewArgs = new object[] { windowTitle, windowFunctionDelegate, 599, null, 2 };
+#if UNITY_2019_1_OR_NEWER
+            SceneView.duringSceneGui += _ => miSceneViewOverlayWindow.Invoke(null, sceneViewArgs);
+#else
+            SceneView.onSceneGUIDelegate += _ =>
+#endif
+            {
+                if (s_SerializedObject != null)
+                {
+                    miSceneViewOverlayWindow.Invoke(null, sceneViewArgs);
+                }
+            };
+#endif
+
+            Func<SerializedObject> createSerializeObject = () =>
+            {
+                var uiParticles = Selection.gameObjects
+                        .Select(x => x.GetComponent<ParticleSystem>())
+                        .Where(x => x)
+                        .Select(x => x.GetComponentInParent<UIParticle>())
+                        .Where(x => x)
+                        .Concat(
+                            Selection.gameObjects
+                                .Select(x => x.GetComponent<UIParticle>())
+                                .Where(x => x)
+                        )
+                        .Distinct()
+                        .ToArray();
+                return uiParticles.Any() ? new SerializedObject(uiParticles) : null;
+            };
+
+            s_SerializedObject = createSerializeObject();
+            Selection.selectionChanged += () => s_SerializedObject = createSerializeObject();
+        }
 
         //################################
         // Public/Protected Members.
@@ -196,6 +275,26 @@ namespace Coffee.UIExtensions
                     sp.boolValue = false;
                     so.ApplyModifiedProperties();
                 }
+            }
+        }
+
+        private static void WindowFunction(UnityEngine.Object target, SceneView sceneView)
+        {
+            try
+            {
+                if (s_SerializedObject.targetObjects.Any(x => !x)) return;
+
+                s_SerializedObject.Update();
+                GUILayout.BeginHorizontal(GUILayout.Width(220f));
+                var labelWidth = EditorGUIUtility.labelWidth;
+                EditorGUIUtility.labelWidth = 60;
+                _xyzMode = DrawFloatOrVector3Field(s_SerializedObject.FindProperty("m_Scale3D"), _xyzMode);
+                EditorGUIUtility.labelWidth = labelWidth;
+                GUILayout.EndHorizontal();
+                s_SerializedObject.ApplyModifiedProperties();
+            }
+            catch
+            {
             }
         }
 
