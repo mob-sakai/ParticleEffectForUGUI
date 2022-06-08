@@ -280,6 +280,10 @@ namespace Coffee.UIExtensions
         {
             Profiler.BeginSample("[UIParticleRenderer] GetWorldScale");
             var scale = _parent.scale3D;
+            //if (_parent.uiScaling)
+            {
+                scale.Scale(_parent.transform.localScale.Inverse());
+            }
             //else if (_parent.scalingMode == UIParticle.ScalingMode.UI && _particleSystem.main.scalingMode != ParticleSystemScalingMode.Hierarchy)
             //{
             //    var gscale = _parent.transform.lossyScale.GetScaled(canvas.transform.lossyScale.Inverse());
@@ -336,7 +340,8 @@ namespace Coffee.UIExtensions
         private void ResolveResolutionChange(Vector3 psPos, Vector3 scale)
         {
             var screenSize = new Vector2Int(Screen.width, Screen.height);
-            if ((_prevScreenSize != screenSize || _prevScale != scale) && _particleSystem.main.simulationSpace == ParticleSystemSimulationSpace.World && _parent.uiScaling)
+            //if ((_prevScreenSize != screenSize || _prevScale != scale) && _particleSystem.main.simulationSpace == ParticleSystemSimulationSpace.World && _parent.uiScaling)
+            if ((_prevScreenSize != screenSize || _prevScale != scale) && _particleSystem.main.simulationSpace == ParticleSystemSimulationSpace.World)
             {
                 // Update particle array size and get particles.
                 var size = _particleSystem.particleCount;

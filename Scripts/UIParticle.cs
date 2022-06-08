@@ -212,6 +212,10 @@ namespace Coffee.UIExtensions
         public void UpdateRenderers()
         {
             var newScale = Vector3.one;
+            //if (uiScaling)
+            {
+                newScale = transform.parent.lossyScale.Inverse();
+            }
             if (transform.localScale != newScale)
             {
                 transform.localScale = newScale;
