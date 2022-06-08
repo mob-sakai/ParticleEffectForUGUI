@@ -1,13 +1,11 @@
 #if UNITY_2019_3_11 || UNITY_2019_3_12 || UNITY_2019_3_13 || UNITY_2019_3_14 || UNITY_2019_3_15 || UNITY_2019_4_OR_NEWER
 #define SERIALIZE_FIELD_MASKABLE
 #endif
-using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Coffee.UIParticleExtensions;
 using UnityEngine;
 using UnityEngine.Rendering;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 [assembly: InternalsVisibleTo("Coffee.UIParticle.Editor")]
@@ -21,48 +19,29 @@ namespace Coffee.UIExtensions
     [RequireComponent(typeof(RectTransform))]
     [RequireComponent(typeof(CanvasRenderer))]
     public class UIParticle : MaskableGraphic
-#if UNITY_EDITOR
-        , ISerializationCallbackReceiver
-#endif
     {
-        [HideInInspector] [SerializeField] internal bool m_IsTrail = false;
+        [HideInInspector][SerializeField] internal bool m_IsTrail = false;
 
-        [Tooltip("Ignore canvas scaler")] [SerializeField] [FormerlySerializedAs("m_IgnoreParent")]
-        bool m_IgnoreCanvasScaler = true;
+        [Tooltip("Particle effect scale")]
+        [SerializeField]
+        private Vector3 m_Scale3D = new Vector3(10, 10, 10);
 
-        [Tooltip("Particle effect scale")] [SerializeField]
-        float m_Scale = 100;
-
-        [Tooltip("Particle effect scale")] [SerializeField]
-        private Vector3 m_Scale3D;
-
-        [Tooltip("Animatable material properties. If you want to change the material properties of the ParticleSystem in Animation, enable it.")] [SerializeField]
+        [Tooltip("Animatable material properties. If you want to change the material properties of the ParticleSystem in Animation, enable it.")]
+        [SerializeField]
         internal AnimatableProperty[] m_AnimatableProperties = new AnimatableProperty[0];
 
-        [Tooltip("Particles")] [SerializeField]
+        [Tooltip("Particles")]
+        [SerializeField]
         private List<ParticleSystem> m_Particles = new List<ParticleSystem>();
 
-        [Tooltip("Shrink rendering by material on refresh.\nNOTE: Performance will be improved, but in some cases the rendering is not correct.")] [SerializeField]
-        bool m_ShrinkByMaterial = false;
+        private List<UIParticleRenderer> m_Renderers = new List<UIParticleRenderer>();
 
 #if !SERIALIZE_FIELD_MASKABLE
         [SerializeField] private bool m_Maskable = true;
 #endif
 
-        private bool _shouldBeRemoved;
         private DrivenRectTransformTracker _tracker;
-        private Mesh _bakedMesh;
-        private readonly List<Material> _modifiedMaterials = new List<Material>();
-        private readonly List<Material> _maskMaterials = new List<Material>();
-        private readonly List<bool> _activeMeshIndices = new List<bool>();
-        private Vector3 _cachedPosition;
-        private static readonly List<Material> s_TempMaterials = new List<Material>(2);
-        private static MaterialPropertyBlock s_Mpb;
-        private static readonly List<Material> s_PrevMaskMaterials = new List<Material>();
-        private static readonly List<Material> s_PrevModifiedMaterials = new List<Material>();
-        private static readonly List<Component> s_Components = new List<Component>();
-        private static readonly List<ParticleSystem> s_ParticleSystems = new List<ParticleSystem>();
-
+        private Camera _orthoCamera;
 
         /// <summary>
         /// Should this graphic be considered a target for raycasting?
@@ -73,41 +52,13 @@ namespace Coffee.UIExtensions
             set { }
         }
 
-        public bool ignoreCanvasScaler
-        {
-            get { return m_IgnoreCanvasScaler; }
-            set
-            {
-                // if (m_IgnoreCanvasScaler == value) return;
-                m_IgnoreCanvasScaler = value;
-                _tracker.Clear();
-                if (isActiveAndEnabled && m_IgnoreCanvasScaler)
-                    _tracker.Add(this, rectTransform, DrivenTransformProperties.Scale);
-            }
-        }
-
-        public bool shrinkByMaterial
-        {
-            get { return m_ShrinkByMaterial; }
-            set
-            {
-                if (m_ShrinkByMaterial == value) return;
-                m_ShrinkByMaterial = value;
-                RefreshParticles();
-            }
-        }
-
         /// <summary>
         /// Particle effect scale.
         /// </summary>
         public float scale
         {
             get { return m_Scale3D.x; }
-            set
-            {
-                m_Scale = Mathf.Max(0.001f, value);
-                m_Scale3D = new Vector3(m_Scale, m_Scale, m_Scale);
-            }
+            set { m_Scale3D = new Vector3(value, value, value); }
         }
 
         /// <summary>
@@ -116,18 +67,7 @@ namespace Coffee.UIExtensions
         public Vector3 scale3D
         {
             get { return m_Scale3D; }
-            set
-            {
-                if (m_Scale3D == value) return;
-                m_Scale3D.x = Mathf.Max(0.001f, value.x);
-                m_Scale3D.y = Mathf.Max(0.001f, value.y);
-                m_Scale3D.z = Mathf.Max(0.001f, value.z);
-            }
-        }
-
-        internal Mesh bakedMesh
-        {
-            get { return _bakedMesh; }
+            set { m_Scale3D = value; }
         }
 
         public List<ParticleSystem> particles
@@ -135,52 +75,59 @@ namespace Coffee.UIExtensions
             get { return m_Particles; }
         }
 
+        /// <summary>
+        /// Get all base materials to render.
+        /// </summary>
         public IEnumerable<Material> materials
         {
-            get { return _modifiedMaterials; }
+            get
+            {
+                for (var i = 0; i < m_Renderers.Count; i++)
+                {
+                    if (!m_Renderers[i] || !m_Renderers[i].material) continue;
+                    yield return m_Renderers[i].material;
+                }
+                yield break;
+            }
         }
 
         public override Material materialForRendering
         {
-            get { return canvasRenderer.GetMaterial(0); }
+            get { return null; }
         }
 
-        public List<bool> activeMeshIndices
-        {
-            get { return _activeMeshIndices; }
-            set
-            {
-                if (_activeMeshIndices.SequenceEqualFast(value)) return;
-                _activeMeshIndices.Clear();
-                _activeMeshIndices.AddRange(value);
-                UpdateMaterial();
-            }
-        }
-
-        internal Vector3 cachedPosition
-        {
-            get { return _cachedPosition; }
-            set { _cachedPosition = value; }
-        }
+        /// <summary>
+        /// Paused.
+        /// </summary>
+        public bool isPaused { get; internal set; }
 
         public void Play()
         {
-            particles.Exec(p => p.Play());
+            particles.Exec(p => p.Simulate(0, false, true));
+            isPaused = false;
         }
 
         public void Pause()
         {
             particles.Exec(p => p.Pause());
+            isPaused = true;
+        }
+
+        public void Resume()
+        {
+            isPaused = false;
         }
 
         public void Stop()
         {
             particles.Exec(p => p.Stop());
+            isPaused = true;
         }
 
         public void Clear()
         {
             particles.Exec(p => p.Clear());
+            isPaused = true;
         }
 
         public void SetParticleSystemInstance(GameObject instance)
@@ -234,202 +181,60 @@ namespace Coffee.UIExtensions
             foreach (var ps in particles)
             {
                 var tsa = ps.textureSheetAnimation;
-                if (tsa.mode == ParticleSystemAnimationMode.Sprites && tsa.uvChannelMask == (UVChannelFlags) 0)
+                if (tsa.mode == ParticleSystemAnimationMode.Sprites && tsa.uvChannelMask == 0)
                     tsa.uvChannelMask = UVChannelFlags.UV0;
             }
 
-            particles.Exec(p => p.GetComponent<ParticleSystemRenderer>().enabled = !enabled);
-            particles.SortForRendering(transform, m_ShrinkByMaterial);
-
-            SetMaterialDirty();
+            RefreshParticles(particles);
         }
 
-        protected override void UpdateMaterial()
+        public void RefreshParticles(List<ParticleSystem> particles)
         {
-            // Clear mask materials.
-            s_PrevMaskMaterials.AddRange(_maskMaterials);
-            _maskMaterials.Clear();
+            GetComponentsInChildren(m_Renderers);
 
-            // Clear modified materials.
-            s_PrevModifiedMaterials.AddRange(_modifiedMaterials);
-            _modifiedMaterials.Clear();
-
-            // Recalculate stencil value.
-            if (m_ShouldRecalculateStencil)
+            for (var i = 0; i < m_Renderers.Count; i++)
             {
-                var rootCanvas = MaskUtilities.FindRootSortOverrideCanvas(transform);
-                m_StencilValue = maskable ? MaskUtilities.GetStencilDepth(transform, rootCanvas) : 0;
-                m_ShouldRecalculateStencil = false;
+                GetRenderer(i).Clear();
             }
 
-            // No mesh to render.
-            var count = activeMeshIndices.CountFast();
-            if (count == 0 || !isActiveAndEnabled || particles.Count == 0)
-            {
-                canvasRenderer.Clear();
-                ClearPreviousMaterials();
-                return;
-            }
-
-            //
-            GetComponents(typeof(IMaterialModifier), s_Components);
-            var materialCount = Mathf.Min(8, count);
-            canvasRenderer.materialCount = materialCount;
             var j = 0;
             for (var i = 0; i < particles.Count; i++)
             {
-                if (materialCount <= j) break;
-                var ps = particles[i];
-                if (!ps) continue;
-
-                var r = ps.GetComponent<ParticleSystemRenderer>();
-                r.GetSharedMaterials(s_TempMaterials);
-
-                // Main
-                var index = i * 2;
-                if (activeMeshIndices.Count <= index) break;
-                if (activeMeshIndices[index] && 0 < s_TempMaterials.Count)
+                GetRenderer(j++).Set(this, particles[i], false);
+                if (particles[i].trails.enabled)
                 {
-                    var mat = GetModifiedMaterial(s_TempMaterials[0], ps.GetTextureForSprite());
-                    for (var k = 1; k < s_Components.Count; k++)
-                        mat = (s_Components[k] as IMaterialModifier).GetModifiedMaterial(mat);
-                    canvasRenderer.SetMaterial(mat, j);
-                    UpdateMaterialProperties(r, j);
-                    j++;
-                }
-
-                // Trails
-                index++;
-                if (activeMeshIndices.Count <= index || materialCount <= j) break;
-                if (activeMeshIndices[index] && 1 < s_TempMaterials.Count)
-                {
-                    var mat = GetModifiedMaterial(s_TempMaterials[1], null);
-                    for (var k = 1; k < s_Components.Count; k++)
-                        mat = (s_Components[k] as IMaterialModifier).GetModifiedMaterial(mat);
-                    canvasRenderer.SetMaterial(mat, j++);
+                    GetRenderer(j++).Set(this, particles[i], true);
                 }
             }
 
-            ClearPreviousMaterials();
         }
 
-        private void ClearPreviousMaterials()
+        public void UpdateRenderers()
         {
-            foreach (var m in s_PrevMaskMaterials)
-                StencilMaterial.Remove(m);
-            s_PrevMaskMaterials.Clear();
-
-            foreach (var m in s_PrevModifiedMaterials)
-                ModifiedMaterial.Remove(m);
-            s_PrevModifiedMaterials.Clear();
-        }
-
-        private Material GetModifiedMaterial(Material baseMaterial, Texture2D texture)
-        {
-            if (0 < m_StencilValue)
+            var newScale = Vector3.one;
+            if (transform.localScale != newScale)
             {
-                baseMaterial = StencilMaterial.Add(baseMaterial, (1 << m_StencilValue) - 1, StencilOp.Keep, CompareFunction.Equal, ColorWriteMask.All, (1 << m_StencilValue) - 1, 0);
-                _maskMaterials.Add(baseMaterial);
+                transform.localScale = newScale;
             }
 
-            if (texture == null && m_AnimatableProperties.Length == 0) return baseMaterial;
-
-            var id = m_AnimatableProperties.Length == 0 ? 0 : GetInstanceID();
-            baseMaterial = ModifiedMaterial.Add(baseMaterial, texture, id);
-            _modifiedMaterials.Add(baseMaterial);
-
-            return baseMaterial;
-        }
-
-        internal void UpdateMaterialProperties()
-        {
-            if (m_AnimatableProperties.Length == 0) return;
-
-            //
-            var count = activeMeshIndices.CountFast();
-            var materialCount = Mathf.Max(8, count);
-            canvasRenderer.materialCount = materialCount;
-            var j = 0;
-            for (var i = 0; i < particles.Count; i++)
+            var bakeCamera = GetBakeCamera();
+            for (var i = 0; i < m_Renderers.Count; i++)
             {
-                if (materialCount <= j) break;
-                var ps = particles[i];
-                if (!ps) continue;
-
-                var r = ps.GetComponent<ParticleSystemRenderer>();
-                r.GetSharedMaterials(s_TempMaterials);
-
-                // Main
-                if (activeMeshIndices[i * 2] && 0 < s_TempMaterials.Count)
-                {
-                    UpdateMaterialProperties(r, j);
-                    j++;
-                }
+                m_Renderers[i].UpdateMesh(bakeCamera);
             }
         }
 
-        internal void UpdateMaterialProperties(Renderer r, int index)
-        {
-            if (m_AnimatableProperties.Length == 0 || canvasRenderer.materialCount <= index) return;
-
-            r.GetPropertyBlock(s_Mpb ?? (s_Mpb = new MaterialPropertyBlock()));
-            if (s_Mpb.isEmpty) return;
-
-            // #41: Copy the value from MaterialPropertyBlock to CanvasRenderer
-            var mat = canvasRenderer.GetMaterial(index);
-            if (!mat) return;
-
-            foreach (var ap in m_AnimatableProperties)
-            {
-                ap.UpdateMaterialProperties(mat, s_Mpb);
-            }
-
-            s_Mpb.Clear();
-        }
-
-        /// <summary>
-        /// This function is called when the object becomes enabled and active.
-        /// </summary>
         protected override void OnEnable()
         {
 #if !SERIALIZE_FIELD_MASKABLE
             maskable = m_Maskable;
 #endif
-            activeMeshIndices.Clear();
-
+            _tracker.Add(this, rectTransform, DrivenTransformProperties.Scale);
             UIParticleUpdater.Register(this);
-            particles.Exec(p => p.GetComponent<ParticleSystemRenderer>().enabled = false);
-
-            if (isActiveAndEnabled && m_IgnoreCanvasScaler)
-            {
-                _tracker.Add(this, rectTransform, DrivenTransformProperties.Scale);
-            }
-
-            // Create objects.
-            _bakedMesh = MeshPool.Rent();
+            RegisterDirtyMaterialCallback(UpdateRendererMaterial);
+            RefreshParticles(particles);
 
             base.OnEnable();
-
-            InitializeIfNeeded();
-        }
-
-        private new IEnumerator Start()
-        {
-            // #147: ParticleSystem creates Particles in wrong position during prewarm
-            // #148: Particle Sub Emitter not showing when start game
-            var delayToPlay = particles.AnyFast(ps =>
-            {
-                ps.GetComponentsInChildren(false, s_ParticleSystems);
-                return s_ParticleSystems.AnyFast(p => p.isPlaying && (p.subEmitters.enabled || p.main.prewarm));
-            });
-            s_ParticleSystems.Clear();
-            if (!delayToPlay) yield break;
-
-            Stop();
-            Clear();
-            yield return null;
-
-            Play();
         }
 
         /// <summary>
@@ -437,16 +242,16 @@ namespace Coffee.UIExtensions
         /// </summary>
         protected override void OnDisable()
         {
-            UIParticleUpdater.Unregister(this);
-            if (!_shouldBeRemoved)
-                particles.Exec(p => p.GetComponent<ParticleSystemRenderer>().enabled = true);
             _tracker.Clear();
-
-            // Destroy object.
-            MeshPool.Return(_bakedMesh);
-            _bakedMesh = null;
+            UIParticleUpdater.Unregister(this);
+            m_Renderers.ForEach(r=>r.Clear());
+            UnregisterDirtyMaterialCallback(UpdateRendererMaterial);
 
             base.OnDisable();
+        }
+
+        protected override void UpdateMaterial()
+        {
         }
 
         /// <summary>
@@ -463,62 +268,58 @@ namespace Coffee.UIExtensions
         {
         }
 
-        private void InitializeIfNeeded()
+        private void UpdateRendererMaterial()
         {
-            if (enabled && m_IsTrail)
+            for (var i = 0; i < m_Renderers.Count; i++)
             {
-                UnityEngine.Debug.LogWarningFormat(this, "[UIParticle] The UIParticle component should be removed: {0}\nReason: UIParticle for trails is no longer needed.", name);
-                gameObject.hideFlags = HideFlags.None;
-                _shouldBeRemoved = true;
-                enabled = false;
-                return;
+                if (!m_Renderers[i]) continue;
+                m_Renderers[i].maskable = maskable;
+                m_Renderers[i].SetMaterialDirty();
             }
+        }
 
-            if (!this || particles.AnyFast()) return;
+        private UIParticleRenderer GetRenderer(int index)
+        {
+            if (m_Renderers.Count <= index)
+            {
+                m_Renderers.Add(UIParticleRenderer.AddRenderer(this));
+            }
+            return m_Renderers[index];
+        }
 
-            // refresh.
-#if UNITY_EDITOR
-            if (!Application.isPlaying)
-                UnityEditor.EditorApplication.delayCall += () =>
+        private Camera GetBakeCamera()
+        {
+            if (!canvas) return Camera.main;
+
+            // World camera.
+            var root = canvas.rootCanvas;
+            if (root.renderMode != RenderMode.ScreenSpaceOverlay) return root.worldCamera ? root.worldCamera : Camera.main;
+
+            // Create ortho-camera.
+            if (!_orthoCamera)
+            {
+                _orthoCamera = GetComponentInChildren<Camera>();
+                if (!_orthoCamera)
                 {
-                    if (this) RefreshParticles();
-                };
-            else
-#endif
-                RefreshParticles();
-        }
-
-#if UNITY_EDITOR
-        protected override void OnValidate()
-        {
-            SetLayoutDirty();
-            SetVerticesDirty();
-            m_ShouldRecalculateStencil = true;
-            RecalculateClipping();
-#if !SERIALIZE_FIELD_MASKABLE
-            maskable = m_Maskable;
-#endif
-        }
-
-        void ISerializationCallbackReceiver.OnBeforeSerialize()
-        {
-            if (Application.isPlaying) return;
-            InitializeIfNeeded();
-        }
-
-        void ISerializationCallbackReceiver.OnAfterDeserialize()
-        {
-            if (m_Scale3D == Vector3.zero)
-            {
-                scale = m_Scale;
+                    var go = new GameObject("UIParticleOverlayCamera")
+                    {
+                        hideFlags = HideFlags.DontSave,
+                    };
+                    go.SetActive(false);
+                    go.transform.SetParent(transform, false);
+                    _orthoCamera = go.AddComponent<Camera>();
+                    _orthoCamera.enabled = false;
+                }
             }
 
-            UnityEditor.EditorApplication.delayCall += () =>
-            {
-                if (Application.isPlaying || !this) return;
-                InitializeIfNeeded();
-            };
+            // 
+            var size = ((RectTransform)root.transform).rect.size;
+            _orthoCamera.orthographicSize = Mathf.Max(size.x, size.y) * root.scaleFactor;
+            _orthoCamera.transform.SetPositionAndRotation(new Vector3(0, 0, -1000), Quaternion.identity);
+            _orthoCamera.orthographic = true;
+            _orthoCamera.farClipPlane = 2000f;
+
+            return _orthoCamera;
         }
-#endif
     }
 }

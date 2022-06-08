@@ -6,6 +6,43 @@ using Object = UnityEngine.Object;
 
 namespace Coffee.UIParticleExtensions
 {
+    public static class Vector3Extensions
+    {
+        public static Vector3 Inverse(this Vector3 self)
+        {
+            self.x = Mathf.Approximately(self.x, 0) ? 1 : 1 / self.x;
+            self.y = Mathf.Approximately(self.y, 0) ? 1 : 1 / self.y;
+            self.z = Mathf.Approximately(self.z, 0) ? 1 : 1 / self.z;
+            return self;
+        }
+
+        public static Vector3 GetScaled(this Vector3 self, Vector3 other1)
+        {
+            self.Scale(other1);
+            return self;
+        }
+
+        public static Vector3 GetScaled(this Vector3 self, Vector3 other1, Vector3 other2)
+        {
+            self.Scale(other1);
+            self.Scale(other2);
+            return self;
+        }
+
+        public static Vector3 GetScaled(this Vector3 self, Vector3 other1, Vector3 other2, Vector3 other3)
+        {
+            self.Scale(other1);
+            self.Scale(other2);
+            self.Scale(other3);
+            return self;
+        }
+
+        public static bool IsVisible(this Vector3 self)
+        {
+            return 0 < Mathf.Abs(self.x * self.y * self.z);
+        }
+    }
+
     internal static class SpriteExtensions
     {
 #if UNITY_EDITOR
@@ -21,7 +58,7 @@ namespace Coffee.UIParticleExtensions
             if (!self) return null;
 
             if (Application.isPlaying) return self.texture;
-            var ret = miGetActiveAtlasTexture.Invoke(null, new[] {self}) as Texture2D;
+            var ret = miGetActiveAtlasTexture.Invoke(null, new[] { self }) as Texture2D;
             return ret ? ret : self.texture;
         }
 #else
@@ -32,181 +69,29 @@ namespace Coffee.UIParticleExtensions
 #endif
     }
 
-    internal static class ListExtensions
+    public static class ParticleSystemExtensions
     {
-        public static bool SequenceEqualFast(this List<bool> self, List<bool> value)
+        public static bool CanBakeMesh(this ParticleSystemRenderer self)
         {
-            if (self.Count != value.Count) return false;
-            for (var i = 0; i < self.Count; ++i)
-            {
-                if (self[i] != value[i]) return false;
-            }
+            // #69: Editor crashes when mesh is set to null when `ParticleSystem.RenderMode = Mesh`
+            if (self.renderMode == ParticleSystemRenderMode.Mesh && self.mesh == null) return false;
+
+            // #61: When `ParticleSystem.RenderMode = None`, an error occurs
+            if (self.renderMode == ParticleSystemRenderMode.None) return false;
 
             return true;
         }
 
-        public static int CountFast(this List<bool> self)
+        public static ParticleSystemSimulationSpace GetActualSimulationSpace(this ParticleSystem self)
         {
-            var count = 0;
-            for (var i = 0; i < self.Count; ++i)
-            {
-                if (self[i]) count++;
-            }
+            var main = self.main;
+            var space = main.simulationSpace;
+            if (space == ParticleSystemSimulationSpace.Custom && !main.customSimulationSpace)
+                space = ParticleSystemSimulationSpace.Local;
 
-            return count;
+            return space;
         }
 
-        public static bool AnyFast<T>(this List<T> self) where T : Object
-        {
-            for (var i = 0; i < self.Count; ++i)
-            {
-                if (self[i]) return true;
-            }
-
-            return false;
-        }
-
-        public static bool AnyFast<T>(this List<T> self, Predicate<T> predicate) where T : Object
-        {
-            for (var i = 0; i < self.Count; ++i)
-            {
-                if (self[i] && predicate(self[i])) return true;
-            }
-
-            return false;
-        }
-    }
-
-    internal static class MeshExtensions
-    {
-        // static readonly List<Color32> s_Colors = new List<Color32>();
-
-        // public static void ModifyColorSpaceToLinear(this Mesh self)
-        // {
-        //     self.GetColors(s_Colors);
-        //
-        //     for (var i = 0; i < s_Colors.Count; i++)
-        //         s_Colors[i] = ((Color) s_Colors[i]).gamma;
-        //
-        //     self.SetColors(s_Colors);
-        //     s_Colors.Clear();
-        // }
-
-        public static void Clear(this CombineInstance[] self)
-        {
-            for (var i = 0; i < self.Length; i++)
-            {
-                MeshPool.Return(self[i].mesh);
-                self[i].mesh = null;
-            }
-        }
-    }
-
-    internal static class MeshPool
-    {
-        private static readonly Stack<Mesh> s_Pool = new Stack<Mesh>(32);
-        private static readonly HashSet<int> s_HashPool = new HashSet<int>();
-
-        public static void Init()
-        {
-        }
-
-        static MeshPool()
-        {
-            for (var i = 0; i < 32; i++)
-            {
-                var m = new Mesh();
-                m.MarkDynamic();
-                s_Pool.Push(m);
-                s_HashPool.Add(m.GetInstanceID());
-            }
-        }
-
-        public static Mesh Rent()
-        {
-            Mesh m;
-            while (0 < s_Pool.Count)
-            {
-                m = s_Pool.Pop();
-                if (m)
-                {
-                    s_HashPool.Remove(m.GetInstanceID());
-                    return m;
-                }
-            }
-
-            m = new Mesh();
-            m.MarkDynamic();
-            return m;
-        }
-
-        public static void Return(Mesh mesh)
-        {
-            if (!mesh) return;
-
-            var id = mesh.GetInstanceID();
-            if (s_HashPool.Contains(id)) return;
-
-            mesh.Clear(false);
-            s_Pool.Push(mesh);
-            s_HashPool.Add(id);
-        }
-    }
-
-    internal static class CombineInstanceArrayPool
-    {
-        private static readonly Dictionary<int, CombineInstance[]> s_Pool;
-
-        public static void Init()
-        {
-            s_Pool.Clear();
-        }
-
-        static CombineInstanceArrayPool()
-        {
-            s_Pool = new Dictionary<int, CombineInstance[]>();
-        }
-
-        public static CombineInstance[] Get(List<CombineInstance> src)
-        {
-            CombineInstance[] dst;
-            var count = src.Count;
-            if (!s_Pool.TryGetValue(count, out dst))
-            {
-                dst = new CombineInstance[count];
-                s_Pool.Add(count, dst);
-            }
-
-            for (var i = 0; i < src.Count; i++)
-            {
-                dst[i].mesh = src[i].mesh;
-                dst[i].transform = src[i].transform;
-            }
-
-            return dst;
-        }
-
-        public static CombineInstance[] Get(List<CombineInstanceEx> src, int count)
-        {
-            CombineInstance[] dst;
-            if (!s_Pool.TryGetValue(count, out dst))
-            {
-                dst = new CombineInstance[count];
-                s_Pool.Add(count, dst);
-            }
-
-            for (var i = 0; i < count; i++)
-            {
-                dst[i].mesh = src[i].mesh;
-                dst[i].transform = src[i].transform;
-            }
-
-            return dst;
-        }
-    }
-
-    internal static class ParticleSystemExtensions
-    {
         public static void SortForRendering(this List<ParticleSystem> self, Transform transform, bool sortByMaterial)
         {
             self.Sort((a, b) =>
@@ -242,9 +127,9 @@ namespace Coffee.UIParticleExtensions
                 var aPos = tr.InverseTransformPoint(aTransform.position).z + aRenderer.sortingFudge;
                 var bPos = tr.InverseTransformPoint(bTransform.position).z + bRenderer.sortingFudge;
                 if (!Mathf.Approximately(aPos, bPos))
-                    return (int) Mathf.Sign(bPos - aPos);
+                    return (int)Mathf.Sign(bPos - aPos);
 
-                return (int) Mathf.Sign(GetIndex(self, a) - GetIndex(self, b));
+                return (int)Mathf.Sign(GetIndex(self, a) - GetIndex(self, b));
             });
         }
 
@@ -256,19 +141,6 @@ namespace Coffee.UIParticleExtensions
             }
 
             return 0;
-        }
-
-        public static long GetMaterialHash(this ParticleSystem self, bool trail)
-        {
-            if (!self) return 0;
-
-            var r = self.GetComponent<ParticleSystemRenderer>();
-            var mat = trail ? r.trailMaterial : r.sharedMaterial;
-
-            if (!mat) return 0;
-
-            var tex = trail ? null : self.GetTextureForSprite();
-            return ((long) mat.GetHashCode() << 32) + (tex ? tex.GetHashCode() : 0);
         }
 
         public static Texture2D GetTextureForSprite(this ParticleSystem self)

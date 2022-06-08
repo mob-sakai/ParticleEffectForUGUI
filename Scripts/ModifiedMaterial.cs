@@ -28,7 +28,7 @@ namespace Coffee.UIParticleExtensions
             if (texture)
                 e.customMat.mainTexture = texture;
             s_Entries.Add(e);
-            // Debug.LogFormat(">>>> ModifiedMaterial.Add -> count = {0} {1} {2} {3}", s_Entries.Count, baseMat, texture, id);
+            //Debug.LogFormat(">>>> ModifiedMaterial.Add -> count = count:{0}, mat:{1}, tex:{2}, id:{3}", s_Entries.Count, baseMat, texture, id);
             return e.customMat;
         }
 
@@ -42,7 +42,7 @@ namespace Coffee.UIParticleExtensions
                 if (e.customMat != customMat) continue;
                 if (--e.count == 0)
                 {
-                    // Debug.LogFormat(">>>> ModifiedMaterial.Add -> count = {0} {1} {2} {3}", s_Entries.Count - 1, e.customMat, e.texture, e.id);
+                    //Debug.LogFormat(">>>> ModifiedMaterial.Remove -> count:{0}, mat:{1}, tex:{2}, id:{3}", s_Entries.Count - 1, e.customMat, e.texture, e.id);
                     DestroyImmediate(e.customMat);
                     e.baseMat = null;
                     e.texture = null;
