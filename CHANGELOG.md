@@ -1,3 +1,11 @@
+## [3.3.12](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/3.3.11...3.3.12) (2022-06-10)
+
+
+### Bug Fixes
+
+* always display materials in inspector ([a10042d](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/a10042d989dea18ff010bdbe970aa434e2bdf117))
+* UNITY_UI_ALPHACLIP in UIAdditive shader is not working ([e817e8d](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/e817e8d3c75188f3243243855b135bd840699199))
+
 ## [3.3.11](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/3.3.10...3.3.11) (2022-06-10)
 
 
