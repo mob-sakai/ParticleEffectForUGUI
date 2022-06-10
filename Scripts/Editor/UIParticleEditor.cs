@@ -202,6 +202,24 @@ namespace Coffee.UIExtensions
                 DestroyUIParticle(current);
                 return;
             }
+
+            // #203: When using linear color space, the particle colors are not output correctly.
+            // To fix, set 'Apply Active Color Space' in renderer module to false.
+            var allPsRenderers = targets.OfType<UIParticle>()
+                .SelectMany(x => x.particles)
+                .Where(x => x)
+                .Select(x => x.GetComponent<ParticleSystemRenderer>())
+                .ToArray();
+            if (0 < allPsRenderers.Length)
+            {
+                var so = new SerializedObject(allPsRenderers);
+                var sp = so.FindProperty("m_ApplyActiveColorSpace");//.boolValue = false;
+                if (FixButton(sp.boolValue || sp.hasMultipleDifferentValues, "When using linear color space, the particle colors are not output correctly.\nTo fix, set 'Apply Active Color Space' in renderer module to false."))
+                {
+                    sp.boolValue = false;
+                    so.ApplyModifiedProperties();
+                }
+            }
         }
 
         void DestroyUIParticle(UIParticle p, bool ignoreCurrent = false)
