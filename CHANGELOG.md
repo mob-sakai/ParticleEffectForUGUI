@@ -1,3 +1,11 @@
+## [3.3.11](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/3.3.10...3.3.11) (2022-06-10)
+
+
+### Bug Fixes
+
+* sorting by layer does not work properly ([ccc09e6](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/ccc09e6aca2fa3d7bc887e6c733e66706e40ae0f))
+* when using linear color space, the particle colors are not output correctly ([11c3a7b](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/11c3a7b37415d78e1b8ba3988a6e043c9f1861e0)), closes [#203](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/203)
+
 ## [3.3.10](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/3.3.9...3.3.10) (2022-02-17)
 
 
