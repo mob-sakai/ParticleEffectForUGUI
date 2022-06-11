@@ -239,6 +239,16 @@ namespace Coffee.UIExtensions
             {
                 s_CombineInstances[0].transform = canvasRenderer.transform.worldToLocalMatrix * GetWorldMatrix(psPos, scale);
                 workerMesh.CombineMeshes(s_CombineInstances, true, true);
+
+                workerMesh.RecalculateBounds();
+                var bounds = workerMesh.bounds;
+                var center = bounds.center;
+                center.z = 0;
+                bounds.center = center;
+                var extents = bounds.extents;
+                extents.z = 0;
+                bounds.extents = extents;
+                workerMesh.bounds = bounds;
             }
             Profiler.EndSample();
 
