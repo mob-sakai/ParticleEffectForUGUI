@@ -10,6 +10,14 @@ namespace Coffee.UIExtensions
         static readonly List<UIParticle> s_ActiveParticles = new List<UIParticle>();
         private static int frameCount = 0;
 
+        public static int uiParticleCount
+        {
+            get
+            {
+                return s_ActiveParticles.Count;
+            }
+        }
+
         public static void Register(UIParticle particle)
         {
             if (!particle) return;
@@ -41,16 +49,17 @@ namespace Coffee.UIExtensions
             Profiler.BeginSample("[UIParticle] Refresh");
             for (var i = 0; i < s_ActiveParticles.Count; i++)
             {
+                var uip = s_ActiveParticles[i];
                 try
                 {
-                    s_ActiveParticles[i].UpdateRenderers();
+                    uip.UpdateTransformScale();
+                    uip.UpdateRenderers();
                 }
                 catch (Exception e)
                 {
                     Debug.LogException(e);
                 }
             }
-
             Profiler.EndSample();
         }
     }

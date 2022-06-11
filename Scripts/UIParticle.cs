@@ -194,7 +194,7 @@ namespace Coffee.UIExtensions
 
             for (var i = 0; i < m_Renderers.Count; i++)
             {
-                GetRenderer(i).Clear();
+                GetRenderer(i).Clear(i);
             }
 
             var j = 0;
@@ -206,21 +206,24 @@ namespace Coffee.UIExtensions
                     GetRenderer(j++).Set(this, particles[i], true);
                 }
             }
-
         }
 
-        public void UpdateRenderers()
+        internal void UpdateTransformScale()
         {
-            var newScale = Vector3.one;
+            //var newScale = Vector3.one;
             //if (uiScaling)
-            {
-                newScale = transform.parent.lossyScale.Inverse();
-            }
+            //{
+            //    newScale = transform.parent.lossyScale.Inverse();
+            //}
+            var newScale = transform.parent.lossyScale.Inverse();
             if (transform.localScale != newScale)
             {
                 transform.localScale = newScale;
             }
+        }
 
+        internal void UpdateRenderers()
+        {
             var bakeCamera = GetBakeCamera();
             for (var i = 0; i < m_Renderers.Count; i++)
             {
@@ -248,7 +251,7 @@ namespace Coffee.UIExtensions
         {
             _tracker.Clear();
             UIParticleUpdater.Unregister(this);
-            m_Renderers.ForEach(r=>r.Clear());
+            m_Renderers.ForEach(r => r.Clear());
             UnregisterDirtyMaterialCallback(UpdateRendererMaterial);
 
             base.OnDisable();
@@ -282,11 +285,11 @@ namespace Coffee.UIExtensions
             }
         }
 
-        private UIParticleRenderer GetRenderer(int index)
+        internal UIParticleRenderer GetRenderer(int index)
         {
             if (m_Renderers.Count <= index)
             {
-                m_Renderers.Add(UIParticleRenderer.AddRenderer(this));
+                m_Renderers.Add(UIParticleRenderer.AddRenderer(this, index));
             }
             return m_Renderers[index];
         }

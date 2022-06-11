@@ -223,13 +223,7 @@ namespace Coffee.UIExtensions
                 .ToArray();
 
             // Animated properties
-            EditorGUI.BeginChangeCheck();
             AnimatedPropertiesEditor.DrawAnimatableProperties(m_AnimatableProperties, mats);
-            if (EditorGUI.EndChangeCheck())
-            {
-                foreach (UIParticle t in targets)
-                    t.SetMaterialDirty();
-            }
 
             // Target ParticleSystems.
             _ro.DoLayoutList();

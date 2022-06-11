@@ -15,13 +15,14 @@ namespace Coffee.UIExtensions
     {
         private static readonly CombineInstance[] s_CombineInstances = new CombineInstance[] { new CombineInstance() };
         private static ParticleSystem.Particle[] s_Particles = new ParticleSystem.Particle[2048];
-        private static List<Material> s_Materials = new List<Material>(2);
+        private static readonly List<Material> s_Materials = new List<Material>(2);
         private static MaterialPropertyBlock s_Mpb;
 
         private ParticleSystemRenderer _renderer;
         private ParticleSystem _particleSystem;
         //private ParticleSystem _emitter;
         private UIParticle _parent;
+        private int _index;
         private bool _isTrail;
         private Material _modifiedMaterial;
         private Vector3 _prevScale;
@@ -46,7 +47,7 @@ namespace Coffee.UIExtensions
             }
         }
 
-        public static UIParticleRenderer AddRenderer(UIParticle parent)
+        public static UIParticleRenderer AddRenderer(UIParticle parent, int index)
         {
             // Create renderer object.
             var go = new GameObject("UIParticleRenderer", typeof(UIParticleRenderer))
@@ -65,6 +66,7 @@ namespace Coffee.UIExtensions
             // Add renderer component.
             var renderer = go.GetComponent<UIParticleRenderer>();
             renderer._parent = parent;
+            renderer._index = index;
 
             return renderer;
         }
@@ -96,7 +98,7 @@ namespace Coffee.UIExtensions
             return modifiedMaterial;
         }
 
-        public void Clear()
+        public void Clear(int index = -1)
         {
             if (_renderer)
             {
@@ -105,6 +107,10 @@ namespace Coffee.UIExtensions
             _parent = null;
             _particleSystem = null;
             _renderer = null;
+            if (0 <= index )
+            {
+                _index = index;
+            }
             //_emitter = null;
 
             material = null;
