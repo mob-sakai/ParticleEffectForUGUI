@@ -20,6 +20,15 @@ namespace Coffee.UIExtensions
     [RequireComponent(typeof(CanvasRenderer))]
     public class UIParticle : MaskableGraphic
     {
+        public enum MeshSharing
+        {
+            None,
+            Auto,
+            Primary,
+            PrimarySimulator,
+            Reprica,
+        }
+
         [HideInInspector][SerializeField] internal bool m_IsTrail = false;
 
         [Tooltip("Particle effect scale")]
@@ -33,6 +42,14 @@ namespace Coffee.UIExtensions
         [Tooltip("Particles")]
         [SerializeField]
         private List<ParticleSystem> m_Particles = new List<ParticleSystem>();
+
+        [Tooltip("Mesh sharing.None: disable mesh sharing.\nAuto: automatically select Primary/Reprica.\nPrimary: provides particle simulation results to the same group.\nPrimary Simulator: Primary, but do not render the particle (simulation only).\nReprica: render simulation results provided by the primary.")]
+        [SerializeField]
+        private MeshSharing m_MeshSharing = MeshSharing.None;
+
+        [Tooltip("Mesh sharing group ID. If non-zero is specified, particle simulation results are shared within the group.")]
+        [SerializeField]
+        private int m_GroupId = 0;
 
         private List<UIParticleRenderer> m_Renderers = new List<UIParticleRenderer>();
 
@@ -50,6 +67,48 @@ namespace Coffee.UIExtensions
         {
             get { return false; }
             set { }
+        }
+
+        /// <summary>
+        /// Mesh sharing.None: disable mesh sharing.
+        /// Auto: automatically select Primary/Reprica.
+        /// Primary: provides particle simulation results to the same group.
+        /// Primary Simulator: Primary, but do not render the particle (simulation only).
+        /// Reprica: render simulation results provided by the primary.
+        /// </summary>
+        public MeshSharing meshSharing
+        {
+            get { return m_MeshSharing; }
+            set { m_MeshSharing = value; }
+        }
+
+        /// <summary>
+        /// Mesh sharing group ID. If non-zero is specified, particle simulation results are shared within the group.
+        /// </summary>
+        public int groupId
+        {
+            get { return m_GroupId; }
+            set { m_GroupId = value; }
+        }
+
+        internal bool useMeshSharing
+        {
+            get { return m_MeshSharing != MeshSharing.None; }
+        }
+
+        internal bool isPrimary
+        {
+            get { return m_MeshSharing == MeshSharing.Primary || m_MeshSharing == MeshSharing.PrimarySimulator; }
+        }
+
+        internal bool canSimulate
+        {
+            get { return m_MeshSharing == MeshSharing.None || m_MeshSharing == MeshSharing.Auto || m_MeshSharing == MeshSharing.Primary || m_MeshSharing == MeshSharing.PrimarySimulator; }
+        }
+
+        internal bool canRender
+        {
+            get { return m_MeshSharing == MeshSharing.None || m_MeshSharing == MeshSharing.Auto || m_MeshSharing == MeshSharing.Primary || m_MeshSharing == MeshSharing.Reprica; }
         }
 
         /// <summary>

@@ -17,6 +17,7 @@ namespace Coffee.UIExtensions
         private static ParticleSystem.Particle[] s_Particles = new ParticleSystem.Particle[2048];
         private static readonly List<Material> s_Materials = new List<Material>(2);
         private static MaterialPropertyBlock s_Mpb;
+        private static readonly List<UIParticleRenderer> s_Renderers = new List<UIParticleRenderer>();
 
         private ParticleSystemRenderer _renderer;
         private ParticleSystem _particleSystem;
@@ -30,6 +31,7 @@ namespace Coffee.UIExtensions
         private Vector2Int _prevScreenSize;
         private bool _delay = false;
         private bool _prewarm = false;
+        private Material _currentMaterialForRendering;
 
         public override Texture mainTexture
         {
@@ -76,6 +78,8 @@ namespace Coffee.UIExtensions
         /// </summary>
         public override Material GetModifiedMaterial(Material baseMaterial)
         {
+            _currentMaterialForRendering = null;
+
             if (!IsActive()) return baseMaterial;
 
             var modifiedMaterial = base.GetModifiedMaterial(baseMaterial);
@@ -164,6 +168,7 @@ namespace Coffee.UIExtensions
             // No particle to render: Clear mesh.
             if (
                 !enabled || !_particleSystem || !_parent || !canvasRenderer || !canvas || !bakeCamera
+                || _parent.meshSharing == UIParticle.MeshSharing.Reprica
                 || !transform.lossyScale.GetScaled(_parent.scale3D).IsVisible()     // Scale is not visible.
                 || (!_particleSystem.IsAlive() && !_particleSystem.isPlaying)       // No particle.
                 || (_isTrail && !_particleSystem.trails.enabled)                    // Trail, but it is not enabled.
@@ -185,9 +190,9 @@ namespace Coffee.UIExtensions
             var psPos = _particleSystem.transform.position;
 
             // Simulate particles.
-            if (!_isTrail)
+            Profiler.BeginSample("[UIParticle] Bake Mesh > Simulate Particles");
+            if (!_isTrail && _parent.canSimulate)
             {
-                Profiler.BeginSample("[UIParticle] Bake Mesh > Simulate Particles");
 #if UNITY_EDITOR
                 if (!Application.isPlaying)
                 {
@@ -210,32 +215,31 @@ namespace Coffee.UIExtensions
                         _particleSystem.Stop(false);
                     }
                 }
-                Profiler.EndSample();
                 _prevScale = scale;
                 _prevPsPos = psPos;
                 _delay = false;
             }
+            Profiler.EndSample();
 
             // Bake mesh.
             Profiler.BeginSample("[UIParticleRenderer] Bake Mesh");
+            if (_isTrail && _parent.canSimulate)
             {
-                if (_isTrail)
-                {
-                    _renderer.BakeTrailsMesh(s_CombineInstances[0].mesh, bakeCamera, true);
-                }
-                else if (_renderer.CanBakeMesh())
-                {
-                    _renderer.BakeMesh(s_CombineInstances[0].mesh, bakeCamera, true);
-                }
-                else
-                {
-                    s_CombineInstances[0].mesh.Clear();
-                }
+                _renderer.BakeTrailsMesh(s_CombineInstances[0].mesh, bakeCamera, true);
+            }
+            else if (_renderer.CanBakeMesh())
+            {
+                _renderer.BakeMesh(s_CombineInstances[0].mesh, bakeCamera, true);
+            }
+            else
+            {
+                s_CombineInstances[0].mesh.Clear();
             }
             Profiler.EndSample();
 
             // Combine mesh to transform. ([ParticleSystem local ->] world -> renderer local)
             Profiler.BeginSample("[UIParticleRenderer] Combine Mesh");
+            if (_parent.canSimulate)
             {
                 s_CombineInstances[0].transform = canvasRenderer.transform.worldToLocalMatrix * GetWorldMatrix(psPos, scale);
                 workerMesh.CombineMeshes(s_CombineInstances, true, true);
@@ -252,15 +256,49 @@ namespace Coffee.UIExtensions
             }
             Profiler.EndSample();
 
+
+            // Get grouped renderers.
+            s_Renderers.Clear();
+            if (_parent.useMeshSharing)
+            {
+                UIParticleUpdater.GetGroupedRenderers(_parent.groupId, _index, s_Renderers);
+            }
+
             // Set mesh to the CanvasRenderer.
             Profiler.BeginSample("[UIParticleRenderer] Set Mesh");
+            for (int i = 0; i < s_Renderers.Count; i++)
+            {
+                if (s_Renderers[i] == this) continue;
+                s_Renderers[i].canvasRenderer.SetMesh(workerMesh);
+            }
+
+            if (!_parent.canRender)
+            {
+                workerMesh.Clear();
+            }
             canvasRenderer.SetMesh(workerMesh);
             Profiler.EndSample();
 
             // Update animatable material properties.
             Profiler.BeginSample("[UIParticleRenderer] Update Animatable Material Properties");
             UpdateMaterialProperties();
+            if (!_parent.useMeshSharing)
+            {
+                if (!_currentMaterialForRendering)
+                {
+                    _currentMaterialForRendering = materialForRendering;
+                }
+                for (int i = 0; i < s_Renderers.Count; i++)
+                {
+                    if (s_Renderers[i] == this) continue;
+
+                    s_Renderers[i].canvasRenderer.materialCount = 1;
+                    s_Renderers[i].canvasRenderer.SetMaterial(_currentMaterialForRendering, 0);
+                }
+            }
             Profiler.EndSample();
+
+            s_Renderers.Clear();
         }
 
         protected override void OnEnable()
@@ -275,6 +313,7 @@ namespace Coffee.UIExtensions
                     hideFlags = HideFlags.HideAndDontSave,
                 };
             }
+            _currentMaterialForRendering = null;
         }
 
         protected override void OnDisable()
@@ -283,6 +322,7 @@ namespace Coffee.UIExtensions
 
             ModifiedMaterial.Remove(_modifiedMaterial);
             _modifiedMaterial = null;
+            _currentMaterialForRendering = null;
         }
 
         /// <summary>

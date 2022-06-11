@@ -58,6 +58,8 @@ namespace Coffee.UIExtensions
 #endif
         private SerializedProperty m_Scale3D;
         private SerializedProperty m_AnimatableProperties;
+        private SerializedProperty m_MeshSharing;
+        private SerializedProperty m_GroupId;
 
         private ReorderableList _ro;
         static private bool _xyzMode;
@@ -133,6 +135,8 @@ namespace Coffee.UIExtensions
             m_Maskable = serializedObject.FindProperty("m_Maskable");
             m_Scale3D = serializedObject.FindProperty("m_Scale3D");
             m_AnimatableProperties = serializedObject.FindProperty("m_AnimatableProperties");
+            m_MeshSharing = serializedObject.FindProperty("m_MeshSharing");
+            m_GroupId = serializedObject.FindProperty("m_GroupId");
 
             var sp = serializedObject.FindProperty("m_Particles");
             _ro = new ReorderableList(sp.serializedObject, sp, true, true, true, true);
@@ -213,7 +217,9 @@ namespace Coffee.UIExtensions
             EditorGUILayout.PropertyField(m_Maskable);
 
             // Scale
+            EditorGUI.BeginDisabledGroup(!m_MeshSharing.hasMultipleDifferentValues && m_MeshSharing.intValue == 4);
             _xyzMode = DrawFloatOrVector3Field(m_Scale3D, _xyzMode);
+            EditorGUI.EndDisabledGroup();
 
             // AnimatableProperties
             var mats = current.particles
@@ -224,6 +230,9 @@ namespace Coffee.UIExtensions
 
             // Animated properties
             AnimatedPropertiesEditor.DrawAnimatableProperties(m_AnimatableProperties, mats);
+
+            // Mesh sharing
+            DrawMeshSharing();
 
             // Target ParticleSystems.
             _ro.DoLayoutList();
@@ -270,6 +279,22 @@ namespace Coffee.UIExtensions
                     so.ApplyModifiedProperties();
                 }
             }
+        }
+
+        private void DrawMeshSharing()
+        {
+            EditorGUILayout.PropertyField(m_MeshSharing);
+            EditorGUI.BeginDisabledGroup(m_MeshSharing.intValue == 0);
+            EditorGUI.indentLevel++;
+            EditorGUILayout.PropertyField(m_GroupId);
+            if (m_MeshSharing.intValue == 1 || m_MeshSharing.intValue == 4)
+            {
+                EditorGUI.BeginDisabledGroup(true);
+                EditorGUILayout.ObjectField("Primary", UIParticleUpdater.GetPrimary(m_GroupId.intValue), typeof(UIParticle), false);
+                EditorGUI.EndDisabledGroup();
+            }
+            EditorGUI.indentLevel--;
+            EditorGUI.EndDisabledGroup();
         }
 
         private static void WindowFunction(UnityEngine.Object target, SceneView sceneView)

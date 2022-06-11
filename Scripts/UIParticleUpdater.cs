@@ -1,13 +1,12 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Profiling;
 
 namespace Coffee.UIExtensions
 {
     internal static class UIParticleUpdater
     {
         static readonly List<UIParticle> s_ActiveParticles = new List<UIParticle>();
+        static readonly HashSet<int> s_UpdatedGroupIds = new HashSet<int>();
         private static int frameCount = 0;
 
         public static int uiParticleCount
@@ -46,21 +45,61 @@ namespace Coffee.UIExtensions
             if (frameCount == Time.frameCount) return;
             frameCount = Time.frameCount;
 
-            Profiler.BeginSample("[UIParticle] Refresh");
+            // Simulate -> Primary
             for (var i = 0; i < s_ActiveParticles.Count; i++)
             {
                 var uip = s_ActiveParticles[i];
-                try
+                if (!uip.isPrimary || s_UpdatedGroupIds.Contains(uip.groupId)) continue;
+
+                s_UpdatedGroupIds.Add(uip.groupId);
+                uip.UpdateTransformScale();
+                uip.UpdateRenderers();
+            }
+
+            // Simulate -> Others
+            for (var i = 0; i < s_ActiveParticles.Count; i++)
+            {
+                var uip = s_ActiveParticles[i];
+                uip.UpdateTransformScale();
+
+                if (!uip.useMeshSharing)
                 {
-                    uip.UpdateTransformScale();
                     uip.UpdateRenderers();
                 }
-                catch (Exception e)
+                else if (!s_UpdatedGroupIds.Contains(uip.groupId))
                 {
-                    Debug.LogException(e);
+                    s_UpdatedGroupIds.Add(uip.groupId);
+                    uip.UpdateRenderers();
                 }
             }
-            Profiler.EndSample();
+
+            s_UpdatedGroupIds.Clear();
+        }
+
+        public static void GetGroupedRenderers(int groupId, int index, List<UIParticleRenderer> results)
+        {
+            results.Clear();
+            for (var i = 0; i < s_ActiveParticles.Count; i++)
+            {
+                var uip = s_ActiveParticles[i];
+                if (uip.useMeshSharing && uip.groupId == groupId)
+                {
+                    results.Add(uip.GetRenderer(index));
+                }
+            }
+        }
+
+        internal static UIParticle GetPrimary(int groupId)
+        {
+            UIParticle primary = null;
+            for (var i = 0; i < s_ActiveParticles.Count; i++)
+            {
+                var uip = s_ActiveParticles[i];
+                if (!uip.useMeshSharing || uip.groupId != groupId) continue;
+                if (uip.isPrimary) return uip;
+                if (!primary && uip.canSimulate) primary = uip;
+            }
+            return primary;
         }
     }
 }
