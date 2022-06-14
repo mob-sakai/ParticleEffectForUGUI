@@ -51,6 +51,9 @@ namespace Coffee.UIExtensions
         [SerializeField]
         private int m_GroupId = 0;
 
+        [SerializeField]
+        private int m_GroupMaxId = 0;
+
         private List<UIParticleRenderer> m_Renderers = new List<UIParticleRenderer>();
 
 #if !SERIALIZE_FIELD_MASKABLE
@@ -59,6 +62,7 @@ namespace Coffee.UIExtensions
 
         private DrivenRectTransformTracker _tracker;
         private Camera _orthoCamera;
+        private int _groupId;
 
         /// <summary>
         /// Should this graphic be considered a target for raycasting?
@@ -87,8 +91,25 @@ namespace Coffee.UIExtensions
         /// </summary>
         public int groupId
         {
-            get { return m_GroupId; }
-            set { m_GroupId = value; }
+            get { return _groupId; }
+            set
+            {
+                if (m_GroupId == value) return;
+                m_GroupId = value;
+                if (m_GroupId != m_GroupMaxId)
+                    ResetGroupId();
+            }
+        }
+
+        public int groupMaxId
+        {
+            get { return m_GroupMaxId; }
+            set
+            {
+                if (m_GroupMaxId == value) return;
+                m_GroupMaxId = value;
+                ResetGroupId();
+            }
         }
 
         internal bool useMeshSharing
@@ -295,12 +316,25 @@ namespace Coffee.UIExtensions
 #if !SERIALIZE_FIELD_MASKABLE
             maskable = m_Maskable;
 #endif
+            ResetGroupId();
             _tracker.Add(this, rectTransform, DrivenTransformProperties.Scale);
             UIParticleUpdater.Register(this);
             RegisterDirtyMaterialCallback(UpdateRendererMaterial);
             RefreshParticles(particles);
 
             base.OnEnable();
+        }
+
+        internal void ResetGroupId()
+        {
+            if (m_GroupId == m_GroupMaxId)
+            {
+                _groupId = m_GroupId;
+            }
+            else
+            {
+                _groupId = Random.Range(m_GroupId, m_GroupMaxId + 1);
+            }
         }
 
         /// <summary>

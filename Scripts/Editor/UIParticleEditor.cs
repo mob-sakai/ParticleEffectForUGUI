@@ -50,6 +50,7 @@ namespace Coffee.UIExtensions
         private static readonly GUIContent s_ContentMaterial = new GUIContent("Material");
         private static readonly GUIContent s_ContentTrailMaterial = new GUIContent("Trail Material");
         private static readonly GUIContent s_Content3D = new GUIContent("3D");
+        private static readonly GUIContent s_ContentRandom = new GUIContent("Random");
         private static readonly GUIContent s_ContentScale = new GUIContent("Scale");
         private static SerializedObject s_SerializedObject;
 
@@ -60,9 +61,12 @@ namespace Coffee.UIExtensions
         private SerializedProperty m_AnimatableProperties;
         private SerializedProperty m_MeshSharing;
         private SerializedProperty m_GroupId;
+        private SerializedProperty m_GroupMaxId;
+
 
         private ReorderableList _ro;
         static private bool _xyzMode;
+        private bool _showMax;
 
         private static readonly List<string> s_MaskablePropertyNames = new List<string>
         {
@@ -137,6 +141,7 @@ namespace Coffee.UIExtensions
             m_AnimatableProperties = serializedObject.FindProperty("m_AnimatableProperties");
             m_MeshSharing = serializedObject.FindProperty("m_MeshSharing");
             m_GroupId = serializedObject.FindProperty("m_GroupId");
+            m_GroupMaxId = serializedObject.FindProperty("m_GroupMaxId");
 
             var sp = serializedObject.FindProperty("m_Particles");
             _ro = new ReorderableList(sp.serializedObject, sp, true, true, true, true);
@@ -232,7 +237,16 @@ namespace Coffee.UIExtensions
             AnimatedPropertiesEditor.DrawAnimatableProperties(m_AnimatableProperties, mats);
 
             // Mesh sharing
-            DrawMeshSharing();
+            EditorGUI.BeginChangeCheck();
+            _showMax = DrawMeshSharing(m_MeshSharing, m_GroupId, m_GroupMaxId, _showMax);
+            if (EditorGUI.EndChangeCheck())
+            {
+                serializedObject.ApplyModifiedProperties();
+                foreach (var uip in targets.OfType<UIParticle>())
+                {
+                    uip.ResetGroupId();
+                }
+            }
 
             // Target ParticleSystems.
             _ro.DoLayoutList();
@@ -281,20 +295,38 @@ namespace Coffee.UIExtensions
             }
         }
 
-        private void DrawMeshSharing()
+        private static bool DrawMeshSharing(SerializedProperty spMeshSharing, SerializedProperty spGroupId, SerializedProperty spGroupMaxId, bool showMax)
         {
-            EditorGUILayout.PropertyField(m_MeshSharing);
-            EditorGUI.BeginDisabledGroup(m_MeshSharing.intValue == 0);
+            showMax |= spGroupId.intValue != spGroupMaxId.intValue ||
+                       spGroupId.hasMultipleDifferentValues ||
+                       spGroupMaxId.hasMultipleDifferentValues;
+
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.PropertyField(spMeshSharing);
+
+            EditorGUI.BeginChangeCheck();
+            showMax = GUILayout.Toggle(showMax, s_ContentRandom, EditorStyles.miniButton, GUILayout.Width(60));
+            if (EditorGUI.EndChangeCheck() && !showMax)
+                spGroupMaxId.intValue = spGroupId.intValue;
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUI.BeginDisabledGroup(spMeshSharing.intValue == 0);
             EditorGUI.indentLevel++;
-            EditorGUILayout.PropertyField(m_GroupId);
-            if (m_MeshSharing.intValue == 1 || m_MeshSharing.intValue == 4)
+            EditorGUILayout.PropertyField(spGroupId);
+            if (showMax)
+            {
+                EditorGUILayout.PropertyField(spGroupMaxId);
+            }
+            else if (spMeshSharing.intValue == 1 || spMeshSharing.intValue == 4)
             {
                 EditorGUI.BeginDisabledGroup(true);
-                EditorGUILayout.ObjectField("Primary", UIParticleUpdater.GetPrimary(m_GroupId.intValue), typeof(UIParticle), false);
+                EditorGUILayout.ObjectField("Primary", UIParticleUpdater.GetPrimary(spGroupId.intValue), typeof(UIParticle), false);
                 EditorGUI.EndDisabledGroup();
             }
             EditorGUI.indentLevel--;
             EditorGUI.EndDisabledGroup();
+
+            return showMax;
         }
 
         private static void WindowFunction(UnityEngine.Object target, SceneView sceneView)
