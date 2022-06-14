@@ -23,6 +23,12 @@ namespace Coffee.UIExtensions
             ImportSample(k_JsonGuid, "Cartoon FX & War FX Demo");
         }
 
+        [MenuItem("Assets/Samples/" + k_DisplayName + "/Cartoon FX & War FX Demo")]
+        private static void ImportSample_PerformanceDemo()
+        {
+            ImportSample(k_JsonGuid, "Performance Demo");
+        }
+
         private static void ImportSample(string jsonGuid, string sampleName)
         {
             var jsonPath = AssetDatabase.GUIDToAssetPath(jsonGuid);

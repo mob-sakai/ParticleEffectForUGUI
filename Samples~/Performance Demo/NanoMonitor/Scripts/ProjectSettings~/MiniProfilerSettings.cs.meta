@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: 647dad4f8226a49b9874b68b79413d64
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - miniProfilerPrefab: {fileID: 7211429669315726685, guid: 784696794bc6345bc80bf49623581c2e,
+      type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
