@@ -14,7 +14,7 @@ namespace Coffee.UIExtensions
     internal class UIParticleRenderer : MaskableGraphic
     {
         private static readonly CombineInstance[] s_CombineInstances = new CombineInstance[] { new CombineInstance() };
-        private static ParticleSystem.Particle[] s_Particles = new ParticleSystem.Particle[2048];
+        //private static ParticleSystem.Particle[] s_Particles = new ParticleSystem.Particle[2048];
         private static readonly List<Material> s_Materials = new List<Material>(2);
         private static MaterialPropertyBlock s_Mpb;
         private static readonly List<UIParticleRenderer> s_Renderers = new List<UIParticleRenderer>();
@@ -401,22 +401,19 @@ namespace Coffee.UIExtensions
             {
                 // Update particle array size and get particles.
                 var size = _particleSystem.particleCount;
-                if (s_Particles.Length < size)
-                {
-                    s_Particles = new ParticleSystem.Particle[Mathf.NextPowerOfTwo(size)];
-                }
-                _particleSystem.GetParticles(s_Particles, size);
+                var particles = ParticleSystemExtensions.GetParticleArray(size);
+                _particleSystem.GetParticles(particles, size);
 
                 // Resolusion resolver:
                 // (psPos / scale) / (prevPsPos / prevScale) -> psPos * scale.inv * prevPsPos.inv * prevScale
                 var modifier = psPos.GetScaled(scale.Inverse(), _prevPsPos.Inverse(), _prevScale);
                 for (var i = 0; i < size; i++)
                 {
-                    var particle = s_Particles[i];
+                    var particle = particles[i];
                     particle.position = particle.position.GetScaled(modifier);
-                    s_Particles[i] = particle;
+                    particles[i] = particle;
                 }
-                _particleSystem.SetParticles(s_Particles, size);
+                _particleSystem.SetParticles(particles, size);
 
                 // Delay: Do not progress in the frame where the resolution has been changed.
                 _delay = true;
@@ -483,22 +480,17 @@ namespace Coffee.UIExtensions
                 diffPos.y *= 1f - 1f / Mathf.Max(0.001f, scale.y);
                 diffPos.z *= 1f - 1f / Mathf.Max(0.001f, scale.z);
 
-                var count = _particleSystem.particleCount;
-                if (s_Particles.Length < count)
+                var size = _particleSystem.particleCount;
+                var particles = ParticleSystemExtensions.GetParticleArray(size);
+                _particleSystem.GetParticles(particles, size);
+                for (var i = 0; i < size; i++)
                 {
-                    var size = Mathf.NextPowerOfTwo(count);
-                    s_Particles = new ParticleSystem.Particle[size];
-                }
-
-                _particleSystem.GetParticles(s_Particles);
-                for (var j = 0; j < count; j++)
-                {
-                    var p = s_Particles[j];
+                    var p = particles[i];
                     p.position += diffPos;
-                    s_Particles[j] = p;
+                    particles[i] = p;
                 }
 
-                _particleSystem.SetParticles(s_Particles, count);
+                _particleSystem.SetParticles(particles, size);
                 Profiler.EndSample();
             }
         }

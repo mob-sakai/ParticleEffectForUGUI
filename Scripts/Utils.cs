@@ -71,6 +71,21 @@ namespace Coffee.UIParticleExtensions
 
     public static class ParticleSystemExtensions
     {
+        private static ParticleSystem.Particle[] s_TmpParticles = new ParticleSystem.Particle[2048];
+
+        public static ParticleSystem.Particle[] GetParticleArray(int size)
+        {
+            if (s_TmpParticles.Length < size)
+            {
+                while(s_TmpParticles.Length < size)
+                {
+                    size = Mathf.NextPowerOfTwo(size);
+                }
+                s_TmpParticles = new ParticleSystem.Particle[size];
+            }
+            return s_TmpParticles;
+        }
+
         public static bool CanBakeMesh(this ParticleSystemRenderer self)
         {
             // #69: Editor crashes when mesh is set to null when `ParticleSystem.RenderMode = Mesh`
