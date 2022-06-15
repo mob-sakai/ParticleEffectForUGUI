@@ -6,6 +6,7 @@ namespace Coffee.UIExtensions
     internal static class UIParticleUpdater
     {
         static readonly List<UIParticle> s_ActiveParticles = new List<UIParticle>();
+        static readonly List<UIParticleAttractor> s_ActiveAttractors = new List<UIParticleAttractor>();
         static readonly HashSet<int> s_UpdatedGroupIds = new HashSet<int>();
         private static int frameCount = 0;
 
@@ -27,6 +28,18 @@ namespace Coffee.UIExtensions
         {
             if (!particle) return;
             s_ActiveParticles.Remove(particle);
+        }
+
+        public static void Register(UIParticleAttractor attractor)
+        {
+            if (!attractor) return;
+            s_ActiveAttractors.Add(attractor);
+        }
+
+        public static void Unregister(UIParticleAttractor attractor)
+        {
+            if (!attractor) return;
+            s_ActiveAttractors.Remove(attractor);
         }
 
 #if UNITY_EDITOR
@@ -74,6 +87,12 @@ namespace Coffee.UIExtensions
             }
 
             s_UpdatedGroupIds.Clear();
+
+            // Attract
+            for(var i = 0;i< s_ActiveAttractors.Count;i++)
+            {
+                s_ActiveAttractors[i].Attract();
+            }
         }
 
         public static void GetGroupedRenderers(int groupId, int index, List<UIParticleRenderer> results)
