@@ -311,6 +311,14 @@ namespace Coffee.UIExtensions
             }
         }
 
+        internal void UpdateParticleCount()
+        {
+            for (var i = 0; i < m_Renderers.Count; i++)
+            {
+                m_Renderers[i].UpdateParticleCount();
+            }
+        }
+
         protected override void OnEnable()
         {
 #if !SERIALIZE_FIELD_MASKABLE

@@ -93,6 +93,12 @@ namespace Coffee.UIExtensions
             {
                 s_ActiveAttractors[i].Attract();
             }
+
+            // UpdateParticleCount.
+            for (var i = 0; i < s_ActiveParticles.Count; i++)
+            {
+                s_ActiveParticles[i].UpdateParticleCount();
+            }
         }
 
         public static void GetGroupedRenderers(int groupId, int index, List<UIParticleRenderer> results)

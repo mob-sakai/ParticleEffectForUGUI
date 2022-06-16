@@ -21,6 +21,7 @@ namespace Coffee.UIExtensions
 
         private ParticleSystemRenderer _renderer;
         private ParticleSystem _particleSystem;
+        internal int _prevParticleCount = 0;
         //private ParticleSystem _emitter;
         private UIParticle _parent;
         private int _index;
@@ -111,6 +112,7 @@ namespace Coffee.UIExtensions
             _parent = null;
             _particleSystem = null;
             _renderer = null;
+            _prevParticleCount = 0;
             if (0 <= index )
             {
                 _index = index;
@@ -135,6 +137,7 @@ namespace Coffee.UIExtensions
             if (_particleSystem.isPlaying)
             {
                 _particleSystem.Clear();
+                _particleSystem.Pause();
             }
             _prewarm = _particleSystem.main.prewarm;
 
@@ -157,6 +160,7 @@ namespace Coffee.UIExtensions
             _prevPsPos = _particleSystem.transform.position;
             _prevScreenSize = new Vector2Int(Screen.width, Screen.height);
             _delay = true;
+            _prevParticleCount = 0;
 
             canvasRenderer.SetTexture(null);
 
@@ -299,6 +303,12 @@ namespace Coffee.UIExtensions
             Profiler.EndSample();
 
             s_Renderers.Clear();
+        }
+
+        internal void UpdateParticleCount()
+        {
+            if (!_particleSystem) return;
+            _prevParticleCount = _particleSystem.particleCount;
         }
 
         protected override void OnEnable()
@@ -445,6 +455,22 @@ namespace Coffee.UIExtensions
             {
                 _particleSystem.Simulate(deltaTime, false, false, false);
                 return;
+            }
+
+            // Emitted particles found. 
+            if (_prevParticleCount != _particleSystem.particleCount)
+            {
+                var size = _particleSystem.particleCount;
+                var particles = ParticleSystemExtensions.GetParticleArray(size);
+                _particleSystem.GetParticles(particles, size);
+                for (var i = _prevParticleCount; i < size; i++)
+                {
+                    var p = particles[i];
+                    p.position = p.position.GetScaled(scale.Inverse());
+                    particles[i] = p;
+                }
+
+                _particleSystem.SetParticles(particles, size);
             }
 
             // get world position.
