@@ -89,7 +89,7 @@ namespace Coffee.UIExtensions
             s_UpdatedGroupIds.Clear();
 
             // Attract
-            for(var i = 0;i< s_ActiveAttractors.Count;i++)
+            for (var i = 0; i < s_ActiveAttractors.Count; i++)
             {
                 s_ActiveAttractors[i].Attract();
             }

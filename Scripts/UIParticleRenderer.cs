@@ -113,17 +113,18 @@ namespace Coffee.UIExtensions
             _particleSystem = null;
             _renderer = null;
             _prevParticleCount = 0;
-            if (0 <= index )
+            if (0 <= index)
             {
                 _index = index;
             }
             //_emitter = null;
-
-            material = null;
-            enabled = false;
-
-            workerMesh.Clear();
-            canvasRenderer.SetMesh(workerMesh);
+            if (this && isActiveAndEnabled)
+            {
+                material = null;
+                workerMesh.Clear();
+                canvasRenderer.SetMesh(workerMesh);
+                enabled = false;
+            }
         }
 
         public void Set(UIParticle parent, ParticleSystem particleSystem, bool isTrail)
@@ -171,7 +172,7 @@ namespace Coffee.UIExtensions
         {
             // No particle to render: Clear mesh.
             if (
-                !enabled || !_particleSystem || !_parent || !canvasRenderer || !canvas || !bakeCamera
+                !isActiveAndEnabled || !_particleSystem || !_parent || !canvasRenderer || !canvas || !bakeCamera
                 || _parent.meshSharing == UIParticle.MeshSharing.Reprica
                 || !transform.lossyScale.GetScaled(_parent.scale3D).IsVisible()     // Scale is not visible.
                 || (!_particleSystem.IsAlive() && !_particleSystem.isPlaying)       // No particle.

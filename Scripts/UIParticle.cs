@@ -252,7 +252,7 @@ namespace Coffee.UIExtensions
             RefreshParticles(gameObject);
         }
 
-        public void RefreshParticles(GameObject root)
+        private void RefreshParticles(GameObject root)
         {
             if (!root) return;
             root.GetComponentsInChildren(particles);
@@ -304,6 +304,8 @@ namespace Coffee.UIExtensions
 
         internal void UpdateRenderers()
         {
+            if (!isActiveAndEnabled) return;
+
             var bakeCamera = GetBakeCamera();
             for (var i = 0; i < m_Renderers.Count; i++)
             {
@@ -328,7 +330,15 @@ namespace Coffee.UIExtensions
             _tracker.Add(this, rectTransform, DrivenTransformProperties.Scale);
             UIParticleUpdater.Register(this);
             RegisterDirtyMaterialCallback(UpdateRendererMaterial);
-            RefreshParticles(particles);
+
+            if (0 < particles.Count)
+            {
+                RefreshParticles(particles);
+            }
+            else
+            {
+                RefreshParticles();
+            }
 
             base.OnEnable();
         }
