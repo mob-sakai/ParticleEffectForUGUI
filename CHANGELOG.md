@@ -1,3 +1,26 @@
+# [4.0.0-preview.1](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/3.3.12...4.0.0-preview.1) (2022-06-18)
+
+
+### Bug Fixes
+
+* correct world space particle position when changing screen size ([c6644a2](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/c6644a213263375c7a35b5082ef4b71cc58964e6))
+* keep properly canvas batches ([d8e96e6](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/d8e96e69a62dff7a451eaed32c7a814e7e62dbb9))
+
+
+### Features
+
+* adaptive scaling for UI ([aa0d56f](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/aa0d56f9faa05e9679d4b476bcf135eafb1b8af9))
+* add overlay window for UIParticle ([7b21c50](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/7b21c500ef78103b605fdca71051d2357b09602f))
+* add particle attractor component ([386170c](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/386170cbf68ebf59d4510fe0a45cf83925ec9ba4))
+* mesh sharing group ([9afeebf](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/9afeebf67212cdf4d3ac9e9a3b78a7ced5c7ecfe))
+* random mesh sharing group ([4fa43ed](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/4fa43eda4bc70c9c827c4fad9d5ae1327bfbc322))
+* support 8+ materials ([b76bf5a](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/b76bf5a5ad378c3c4b16bcf08d21337757557101)), closes [#122](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/122) [#152](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/152) [#186](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/186)
+
+
+### BREAKING CHANGES
+
+* If you update to v4, you may be required to adjust your UIParticle.scale.
+
 ## [3.3.12](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/3.3.11...3.3.12) (2022-06-10)
 
 
