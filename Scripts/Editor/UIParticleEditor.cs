@@ -69,6 +69,7 @@ namespace Coffee.UIExtensions
         private bool _showMax;
 
         private static readonly HashSet<Shader> s_Shaders = new HashSet<Shader>();
+        private static readonly List<ParticleSystemVertexStream> s_Streams = new List<ParticleSystemVertexStream>();
         private static readonly List<string> s_MaskablePropertyNames = new List<string>
         {
             "_Stencil",
@@ -305,7 +306,78 @@ namespace Coffee.UIExtensions
                     sp.boolValue = false;
                     so.ApplyModifiedProperties();
                 }
+
+                // Check to use 'TEXCOORD*.zw' components as custom vertex stream.
+                foreach (var psr in allPsRenderers)
+                {
+                    if (new SerializedObject(psr).FindProperty("m_UseCustomVertexStreams").boolValue == false) continue;
+                    if (psr.activeVertexStreamsCount == 0) continue;
+                    psr.GetActiveVertexStreams(s_Streams);
+
+                    if (2 < s_Streams.Select(GetUsedComponentCount).Sum())
+                    {
+                        EditorGUILayout.HelpBox(string.Format("ParticleSystem '{0}' uses 'TEXCOORD*.zw' components as custom vertex stream.\nUIParticle does not support it (See README.md).", psr.name), MessageType.Warning);
+                    }
+                }
             }
+        }
+
+        private static int GetUsedComponentCount(ParticleSystemVertexStream s)
+        {
+            switch (s)
+            {
+                case ParticleSystemVertexStream.Position:
+                case ParticleSystemVertexStream.Normal:
+                case ParticleSystemVertexStream.Tangent:
+                case ParticleSystemVertexStream.Color:
+                    return 0;
+                case ParticleSystemVertexStream.UV:
+                case ParticleSystemVertexStream.UV2:
+                case ParticleSystemVertexStream.UV3:
+                case ParticleSystemVertexStream.UV4:
+                case ParticleSystemVertexStream.SizeXY:
+                case ParticleSystemVertexStream.StableRandomXY:
+                case ParticleSystemVertexStream.VaryingRandomXY:
+                case ParticleSystemVertexStream.Custom1XY:
+                case ParticleSystemVertexStream.Custom2XY:
+                case ParticleSystemVertexStream.NoiseSumXY:
+                case ParticleSystemVertexStream.NoiseImpulseXY:
+                    return 2;
+                case ParticleSystemVertexStream.AnimBlend:
+                case ParticleSystemVertexStream.AnimFrame:
+                case ParticleSystemVertexStream.VertexID:
+                case ParticleSystemVertexStream.SizeX:
+                case ParticleSystemVertexStream.Rotation:
+                case ParticleSystemVertexStream.RotationSpeed:
+                case ParticleSystemVertexStream.Velocity:
+                case ParticleSystemVertexStream.Speed:
+                case ParticleSystemVertexStream.AgePercent:
+                case ParticleSystemVertexStream.InvStartLifetime:
+                case ParticleSystemVertexStream.StableRandomX:
+                case ParticleSystemVertexStream.VaryingRandomX:
+                case ParticleSystemVertexStream.Custom1X:
+                case ParticleSystemVertexStream.Custom2X:
+                case ParticleSystemVertexStream.NoiseSumX:
+                case ParticleSystemVertexStream.NoiseImpulseX:
+                    return 1;
+                case ParticleSystemVertexStream.Center:
+                case ParticleSystemVertexStream.SizeXYZ:
+                case ParticleSystemVertexStream.Rotation3D:
+                case ParticleSystemVertexStream.RotationSpeed3D:
+                case ParticleSystemVertexStream.StableRandomXYZ:
+                case ParticleSystemVertexStream.VaryingRandomXYZ:
+                case ParticleSystemVertexStream.Custom1XYZ:
+                case ParticleSystemVertexStream.Custom2XYZ:
+                case ParticleSystemVertexStream.NoiseSumXYZ:
+                case ParticleSystemVertexStream.NoiseImpulseXYZ:
+                    return 3;
+                case ParticleSystemVertexStream.StableRandomXYZW:
+                case ParticleSystemVertexStream.VaryingRandomXYZW:
+                case ParticleSystemVertexStream.Custom1XYZW:
+                case ParticleSystemVertexStream.Custom2XYZW:
+                    return 4;
+            }
+            return 3;
         }
 
         private static bool DrawMeshSharing(SerializedProperty spMeshSharing, SerializedProperty spGroupId, SerializedProperty spGroupMaxId, bool showMax)
