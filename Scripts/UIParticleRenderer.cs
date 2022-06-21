@@ -135,6 +135,9 @@ namespace Coffee.UIExtensions
             gameObject.layer = parent.gameObject.layer;
 
             _particleSystem = particleSystem;
+#if UNITY_EDITOR
+            if (Application.isPlaying)
+#endif
             if (_particleSystem.isPlaying)
             {
                 _particleSystem.Clear();

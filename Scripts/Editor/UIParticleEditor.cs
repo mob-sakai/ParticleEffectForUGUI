@@ -68,6 +68,7 @@ namespace Coffee.UIExtensions
         static private bool _xyzMode;
         private bool _showMax;
 
+        private static readonly HashSet<Shader> s_Shaders = new HashSet<Shader>();
         private static readonly List<string> s_MaskablePropertyNames = new List<string>
         {
             "_Stencil",
@@ -192,6 +193,15 @@ namespace Coffee.UIExtensions
                     t.RefreshParticles(t.particles);
                 }
             };
+
+            // On select UIParticle, refresh particles.
+            if (!Application.isPlaying)
+            {
+                foreach (UIParticle t in targets)
+                {
+                    t.RefreshParticles(t.particles);
+                }
+            }
         }
 
         private static void MaterialField(Rect rect, GUIContent label, SerializedProperty sp, int index)
@@ -260,6 +270,8 @@ namespace Coffee.UIExtensions
                 {
                     if (!mat || !mat.shader) continue;
                     var shader = mat.shader;
+                    if (s_Shaders.Contains(shader)) continue;
+                    s_Shaders.Add(shader);
                     foreach (var propName in s_MaskablePropertyNames)
                     {
                         if (mat.HasProperty(propName)) continue;
@@ -269,6 +281,7 @@ namespace Coffee.UIExtensions
                     }
                 }
             }
+            s_Shaders.Clear();
 
             // UIParticle for trail should be removed.
             if (FixButton(current.m_IsTrail, "This UIParticle component should be removed. The UIParticle for trails is no longer needed."))
@@ -286,7 +299,7 @@ namespace Coffee.UIExtensions
             if (0 < allPsRenderers.Length)
             {
                 var so = new SerializedObject(allPsRenderers);
-                var sp = so.FindProperty("m_ApplyActiveColorSpace");//.boolValue = false;
+                var sp = so.FindProperty("m_ApplyActiveColorSpace");
                 if (FixButton(sp.boolValue || sp.hasMultipleDifferentValues, "When using linear color space, the particle colors are not output correctly.\nTo fix, set 'Apply Active Color Space' in renderer module to false."))
                 {
                     sp.boolValue = false;

@@ -272,11 +272,6 @@ namespace Coffee.UIExtensions
         {
             GetComponentsInChildren(m_Renderers);
 
-            for (var i = 0; i < m_Renderers.Count; i++)
-            {
-                GetRenderer(i).Clear(i);
-            }
-
             var j = 0;
             for (var i = 0; i < particles.Count; i++)
             {
@@ -285,6 +280,11 @@ namespace Coffee.UIExtensions
                 {
                     GetRenderer(j++).Set(this, particles[i], true);
                 }
+            }
+
+            for (; j < m_Renderers.Count; j++)
+            {
+                GetRenderer(j).Clear(j);
             }
         }
 
