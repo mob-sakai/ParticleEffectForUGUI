@@ -1,8 +1,6 @@
 Particle Effect For UGUI (UI Particle)
 ===
 
-**:warning: NOTE: Do not use [the obsolete tags and branches](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/108) to reference the package. They will be removed in near future. :warning:**
-
 This plugin provide a component to render particle effect for uGUI in Unity 2018.2 or later.  
 The particle rendering is maskable and sortable, without Camera, RenderTexture or Canvas.
 
@@ -30,26 +28,35 @@ This plugin uses new APIs `MeshBake/MashTrailBake` (added with Unity 2018.2) to 
 You can mask and sort particles for uGUI without Camera, RenderTexture, Canvas.
 
 Compares this "Baking mesh" approach with the conventional approach:  
-(This scene is included in the package.)
+[Performance test results](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/193#issuecomment-1160028374)
 
 |Approach|Good|Bad|Screenshot|
 |-|-|-|-|
-|Baking mesh<br>**\(UIParticle\)**|Rendered as is.<br>Maskable.<br>Sortable.<br>Less objects.|**Requires Unity 2018.2 or later.**<br>Requires UI shaders to use Mask.|<img src="https://user-images.githubusercontent.com/12690315/41765089-0302b9a2-763e-11e8-88b3-b6ffa306bbb0.gif" width="500px">|
+|Baking mesh<br>**\(UIParticle\)**|Rendered as is.<br>Maskable.<br>Sortable.<br>Less objects.|[Not support `TEXCOORD*.zw` components for custom vertex stream](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/191#issuecomment-1043409186)|<img src="https://user-images.githubusercontent.com/12690315/41765089-0302b9a2-763e-11e8-88b3-b6ffa306bbb0.gif" width="500px">|
 |Do nothing|Rendered as is.|**Looks like a glitch.**<br>Not maskable.<br>Not sortable.|<img src="https://user-images.githubusercontent.com/12690315/41765090-0329828a-763e-11e8-8d8a-f1d269ea3bc7.gif" width="500px">|
 |Convert particle to UIVertex<br>[\(UIParticleSystem\)](https://forum.unity.com/threads/free-script-particle-systems-in-ui-screen-space-overlay.406862/)|Maskable.<br>Sortable.<br>Less objects.|**Adjustment is difficult.**<br>Requires UI shaders.<br>Difficult to adjust scale.<br>Force hierarchy scalling.<br>Simulation results are incorrect.<br>Trail, rotation of transform, time scaling are not supported.<br>Generate heavy GC every frame.|<img src="https://user-images.githubusercontent.com/12690315/41765088-02deb9c6-763e-11e8-98d0-9e0c1766ef39.gif" width="500px">|
 |Use Canvas to sort|Rendered as is.<br>Sortable.|**You must to manage sorting orders.**<br>Not maskable.<br>More batches.|<img src="https://user-images.githubusercontent.com/12690315/41765087-02b866ea-763e-11e8-8c33-081c9ad852f8.gif" width="500px">|
 |Use RenderTexture|Maskable.<br>Sortable.|**Requires Camera and RenderTexture.**<br>Difficult to adjust position and size.<br>Quality depends on the RenderTexture's setting.|<img src="https://user-images.githubusercontent.com/12690315/41765085-0291b3e2-763e-11e8-827b-72e5ee9bc556.gif" width="500px">|
 
+|Approach|FPS on Editor|FPS on iPhone6|FPS on Xperia XZ|
+|--|--|--|--|
+|Particle System|43|57|22|
+|UIParticleSystem|4|3|0 (unmeasurable)|
+|Sorting By Canvas|43|44|18|
+|UIParticle|17|12|4|
+|UIParticle with MeshSharing|44|45|30|
+
+<br><br>
 
 #### Features
 
 * Easy to use: the package is out-of-the-box
-* Sort particle effects with UI
+* Sort particle effects and UI by sibling index
 * No Camera, RenderTexture or Canvas are required
-* Masking with Mask or RectMask2D
+* Masking by Mask or RectMask2D
 * Support Trail module
-* Change alpha with CanvasGroup
-* No heavy allocation every frame
+* Support CanvasGroup alpha
+* No allocations
 * Support overlay, camera space and world space
 * Support changing material property with AnimationClip (AnimatableProperty)  
 ![](https://user-images.githubusercontent.com/12690315/53286323-2d94a980-37b0-11e9-8afb-c4a207805ff2.gif)
