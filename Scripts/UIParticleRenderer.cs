@@ -249,7 +249,15 @@ namespace Coffee.UIExtensions
             Profiler.BeginSample("[UIParticleRenderer] Combine Mesh");
             if (_parent.canSimulate)
             {
-                s_CombineInstances[0].transform = canvasRenderer.transform.worldToLocalMatrix * GetWorldMatrix(psPos, scale);
+                if (_parent.absoluteMode)
+                {
+                    s_CombineInstances[0].transform = canvasRenderer.transform.worldToLocalMatrix * GetWorldMatrix(psPos, scale);
+                }
+                else
+                {
+                    var diff = _particleSystem.transform.position - _parent.transform.position;
+                    s_CombineInstances[0].transform = canvasRenderer.transform.worldToLocalMatrix * Matrix4x4.Translate(diff.GetScaled(scale - Vector3.one)) * GetWorldMatrix(psPos, scale);
+                }
                 workerMesh.CombineMeshes(s_CombineInstances, true, true);
 
                 workerMesh.RecalculateBounds();

@@ -54,6 +54,10 @@ namespace Coffee.UIExtensions
         [SerializeField]
         private int m_GroupMaxId = 0;
 
+        [SerializeField]
+        [Tooltip("The particles will be emitted at the ParticleSystem position.\nMove the UIParticle/ParticleSystem to move the particle.")]
+        private bool m_AbsoluteMode = false;
+
         private List<UIParticleRenderer> m_Renderers = new List<UIParticleRenderer>();
 
 #if !SERIALIZE_FIELD_MASKABLE
@@ -110,6 +114,17 @@ namespace Coffee.UIExtensions
                 m_GroupMaxId = value;
                 ResetGroupId();
             }
+        }
+
+        /// <summary>
+        /// Absolute particle position mode.
+        /// The particles will be emitted at the ParticleSystem position.
+        /// Move the UIParticle/ParticleSystem to move the particle.
+        /// </summary>
+        public bool absoluteMode
+        {
+            get { return m_AbsoluteMode; }
+            set { m_AbsoluteMode = value; }
         }
 
         internal bool useMeshSharing

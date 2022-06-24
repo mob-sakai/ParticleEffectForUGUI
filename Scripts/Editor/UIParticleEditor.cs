@@ -62,6 +62,7 @@ namespace Coffee.UIExtensions
         private SerializedProperty m_MeshSharing;
         private SerializedProperty m_GroupId;
         private SerializedProperty m_GroupMaxId;
+        private SerializedProperty m_AbsoluteMode;
 
 
         private ReorderableList _ro;
@@ -150,6 +151,7 @@ namespace Coffee.UIExtensions
             m_MeshSharing = serializedObject.FindProperty("m_MeshSharing");
             m_GroupId = serializedObject.FindProperty("m_GroupId");
             m_GroupMaxId = serializedObject.FindProperty("m_GroupMaxId");
+            m_AbsoluteMode = serializedObject.FindProperty("m_AbsoluteMode");
 
             var sp = serializedObject.FindProperty("m_Particles");
             _ro = new ReorderableList(sp.serializedObject, sp, true, true, true, true);
@@ -264,6 +266,9 @@ namespace Coffee.UIExtensions
                     uip.ResetGroupId();
                 }
             }
+
+            // Absolute Mode
+            EditorGUILayout.PropertyField(m_AbsoluteMode);
 
             // Target ParticleSystems.
             _ro.DoLayoutList();
