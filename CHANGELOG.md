@@ -1,3 +1,10 @@
+## [4.0.1](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/4.0.0...4.0.1) (2022-06-24)
+
+
+### Bug Fixes
+
+* overlays do not exist in Unity 2019.2-2021.1 ([cd8e037](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/cd8e0372b63bb6feaaf053518013a641bc7e65ac)), closes [#207](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/207) [#208](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/208)
+
 # [4.0.0](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/3.3.12...4.0.0) (2022-06-21)
 
 
