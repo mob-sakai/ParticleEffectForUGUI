@@ -14,6 +14,7 @@ public class UIElementDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, 
     private Canvas canvas;
     public Target m_Target;
     public Transform m_CustomTarget;
+    public bool ex2;
 
     private void OnEnable()
     {
@@ -37,6 +38,8 @@ public class UIElementDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, 
                 rectTransform.localPosition += delta;
                 if (m_CustomTarget)
                 {
+                    if (ex2)
+                        delta.Scale(canvas.rootCanvas.transform.localScale);
                     m_CustomTarget.localPosition += delta;
                 }
                 break;
