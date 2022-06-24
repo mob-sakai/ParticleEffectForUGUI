@@ -85,15 +85,21 @@ namespace Coffee.UIExtensions
         static void Init()
         {
 #if !UNITY_2021_2_OR_NEWER
-            // static void Window(GUIContent title, WindowFunction sceneViewFunc, int order, UnityEngine.Object target, WindowDisplayOption option)
             var miSceneViewOverlayWindow = Type.GetType("UnityEditor.SceneViewOverlay, UnityEditor")
                 .GetMethods(BindingFlags.Public | BindingFlags.Static)
-                .First(x => x.Name == "Window" && x.GetParameters().Length == 5);
+                .First(x => x.Name == "Window" && 5 <= x.GetParameters().Length);
             var windowFunction = (Action<UnityEngine.Object, SceneView>)WindowFunction;
             var windowFunctionType = Type.GetType("UnityEditor.SceneViewOverlay+WindowFunction, UnityEditor");
             var windowFunctionDelegate = Delegate.CreateDelegate(windowFunctionType, windowFunction.Method);
             var windowTitle = new GUIContent(ObjectNames.NicifyVariableName(typeof(UIParticle).Name));
+#if UNITY_2019_2_OR_NEWER
+            //public static void Window(GUIContent title, WindowFunction sceneViewFunc, int order, Object target, WindowDisplayOption option, EditorWindow window = null)
+            var sceneViewArgs = new object[] { windowTitle, windowFunctionDelegate, 599, null, 2, null };
+#else
+            //public static void Window(GUIContent title, WindowFunction sceneViewFunc, int order, Object target, WindowDisplayOption option)
             var sceneViewArgs = new object[] { windowTitle, windowFunctionDelegate, 599, null, 2 };
+#endif
+
 #if UNITY_2019_1_OR_NEWER
             SceneView.duringSceneGui += _ => miSceneViewOverlayWindow.Invoke(null, sceneViewArgs);
 #else
