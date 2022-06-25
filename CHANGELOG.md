@@ -1,3 +1,10 @@
+## [4.1.1](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/4.1.0...4.1.1) (2022-06-25)
+
+
+### Bug Fixes
+
+* add absolute mode toggle to overlay window ([48d1994](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/48d1994f5f8751b707b6ef7695b552df731bece9))
+
 # [4.1.0](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/4.0.1...4.1.0) (2022-06-25)
 
 
