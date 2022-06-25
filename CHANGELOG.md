@@ -1,3 +1,10 @@
+# [4.1.0](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/4.0.1...4.1.0) (2022-06-25)
+
+
+### Features
+
+* add relative/absolute particle position mode ([1879ac8](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/1879ac8c538778e386e68cfc989a6f4f974043ca)), closes [#205](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/205)
+
 ## [4.0.1](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/4.0.0...4.0.1) (2022-06-24)
 
 
