@@ -432,12 +432,13 @@ namespace Coffee.UIExtensions
                 if (s_SerializedObject.targetObjects.Any(x => !x)) return;
 
                 s_SerializedObject.Update();
-                GUILayout.BeginHorizontal(GUILayout.Width(220f));
+                GUILayout.BeginVertical(GUILayout.Width(220f));
                 var labelWidth = EditorGUIUtility.labelWidth;
-                EditorGUIUtility.labelWidth = 60;
+                EditorGUIUtility.labelWidth = 100;
                 _xyzMode = DrawFloatOrVector3Field(s_SerializedObject.FindProperty("m_Scale3D"), _xyzMode);
+                EditorGUILayout.PropertyField(s_SerializedObject.FindProperty("m_AbsoluteMode"));
                 EditorGUIUtility.labelWidth = labelWidth;
-                GUILayout.EndHorizontal();
+                GUILayout.EndVertical();
                 s_SerializedObject.ApplyModifiedProperties();
             }
             catch
