@@ -65,8 +65,10 @@ Compares this "Baking mesh" approach with the conventional approach:
 * [4.0.0+] Adaptive scaling for UI
 * [4.0.0+] Mesh sharing group to improve performance  
 ![](https://user-images.githubusercontent.com/12690315/174311048-c882df81-6c34-4eba-b0aa-5645457692f1.gif)
-* [4.0.0+] particle attractor component  
+* [4.0.0+] Particle attractor component  
 ![](https://user-images.githubusercontent.com/12690315/174311027-462929a4-13f0-4ec4-86ea-9c832f2eecf1.gif)
+* [4.1.0+] Relative/Absolute particle position mode  
+![](https://user-images.githubusercontent.com/12690315/175751579-5a2357e8-2ecf-4afd-83c8-66e9771bde39.gif)
 
 
 <br><br><br><br>
@@ -168,6 +170,7 @@ Unity 2018.2 supports embedded packages.
 | Scale | Scale the rendering.<br>When the `3D` toggle is enabled, 3D scale (x,y,z) is supported. |
 | Animatable Properties | If you want update material properties (e.g. `_MainTex_ST`, `_Color`) in AnimationClip, use this to mark the changes. |
 | Mesh Sharing | Particle simulation results are shared within the same group.<br>A large number of the same effects can be displayed with a small load.<br>When the `Random` toggle is enabled, it will be grouped randomaly. |
+| Absolute Mode | The particles will be emitted at the ParticleSystem position.<br>Move the UIParticle/ParticleSystem to move the particle. |
 | Rendering Order | The ParticleSystems to be rendered.<br>You can change the rendering order and the materials. |
 
 NOTE: Press `Refresh` button to reconstruct rendering order based on children ParticleSystem's sorting order and z position.
