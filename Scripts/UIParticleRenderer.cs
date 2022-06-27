@@ -461,14 +461,6 @@ namespace Coffee.UIExtensions
                 _prewarm = false;
             }
 
-            // Normal simulation for non-scaling or local spacing.
-            var isScaling = scale != Vector3.one;
-            if (!isScaling || _particleSystem.GetActualSimulationSpace() == ParticleSystemSimulationSpace.Local)
-            {
-                _particleSystem.Simulate(deltaTime, false, false, false);
-                return;
-            }
-
             // Emitted particles found. 
             if (_prevParticleCount != _particleSystem.particleCount)
             {
