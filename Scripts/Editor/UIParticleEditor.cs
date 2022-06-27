@@ -204,12 +204,10 @@ namespace Coffee.UIExtensions
             };
 
             // On select UIParticle, refresh particles.
-            if (!Application.isPlaying)
+            foreach (UIParticle t in targets)
             {
-                foreach (UIParticle t in targets)
-                {
-                    t.RefreshParticles(t.particles);
-                }
+                if (Application.isPlaying || PrefabUtility.GetPrefabAssetType(t) != PrefabAssetType.NotAPrefab) continue;
+                t.RefreshParticles(t.particles);
             }
         }
 
@@ -432,13 +430,14 @@ namespace Coffee.UIExtensions
                 if (s_SerializedObject.targetObjects.Any(x => !x)) return;
 
                 s_SerializedObject.Update();
-                GUILayout.BeginVertical(GUILayout.Width(220f));
-                var labelWidth = EditorGUIUtility.labelWidth;
-                EditorGUIUtility.labelWidth = 100;
-                _xyzMode = DrawFloatOrVector3Field(s_SerializedObject.FindProperty("m_Scale3D"), _xyzMode);
-                EditorGUILayout.PropertyField(s_SerializedObject.FindProperty("m_AbsoluteMode"));
-                EditorGUIUtility.labelWidth = labelWidth;
-                GUILayout.EndVertical();
+                using (new EditorGUILayout.VerticalScope(GUILayout.Width(220f)))
+                {
+                    var labelWidth = EditorGUIUtility.labelWidth;
+                    EditorGUIUtility.labelWidth = 100;
+                    _xyzMode = DrawFloatOrVector3Field(s_SerializedObject.FindProperty("m_Scale3D"), _xyzMode);
+                    EditorGUILayout.PropertyField(s_SerializedObject.FindProperty("m_AbsoluteMode"));
+                    EditorGUIUtility.labelWidth = labelWidth;
+                }
                 s_SerializedObject.ApplyModifiedProperties();
             }
             catch
