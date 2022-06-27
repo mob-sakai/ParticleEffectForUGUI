@@ -1,3 +1,11 @@
+## [4.1.2](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/4.1.1...4.1.2) (2022-06-27)
+
+
+### Bug Fixes
+
+* error on editor ([8034228](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/80342287137c07d58a7492875a401d80cb134073)), closes [#210](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/210)
+* incorrect position of world space trail particles ([fb7f308](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/fb7f308f092db8a1512383857b80110cd626ecf9)), closes [#209](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/209)
+
 ## [4.1.1](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/4.1.0...4.1.1) (2022-06-25)
 
 
