@@ -1,3 +1,10 @@
+## [4.1.3](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/4.1.2...4.1.3) (2022-06-28)
+
+
+### Bug Fixes
+
+* error on drag prefab to scene ([fa2f867](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/fa2f867bcaff437bb9420da1abcef970cdb09ade)), closes [#211](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/211)
+
 ## [4.1.2](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/4.1.1...4.1.2) (2022-06-27)
 
 
