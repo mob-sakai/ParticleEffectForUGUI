@@ -62,7 +62,7 @@ namespace Coffee.UIExtensions
             for (var i = 0; i < s_ActiveParticles.Count; i++)
             {
                 var uip = s_ActiveParticles[i];
-                if (!uip.isPrimary || s_UpdatedGroupIds.Contains(uip.groupId)) continue;
+                if (!uip || !uip.canvas || !uip.isPrimary || s_UpdatedGroupIds.Contains(uip.groupId)) continue;
 
                 s_UpdatedGroupIds.Add(uip.groupId);
                 uip.UpdateTransformScale();
@@ -73,6 +73,8 @@ namespace Coffee.UIExtensions
             for (var i = 0; i < s_ActiveParticles.Count; i++)
             {
                 var uip = s_ActiveParticles[i];
+                if (!uip || !uip.canvas) continue;
+
                 uip.UpdateTransformScale();
 
                 if (!uip.useMeshSharing)
@@ -97,7 +99,10 @@ namespace Coffee.UIExtensions
             // UpdateParticleCount.
             for (var i = 0; i < s_ActiveParticles.Count; i++)
             {
-                s_ActiveParticles[i].UpdateParticleCount();
+                var uip = s_ActiveParticles[i];
+                if (!uip || !uip.canvas) continue;
+
+                uip.UpdateParticleCount();
             }
         }
 
