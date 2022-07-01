@@ -192,14 +192,8 @@ namespace Coffee.UIExtensions
                     foreach (UIParticle t in targets)
                     {
                         t.RefreshParticles();
+                        EditorUtility.SetDirty(t);
                     }
-                }
-            };
-            _ro.onReorderCallback = _ =>
-            {
-                foreach (UIParticle t in targets)
-                {
-                    t.RefreshParticles(t.particles);
                 }
             };
 
@@ -269,9 +263,18 @@ namespace Coffee.UIExtensions
             EditorGUILayout.PropertyField(m_AbsoluteMode);
 
             // Target ParticleSystems.
+            EditorGUI.BeginChangeCheck();
+            EditorGUI.BeginDisabledGroup(targets.OfType<UIParticle>().Any(x => !x.canvas));
             _ro.DoLayoutList();
-
+            EditorGUI.EndDisabledGroup();
             serializedObject.ApplyModifiedProperties();
+            if (EditorGUI.EndChangeCheck())
+            {
+                foreach (var uip in targets.OfType<UIParticle>())
+                {
+                    uip.RefreshParticles(uip.particles);
+                }
+            }
 
             // Does the shader support UI masks?
             if (current.maskable && current.GetComponentInParent<Mask>())
