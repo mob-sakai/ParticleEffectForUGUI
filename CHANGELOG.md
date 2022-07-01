@@ -1,3 +1,14 @@
+## [4.1.4](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/4.1.3...4.1.4) (2022-07-01)
+
+
+### Bug Fixes
+
+* add `Enabled` toggle in overlay window ([f97e619](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/f97e6195e62b5acfa8f3e97bfe3bc4a7dcadf38a))
+* if `m_Particles` contains null, an error will occur ([550d0c4](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/550d0c43be35cd07e390ffd5749557c89fee0332)), closes [#214](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/214)
+* ParticleSystem reordering and refreshing in inspector does not work for prefab asset ([7eb4112](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/7eb41124db06ea794db76788b35ce82a0af2c402))
+* refresh button does not works in prefab edit mode ([c1538a8](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/c1538a83998608a30dc90944b05f8b75e165cf05)), closes [#214](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/214)
+* when `UIParticlrRenderer` destroy manually, an error will occur ([a11d2d0](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/a11d2d01ce5f67e3f430bcb0bfdee1ad9abf7cfe))
+
 ## [4.1.3](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/4.1.2...4.1.3) (2022-06-28)
 
 
