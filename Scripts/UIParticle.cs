@@ -2,6 +2,7 @@
 #define SERIALIZE_FIELD_MASKABLE
 #endif
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using Coffee.UIParticleExtensions;
 using UnityEngine;
@@ -322,9 +323,15 @@ namespace Coffee.UIExtensions
         {
             if (!isActiveAndEnabled) return;
 
+            if (m_Renderers.Any(x => !x))
+            {
+                RefreshParticles(particles);
+            }
+
             var bakeCamera = GetBakeCamera();
             for (var i = 0; i < m_Renderers.Count; i++)
             {
+                if (!m_Renderers[i]) continue;
                 m_Renderers[i].UpdateMesh(bakeCamera);
             }
         }
@@ -333,6 +340,7 @@ namespace Coffee.UIExtensions
         {
             for (var i = 0; i < m_Renderers.Count; i++)
             {
+                if (!m_Renderers[i]) continue;
                 m_Renderers[i].UpdateParticleCount();
             }
         }
@@ -417,6 +425,10 @@ namespace Coffee.UIExtensions
             if (m_Renderers.Count <= index)
             {
                 m_Renderers.Add(UIParticleRenderer.AddRenderer(this, index));
+            }
+            if (!m_Renderers[index])
+            {
+                m_Renderers[index] = UIParticleRenderer.AddRenderer(this, index);
             }
             return m_Renderers[index];
         }
