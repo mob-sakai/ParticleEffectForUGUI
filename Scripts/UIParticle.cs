@@ -290,6 +290,7 @@ namespace Coffee.UIExtensions
             var j = 0;
             for (var i = 0; i < particles.Count; i++)
             {
+                if (!particles[i]) continue;
                 GetRenderer(j++).Set(this, particles[i], false);
                 if (particles[i].trails.enabled)
                 {
