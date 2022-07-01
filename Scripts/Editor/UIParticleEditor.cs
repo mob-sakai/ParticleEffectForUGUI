@@ -120,15 +120,15 @@ namespace Coffee.UIExtensions
                         .Select(x => x.GetComponent<ParticleSystem>())
                         .Where(x => x)
                         .Select(x => x.GetComponentInParent<UIParticle>())
-                        .Where(x => x)
+                        .Where(x => x && x.canvas)
                         .Concat(
                             Selection.gameObjects
                                 .Select(x => x.GetComponent<UIParticle>())
-                                .Where(x => x)
+                                .Where(x => x && x.canvas)
                         )
                         .Distinct()
                         .ToArray();
-                return uiParticles.Any() ? new SerializedObject(uiParticles) : null;
+                return 0 < uiParticles.Length ? new SerializedObject(uiParticles) : null;
             };
 
             s_SerializedObject = createSerializeObject();
@@ -155,9 +155,9 @@ namespace Coffee.UIExtensions
 
             var sp = serializedObject.FindProperty("m_Particles");
             _ro = new ReorderableList(sp.serializedObject, sp, true, true, true, true);
-            _ro.elementHeight = EditorGUIUtility.singleLineHeight * 3 + 4;
+            _ro.elementHeight = (EditorGUIUtility.singleLineHeight * 3) + 4;
             _ro.elementHeightCallback = _ => 3 * (EditorGUIUtility.singleLineHeight + 2);
-            _ro.drawElementCallback = (rect, index, active, focused) =>
+            _ro.drawElementCallback = (rect, index, _, __) =>
             {
                 EditorGUI.BeginDisabledGroup(sp.hasMultipleDifferentValues);
                 rect.y += 1;
@@ -175,7 +175,7 @@ namespace Coffee.UIExtensions
                 rect.y += rect.height + 1;
                 MaterialField(rect, s_ContentTrailMaterial, materials, 1);
                 EditorGUI.EndDisabledGroup();
-                if (materials != null)
+                if (materials != null && materials.serializedObject.hasModifiedProperties)
                 {
                     materials.serializedObject.ApplyModifiedProperties();
                 }
@@ -231,7 +231,7 @@ namespace Coffee.UIExtensions
         public override void OnInspectorGUI()
         {
             var current = target as UIParticle;
-            if (current == null) return;
+            if (!current) return;
 
             serializedObject.Update();
 
@@ -319,7 +319,7 @@ namespace Coffee.UIExtensions
                 // Check to use 'TEXCOORD*.zw' components as custom vertex stream.
                 foreach (var psr in allPsRenderers)
                 {
-                    if (new SerializedObject(psr).FindProperty("m_UseCustomVertexStreams").boolValue == false) continue;
+                    if (!new SerializedObject(psr).FindProperty("m_UseCustomVertexStreams").boolValue) continue;
                     if (psr.activeVertexStreamsCount == 0) continue;
                     psr.GetActiveVertexStreams(s_Streams);
 
@@ -427,7 +427,7 @@ namespace Coffee.UIExtensions
         {
             try
             {
-                if (s_SerializedObject.targetObjects.Any(x => !x)) return;
+                if (s_SerializedObject.targetObjects.OfType<UIParticle>().Any(x => !x || !x.canvas)) return;
 
                 s_SerializedObject.Update();
                 using (new EditorGUILayout.VerticalScope(GUILayout.Width(220f)))
