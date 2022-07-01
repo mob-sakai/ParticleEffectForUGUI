@@ -434,6 +434,7 @@ namespace Coffee.UIExtensions
                 {
                     var labelWidth = EditorGUIUtility.labelWidth;
                     EditorGUIUtility.labelWidth = 100;
+                    EditorGUILayout.PropertyField(s_SerializedObject.FindProperty("m_Enabled"));
                     _xyzMode = DrawFloatOrVector3Field(s_SerializedObject.FindProperty("m_Scale3D"), _xyzMode);
                     EditorGUILayout.PropertyField(s_SerializedObject.FindProperty("m_AbsoluteMode"));
                     EditorGUIUtility.labelWidth = labelWidth;
