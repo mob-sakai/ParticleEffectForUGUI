@@ -1,3 +1,10 @@
+## [4.1.6](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/4.1.5...4.1.6) (2022-08-10)
+
+
+### Bug Fixes
+
+* fix abnormal mesh bounds error ([f60d6df](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/f60d6dfe6030ac89527a4265e414e9a0a20d56db)), closes [#213](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/213) [#218](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/218)
+
 ## [4.1.5](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/4.1.4...4.1.5) (2022-08-10)
 
 
