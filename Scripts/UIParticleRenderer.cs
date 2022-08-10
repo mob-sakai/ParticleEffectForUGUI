@@ -14,15 +14,14 @@ namespace Coffee.UIExtensions
     internal class UIParticleRenderer : MaskableGraphic
     {
         private static readonly CombineInstance[] s_CombineInstances = new CombineInstance[] { new CombineInstance() };
-        //private static ParticleSystem.Particle[] s_Particles = new ParticleSystem.Particle[2048];
         private static readonly List<Material> s_Materials = new List<Material>(2);
         private static MaterialPropertyBlock s_Mpb;
         private static readonly List<UIParticleRenderer> s_Renderers = new List<UIParticleRenderer>();
+        private static readonly Vector3[] s_Corners = new Vector3[4];
 
         private ParticleSystemRenderer _renderer;
         private ParticleSystem _particleSystem;
-        internal int _prevParticleCount = 0;
-        //private ParticleSystem _emitter;
+        private int _prevParticleCount = 0;
         private UIParticle _parent;
         private int _index;
         private bool _isTrail;
@@ -33,6 +32,7 @@ namespace Coffee.UIExtensions
         private bool _delay = false;
         private bool _prewarm = false;
         private Material _currentMaterialForRendering;
+        private Bounds _lastBounds;
 
         public override Texture mainTexture
         {
@@ -47,6 +47,37 @@ namespace Coffee.UIExtensions
             get
             {
                 return false;
+            }
+        }
+        
+        private Rect rootCanvasRect
+        {
+            get
+            {
+                s_Corners[0] = transform.TransformPoint(_lastBounds.min.x, _lastBounds.min.y, 0);
+                s_Corners[1] = transform.TransformPoint(_lastBounds.min.x, _lastBounds.max.y, 0);
+                s_Corners[2] = transform.TransformPoint(_lastBounds.max.x, _lastBounds.max.y, 0);
+                s_Corners[3] = transform.TransformPoint(_lastBounds.max.x, _lastBounds.min.y, 0);
+                if (canvas)
+                {
+                    var worldToLocalMatrix = canvas.rootCanvas.transform.worldToLocalMatrix;
+                    for (var i = 0; i < 4; ++i)
+                        s_Corners[i] = worldToLocalMatrix.MultiplyPoint(s_Corners[i]);
+                }
+                var corner1 = (Vector2) s_Corners[0];
+                var corner2 = (Vector2) s_Corners[0];
+                for (var i = 1; i < 4; ++i)
+                {
+                    if (s_Corners[i].x < corner1.x)
+                        corner1.x = s_Corners[i].x;
+                    else if (s_Corners[i].x > corner2.x)
+                        corner2.x = s_Corners[i].x;
+                    if (s_Corners[i].y < corner1.y)
+                        corner1.y = s_Corners[i].y;
+                    else if (s_Corners[i].y > corner2.y)
+                        corner2.y = s_Corners[i].y;
+                }
+                return new Rect(corner1, corner2 - corner1);
             }
         }
 
@@ -123,6 +154,7 @@ namespace Coffee.UIExtensions
                 material = null;
                 workerMesh.Clear();
                 canvasRenderer.SetMesh(workerMesh);
+                _lastBounds = new Bounds();
                 enabled = false;
             }
         }
@@ -188,6 +220,7 @@ namespace Coffee.UIExtensions
                 Profiler.BeginSample("[UIParticleRenderer] Clear Mesh");
                 workerMesh.Clear();
                 canvasRenderer.SetMesh(workerMesh);
+                _lastBounds = new Bounds();
                 Profiler.EndSample();
 
                 return;
@@ -269,6 +302,7 @@ namespace Coffee.UIExtensions
                 extents.z = 0;
                 bounds.extents = extents;
                 workerMesh.bounds = bounds;
+                _lastBounds = bounds;
             }
             Profiler.EndSample();
 
@@ -286,6 +320,7 @@ namespace Coffee.UIExtensions
             {
                 if (s_Renderers[i] == this) continue;
                 s_Renderers[i].canvasRenderer.SetMesh(workerMesh);
+                s_Renderers[i]._lastBounds = _lastBounds;
             }
 
             if (!_parent.canRender)
@@ -352,6 +387,17 @@ namespace Coffee.UIExtensions
         /// </summary>
         protected override void UpdateGeometry()
         {
+        }
+        
+        public override void Cull(Rect clipRect, bool validRect)
+        {
+            var cull = _lastBounds.extents == Vector3.zero || !validRect || !clipRect.Overlaps(rootCanvasRect, true);
+            if (canvasRenderer.cull == cull) return;
+            
+            canvasRenderer.cull = cull;
+            UISystemProfilerApi.AddMarker("MaskableGraphic.cullingChanged", this);
+            onCullStateChanged.Invoke(cull);
+            OnCullingChanged();
         }
 
         private Vector3 GetWorldScale()
