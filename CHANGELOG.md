@@ -1,3 +1,10 @@
+## [4.1.5](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/4.1.4...4.1.5) (2022-08-10)
+
+
+### Bug Fixes
+
+* fix culling for RectMask2D ([9e2dbe7](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/9e2dbe7758eb28a4f6a7c11113d9169847880f96)), closes [#220](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/220)
+
 ## [4.1.4](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/4.1.3...4.1.4) (2022-07-01)
 
 
