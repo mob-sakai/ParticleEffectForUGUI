@@ -274,7 +274,7 @@ namespace Coffee.UIExtensions
             }
             else
             {
-                s_CombineInstances[0].mesh.Clear();
+                s_CombineInstances[0].mesh.Clear(false);
             }
             Profiler.EndSample();
 
