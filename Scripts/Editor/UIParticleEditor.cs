@@ -102,7 +102,7 @@ namespace Coffee.UIExtensions
 #endif
 
 #if UNITY_2019_1_OR_NEWER
-            SceneView.duringSceneGui += _ => miSceneViewOverlayWindow.Invoke(null, sceneViewArgs);
+            SceneView.duringSceneGui += _ => { if (s_SerializedObject != null) miSceneViewOverlayWindow.Invoke(null, sceneViewArgs); };
 #else
             SceneView.onSceneGUIDelegate += _ =>
 #endif
