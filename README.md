@@ -195,9 +195,10 @@ NOTE: Press `Refresh` button to reconstruct rendering order based on children Pa
 
 <br><br>
 
-### With `Mask` or `MaskRect2D` component
+### With `Mask` or `RectMask2D` component
 
 If you want to mask particles, set a stencil supported shader (such as `UI/UIAdditive`) to material for ParticleSystem.
+If you use some custom shaders, see [How to make a custom shader to support Mask/RectMask2D component](#how-to-make-a-custom-shader-to-support-maskrectmask2d-component) section.
 
 ![](https://user-images.githubusercontent.com/12690315/95017591-3b512700-0695-11eb-864e-04166ea1809a.png)
 
@@ -263,6 +264,99 @@ When improving performance, keep the following in mind:
 - If you are using multiple materials, you will have more draw calls.
   - Consider single material, atlasing the sprites, and using `Sprite` mode in the `Texture Sheet Animation` module in ParticleSystem.
 
+### How to make a custom shader to support Mask/RectMask2D component
+
+<details>
+<summary>Shader tips</summary>
+
+```ShaderLab
+Shader "Your/Custom/Shader"
+{
+    Properties
+    {
+        // ...
+        // #### required for Mask ####
+        _StencilComp ("Stencil Comparison", Float) = 8
+        _Stencil ("Stencil ID", Float) = 0
+        _StencilOp ("Stencil Operation", Float) = 0
+        _StencilWriteMask ("Stencil Write Mask", Float) = 255
+        _StencilReadMask ("Stencil Read Mask", Float) = 255
+        _ColorMask ("Color Mask", Float) = 15
+        [Toggle(UNITY_UI_ALPHACLIP)] _UseUIAlphaClip ("Use Alpha Clip", Float) = 0
+    }
+
+    SubShader
+    {
+        Tags
+        {
+            // ...
+        }
+
+        // #### required for Mask ####
+        Stencil
+        {
+            Ref [_Stencil]
+            Comp [_StencilComp]
+            Pass [_StencilOp]
+            ReadMask [_StencilReadMask]
+            WriteMask [_StencilWriteMask]
+        }
+        ColorMask [_ColorMask]
+        // ...
+
+        Pass
+        {
+            // ...
+            // #### required for RectMask2D ####
+            #include "UnityUI.cginc"
+            #pragma multi_compile __ UNITY_UI_CLIP_RECT
+            float4 _ClipRect;
+
+            // #### required for Mask ####
+            #pragma multi_compile __ UNITY_UI_ALPHACLIP
+
+            struct appdata_t
+            {
+                // ...
+            };
+
+            struct v2f
+            {
+                // ...
+                // #### required for RectMask2D ####
+                float4 worldPosition    : TEXCOORD1;
+            };
+            
+            v2f vert(appdata_t v)
+            {
+                v2f OUT;
+                // ...
+                // #### required for RectMask2D ####
+                OUT.worldPosition = v.vertex;
+                return OUT;
+            }
+
+            fixed4 frag(v2f IN) : SV_Target
+            {
+                // ...
+                // #### required for RectMask2D ####
+                #ifdef UNITY_UI_CLIP_RECT
+                    color.a *= UnityGet2DClipping(IN.worldPosition.xy, _ClipRect);
+                #endif
+
+                // #### required for Mask ####
+                #ifdef UNITY_UI_ALPHACLIP
+                    clip (color.a - 0.001);
+                #endif
+
+                return color;
+            }
+            ENDCG
+        }
+    }
+}
+```
+</details>
 
 
 <br><br><br><br>
