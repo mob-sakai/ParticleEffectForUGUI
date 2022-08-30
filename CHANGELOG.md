@@ -1,3 +1,10 @@
+## [4.1.7](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/4.1.6...4.1.7) (2022-08-30)
+
+
+### Bug Fixes
+
+* the annoying empty black scene overlay box shown even when nothing is selected ([bdeeabb](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/bdeeabbbe140b0ba80fac7ac477874c2467d3a16))
+
 ## [4.1.6](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/4.1.5...4.1.6) (2022-08-10)
 
 
