@@ -72,6 +72,31 @@ namespace Coffee.UIExtensions
             }
         }
 
+        public ParticleSystem particleSystem
+        {
+            get
+            {
+                return m_ParticleSystem;
+            }
+            set
+            {
+                m_ParticleSystem = value;
+                if (m_ParticleSystem == null)
+                {
+                    Debug.LogError("No particle system attached to particle attractor script", this);
+                    enabled = false;
+                    return;
+                }
+
+                enabled = true;
+                _uiParticle = m_ParticleSystem.GetComponentInParent<UIParticle>();
+                if (_uiParticle && !_uiParticle.particles.Contains(m_ParticleSystem))
+                {
+                    _uiParticle = null;
+                }
+            }
+        }
+
         private UIParticle _uiParticle;
 
         private void OnEnable()
