@@ -81,19 +81,8 @@ namespace Coffee.UIExtensions
             set
             {
                 m_ParticleSystem = value;
-                if (m_ParticleSystem == null)
-                {
-                    Debug.LogError("No particle system attached to particle attractor script", this);
-                    enabled = false;
-                    return;
-                }
-
+				if (!ApplyParticleSystem()) return;
                 enabled = true;
-                _uiParticle = m_ParticleSystem.GetComponentInParent<UIParticle>();
-                if (_uiParticle && !_uiParticle.particles.Contains(m_ParticleSystem))
-                {
-                    _uiParticle = null;
-                }
             }
         }
 
@@ -101,18 +90,7 @@ namespace Coffee.UIExtensions
 
         private void OnEnable()
         {
-            if (m_ParticleSystem == null)
-            {
-                Debug.LogError("No particle system attached to particle attractor script", this);
-                enabled = false;
-                return;
-            }
-
-            _uiParticle = m_ParticleSystem.GetComponentInParent<UIParticle>();
-            if (_uiParticle && !_uiParticle.particles.Contains(m_ParticleSystem))
-            {
-                _uiParticle = null;
-            }
+            if (!ApplyParticleSystem()) return;
             UIParticleUpdater.Register(this);
         }
 
@@ -225,5 +203,22 @@ namespace Coffee.UIExtensions
             return Vector3.MoveTowards(current, target, speed);
         }
 
+		private bool ApplyParticleSystem()
+		{
+			if (m_ParticleSystem == null)
+            {
+                Debug.LogError("No particle system attached to particle attractor script", this);
+                enabled = false;
+                return false;
+            }
+
+            _uiParticle = m_ParticleSystem.GetComponentInParent<UIParticle>();
+            if (_uiParticle && !_uiParticle.particles.Contains(m_ParticleSystem))
+            {
+                _uiParticle = null;
+            }
+			
+			return true;
+		}
     }
 }
