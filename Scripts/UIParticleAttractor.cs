@@ -81,7 +81,7 @@ namespace Coffee.UIExtensions
             set
             {
                 m_ParticleSystem = value;
-				if (!ApplyParticleSystem()) return;
+                if (!ApplyParticleSystem()) return;
                 enabled = true;
             }
         }
@@ -203,9 +203,9 @@ namespace Coffee.UIExtensions
             return Vector3.MoveTowards(current, target, speed);
         }
 
-		private bool ApplyParticleSystem()
-		{
-			if (m_ParticleSystem == null)
+        private bool ApplyParticleSystem()
+        {
+            if (m_ParticleSystem == null)
             {
                 Debug.LogError("No particle system attached to particle attractor script", this);
                 enabled = false;
@@ -217,8 +217,8 @@ namespace Coffee.UIExtensions
             {
                 _uiParticle = null;
             }
-			
-			return true;
-		}
+
+            return true;
+        }
     }
 }
