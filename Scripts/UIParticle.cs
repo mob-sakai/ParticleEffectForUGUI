@@ -313,6 +313,20 @@ namespace Coffee.UIExtensions
             ClearPreviousMaterials();
         }
 
+        private void ClearMaterials()
+        {
+            // Clear mask materials.
+            s_PrevMaskMaterials.AddRange(_maskMaterials);
+            _maskMaterials.Clear();
+
+            // Clear modified materials.
+            s_PrevModifiedMaterials.AddRange(_modifiedMaterials);
+            _modifiedMaterials.Clear();
+
+            canvasRenderer.Clear();
+            ClearPreviousMaterials();
+        }
+
         private void ClearPreviousMaterials()
         {
             foreach (var m in s_PrevMaskMaterials)
@@ -447,6 +461,7 @@ namespace Coffee.UIExtensions
             _bakedMesh = null;
 
             base.OnDisable();
+            ClearMaterials();
         }
 
         /// <summary>
