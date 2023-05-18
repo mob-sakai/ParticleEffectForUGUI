@@ -1,3 +1,10 @@
+## [3.3.13](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/3.3.12...3.3.13) (2023-05-18)
+
+
+### Bug Fixes
+
+* memory leak when using AnimatableProperty ([3849a9f](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/3849a9f6977bc6d2474001c8154a8e201f7e8b7b))
+
 ## [3.3.12](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/3.3.11...3.3.12) (2022-06-10)
 
 
