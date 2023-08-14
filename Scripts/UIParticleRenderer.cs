@@ -278,7 +278,7 @@ namespace Coffee.UIExtensions
 
             // Bake mesh.
             Profiler.BeginSample("[UIParticleRenderer] Bake Mesh");
-            if (_isTrail && _parent.canSimulate)
+            if (_isTrail && _parent.canSimulate && 0 < s_CombineInstances[0].mesh.vertexCount)
             {
                 _renderer.BakeTrailsMesh(s_CombineInstances[0].mesh, bakeCamera, true);
             }
