@@ -36,6 +36,18 @@ namespace Coffee.UIExtensions
         [SerializeField]
         private UnityEvent m_OnAttracted;
 
+        public float destinationRadius
+        {
+            get
+            {
+                return m_DestinationRadius;
+            }
+            set
+            {
+                m_DestinationRadius = Mathf.Clamp(value, 0.1f, 10f);
+            }
+        }
+
         public float delay
         {
             get
@@ -72,6 +84,18 @@ namespace Coffee.UIExtensions
             }
         }
 
+        public UnityEvent onAttracted
+        {
+            get
+            {
+                return m_OnAttracted;
+            }
+            set
+            {
+                m_OnAttracted = value;
+            }
+        }
+
         public ParticleSystem particleSystem
         {
             get
@@ -81,8 +105,7 @@ namespace Coffee.UIExtensions
             set
             {
                 m_ParticleSystem = value;
-                if (!ApplyParticleSystem()) return;
-                enabled = true;
+                ApplyParticleSystem();
             }
         }
 
@@ -90,14 +113,19 @@ namespace Coffee.UIExtensions
 
         private void OnEnable()
         {
-            if (!ApplyParticleSystem()) return;
+            ApplyParticleSystem();
             UIParticleUpdater.Register(this);
         }
 
         private void OnDisable()
         {
-            _uiParticle = null;
             UIParticleUpdater.Unregister(this);
+        }
+
+        private void OnDestroy()
+        {
+            _uiParticle = null;
+            m_ParticleSystem = null;
         }
 
         internal void Attract()
@@ -131,6 +159,7 @@ namespace Coffee.UIExtensions
                             Debug.LogException(e);
                         }
                     }
+
                     continue;
                 }
 
@@ -181,6 +210,7 @@ namespace Coffee.UIExtensions
                     dstPos.Scale(_uiParticle.scale3D.Inverse());
                 }
             }
+
             return dstPos;
         }
 
@@ -203,13 +233,18 @@ namespace Coffee.UIExtensions
             return Vector3.MoveTowards(current, target, speed);
         }
 
-        private bool ApplyParticleSystem()
+        private void ApplyParticleSystem()
         {
+            _uiParticle = null;
             if (m_ParticleSystem == null)
             {
-                Debug.LogError("No particle system attached to particle attractor script", this);
-                enabled = false;
-                return false;
+#if UNITY_EDITOR
+                if (Application.isPlaying)
+#endif
+                {
+                    Debug.LogError("No particle system attached to particle attractor script", this);
+                }
+                return;
             }
 
             _uiParticle = m_ParticleSystem.GetComponentInParent<UIParticle>();
@@ -217,8 +252,6 @@ namespace Coffee.UIExtensions
             {
                 _uiParticle = null;
             }
-
-            return true;
         }
     }
 }
