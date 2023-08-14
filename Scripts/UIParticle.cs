@@ -286,7 +286,17 @@ namespace Coffee.UIExtensions
 
         public void RefreshParticles(List<ParticleSystem> particles)
         {
-            GetComponentsInChildren(m_Renderers);
+            // #246: Nullptr exceptions when using nested UIParticle components in hierarchy
+            m_Renderers.Clear();
+            foreach (Transform child in transform)
+            {
+                var uiParticleRenderer = child.GetComponent<UIParticleRenderer>();
+
+                if (uiParticleRenderer != null)
+                {
+                    m_Renderers.Add(uiParticleRenderer);
+                }
+            }
 
             var j = 0;
             for (var i = 0; i < particles.Count; i++)
