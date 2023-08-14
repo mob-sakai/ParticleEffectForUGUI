@@ -27,7 +27,7 @@ namespace Coffee.UIExtensions
             Auto,
             Primary,
             PrimarySimulator,
-            Reprica,
+            Replica,
         }
 
         [HideInInspector][SerializeField] internal bool m_IsTrail = false;
@@ -44,7 +44,7 @@ namespace Coffee.UIExtensions
         [SerializeField]
         private List<ParticleSystem> m_Particles = new List<ParticleSystem>();
 
-        [Tooltip("Mesh sharing.None: disable mesh sharing.\nAuto: automatically select Primary/Reprica.\nPrimary: provides particle simulation results to the same group.\nPrimary Simulator: Primary, but do not render the particle (simulation only).\nReprica: render simulation results provided by the primary.")]
+        [Tooltip("Mesh sharing.None: disable mesh sharing.\nAuto: automatically select Primary/Replica.\nPrimary: provides particle simulation results to the same group.\nPrimary Simulator: Primary, but do not render the particle (simulation only).\nReplica: render simulation results provided by the primary.")]
         [SerializeField]
         private MeshSharing m_MeshSharing = MeshSharing.None;
 
@@ -80,10 +80,10 @@ namespace Coffee.UIExtensions
 
         /// <summary>
         /// Mesh sharing.None: disable mesh sharing.
-        /// Auto: automatically select Primary/Reprica.
+        /// Auto: automatically select Primary/Replica.
         /// Primary: provides particle simulation results to the same group.
         /// Primary Simulator: Primary, but do not render the particle (simulation only).
-        /// Reprica: render simulation results provided by the primary.
+        /// Replica: render simulation results provided by the primary.
         /// </summary>
         public MeshSharing meshSharing
         {
@@ -145,7 +145,7 @@ namespace Coffee.UIExtensions
 
         internal bool canRender
         {
-            get { return m_MeshSharing == MeshSharing.None || m_MeshSharing == MeshSharing.Auto || m_MeshSharing == MeshSharing.Primary || m_MeshSharing == MeshSharing.Reprica; }
+            get { return m_MeshSharing == MeshSharing.None || m_MeshSharing == MeshSharing.Auto || m_MeshSharing == MeshSharing.Primary || m_MeshSharing == MeshSharing.Replica; }
         }
 
         /// <summary>

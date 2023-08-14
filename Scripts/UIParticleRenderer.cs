@@ -208,7 +208,7 @@ namespace Coffee.UIExtensions
             // No particle to render: Clear mesh.
             if (
                 !isActiveAndEnabled || !_particleSystem || !_parent || !canvasRenderer || !canvas || !bakeCamera
-                || _parent.meshSharing == UIParticle.MeshSharing.Reprica
+                || _parent.meshSharing == UIParticle.MeshSharing.Replica
                 || !transform.lossyScale.GetScaled(_parent.scale3D).IsVisible()     // Scale is not visible.
                 || (!_particleSystem.IsAlive() && !_particleSystem.isPlaying)       // No particle.
                 || (_isTrail && !_particleSystem.trails.enabled)                    // Trail, but it is not enabled.
