@@ -112,7 +112,12 @@ namespace Coffee.UIExtensions
         {
             _currentMaterialForRendering = null;
 
-            if (!IsActive()) return baseMaterial;
+            if (!IsActive() || !_parent)
+            {
+                ModifiedMaterial.Remove(_modifiedMaterial);
+                _modifiedMaterial = null;
+                return baseMaterial;
+            }
 
             var modifiedMaterial = base.GetModifiedMaterial(baseMaterial);
 
@@ -156,6 +161,12 @@ namespace Coffee.UIExtensions
                 canvasRenderer.SetMesh(workerMesh);
                 _lastBounds = new Bounds();
                 enabled = false;
+            }
+            else
+            {
+                ModifiedMaterial.Remove(_modifiedMaterial);
+                _modifiedMaterial = null;
+                _currentMaterialForRendering = null;
             }
         }
 
