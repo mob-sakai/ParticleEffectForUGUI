@@ -49,7 +49,7 @@ namespace Coffee.UIExtensions
                 return false;
             }
         }
-        
+
         private Rect rootCanvasRect
         {
             get
@@ -116,7 +116,7 @@ namespace Coffee.UIExtensions
 
             var modifiedMaterial = base.GetModifiedMaterial(baseMaterial);
 
-            // 
+            //
             var texture = mainTexture;
             if (texture == null && _parent.m_AnimatableProperties.Length == 0)
             {
@@ -276,6 +276,19 @@ namespace Coffee.UIExtensions
             {
                 s_CombineInstances[0].mesh.Clear(false);
             }
+
+            // Too many vertices to render.
+            if (65535 <= s_CombineInstances[0].mesh.vertexCount)
+            {
+                s_CombineInstances[0].mesh.Clear(false);
+                UnityEngine.Debug.LogErrorFormat(this,
+                    "Too many vertices to render. index={0}, isTrail={1}, vertexCount={2}(>=65535)",
+                    _index,
+                    _isTrail,
+                    s_CombineInstances[0].mesh.vertexCount
+                );
+                s_CombineInstances[0].mesh.Clear(false);
+            }
             Profiler.EndSample();
 
             // Combine mesh to transform. ([ParticleSystem local ->] world -> renderer local)
@@ -388,12 +401,12 @@ namespace Coffee.UIExtensions
         protected override void UpdateGeometry()
         {
         }
-        
+
         public override void Cull(Rect clipRect, bool validRect)
         {
             var cull = _lastBounds.extents == Vector3.zero || !validRect || !clipRect.Overlaps(rootCanvasRect, true);
             if (canvasRenderer.cull == cull) return;
-            
+
             canvasRenderer.cull = cull;
             UISystemProfilerApi.AddMarker("MaskableGraphic.cullingChanged", this);
             onCullStateChanged.Invoke(cull);
@@ -500,14 +513,14 @@ namespace Coffee.UIExtensions
                     ? Time.unscaledDeltaTime
                     : Time.deltaTime;
 
-            // Prewarm: 
+            // Prewarm:
             if (0 < deltaTime && _prewarm)
             {
                 deltaTime += main.duration;
                 _prewarm = false;
             }
 
-            // Emitted particles found. 
+            // Emitted particles found.
             if (_prevParticleCount != _particleSystem.particleCount)
             {
                 var size = _particleSystem.particleCount;
