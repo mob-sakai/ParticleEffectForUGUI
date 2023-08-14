@@ -178,15 +178,18 @@ namespace Coffee.UIExtensions
             gameObject.layer = parent.gameObject.layer;
 
             _particleSystem = particleSystem;
+            _prewarm = _particleSystem.main.prewarm;
+
 #if UNITY_EDITOR
             if (Application.isPlaying)
 #endif
-            if (_particleSystem.isPlaying)
             {
-                _particleSystem.Clear();
-                _particleSystem.Pause();
+                if (_particleSystem.isPlaying || _prewarm)
+                {
+                    _particleSystem.Clear();
+                    _particleSystem.Pause();
+                }
             }
-            _prewarm = _particleSystem.main.prewarm;
 
             _renderer = particleSystem.GetComponent<ParticleSystemRenderer>();
             _renderer.enabled = false;
