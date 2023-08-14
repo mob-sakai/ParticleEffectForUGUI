@@ -186,29 +186,33 @@ namespace Coffee.UIExtensions
             var psPos = m_ParticleSystem.transform.position;
             var attractorPos = transform.position;
             var dstPos = attractorPos;
-            if (m_ParticleSystem.main.simulationSpace == ParticleSystemSimulationSpace.Local)
+            var isLocalSpace = m_ParticleSystem.main.simulationSpace == ParticleSystemSimulationSpace.Local;
+
+            if (isLocalSpace)
             {
                 dstPos = m_ParticleSystem.transform.InverseTransformPoint(dstPos);
-                if (isUI)
-                {
-                    dstPos = dstPos.GetScaled(_uiParticle.transform.localScale, _uiParticle.scale3D.Inverse());
-                }
             }
-            else
+
+            if (isUI)
             {
-#if UNITY_EDITOR
-                if (!Application.isPlaying && isUI)
+                var inverseScale = _uiParticle.parentScale.Inverse();
+                dstPos = dstPos.GetScaled(inverseScale, _uiParticle.scale3D.Inverse());
+
+                // Relative mode
+                if (!_uiParticle.absoluteMode)
                 {
-                    var diff = dstPos - psPos;
-                    diff = diff.GetScaled(_uiParticle.transform.localScale, _uiParticle.scale3D.Inverse());
-                    return psPos + diff;
+                    var diff = _uiParticle.transform.position - psPos;
+                    diff.Scale(_uiParticle.scale3D - inverseScale);
+                    diff.Scale(_uiParticle.scale3D.Inverse());
+                    dstPos += diff;
+                }
+
+#if UNITY_EDITOR
+                if (!Application.isPlaying && !isLocalSpace)
+                {
+                    dstPos += psPos - psPos.GetScaled(inverseScale, _uiParticle.scale3D.Inverse());
                 }
 #endif
-                if (isUI)
-                {
-                    dstPos.Scale(_uiParticle.transform.localScale);
-                    dstPos.Scale(_uiParticle.scale3D.Inverse());
-                }
             }
 
             return dstPos;
