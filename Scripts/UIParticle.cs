@@ -298,6 +298,11 @@ namespace Coffee.UIExtensions
                 }
             }
 
+            for (var i = 0; i < m_Renderers.Count; i++)
+            {
+                m_Renderers[i].Reset(i);
+            }
+
             var j = 0;
             for (var i = 0; i < particles.Count; i++)
             {
@@ -307,11 +312,6 @@ namespace Coffee.UIExtensions
                 {
                     GetRenderer(j++).Set(this, particles[i], true);
                 }
-            }
-
-            for (; j < m_Renderers.Count; j++)
-            {
-                GetRenderer(j).Clear(j);
             }
         }
 
@@ -400,7 +400,7 @@ namespace Coffee.UIExtensions
         {
             _tracker.Clear();
             UIParticleUpdater.Unregister(this);
-            m_Renderers.ForEach(r => r.Clear());
+            m_Renderers.ForEach(r => r.Reset());
             UnregisterDirtyMaterialCallback(UpdateRendererMaterial);
 
             base.OnDisable();

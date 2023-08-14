@@ -134,7 +134,7 @@ namespace Coffee.UIExtensions
             return modifiedMaterial;
         }
 
-        public void Clear(int index = -1)
+        public void Reset(int index = -1)
         {
             if (_renderer)
             {
