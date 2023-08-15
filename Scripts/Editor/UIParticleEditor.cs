@@ -430,6 +430,7 @@ namespace Coffee.UIExtensions
         {
             try
             {
+                if (s_SerializedObject == null || !s_SerializedObject.targetObject) return;
                 if (s_SerializedObject.targetObjects.OfType<UIParticle>().Any(x => !x || !x.canvas)) return;
 
                 s_SerializedObject.Update();
