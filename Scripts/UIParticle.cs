@@ -219,6 +219,24 @@ namespace Coffee.UIExtensions
             particles.Exec(p => p.Stop());
             isPaused = true;
         }
+        
+        public void StartEmission()
+        {
+            particles.Exec(p =>
+            {
+                var emission = p.emission;
+                emission.enabled = true;
+            });
+        }
+        
+        public void StopEmission()
+        {
+            particles.Exec(p =>
+            {
+                var emission = p.emission;
+                emission.enabled = false;
+            });
+        }
 
         public void Clear()
         {
