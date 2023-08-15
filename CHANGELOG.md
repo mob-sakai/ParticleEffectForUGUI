@@ -1,3 +1,10 @@
+## [3.3.14](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/3.3.13...3.3.14) (2023-08-15)
+
+
+### Bug Fixes
+
+* error on InitializeIfNeeded ([1f1fb2a](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/1f1fb2a62a9d2ca6562e1b1e70d528aaf52bfc82)), closes [#264](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/264)
+
 ## [3.3.13](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/3.3.12...3.3.13) (2023-05-18)
 
 
