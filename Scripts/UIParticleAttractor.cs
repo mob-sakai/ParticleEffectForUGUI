@@ -14,6 +14,12 @@ namespace Coffee.UIExtensions
             Smooth,
             Sphere,
         }
+        
+        public enum UpdateMode
+        {
+            Normal,
+            UnscaledTime,
+        }
 
         [SerializeField]
         private ParticleSystem m_ParticleSystem;
@@ -32,6 +38,9 @@ namespace Coffee.UIExtensions
 
         [SerializeField]
         private Movement m_Movement;
+
+        [SerializeField]
+        private UpdateMode m_UpdateMode;
 
         [SerializeField]
         private UnityEvent m_OnAttracted;
@@ -81,6 +90,18 @@ namespace Coffee.UIExtensions
             set
             {
                 m_Movement = value;
+            }
+        }
+
+        public UpdateMode updateMode
+        {
+            get
+            {
+                return m_UpdateMode;
+            }
+            set
+            {
+                m_UpdateMode = value;
             }
         }
 
@@ -221,6 +242,15 @@ namespace Coffee.UIExtensions
         private Vector3 GetAttractedPosition(Vector3 current, Vector3 target, float duration, float time)
         {
             var speed = m_MaxSpeed;
+            switch (m_UpdateMode)
+            {
+                case UpdateMode.Normal:
+                    speed *= 60 * Time.deltaTime;
+                    break;
+                case UpdateMode.UnscaledTime:
+                    speed *= 60 * Time.unscaledDeltaTime;
+                    break;
+            }
             switch (m_Movement)
             {
                 case Movement.Linear:
