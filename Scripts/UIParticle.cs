@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using Coffee.UIParticleExtensions;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 [assembly: InternalsVisibleTo("Coffee.UIParticle.Editor")]
@@ -58,6 +59,13 @@ namespace Coffee.UIExtensions
         [SerializeField]
         [Tooltip("The particles will be emitted at the ParticleSystem position.\nMove the UIParticle/ParticleSystem to move the particle.")]
         private bool m_AbsoluteMode = false;
+
+        /// <summary>
+        /// This field uses the inverted value as "AutoScaling".
+        /// </summary>
+        [SerializeField]
+        [FormerlySerializedAs("m_IgnoreParent")]
+        private bool m_IgnoreCanvasScaler = false;
 
         private List<UIParticleRenderer> m_Renderers = new List<UIParticleRenderer>();
 
@@ -128,6 +136,17 @@ namespace Coffee.UIExtensions
             set { m_AbsoluteMode = value; }
         }
 
+        public bool autoScaling
+        {
+            get { return !m_IgnoreCanvasScaler; }
+            set
+            {
+                if (m_IgnoreCanvasScaler != value) return;
+                m_IgnoreCanvasScaler = !value;
+                UpdateTracker();
+            }
+        }
+
         internal bool useMeshSharing
         {
             get { return m_MeshSharing != MeshSharing.None; }
@@ -196,6 +215,8 @@ namespace Coffee.UIExtensions
         /// Paused.
         /// </summary>
         public bool isPaused { get; internal set; }
+
+        public Vector3 parentScale { get; private set; }
 
         public void Play()
         {
@@ -335,12 +356,10 @@ namespace Coffee.UIExtensions
 
         internal void UpdateTransformScale()
         {
-            //var newScale = Vector3.one;
-            //if (uiScaling)
-            //{
-            //    newScale = transform.parent.lossyScale.Inverse();
-            //}
-            var newScale = transform.parent.lossyScale.Inverse();
+            parentScale = transform.parent.lossyScale;
+            if (!autoScaling) return;
+
+            var newScale = parentScale.Inverse();
             if (transform.localScale != newScale)
             {
                 transform.localScale = newScale;
@@ -383,7 +402,7 @@ namespace Coffee.UIExtensions
             maskable = m_Maskable;
 #endif
             ResetGroupId();
-            _tracker.Add(this, rectTransform, DrivenTransformProperties.Scale);
+            UpdateTracker();
             UIParticleUpdater.Register(this);
             RegisterDirtyMaterialCallback(UpdateRendererMaterial);
 
@@ -416,7 +435,7 @@ namespace Coffee.UIExtensions
         /// </summary>
         protected override void OnDisable()
         {
-            _tracker.Clear();
+            UpdateTracker();
             UIParticleUpdater.Unregister(this);
             m_Renderers.ForEach(r => r.Reset());
             UnregisterDirtyMaterialCallback(UpdateRendererMaterial);
@@ -499,5 +518,25 @@ namespace Coffee.UIExtensions
 
             return _orthoCamera;
         }
+
+        private void UpdateTracker()
+        {
+            if (!enabled || !autoScaling)
+            {
+                _tracker.Clear();
+            }
+            else
+            {
+                _tracker.Add(this, rectTransform, DrivenTransformProperties.Scale);
+            }
+        }
+
+#if UNITY_EDITOR
+        protected override void OnValidate()
+        {
+            base.OnValidate();
+            UpdateTracker();
+        }
+#endif
     }
 }

@@ -52,6 +52,7 @@ namespace Coffee.UIExtensions
         private static readonly GUIContent s_Content3D = new GUIContent("3D");
         private static readonly GUIContent s_ContentRandom = new GUIContent("Random");
         private static readonly GUIContent s_ContentScale = new GUIContent("Scale");
+        private static readonly GUIContent s_ContentAutoScaling = new GUIContent("Auto Scaling", "Transform.lossyScale (=world scale) is automatically set to (1, 1, 1), to prevent the root-Canvas scale from affecting the hierarchy-scaled ParticleSystem.");
         private static SerializedObject s_SerializedObject;
 
 #if !SERIALIZE_FIELD_MASKABLE
@@ -63,6 +64,7 @@ namespace Coffee.UIExtensions
         private SerializedProperty m_GroupId;
         private SerializedProperty m_GroupMaxId;
         private SerializedProperty m_AbsoluteMode;
+        private SerializedProperty m_IgnoreCanvasScaler;
 
 
         private ReorderableList _ro;
@@ -152,6 +154,7 @@ namespace Coffee.UIExtensions
             m_GroupId = serializedObject.FindProperty("m_GroupId");
             m_GroupMaxId = serializedObject.FindProperty("m_GroupMaxId");
             m_AbsoluteMode = serializedObject.FindProperty("m_AbsoluteMode");
+            m_IgnoreCanvasScaler = serializedObject.FindProperty("m_IgnoreCanvasScaler");
 
             var sp = serializedObject.FindProperty("m_Particles");
             _ro = new ReorderableList(sp.serializedObject, sp, true, true, true, true);
@@ -261,6 +264,18 @@ namespace Coffee.UIExtensions
 
             // Absolute Mode
             EditorGUILayout.PropertyField(m_AbsoluteMode);
+
+            // Auto Scaling
+            DrawInversedToggle(m_IgnoreCanvasScaler, s_ContentAutoScaling, () =>
+            {
+                foreach (var uip in targets.OfType<UIParticle>())
+                {
+                    if (uip && !uip.autoScaling)
+                    {
+                        uip.transform.localScale = Vector3.one;
+                    }
+                }
+            });
 
             // Target ParticleSystems.
             EditorGUI.BeginChangeCheck();
@@ -426,6 +441,24 @@ namespace Coffee.UIExtensions
             return showMax;
         }
 
+        private static void DrawInversedToggle(SerializedProperty inversedProperty, GUIContent label, Action onChanged)
+        {
+            EditorGUI.showMixedValue = inversedProperty.hasMultipleDifferentValues;
+            var autoScaling = !inversedProperty.boolValue;
+            EditorGUI.BeginChangeCheck();
+            if (autoScaling != EditorGUILayout.Toggle(label, autoScaling))
+            {
+                inversedProperty.boolValue = autoScaling;
+            }
+
+            if (EditorGUI.EndChangeCheck())
+            {
+                EditorApplication.delayCall += onChanged.Invoke;
+            }
+
+            EditorGUI.showMixedValue = false;
+        }
+
         private static void WindowFunction(UnityEngine.Object target, SceneView sceneView)
         {
             try
@@ -441,6 +474,17 @@ namespace Coffee.UIExtensions
                     EditorGUILayout.PropertyField(s_SerializedObject.FindProperty("m_Enabled"));
                     _xyzMode = DrawFloatOrVector3Field(s_SerializedObject.FindProperty("m_Scale3D"), _xyzMode);
                     EditorGUILayout.PropertyField(s_SerializedObject.FindProperty("m_AbsoluteMode"));
+                    DrawInversedToggle(s_SerializedObject.FindProperty("m_IgnoreCanvasScaler"), s_ContentAutoScaling,
+                        () =>
+                        {
+                            foreach (var uip in s_SerializedObject.targetObjects.OfType<UIParticle>())
+                            {
+                                if (uip && !uip.autoScaling)
+                                {
+                                    uip.transform.localScale = Vector3.one;
+                                }
+                            }
+                        });
                     EditorGUIUtility.labelWidth = labelWidth;
                 }
                 s_SerializedObject.ApplyModifiedProperties();
