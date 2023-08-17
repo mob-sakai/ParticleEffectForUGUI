@@ -583,6 +583,7 @@ namespace Coffee.UIExtensions
             */
 
             // get world position.
+            var isLocalSpace = _particleSystem.IsLocalSpace();
             var psTransform = _particleSystem.transform;
             var originWorldPosition = psTransform.position;
             var originWorldRotation = psTransform.rotation;
@@ -590,16 +591,20 @@ namespace Coffee.UIExtensions
             var rateOverDistance = emission.enabled
                                    && 0 < emission.rateOverDistance.constant
                                    && 0 < emission.rateOverDistanceMultiplier;
-            if (rateOverDistance)
+            if (rateOverDistance && !paused)
             {
                 // (For rate-over-distance emission,) Move to previous scaled position, simulate (delta = 0).
-                var prevScaledPos = _prevPsPos.GetScaled(_prevScale.Inverse());
+                var prevScaledPos = isLocalSpace
+                    ? _prevPsPos
+                    : _prevPsPos.GetScaled(_prevScale.Inverse());
                 psTransform.SetPositionAndRotation(prevScaledPos, originWorldRotation);
                 _particleSystem.Simulate(0, false, false, false);
             }
 
             // Move to scaled position, simulate, revert to origin position.
-            var scaledPos = originWorldPosition.GetScaled(scale.Inverse());
+            var scaledPos = isLocalSpace
+                ? originWorldPosition
+                : originWorldPosition.GetScaled(scale.Inverse());
             psTransform.SetPositionAndRotation(scaledPos, originWorldRotation);
             _particleSystem.Simulate(deltaTime, false, false, false);
             psTransform.SetPositionAndRotation(originWorldPosition, originWorldRotation);
