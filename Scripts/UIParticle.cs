@@ -394,8 +394,8 @@ namespace Coffee.UIExtensions
         private void RefreshParticles(GameObject root)
         {
             if (!root) return;
-            root.GetComponentsInChildren(particles);
-            particles.RemoveAll(x => x.GetComponentInParent<UIParticle>() != this);
+            root.GetComponentsInChildren(true, particles);
+            particles.RemoveAll(x => x.GetComponentInParent<UIParticle>(true) != this);
 
             for (var i = 0; i < particles.Count; i++)
             {

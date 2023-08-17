@@ -248,7 +248,7 @@ namespace Coffee.UIExtensions
                 return;
             }
 
-            _uiParticle = m_ParticleSystem.GetComponentInParent<UIParticle>();
+            _uiParticle = m_ParticleSystem.GetComponentInParent<UIParticle>(true);
             if (_uiParticle && !_uiParticle.particles.Contains(m_ParticleSystem))
             {
                 _uiParticle = null;

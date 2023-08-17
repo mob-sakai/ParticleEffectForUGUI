@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Coffee.UIParticleExtensions;
 using UnityEditor;
 using UnityEditor.UI;
 using UnityEditorInternal;
@@ -127,7 +128,7 @@ namespace Coffee.UIExtensions
             {
                 var uiParticles = Selection.gameObjects.Select(x => x.GetComponent<ParticleSystem>())
                     .Where(x => x)
-                    .Select(x => x.GetComponentInParent<UIParticle>())
+                    .Select(x => x.GetComponentInParent<UIParticle>(true))
                     .Where(x => x && x.canvas)
                     .Concat(Selection.gameObjects.Select(x => x.GetComponent<UIParticle>())
                         .Where(x => x && x.canvas))
@@ -315,7 +316,7 @@ namespace Coffee.UIExtensions
             }
 
             // Does the shader support UI masks?
-            if (current.maskable && current.GetComponentInParent<Mask>())
+            if (current.maskable && current.GetComponentInParent<Mask>(false))
             {
                 foreach (var mat in current.materials)
                 {

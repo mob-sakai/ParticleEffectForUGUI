@@ -244,5 +244,40 @@ namespace Coffee.UIParticleExtensions
                 Object.Destroy(obj);
             }
         }
+
+#if !UNITY_2020_3_OR_NEWER
+        public static T GetComponentInParent<T>(this Component self, bool includeInactive) where T : Component
+        {
+            if (!self) return null;
+            if (!includeInactive) return self.GetComponentInParent<T>();
+
+            var current = self.transform;
+            while (current)
+            {
+                var component = current.GetComponent<T>();
+                if (component) return component;
+                current = current.parent;
+            }
+
+            return null;
+        }
+
+        public static T GetComponentInChildren<T>(this Component self, bool includeInactive) where T : Component
+        {
+            if (!self) return null;
+            if (!includeInactive) return self.GetComponentInChildren<T>();
+
+            var component = self.GetComponent<T>();
+            if (component) return component;
+
+            foreach (Transform child in self.transform)
+            {
+                component = child.GetComponentInChildren<T>(true);
+                if (component) return component;
+            }
+
+            return null;
+        }
+#endif
     }
 }
