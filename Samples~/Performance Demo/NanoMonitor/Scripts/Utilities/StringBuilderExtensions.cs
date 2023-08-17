@@ -21,7 +21,8 @@ namespace Coffee.NanoMonitor
             return true;
         }
 
-        public static void AppendFormatNoAlloc(this StringBuilder sb, string format, double arg0 = 0, double arg1 = 0, double arg2 = 0, double arg3 = 0)
+        public static void AppendFormatNoAlloc(this StringBuilder sb, string format, double arg0 = 0, double arg1 = 0,
+            double arg2 = 0, double arg3 = 0)
         {
             for (var i = 0; i < format.Length; i++)
             {
@@ -56,7 +57,7 @@ namespace Coffee.NanoMonitor
             }
         }
 
-        internal static void AppendInteger(this StringBuilder sb, double number, int padding, int precision, int alignment)
+        private static void AppendInteger(this StringBuilder sb, double number, int padding, int alignment)
         {
             number = Math.Truncate(number);
             var sign = number < 0;
@@ -68,8 +69,8 @@ namespace Coffee.NanoMonitor
                 var n = Math.Truncate(number % 10);
                 number /= 10;
 
-                sb.Append((char) (n + 48));
-            } while (1 <= number || (sb.Length - startIndex) < padding);
+                sb.Append((char)(n + 48));
+            } while (1 <= number || sb.Length - startIndex < padding);
 
             if (sign)
             {
@@ -82,11 +83,12 @@ namespace Coffee.NanoMonitor
             sb.Alignment(alignment, startIndex, endIndex);
         }
 
-        internal static void AppendDouble(this StringBuilder sb, double number, int padding, int precision, int alignment)
+        private static void AppendDouble(this StringBuilder sb, double number, int padding, int precision,
+            int alignment)
         {
             var integer = Math.Truncate(number);
             var startIndex = sb.Length;
-            sb.AppendInteger(integer, padding, precision, 0);
+            sb.AppendInteger(integer, padding, 0);
 
             if (0 < precision)
             {
@@ -96,8 +98,8 @@ namespace Coffee.NanoMonitor
                 for (var p = 0; p < precision; p++)
                 {
                     number *= 10;
-                    integer = (long) number;
-                    sb.Append((char) (integer + 48));
+                    integer = (long)number;
+                    sb.Append((char)(integer + 48));
                     number -= integer;
                     number = Math.Round(number, precision);
                 }
@@ -106,20 +108,18 @@ namespace Coffee.NanoMonitor
             sb.Alignment(alignment, startIndex, sb.Length - 1);
         }
 
-        internal static void Reverse(this StringBuilder sb, int start, int end)
+        private static void Reverse(this StringBuilder sb, int start, int end)
         {
             while (start < end)
             {
-                var c = sb[start];
-                sb[start] = sb[end];
-                sb[end] = c;
-
+                // swap
+                (sb[start], sb[end]) = (sb[end], sb[start]);
                 start++;
                 end--;
             }
         }
 
-        internal static void Alignment(this StringBuilder sb, int alignment, int start, int end)
+        private static void Alignment(this StringBuilder sb, int alignment, int start, int end)
         {
             if (alignment == 0) return;
 
@@ -129,9 +129,8 @@ namespace Coffee.NanoMonitor
                 sb.Append(' ', alignment - len);
                 for (var i = 0; i < len; i++)
                 {
-                    var c = sb[end - i];
-                    sb[end - i] = sb[start + alignment - i - 1];
-                    sb[start + alignment - i - 1] = c;
+                    // swap
+                    (sb[end - i], sb[start + alignment - i - 1]) = (sb[start + alignment - i - 1], sb[end - i]);
                 }
             }
             else if (alignment < 0 && len < -alignment)
@@ -140,7 +139,8 @@ namespace Coffee.NanoMonitor
             }
         }
 
-        internal static int GetFormat(string format, int i, out int argIndex, out int padding, out int precision, out int alignment)
+        private static int GetFormat(string format, int i, out int argIndex, out int padding, out int precision,
+            out int alignment)
         {
             argIndex = -1;
             padding = 0;

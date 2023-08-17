@@ -2,7 +2,6 @@
 #define SERIALIZE_FIELD_MASKABLE
 #endif
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using Coffee.UIParticleExtensions;
 using UnityEngine;
@@ -28,16 +27,19 @@ namespace Coffee.UIExtensions
             Auto,
             Primary,
             PrimarySimulator,
-            Replica,
+            Replica
         }
 
-        [HideInInspector][SerializeField] internal bool m_IsTrail = false;
+        [HideInInspector]
+        [SerializeField]
+        internal bool m_IsTrail;
 
         [Tooltip("Particle effect scale")]
         [SerializeField]
         private Vector3 m_Scale3D = new Vector3(10, 10, 10);
 
-        [Tooltip("Animatable material properties. If you want to change the material properties of the ParticleSystem in Animation, enable it.")]
+        [Tooltip("Animatable material properties.\n" +
+                 "If you want to change the material properties of the ParticleSystem in Animation, enable it.")]
         [SerializeField]
         internal AnimatableProperty[] m_AnimatableProperties = new AnimatableProperty[0];
 
@@ -45,40 +47,49 @@ namespace Coffee.UIExtensions
         [SerializeField]
         private List<ParticleSystem> m_Particles = new List<ParticleSystem>();
 
-        [Tooltip("Mesh sharing.None: disable mesh sharing.\nAuto: automatically select Primary/Replica.\nPrimary: provides particle simulation results to the same group.\nPrimary Simulator: Primary, but do not render the particle (simulation only).\nReplica: render simulation results provided by the primary.")]
+        [Tooltip("Mesh sharing.\n" +
+                 "None: disable mesh sharing.\n" +
+                 "Auto: automatically select Primary/Replica.\n" +
+                 "Primary: provides particle simulation results to the same group.\n" +
+                 "Primary Simulator: Primary, but do not render the particle (simulation only).\n" +
+                 "Replica: render simulation results provided by the primary.")]
         [SerializeField]
         private MeshSharing m_MeshSharing = MeshSharing.None;
 
-        [Tooltip("Mesh sharing group ID. If non-zero is specified, particle simulation results are shared within the group.")]
+        [Tooltip("Mesh sharing group ID.\n" +
+                 "If non-zero is specified, particle simulation results are shared within the group.")]
         [SerializeField]
-        private int m_GroupId = 0;
+        private int m_GroupId;
 
         [SerializeField]
-        private int m_GroupMaxId = 0;
+        private int m_GroupMaxId;
 
         [SerializeField]
-        [Tooltip("The particles will be emitted at the ParticleSystem position.\nMove the UIParticle/ParticleSystem to move the particle.")]
+        [Tooltip("Particle position mode.\n" +
+                 "Absolute Mode: The particles will be emitted from the ParticleSystem position.\n" +
+                 "  Move the UIParticle or ParticleSystem to move the particle.\n" +
+                 "Relative Mode: The particles will be emitted from the scaled ParticleSystem position.\n" +
+                 "  Move the UIParticle to move the particle.")]
         private bool m_AbsoluteMode = false;
 
         /// <summary>
         /// This field uses the inverted value as "AutoScaling".
         /// </summary>
-        [SerializeField]
         [FormerlySerializedAs("m_IgnoreParent")]
-        private bool m_IgnoreCanvasScaler = false;
-
-        private List<UIParticleRenderer> m_Renderers = new List<UIParticleRenderer>();
+        [SerializeField]
+        private bool m_IgnoreCanvasScaler;
 
 #if !SERIALIZE_FIELD_MASKABLE
-        [SerializeField] private bool m_Maskable = true;
+        [SerializeField]
+        private bool m_Maskable = true;
 #endif
-
-        private DrivenRectTransformTracker _tracker;
-        private Camera _orthoCamera;
+        private readonly List<UIParticleRenderer> _renderers = new List<UIParticleRenderer>();
         private int _groupId;
+        private Camera _orthoCamera;
+        private DrivenRectTransformTracker _tracker;
 
         /// <summary>
-        /// Should this graphic be considered a target for raycasting?
+        /// Should this graphic be considered a target for ray-casting?
         /// </summary>
         public override bool raycastTarget
         {
@@ -87,7 +98,8 @@ namespace Coffee.UIExtensions
         }
 
         /// <summary>
-        /// Mesh sharing.None: disable mesh sharing.
+        /// Mesh sharing.
+        /// None: disable mesh sharing.
         /// Auto: automatically select Primary/Replica.
         /// Primary: provides particle simulation results to the same group.
         /// Primary Simulator: Primary, but do not render the particle (simulation only).
@@ -100,7 +112,8 @@ namespace Coffee.UIExtensions
         }
 
         /// <summary>
-        /// Mesh sharing group ID. If non-zero is specified, particle simulation results are shared within the group.
+        /// Mesh sharing group ID.
+        /// If non-zero is specified, particle simulation results are shared within the group.
         /// </summary>
         public int groupId
         {
@@ -110,7 +123,9 @@ namespace Coffee.UIExtensions
                 if (m_GroupId == value) return;
                 m_GroupId = value;
                 if (m_GroupId != m_GroupMaxId)
+                {
                     ResetGroupId();
+                }
             }
         }
 
@@ -126,9 +141,11 @@ namespace Coffee.UIExtensions
         }
 
         /// <summary>
-        /// Absolute particle position mode.
-        /// The particles will be emitted at the ParticleSystem position.
-        /// Move the UIParticle/ParticleSystem to move the particle.
+        /// Particle position mode.
+        /// Absolute Mode: The particles will be emitted from the ParticleSystem position.
+        /// Move the UIParticle or ParticleSystem to move the particle.
+        /// Relative Mode: The particles will be emitted from the scaled ParticleSystem position.
+        /// Move the UIParticle to move the particle.
         /// </summary>
         public bool absoluteMode
         {
@@ -136,6 +153,11 @@ namespace Coffee.UIExtensions
             set { m_AbsoluteMode = value; }
         }
 
+        /// <summary>
+        /// Transform.lossyScale (=world scale) is automatically set to (1, 1, 1).
+        /// It prevents the root-Canvas scale from affecting the hierarchy-scaled ParticleSystem.
+        /// Note: This option works in reverse of ’IgnoreCanvasScaler’ option in v3.x.
+        /// </summary>
         public bool autoScaling
         {
             get { return !m_IgnoreCanvasScaler; }
@@ -154,17 +176,33 @@ namespace Coffee.UIExtensions
 
         internal bool isPrimary
         {
-            get { return m_MeshSharing == MeshSharing.Primary || m_MeshSharing == MeshSharing.PrimarySimulator; }
+            get
+            {
+                return m_MeshSharing == MeshSharing.Primary
+                       || m_MeshSharing == MeshSharing.PrimarySimulator;
+            }
         }
 
         internal bool canSimulate
         {
-            get { return m_MeshSharing == MeshSharing.None || m_MeshSharing == MeshSharing.Auto || m_MeshSharing == MeshSharing.Primary || m_MeshSharing == MeshSharing.PrimarySimulator; }
+            get
+            {
+                return m_MeshSharing == MeshSharing.None
+                       || m_MeshSharing == MeshSharing.Auto
+                       || m_MeshSharing == MeshSharing.Primary
+                       || m_MeshSharing == MeshSharing.PrimarySimulator;
+            }
         }
 
         internal bool canRender
         {
-            get { return m_MeshSharing == MeshSharing.None || m_MeshSharing == MeshSharing.Auto || m_MeshSharing == MeshSharing.Primary || m_MeshSharing == MeshSharing.Replica; }
+            get
+            {
+                return m_MeshSharing == MeshSharing.None
+                       || m_MeshSharing == MeshSharing.Auto
+                       || m_MeshSharing == MeshSharing.Primary
+                       || m_MeshSharing == MeshSharing.Replica;
+            }
         }
 
         /// <summary>
@@ -197,12 +235,12 @@ namespace Coffee.UIExtensions
         {
             get
             {
-                for (var i = 0; i < m_Renderers.Count; i++)
+                for (var i = 0; i < _renderers.Count; i++)
                 {
-                    if (!m_Renderers[i] || !m_Renderers[i].material) continue;
-                    yield return m_Renderers[i].material;
+                    var r = _renderers[i];
+                    if (!r || !r.material) continue;
+                    yield return r.material;
                 }
-                yield break;
             }
         }
 
@@ -214,9 +252,59 @@ namespace Coffee.UIExtensions
         /// <summary>
         /// Paused.
         /// </summary>
-        public bool isPaused { get; internal set; }
+        public bool isPaused { get; private set; }
 
         public Vector3 parentScale { get; private set; }
+
+        protected override void OnEnable()
+        {
+#if !SERIALIZE_FIELD_MASKABLE
+            maskable = m_Maskable;
+#endif
+            ResetGroupId();
+            UpdateTracker();
+            UIParticleUpdater.Register(this);
+            RegisterDirtyMaterialCallback(UpdateRendererMaterial);
+
+            if (0 < particles.Count)
+            {
+                RefreshParticles(particles);
+            }
+            else
+            {
+                RefreshParticles();
+            }
+
+            base.OnEnable();
+        }
+
+        /// <summary>
+        /// This function is called when the behaviour becomes disabled.
+        /// </summary>
+        protected override void OnDisable()
+        {
+            UpdateTracker();
+            UIParticleUpdater.Unregister(this);
+            _renderers.ForEach(r => r.Reset());
+            UnregisterDirtyMaterialCallback(UpdateRendererMaterial);
+
+            base.OnDisable();
+        }
+
+        /// <summary>
+        /// Callback for when properties have been changed by animation.
+        /// </summary>
+        protected override void OnDidApplyAnimationProperties()
+        {
+        }
+
+#if UNITY_EDITOR
+        protected override void OnValidate()
+        {
+            base.OnValidate();
+            UpdateTracker();
+        }
+#endif
 
         public void Play()
         {
@@ -240,7 +328,7 @@ namespace Coffee.UIExtensions
             particles.Exec(p => p.Stop());
             isPaused = true;
         }
-        
+
         public void StartEmission()
         {
             particles.Exec(p =>
@@ -249,7 +337,7 @@ namespace Coffee.UIExtensions
                 emission.enabled = true;
             });
         }
-        
+
         public void StopEmission()
         {
             particles.Exec(p =>
@@ -278,14 +366,10 @@ namespace Coffee.UIExtensions
             {
                 var go = child.gameObject;
                 go.SetActive(false);
-                if (!destroyOldParticles) continue;
-
-#if UNITY_EDITOR
-                if (!Application.isPlaying)
-                    DestroyImmediate(go);
-                else
-#endif
-                    Destroy(go);
+                if (destroyOldParticles)
+                {
+                    Misc.Destroy(go);
+                }
             }
 
             var tr = instance.transform;
@@ -313,11 +397,14 @@ namespace Coffee.UIExtensions
             root.GetComponentsInChildren(particles);
             particles.RemoveAll(x => x.GetComponentInParent<UIParticle>() != this);
 
-            foreach (var ps in particles)
+            for (var i = 0; i < particles.Count; i++)
             {
+                var ps = particles[i];
                 var tsa = ps.textureSheetAnimation;
                 if (tsa.mode == ParticleSystemAnimationMode.Sprites && tsa.uvChannelMask == 0)
+                {
                     tsa.uvChannelMask = UVChannelFlags.UV0;
+                }
             }
 
             RefreshParticles(particles);
@@ -326,30 +413,31 @@ namespace Coffee.UIExtensions
         public void RefreshParticles(List<ParticleSystem> particles)
         {
             // #246: Nullptr exceptions when using nested UIParticle components in hierarchy
-            m_Renderers.Clear();
+            _renderers.Clear();
             foreach (Transform child in transform)
             {
                 var uiParticleRenderer = child.GetComponent<UIParticleRenderer>();
 
                 if (uiParticleRenderer != null)
                 {
-                    m_Renderers.Add(uiParticleRenderer);
+                    _renderers.Add(uiParticleRenderer);
                 }
             }
 
-            for (var i = 0; i < m_Renderers.Count; i++)
+            for (var i = 0; i < _renderers.Count; i++)
             {
-                m_Renderers[i].Reset(i);
+                _renderers[i].Reset(i);
             }
 
             var j = 0;
             for (var i = 0; i < particles.Count; i++)
             {
-                if (!particles[i]) continue;
-                GetRenderer(j++).Set(this, particles[i], false);
-                if (particles[i].trails.enabled)
+                var ps = particles[i];
+                if (!ps) continue;
+                GetRenderer(j++).Set(this, ps, false);
+                if (ps.trails.enabled)
                 {
-                    GetRenderer(j++).Set(this, particles[i], true);
+                    GetRenderer(j++).Set(this, ps, true);
                 }
             }
         }
@@ -370,9 +458,10 @@ namespace Coffee.UIExtensions
         {
             if (!isActiveAndEnabled) return;
 
-            foreach (var rend in m_Renderers)
+            for (var i = 0; i < _renderers.Count; i++)
             {
-                if (!rend)
+                var r = _renderers[i];
+                if (!r)
                 {
                     RefreshParticles(particles);
                     break;
@@ -380,67 +469,29 @@ namespace Coffee.UIExtensions
             }
 
             var bakeCamera = GetBakeCamera();
-            for (var i = 0; i < m_Renderers.Count; i++)
+            for (var i = 0; i < _renderers.Count; i++)
             {
-                if (!m_Renderers[i]) continue;
-                m_Renderers[i].UpdateMesh(bakeCamera);
+                var r = _renderers[i];
+                if (!r) continue;
+                r.UpdateMesh(bakeCamera);
             }
         }
 
         internal void UpdateParticleCount()
         {
-            for (var i = 0; i < m_Renderers.Count; i++)
+            for (var i = 0; i < _renderers.Count; i++)
             {
-                if (!m_Renderers[i]) continue;
-                m_Renderers[i].UpdateParticleCount();
+                var r = _renderers[i];
+                if (!r) continue;
+                r.UpdateParticleCount();
             }
-        }
-
-        protected override void OnEnable()
-        {
-#if !SERIALIZE_FIELD_MASKABLE
-            maskable = m_Maskable;
-#endif
-            ResetGroupId();
-            UpdateTracker();
-            UIParticleUpdater.Register(this);
-            RegisterDirtyMaterialCallback(UpdateRendererMaterial);
-
-            if (0 < particles.Count)
-            {
-                RefreshParticles(particles);
-            }
-            else
-            {
-                RefreshParticles();
-            }
-
-            base.OnEnable();
         }
 
         internal void ResetGroupId()
         {
-            if (m_GroupId == m_GroupMaxId)
-            {
-                _groupId = m_GroupId;
-            }
-            else
-            {
-                _groupId = Random.Range(m_GroupId, m_GroupMaxId + 1);
-            }
-        }
-
-        /// <summary>
-        /// This function is called when the behaviour becomes disabled.
-        /// </summary>
-        protected override void OnDisable()
-        {
-            UpdateTracker();
-            UIParticleUpdater.Unregister(this);
-            m_Renderers.ForEach(r => r.Reset());
-            UnregisterDirtyMaterialCallback(UpdateRendererMaterial);
-
-            base.OnDisable();
+            _groupId = m_GroupId == m_GroupMaxId
+                ? m_GroupId
+                : Random.Range(m_GroupId, m_GroupMaxId + 1);
         }
 
         protected override void UpdateMaterial()
@@ -454,43 +505,42 @@ namespace Coffee.UIExtensions
         {
         }
 
-        /// <summary>
-        /// Callback for when properties have been changed by animation.
-        /// </summary>
-        protected override void OnDidApplyAnimationProperties()
-        {
-        }
-
         private void UpdateRendererMaterial()
         {
-            for (var i = 0; i < m_Renderers.Count; i++)
+            for (var i = 0; i < _renderers.Count; i++)
             {
-                if (!m_Renderers[i]) continue;
-                m_Renderers[i].maskable = maskable;
-                m_Renderers[i].SetMaterialDirty();
+                var r = _renderers[i];
+                if (!r) continue;
+                r.maskable = maskable;
+                r.SetMaterialDirty();
             }
         }
 
         internal UIParticleRenderer GetRenderer(int index)
         {
-            if (m_Renderers.Count <= index)
+            if (_renderers.Count <= index)
             {
-                m_Renderers.Add(UIParticleRenderer.AddRenderer(this, index));
+                _renderers.Add(UIParticleRenderer.AddRenderer(this, index));
             }
-            if (!m_Renderers[index])
+
+            if (!_renderers[index])
             {
-                m_Renderers[index] = UIParticleRenderer.AddRenderer(this, index);
+                _renderers[index] = UIParticleRenderer.AddRenderer(this, index);
             }
-            return m_Renderers[index];
+
+            return _renderers[index];
         }
 
         private Camera GetBakeCamera()
         {
             if (!canvas) return Camera.main;
 
-            // World camera.
+            // Render mode is not ScreenSpaceOverlay, use world camera.
             var root = canvas.rootCanvas;
-            if (root.renderMode != RenderMode.ScreenSpaceOverlay) return root.worldCamera ? root.worldCamera : Camera.main;
+            if (root.renderMode != RenderMode.ScreenSpaceOverlay)
+            {
+                return root.worldCamera ? root.worldCamera : Camera.main;
+            }
 
             // Create ortho-camera.
             if (!_orthoCamera)
@@ -498,10 +548,7 @@ namespace Coffee.UIExtensions
                 _orthoCamera = GetComponentInChildren<Camera>();
                 if (!_orthoCamera)
                 {
-                    var go = new GameObject("UIParticleOverlayCamera")
-                    {
-                        hideFlags = HideFlags.DontSave,
-                    };
+                    var go = new GameObject("UIParticleOverlayCamera") { hideFlags = HideFlags.DontSave };
                     go.SetActive(false);
                     go.transform.SetParent(transform, false);
                     _orthoCamera = go.AddComponent<Camera>();
@@ -509,7 +556,7 @@ namespace Coffee.UIExtensions
                 }
             }
 
-            // 
+            //
             var size = ((RectTransform)root.transform).rect.size;
             _orthoCamera.orthographicSize = Mathf.Max(size.x, size.y) * root.scaleFactor;
             _orthoCamera.transform.SetPositionAndRotation(new Vector3(0, 0, -1000), Quaternion.identity);
@@ -530,13 +577,5 @@ namespace Coffee.UIExtensions
                 _tracker.Add(this, rectTransform, DrivenTransformProperties.Scale);
             }
         }
-
-#if UNITY_EDITOR
-        protected override void OnValidate()
-        {
-            base.OnValidate();
-            UpdateTracker();
-        }
-#endif
     }
 }

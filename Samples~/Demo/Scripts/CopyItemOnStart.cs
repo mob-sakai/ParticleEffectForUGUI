@@ -1,22 +1,28 @@
 ﻿using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Coffee.UIExtensions.Demo
 {
     public class CopyItemOnStart : MonoBehaviour
     {
-        public GameObject origin;
-        public int count;
+        [FormerlySerializedAs("origin")]
+        [SerializeField]
+        private GameObject m_Origin;
+
+        [FormerlySerializedAs("count")]
+        [SerializeField]
+        private int m_Count;
 
         private void Start()
         {
-            if (!origin) return;
-            origin.SetActive(false);
+            if (!m_Origin) return;
+            m_Origin.SetActive(false);
 
-            var parent = origin.transform.parent;
-            for (var i = 0; i < count; i++)
+            var parent = m_Origin.transform.parent;
+            for (var i = 0; i < m_Count; i++)
             {
-                var go = Instantiate(origin, parent, false);
-                go.name = string.Format("{0} {1}", origin.name, i + 1);
+                var go = Instantiate(m_Origin, parent, false);
+                go.name = $"{m_Origin.name} {i + 1}";
                 go.hideFlags = HideFlags.DontSave;
                 go.SetActive(true);
             }

@@ -2,14 +2,17 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Coffee.NanoMonitor{
+namespace Coffee.NanoMonitor
+{
     public class FixedFont
     {
-        private readonly UIVertex[] _tmpVerts = new UIVertex[4];
-        private static readonly Dictionary<Font, FixedFont> _fonts = new Dictionary<Font, FixedFont>();
-        private static readonly TextGenerator _textGenerator = new TextGenerator(100);
+        private const string k_Characters =
+            "_!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
 
-        private static TextGenerationSettings _settings = new TextGenerationSettings
+        private static readonly Dictionary<Font, FixedFont> s_Fonts = new Dictionary<Font, FixedFont>();
+        private static readonly TextGenerator s_TextGenerator = new TextGenerator(100);
+
+        private static TextGenerationSettings s_Settings = new TextGenerationSettings
         {
             scaleFactor = 1,
             horizontalOverflow = HorizontalWrapMode.Overflow,
@@ -19,25 +22,33 @@ namespace Coffee.NanoMonitor{
             color = Color.white
         };
 
-        private int _resolution = 0;
         private readonly Font _font;
-        private UIVertex[] _verts;
+        private readonly UIVertex[] _tmpVerts = new UIVertex[4];
         private UICharInfo[] _charInfos;
+
+        private int _resolution;
+        private UIVertex[] _verts;
 
         private FixedFont(Font font)
         {
             _font = font;
         }
 
-        public int fontSize => _font.dynamic ? 32 : _font.fontSize;
+        public int fontSize
+        {
+            get
+            {
+                return _font.dynamic ? 32 : _font.fontSize;
+            }
+        }
 
         public static FixedFont GetOrCreate(Font font)
         {
             if (font == null) return null;
-            if (_fonts.TryGetValue(font, out var data)) return data;
+            if (s_Fonts.TryGetValue(font, out var data)) return data;
 
             data = new FixedFont(font);
-            _fonts.Add(font, data);
+            s_Fonts.Add(font, data);
             return data;
         }
 
@@ -61,18 +72,20 @@ namespace Coffee.NanoMonitor{
             if (_resolution == currentResolution) return;
             _resolution = currentResolution;
 
-            _settings.font = _font;
-            _textGenerator.Invalidate();
-            _textGenerator.Populate("_!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~", _settings);
+            s_Settings.font = _font;
+            s_TextGenerator.Invalidate();
+            s_TextGenerator.Populate(k_Characters, s_Settings);
 
-            _verts = _textGenerator.GetVerticesArray();
-            _charInfos = _textGenerator.GetCharactersArray();
+            _verts = s_TextGenerator.GetVerticesArray();
+            _charInfos = s_TextGenerator.GetCharactersArray();
 
             float offsetX = 0;
             for (var i = 0; i < _verts.Length; i++)
             {
                 if ((i & 3) == 0)
+                {
                     offsetX = _verts[i].position.x;
+                }
 
                 var v = _verts[i];
                 v.position -= new Vector3(offsetX, 0);
@@ -118,18 +131,27 @@ namespace Coffee.NanoMonitor{
 
             for (var i = 0; i < 4; i++)
             {
-                _tmpVerts[i] = new UIVertex();
-                _tmpVerts[i].uv0 = uv;
-                _tmpVerts[i].color = color;
+                _tmpVerts[i] = new UIVertex
+                {
+                    uv0 = uv,
+                    color = color
+                };
 
-                if (i == 0)
-                    _tmpVerts[i].position = new Vector2(-size.x, -size.y) + offset;
-                else if (i == 1)
-                    _tmpVerts[i].position = new Vector2(-size.x, size.y) + offset;
-                else if (i == 2)
-                    _tmpVerts[i].position = new Vector2(size.x, size.y) + offset;
-                else
-                    _tmpVerts[i].position = new Vector2(size.x, -size.y) + offset;
+                switch (i)
+                {
+                    case 0:
+                        _tmpVerts[i].position = new Vector2(-size.x, -size.y) + offset;
+                        break;
+                    case 1:
+                        _tmpVerts[i].position = new Vector2(-size.x, size.y) + offset;
+                        break;
+                    case 2:
+                        _tmpVerts[i].position = new Vector2(size.x, size.y) + offset;
+                        break;
+                    case 3:
+                        _tmpVerts[i].position = new Vector2(size.x, -size.y) + offset;
+                        break;
+                }
             }
 
             toFill.AddUIVertexQuad(_tmpVerts);

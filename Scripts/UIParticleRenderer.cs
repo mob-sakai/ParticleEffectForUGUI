@@ -1,9 +1,10 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
+﻿using System;
+using System.Collections.Generic;
 using Coffee.UIParticleExtensions;
+using UnityEngine;
 using UnityEngine.Profiling;
 using UnityEngine.Rendering;
-using System.Collections.Generic;
+using UnityEngine.UI;
 
 namespace Coffee.UIExtensions
 {
@@ -13,41 +14,34 @@ namespace Coffee.UIExtensions
     [AddComponentMenu("")]
     internal class UIParticleRenderer : MaskableGraphic
     {
-        private static readonly CombineInstance[] s_CombineInstances = new CombineInstance[] { new CombineInstance() };
+        private static readonly CombineInstance[] s_CombineInstances = { new CombineInstance() };
         private static readonly List<Material> s_Materials = new List<Material>(2);
         private static MaterialPropertyBlock s_Mpb;
         private static readonly List<UIParticleRenderer> s_Renderers = new List<UIParticleRenderer>();
         private static readonly Vector3[] s_Corners = new Vector3[4];
-
-        private ParticleSystemRenderer _renderer;
-        private ParticleSystem _particleSystem;
-        private int _prevParticleCount = 0;
-        private UIParticle _parent;
+        private Material _currentMaterialForRendering;
+        private bool _delay;
         private int _index;
         private bool _isTrail;
-        private Material _modifiedMaterial;
-        private Vector3 _prevScale;
-        private Vector3 _prevPsPos;
-        private Vector2Int _prevScreenSize;
-        private bool _delay = false;
-        private bool _prewarm = false;
-        private Material _currentMaterialForRendering;
         private Bounds _lastBounds;
+        private Material _modifiedMaterial;
+        private UIParticle _parent;
+        private ParticleSystem _particleSystem;
+        private int _prevParticleCount;
+        private Vector3 _prevPsPos;
+        private Vector3 _prevScale;
+        private Vector2Int _prevScreenSize;
+        private bool _prewarm;
+        private ParticleSystemRenderer _renderer;
 
         public override Texture mainTexture
         {
-            get
-            {
-                return _isTrail ? null : _particleSystem.GetTextureForSprite();
-            }
+            get { return _isTrail ? null : _particleSystem.GetTextureForSprite(); }
         }
 
         public override bool raycastTarget
         {
-            get
-            {
-                return false;
-            }
+            get { return false; }
         }
 
         private Rect rootCanvasRect
@@ -62,23 +56,94 @@ namespace Coffee.UIExtensions
                 {
                     var worldToLocalMatrix = canvas.rootCanvas.transform.worldToLocalMatrix;
                     for (var i = 0; i < 4; ++i)
+                    {
                         s_Corners[i] = worldToLocalMatrix.MultiplyPoint(s_Corners[i]);
+                    }
                 }
-                var corner1 = (Vector2) s_Corners[0];
-                var corner2 = (Vector2) s_Corners[0];
+
+                var corner1 = (Vector2)s_Corners[0];
+                var corner2 = (Vector2)s_Corners[0];
                 for (var i = 1; i < 4; ++i)
                 {
                     if (s_Corners[i].x < corner1.x)
+                    {
                         corner1.x = s_Corners[i].x;
+                    }
                     else if (s_Corners[i].x > corner2.x)
+                    {
                         corner2.x = s_Corners[i].x;
+                    }
+
                     if (s_Corners[i].y < corner1.y)
+                    {
                         corner1.y = s_Corners[i].y;
+                    }
                     else if (s_Corners[i].y > corner2.y)
+                    {
                         corner2.y = s_Corners[i].y;
+                    }
                 }
+
                 return new Rect(corner1, corner2 - corner1);
             }
+        }
+
+        public void Reset(int index = -1)
+        {
+            if (_renderer)
+            {
+                _renderer.enabled = true;
+            }
+
+            _parent = null;
+            _particleSystem = null;
+            _renderer = null;
+            _prevParticleCount = 0;
+            if (0 <= index)
+            {
+                _index = index;
+            }
+
+            //_emitter = null;
+            if (this && isActiveAndEnabled)
+            {
+                material = null;
+                workerMesh.Clear();
+                canvasRenderer.SetMesh(workerMesh);
+                _lastBounds = new Bounds();
+                enabled = false;
+            }
+            else
+            {
+                ModifiedMaterial.Remove(_modifiedMaterial);
+                _modifiedMaterial = null;
+                _currentMaterialForRendering = null;
+            }
+        }
+
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+
+            if (!s_CombineInstances[0].mesh)
+            {
+                s_CombineInstances[0].mesh = new Mesh
+                {
+                    name = "[UIParticleRenderer] Combine Instance Mesh",
+                    hideFlags = HideFlags.HideAndDontSave
+                };
+            }
+
+            _currentMaterialForRendering = null;
+        }
+
+        protected override void OnDisable()
+        {
+            base.OnDisable();
+
+            ModifiedMaterial.Remove(_modifiedMaterial);
+            _modifiedMaterial = null;
+            _currentMaterialForRendering = null;
         }
 
         public static UIParticleRenderer AddRenderer(UIParticle parent, int index)
@@ -87,7 +152,7 @@ namespace Coffee.UIExtensions
             var go = new GameObject("UIParticleRenderer", typeof(UIParticleRenderer))
             {
                 hideFlags = HideFlags.DontSave,
-                layer = parent.gameObject.layer,
+                layer = parent.gameObject.layer
             };
 
             // Set parent.
@@ -139,45 +204,14 @@ namespace Coffee.UIExtensions
             return modifiedMaterial;
         }
 
-        public void Reset(int index = -1)
-        {
-            if (_renderer)
-            {
-                _renderer.enabled = true;
-            }
-            _parent = null;
-            _particleSystem = null;
-            _renderer = null;
-            _prevParticleCount = 0;
-            if (0 <= index)
-            {
-                _index = index;
-            }
-            //_emitter = null;
-            if (this && isActiveAndEnabled)
-            {
-                material = null;
-                workerMesh.Clear();
-                canvasRenderer.SetMesh(workerMesh);
-                _lastBounds = new Bounds();
-                enabled = false;
-            }
-            else
-            {
-                ModifiedMaterial.Remove(_modifiedMaterial);
-                _modifiedMaterial = null;
-                _currentMaterialForRendering = null;
-            }
-        }
-
-        public void Set(UIParticle parent, ParticleSystem particleSystem, bool isTrail)
+        public void Set(UIParticle parent, ParticleSystem ps, bool isTrail)
         {
             _parent = parent;
             maskable = parent.maskable;
 
             gameObject.layer = parent.gameObject.layer;
 
-            _particleSystem = particleSystem;
+            _particleSystem = ps;
             _prewarm = _particleSystem.main.prewarm;
 
 #if UNITY_EDITOR
@@ -191,7 +225,7 @@ namespace Coffee.UIExtensions
                 }
             }
 
-            _renderer = particleSystem.GetComponent<ParticleSystemRenderer>();
+            _renderer = ps.GetComponent<ParticleSystemRenderer>();
             _renderer.enabled = false;
 
             //_emitter = emitter;
@@ -202,9 +236,11 @@ namespace Coffee.UIExtensions
             s_Materials.Clear();
 
             // Support sprite.
-            var tsa = particleSystem.textureSheetAnimation;
+            var tsa = ps.textureSheetAnimation;
             if (tsa.mode == ParticleSystemAnimationMode.Sprites && tsa.uvChannelMask == 0)
+            {
                 tsa.uvChannelMask = UVChannelFlags.UV0;
+            }
 
             _prevScale = GetWorldScale();
             _prevPsPos = _particleSystem.transform.position;
@@ -221,15 +257,17 @@ namespace Coffee.UIExtensions
         {
             // No particle to render: Clear mesh.
             if (
-                !isActiveAndEnabled || !_particleSystem || !_parent || !canvasRenderer || !canvas || !bakeCamera
+                !isActiveAndEnabled || !_particleSystem || !_parent
+                || !canvasRenderer || !canvas || !bakeCamera
                 || _parent.meshSharing == UIParticle.MeshSharing.Replica
-                || !transform.lossyScale.GetScaled(_parent.scale3D).IsVisible()     // Scale is not visible.
-                || (!_particleSystem.IsAlive() && !_particleSystem.isPlaying)       // No particle.
-                || (_isTrail && !_particleSystem.trails.enabled)                    // Trail, but it is not enabled.
+                || !transform.lossyScale.GetScaled(_parent.scale3D).IsVisible() // Scale is not visible.
+                || (!_particleSystem.IsAlive() && !_particleSystem.isPlaying) // No particle.
+                || (_isTrail && !_particleSystem.trails.enabled) // Trail, but it is not enabled.
 #if UNITY_2018_3_OR_NEWER
-                || canvasRenderer.GetInheritedAlpha() < 0.01f                       // #102: Do not bake particle system to mesh when the alpha is zero.
+                || canvasRenderer.GetInheritedAlpha() <
+                0.01f // #102: Do not bake particle system to mesh when the alpha is zero.
 #endif
-        )
+            )
             {
                 Profiler.BeginSample("[UIParticleRenderer] Clear Mesh");
                 workerMesh.Clear();
@@ -265,15 +303,20 @@ namespace Coffee.UIExtensions
                     }
 
                     // When the ParticleSystem simulation is complete, stop it.
-                    if (!main.loop && main.duration <= _particleSystem.time && (_particleSystem.IsAlive() || _particleSystem.particleCount == 0))
+                    if (!main.loop
+                        && main.duration <= _particleSystem.time
+                        && (_particleSystem.IsAlive() || _particleSystem.particleCount == 0)
+                       )
                     {
                         _particleSystem.Stop(false);
                     }
                 }
+
                 _prevScale = scale;
                 _prevPsPos = psPos;
                 _delay = false;
             }
+
             Profiler.EndSample();
 
             // Bake mesh.
@@ -295,7 +338,7 @@ namespace Coffee.UIExtensions
             if (65535 <= s_CombineInstances[0].mesh.vertexCount)
             {
                 s_CombineInstances[0].mesh.Clear(false);
-                UnityEngine.Debug.LogErrorFormat(this,
+                Debug.LogErrorFormat(this,
                     "Too many vertices to render. index={0}, isTrail={1}, vertexCount={2}(>=65535)",
                     _index,
                     _isTrail,
@@ -303,6 +346,7 @@ namespace Coffee.UIExtensions
                 );
                 s_CombineInstances[0].mesh.Clear(false);
             }
+
             Profiler.EndSample();
 
             // Combine mesh to transform. ([ParticleSystem local ->] world -> renderer local)
@@ -311,13 +355,19 @@ namespace Coffee.UIExtensions
             {
                 if (_parent.absoluteMode)
                 {
-                    s_CombineInstances[0].transform = canvasRenderer.transform.worldToLocalMatrix * GetWorldMatrix(psPos, scale);
+                    s_CombineInstances[0].transform =
+                        canvasRenderer.transform.worldToLocalMatrix
+                        * GetWorldMatrix(psPos, scale);
                 }
                 else
                 {
                     var diff = _particleSystem.transform.position - _parent.transform.position;
-                    s_CombineInstances[0].transform = canvasRenderer.transform.worldToLocalMatrix * Matrix4x4.Translate(diff.GetScaled(scale - Vector3.one)) * GetWorldMatrix(psPos, scale);
+                    s_CombineInstances[0].transform =
+                        canvasRenderer.transform.worldToLocalMatrix
+                        * Matrix4x4.Translate(diff.GetScaled(scale - Vector3.one))
+                        * GetWorldMatrix(psPos, scale);
                 }
+
                 workerMesh.CombineMeshes(s_CombineInstances, true, true);
 
                 workerMesh.RecalculateBounds();
@@ -331,6 +381,7 @@ namespace Coffee.UIExtensions
                 workerMesh.bounds = bounds;
                 _lastBounds = bounds;
             }
+
             Profiler.EndSample();
 
 
@@ -343,7 +394,7 @@ namespace Coffee.UIExtensions
 
             // Set mesh to the CanvasRenderer.
             Profiler.BeginSample("[UIParticleRenderer] Set Mesh");
-            for (int i = 0; i < s_Renderers.Count; i++)
+            for (var i = 0; i < s_Renderers.Count; i++)
             {
                 if (s_Renderers[i] == this) continue;
                 s_Renderers[i].canvasRenderer.SetMesh(workerMesh);
@@ -354,6 +405,7 @@ namespace Coffee.UIExtensions
             {
                 workerMesh.Clear();
             }
+
             canvasRenderer.SetMesh(workerMesh);
             Profiler.EndSample();
 
@@ -366,7 +418,8 @@ namespace Coffee.UIExtensions
                 {
                     _currentMaterialForRendering = materialForRendering;
                 }
-                for (int i = 0; i < s_Renderers.Count; i++)
+
+                for (var i = 0; i < s_Renderers.Count; i++)
                 {
                     if (s_Renderers[i] == this) continue;
 
@@ -374,6 +427,7 @@ namespace Coffee.UIExtensions
                     s_Renderers[i].canvasRenderer.SetMaterial(_currentMaterialForRendering, 0);
                 }
             }
+
             Profiler.EndSample();
 
             s_Renderers.Clear();
@@ -385,30 +439,6 @@ namespace Coffee.UIExtensions
             _prevParticleCount = _particleSystem.particleCount;
         }
 
-        protected override void OnEnable()
-        {
-            base.OnEnable();
-
-            if (!s_CombineInstances[0].mesh)
-            {
-                s_CombineInstances[0].mesh = new Mesh()
-                {
-                    name = "[UIParticleRenderer] Combine Instance Mesh",
-                    hideFlags = HideFlags.HideAndDontSave,
-                };
-            }
-            _currentMaterialForRendering = null;
-        }
-
-        protected override void OnDisable()
-        {
-            base.OnDisable();
-
-            ModifiedMaterial.Remove(_modifiedMaterial);
-            _modifiedMaterial = null;
-            _currentMaterialForRendering = null;
-        }
-
         /// <summary>
         /// Call to update the geometry of the Graphic onto the CanvasRenderer.
         /// </summary>
@@ -418,7 +448,9 @@ namespace Coffee.UIExtensions
 
         public override void Cull(Rect clipRect, bool validRect)
         {
-            var cull = _lastBounds.extents == Vector3.zero || !validRect || !clipRect.Overlaps(rootCanvasRect, true);
+            var cull = _lastBounds.extents == Vector3.zero
+                       || !validRect
+                       || !clipRect.Overlaps(rootCanvasRect, true);
             if (canvasRenderer.cull == cull) return;
 
             canvasRenderer.cull = cull;
@@ -450,8 +482,8 @@ namespace Coffee.UIExtensions
                 {
                     case ParticleSystemSimulationSpace.World:
                         return Matrix4x4.Translate(psPos)
-                            * Matrix4x4.Scale(scale)
-                            * Matrix4x4.Translate(-psPos);
+                               * Matrix4x4.Scale(scale)
+                               * Matrix4x4.Translate(-psPos);
                 }
             }
 #endif
@@ -460,17 +492,17 @@ namespace Coffee.UIExtensions
             {
                 case ParticleSystemSimulationSpace.Local:
                     return Matrix4x4.Translate(psPos)
-                        * Matrix4x4.Scale(scale);
+                           * Matrix4x4.Scale(scale);
                 case ParticleSystemSimulationSpace.World:
                     return Matrix4x4.Scale(scale);
                 case ParticleSystemSimulationSpace.Custom:
                     return Matrix4x4.Translate(_particleSystem.main.customSimulationSpace.position.GetScaled(scale))
-                        //* Matrix4x4.Translate(wpos)
-                        * Matrix4x4.Scale(scale)
+                           //* Matrix4x4.Translate(wpos)
+                           * Matrix4x4.Scale(scale)
                         //* Matrix4x4.Translate(-wpos)
                         ;
                 default:
-                    throw new System.NotSupportedException();
+                    throw new NotSupportedException();
             }
         }
 
@@ -482,8 +514,9 @@ namespace Coffee.UIExtensions
         private void ResolveResolutionChange(Vector3 psPos, Vector3 scale)
         {
             var screenSize = new Vector2Int(Screen.width, Screen.height);
-            //if ((_prevScreenSize != screenSize || _prevScale != scale) && _particleSystem.main.simulationSpace == ParticleSystemSimulationSpace.World && _parent.uiScaling)
-            if ((_prevScreenSize != screenSize || _prevScale != scale) && _particleSystem.main.simulationSpace == ParticleSystemSimulationSpace.World)
+            var isWorldSpace = _particleSystem.IsWorldSpace();
+            var resolutionChanged = _prevScreenSize != screenSize || _prevScale != scale;
+            if (resolutionChanged && isWorldSpace)
             {
                 // Update particle array size and get particles.
                 var size = _particleSystem.particleCount;
@@ -492,13 +525,17 @@ namespace Coffee.UIExtensions
 
                 // Resolusion resolver:
                 // (psPos / scale) / (prevPsPos / prevScale) -> psPos * scale.inv * prevPsPos.inv * prevScale
-                var modifier = psPos.GetScaled(scale.Inverse(), _prevPsPos.Inverse(), _prevScale);
+                var modifier = psPos.GetScaled(
+                    scale.Inverse(),
+                    _prevPsPos.Inverse(),
+                    _prevScale);
                 for (var i = 0; i < size; i++)
                 {
                     var particle = particles[i];
                     particle.position = particle.position.GetScaled(modifier);
                     particles[i] = particle;
                 }
+
                 _particleSystem.SetParticles(particles, size);
 
                 // Delay: Do not progress in the frame where the resolution has been changed.
@@ -506,6 +543,7 @@ namespace Coffee.UIExtensions
                 _prevScale = scale;
                 _prevPsPos = psPos;
             }
+
             _prevScreenSize = screenSize;
         }
 
@@ -548,13 +586,14 @@ namespace Coffee.UIExtensions
             var psTransform = _particleSystem.transform;
             var originWorldPosition = psTransform.position;
             var originWorldRotation = psTransform.rotation;
-
             var emission = _particleSystem.emission;
-            var rateOverDistance = emission.enabled && 0 < emission.rateOverDistance.constant && 0 < emission.rateOverDistanceMultiplier;
+            var rateOverDistance = emission.enabled
+                                   && 0 < emission.rateOverDistance.constant
+                                   && 0 < emission.rateOverDistanceMultiplier;
             if (rateOverDistance)
             {
                 // (For rate-over-distance emission,) Move to previous scaled position, simulate (delta = 0).
-                Vector3 prevScaledPos = _prevPsPos.GetScaled(_prevScale.Inverse());
+                var prevScaledPos = _prevPsPos.GetScaled(_prevScale.Inverse());
                 psTransform.SetPositionAndRotation(prevScaledPos, originWorldRotation);
                 _particleSystem.Simulate(0, false, false, false);
             }
@@ -570,7 +609,8 @@ namespace Coffee.UIExtensions
         private void SimulateForEditor(Vector3 diffPos, Vector3 scale)
         {
             // Extra world simulation.
-            if (_particleSystem.main.simulationSpace == ParticleSystemSimulationSpace.World && 0 < Vector3.SqrMagnitude(diffPos))
+            var isWorldSpace = _particleSystem.IsWorldSpace();
+            if (isWorldSpace && 0 < Vector3.SqrMagnitude(diffPos))
             {
                 Profiler.BeginSample("[UIParticle] Bake Mesh > Extra world simulation");
                 diffPos.x *= 1f - 1f / Mathf.Max(0.001f, scale.x);
@@ -598,7 +638,9 @@ namespace Coffee.UIExtensions
             if (_parent.m_AnimatableProperties.Length == 0) return;
 
             if (s_Mpb == null)
+            {
                 s_Mpb = new MaterialPropertyBlock();
+            }
 
             _renderer.GetPropertyBlock(s_Mpb);
             if (s_Mpb.isEmpty) return;
@@ -606,8 +648,9 @@ namespace Coffee.UIExtensions
             // #41: Copy the value from MaterialPropertyBlock to CanvasRenderer
             if (!_modifiedMaterial) return;
 
-            foreach (var ap in _parent.m_AnimatableProperties)
+            for (var i = 0; i < _parent.m_AnimatableProperties.Length; i++)
             {
+                var ap = _parent.m_AnimatableProperties[i];
                 ap.UpdateMaterialProperties(_modifiedMaterial, s_Mpb);
             }
 

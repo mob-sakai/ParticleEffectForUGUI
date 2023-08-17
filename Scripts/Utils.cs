@@ -46,11 +46,11 @@ namespace Coffee.UIParticleExtensions
     internal static class SpriteExtensions
     {
 #if UNITY_EDITOR
-        private static Type tSpriteEditorExtension =
+        private static readonly Type s_SpriteEditorExtensionType =
             Type.GetType("UnityEditor.Experimental.U2D.SpriteEditorExtension, UnityEditor")
             ?? Type.GetType("UnityEditor.U2D.SpriteEditorExtension, UnityEditor");
 
-        private static MethodInfo miGetActiveAtlasTexture = tSpriteEditorExtension
+        private static readonly MethodInfo s_GetActiveAtlasTextureMethodInfo = s_SpriteEditorExtensionType
             .GetMethod("GetActiveAtlasTexture", BindingFlags.Static | BindingFlags.NonPublic);
 
         public static Texture2D GetActualTexture(this Sprite self)
@@ -58,8 +58,10 @@ namespace Coffee.UIParticleExtensions
             if (!self) return null;
 
             if (Application.isPlaying) return self.texture;
-            var ret = miGetActiveAtlasTexture.Invoke(null, new[] { self }) as Texture2D;
-            return ret ? ret : self.texture;
+            var ret = s_GetActiveAtlasTextureMethodInfo.Invoke(null, new object[] { self }) as Texture2D;
+            return ret
+                ? ret
+                : self.texture;
         }
 #else
         internal static Texture2D GetActualTexture(this Sprite self)
@@ -77,12 +79,14 @@ namespace Coffee.UIParticleExtensions
         {
             if (s_TmpParticles.Length < size)
             {
-                while(s_TmpParticles.Length < size)
+                while (s_TmpParticles.Length < size)
                 {
                     size = Mathf.NextPowerOfTwo(size);
                 }
+
                 s_TmpParticles = new ParticleSystem.Particle[size];
             }
+
             return s_TmpParticles;
         }
 
@@ -102,47 +106,69 @@ namespace Coffee.UIParticleExtensions
             var main = self.main;
             var space = main.simulationSpace;
             if (space == ParticleSystemSimulationSpace.Custom && !main.customSimulationSpace)
+            {
                 space = ParticleSystemSimulationSpace.Local;
+            }
 
             return space;
+        }
+
+        public static bool IsLocalSpace(this ParticleSystem self)
+        {
+            return GetActualSimulationSpace(self) == ParticleSystemSimulationSpace.Local;
+        }
+
+        public static bool IsWorldSpace(this ParticleSystem self)
+        {
+            return GetActualSimulationSpace(self) == ParticleSystemSimulationSpace.World;
         }
 
         public static void SortForRendering(this List<ParticleSystem> self, Transform transform, bool sortByMaterial)
         {
             self.Sort((a, b) =>
             {
-                var tr = transform;
                 var aRenderer = a.GetComponent<ParticleSystemRenderer>();
                 var bRenderer = b.GetComponent<ParticleSystemRenderer>();
 
                 // Render queue: ascending
-                var aMat = aRenderer.sharedMaterial ?? aRenderer.trailMaterial;
-                var bMat = bRenderer.sharedMaterial ?? bRenderer.trailMaterial;
+                var aMat = aRenderer.sharedMaterial ? aRenderer.sharedMaterial : aRenderer.trailMaterial;
+                var bMat = bRenderer.sharedMaterial ? bRenderer.sharedMaterial : bRenderer.trailMaterial;
                 if (!aMat && !bMat) return 0;
                 if (!aMat) return -1;
                 if (!bMat) return 1;
 
                 if (sortByMaterial)
+                {
                     return aMat.GetInstanceID() - bMat.GetInstanceID();
+                }
 
                 if (aMat.renderQueue != bMat.renderQueue)
+                {
                     return aMat.renderQueue - bMat.renderQueue;
+                }
 
                 // Sorting layer: ascending
                 if (aRenderer.sortingLayerID != bRenderer.sortingLayerID)
-                    return SortingLayer.GetLayerValueFromID(aRenderer.sortingLayerID) - SortingLayer.GetLayerValueFromID(bRenderer.sortingLayerID);
+                {
+                    return SortingLayer.GetLayerValueFromID(aRenderer.sortingLayerID) -
+                           SortingLayer.GetLayerValueFromID(bRenderer.sortingLayerID);
+                }
 
                 // Sorting order: ascending
                 if (aRenderer.sortingOrder != bRenderer.sortingOrder)
+                {
                     return aRenderer.sortingOrder - bRenderer.sortingOrder;
+                }
 
                 // Z position & sortingFudge: descending
                 var aTransform = a.transform;
                 var bTransform = b.transform;
-                var aPos = tr.InverseTransformPoint(aTransform.position).z + aRenderer.sortingFudge;
-                var bPos = tr.InverseTransformPoint(bTransform.position).z + bRenderer.sortingFudge;
+                var aPos = transform.InverseTransformPoint(aTransform.position).z + aRenderer.sortingFudge;
+                var bPos = transform.InverseTransformPoint(bTransform.position).z + bRenderer.sortingFudge;
                 if (!Mathf.Approximately(aPos, bPos))
+                {
                     return (int)Mathf.Sign(bPos - aPos);
+                }
 
                 return (int)Mathf.Sign(GetIndex(self, a) - GetIndex(self, b));
             });
@@ -152,7 +178,10 @@ namespace Coffee.UIParticleExtensions
         {
             for (var i = 0; i < list.Count; i++)
             {
-                if (list[i].GetInstanceID() == ps.GetInstanceID()) return i;
+                if (list[i].GetInstanceID() == ps.GetInstanceID())
+                {
+                    return i;
+                }
             }
 
             return 0;
@@ -181,6 +210,39 @@ namespace Coffee.UIParticleExtensions
         {
             self.RemoveAll(p => !p);
             self.ForEach(action);
+        }
+    }
+
+    internal static class Misc
+    {
+        public static void Destroy(Object obj)
+        {
+            if (!obj) return;
+#if UNITY_EDITOR
+            if (!Application.isPlaying)
+            {
+                Object.DestroyImmediate(obj);
+            }
+            else
+#endif
+            {
+                Object.Destroy(obj);
+            }
+        }
+
+        public static void DestroyImmediate(Object obj)
+        {
+            if (!obj) return;
+#if UNITY_EDITOR
+            if (Application.isEditor)
+            {
+                Object.DestroyImmediate(obj);
+            }
+            else
+#endif
+            {
+                Object.Destroy(obj);
+            }
         }
     }
 }

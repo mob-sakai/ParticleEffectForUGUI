@@ -1,7 +1,7 @@
-﻿using UnityEngine;
+﻿using System;
 using Coffee.UIParticleExtensions;
+using UnityEngine;
 using UnityEngine.Events;
-using System;
 
 namespace Coffee.UIExtensions
 {
@@ -12,13 +12,13 @@ namespace Coffee.UIExtensions
         {
             Linear,
             Smooth,
-            Sphere,
+            Sphere
         }
-        
+
         public enum UpdateMode
         {
             Normal,
-            UnscaledTime,
+            UnscaledTime
         }
 
         [SerializeField]
@@ -30,7 +30,7 @@ namespace Coffee.UIExtensions
 
         [Range(0f, 0.95f)]
         [SerializeField]
-        private float m_DelayRate = 0;
+        private float m_DelayRate;
 
         [Range(0.001f, 100f)]
         [SerializeField]
@@ -45,92 +45,57 @@ namespace Coffee.UIExtensions
         [SerializeField]
         private UnityEvent m_OnAttracted;
 
+        private UIParticle _uiParticle;
+
         public float destinationRadius
         {
-            get
-            {
-                return m_DestinationRadius;
-            }
-            set
-            {
-                m_DestinationRadius = Mathf.Clamp(value, 0.1f, 10f);
-            }
+            get { return m_DestinationRadius; }
+            set { m_DestinationRadius = Mathf.Clamp(value, 0.1f, 10f); }
         }
 
         public float delay
         {
-            get
-            {
-                return m_DelayRate;
-            }
-            set
-            {
-                m_DelayRate = value;
-            }
+            get { return m_DelayRate; }
+            set { m_DelayRate = value; }
         }
 
         public float maxSpeed
         {
-            get
-            {
-                return m_MaxSpeed;
-            }
-            set
-            {
-                m_MaxSpeed = value;
-            }
+            get { return m_MaxSpeed; }
+            set { m_MaxSpeed = value; }
         }
 
         public Movement movement
         {
-            get
-            {
-                return m_Movement;
-            }
-            set
-            {
-                m_Movement = value;
-            }
+            get { return m_Movement; }
+            set { m_Movement = value; }
         }
 
         public UpdateMode updateMode
         {
-            get
-            {
-                return m_UpdateMode;
-            }
-            set
-            {
-                m_UpdateMode = value;
-            }
+            get { return m_UpdateMode; }
+            set { m_UpdateMode = value; }
         }
 
         public UnityEvent onAttracted
         {
-            get
-            {
-                return m_OnAttracted;
-            }
-            set
-            {
-                m_OnAttracted = value;
-            }
+            get { return m_OnAttracted; }
+            set { m_OnAttracted = value; }
         }
 
+#if UNITY_EDITOR
+        public new ParticleSystem particleSystem
+#else
         public ParticleSystem particleSystem
+#endif
         {
-            get
-            {
-                return m_ParticleSystem;
-            }
+            get { return m_ParticleSystem; }
             set
             {
                 m_ParticleSystem = value;
                 ApplyParticleSystem();
             }
         }
-
-        private UIParticle _uiParticle;
 
         private void OnEnable()
         {
@@ -207,7 +172,7 @@ namespace Coffee.UIExtensions
             var psPos = m_ParticleSystem.transform.position;
             var attractorPos = transform.position;
             var dstPos = attractorPos;
-            var isLocalSpace = m_ParticleSystem.main.simulationSpace == ParticleSystemSimulationSpace.Local;
+            var isLocalSpace = m_ParticleSystem.IsLocalSpace();
 
             if (isLocalSpace)
             {
@@ -251,6 +216,7 @@ namespace Coffee.UIExtensions
                     speed *= 60 * Time.unscaledDeltaTime;
                     break;
             }
+
             switch (m_Movement)
             {
                 case Movement.Linear:
@@ -278,6 +244,7 @@ namespace Coffee.UIExtensions
                 {
                     Debug.LogError("No particle system attached to particle attractor script", this);
                 }
+
                 return;
             }
 

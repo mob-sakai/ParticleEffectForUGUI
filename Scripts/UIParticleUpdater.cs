@@ -1,21 +1,19 @@
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 namespace Coffee.UIExtensions
 {
     internal static class UIParticleUpdater
     {
-        static readonly List<UIParticle> s_ActiveParticles = new List<UIParticle>();
-        static readonly List<UIParticleAttractor> s_ActiveAttractors = new List<UIParticleAttractor>();
-        static readonly HashSet<int> s_UpdatedGroupIds = new HashSet<int>();
-        private static int frameCount = 0;
+        private static readonly List<UIParticle> s_ActiveParticles = new List<UIParticle>();
+        private static readonly List<UIParticleAttractor> s_ActiveAttractors = new List<UIParticleAttractor>();
+        private static readonly HashSet<int> s_UpdatedGroupIds = new HashSet<int>();
+        private static int s_FrameCount;
 
         public static int uiParticleCount
         {
-            get
-            {
-                return s_ActiveParticles.Count;
-            }
+            get { return s_ActiveParticles.Count; }
         }
 
         public static void Register(UIParticle particle)
@@ -43,7 +41,7 @@ namespace Coffee.UIExtensions
         }
 
 #if UNITY_EDITOR
-        [UnityEditor.InitializeOnLoadMethod]
+        [InitializeOnLoadMethod]
 #endif
         [RuntimeInitializeOnLoadMethod]
         private static void InitializeOnLoad()
@@ -55,8 +53,8 @@ namespace Coffee.UIExtensions
         private static void Refresh()
         {
             // Do not allow it to be called in the same frame.
-            if (frameCount == Time.frameCount) return;
-            frameCount = Time.frameCount;
+            if (s_FrameCount == Time.frameCount) return;
+            s_FrameCount = Time.frameCount;
 
             // Simulate -> Primary
             for (var i = 0; i < s_ActiveParticles.Count; i++)
@@ -129,6 +127,7 @@ namespace Coffee.UIExtensions
                 if (uip.isPrimary) return uip;
                 if (!primary && uip.canSimulate) primary = uip;
             }
+
             return primary;
         }
     }

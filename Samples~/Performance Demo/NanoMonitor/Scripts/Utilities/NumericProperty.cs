@@ -2,12 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using UnityEngine;
-using UnityEngine.Serialization;
-#if UNITY_EDITOR
 using UnityEditor;
-
-#endif
+using UnityEngine;
 
 namespace Coffee.NanoMonitor
 {
@@ -20,39 +16,45 @@ namespace Coffee.NanoMonitor
 
         private static readonly Dictionary<Type, string> s_SupportedTypes = new Dictionary<Type, string>
         {
-            {typeof(bool), "bool"},
-            {typeof(sbyte), "sbyte"},
-            {typeof(short), "short"},
-            {typeof(int), "int"},
-            {typeof(long), "long"},
-            {typeof(byte), "byte"},
-            {typeof(ushort), "ushort"},
-            {typeof(uint), "uint"},
-            {typeof(ulong), "ulong"},
-            {typeof(float), "float"},
-            {typeof(double), "double"},
-            {typeof(decimal), "decimal"},
+            { typeof(bool), "bool" },
+            { typeof(sbyte), "sbyte" },
+            { typeof(short), "short" },
+            { typeof(int), "int" },
+            { typeof(long), "long" },
+            { typeof(byte), "byte" },
+            { typeof(ushort), "ushort" },
+            { typeof(uint), "uint" },
+            { typeof(ulong), "ulong" },
+            { typeof(float), "float" },
+            { typeof(double), "double" },
+            { typeof(decimal), "decimal" }
         };
 
         private static void Init()
         {
             if (s_PropertyMenu != null) return;
 
+            const BindingFlags bindingFlags = BindingFlags.Public
+                                              | BindingFlags.NonPublic
+                                              | BindingFlags.Static
+                                              | BindingFlags.GetProperty;
             var properties = AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(assembly => assembly.GetTypes())
-                .SelectMany(type => type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.GetProperty))
+                .SelectMany(type => type.GetProperties(bindingFlags))
                 .Where(pi => pi.GetMethod != null && s_SupportedTypes.ContainsKey(pi.PropertyType))
                 .OrderBy(pi => ConvertToMenuItem(pi, false))
                 .ToArray();
 
             s_PropertyMenu = new GenericMenu();
-            s_PropertyMenu.AddItem(new GUIContent("No Property"), false, arg => s_OnMenuSelected?.Invoke(arg as PropertyInfo), null);
-            s_PropertyMenu.AddItem(new GUIContent("(Non Public Properties)/"), false, ()=>{});
+            s_PropertyMenu.AddItem(new GUIContent("No Property"), false,
+                arg => s_OnMenuSelected?.Invoke(arg as PropertyInfo), null);
+            s_PropertyMenu.AddItem(new GUIContent("(Non Public Properties)/"), false, () => { });
             s_PropertyMenu.AddSeparator("");
 
             foreach (var pi in properties)
             {
-                s_PropertyMenu.AddItem(new GUIContent(ConvertToMenuItem(pi, true)), false, arg => s_OnMenuSelected?.Invoke(arg as PropertyInfo), pi);
+                s_PropertyMenu.AddItem(new GUIContent(ConvertToMenuItem(pi, true)), false,
+                    arg => s_OnMenuSelected?.Invoke(arg as PropertyInfo), pi);
             }
         }
 
@@ -60,11 +62,17 @@ namespace Coffee.NanoMonitor
         {
             var type = p.DeclaringType;
             if (type == null) return "";
-            var category = p.GetMethod.IsPublic && type.IsPublic ? "" : "(Non Public Properties)/";
+
+            var category = p.GetMethod.IsPublic && type.IsPublic
+                ? ""
+                : "(Non Public Properties)/";
             var typeName = type.FullName;
             var asmName = type.Assembly.GetName().Name;
             if (asmName == "UnityEngine.CoreModule")
+            {
                 asmName = "UnityEngine";
+            }
+
             return propertyType
                 ? $"{category}{asmName}/{typeName}/{s_SupportedTypes[p.PropertyType]} {p.Name}"
                 : $"{category}{asmName}/{typeName}/{p.Name}";
@@ -84,7 +92,9 @@ namespace Coffee.NanoMonitor
             {
                 s_OnMenuSelected = p =>
                 {
-                    path.stringValue = p == null ? "" : $"{p.DeclaringType?.FullName}, {p.DeclaringType?.Assembly.GetName().Name};{p.Name}";
+                    path.stringValue = p == null
+                        ? ""
+                        : $"{p.DeclaringType?.FullName}, {p.DeclaringType?.Assembly.GetName().Name};{p.Name}";
                     property.serializedObject.ApplyModifiedProperties();
                 };
                 s_PropertyMenu.DropDown(position);
@@ -105,18 +115,28 @@ namespace Coffee.NanoMonitor
 
 
         //################################
+        // Private Members.
+        //################################
+        private Func<double> _get;
+
+        void ISerializationCallbackReceiver.OnBeforeSerialize()
+        {
+        }
+
+        void ISerializationCallbackReceiver.OnAfterDeserialize()
+        {
+            var pInfo = GetPropertyInfo(m_Path);
+            _get = CreateFunc(pInfo?.GetMethod);
+        }
+
+
+        //################################
         // Public Members.
         //################################
         public double Get()
         {
             return _get?.Invoke() ?? -1;
         }
-
-
-        //################################
-        // Private Members.
-        //################################
-        private Func<double> _get = null;
 
         private static PropertyInfo GetPropertyInfo(string path)
         {
@@ -126,14 +146,14 @@ namespace Coffee.NanoMonitor
             var type = Type.GetType(p[0]);
             if (type == null)
             {
-                UnityEngine.Debug.LogException(new Exception($"Type '{p[0]}' is not found"));
+                Debug.LogException(new Exception($"Type '{p[0]}' is not found"));
                 return null;
             }
 
             var pInfo = type.GetProperty(p[1], BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.Static);
             if (pInfo == null)
             {
-                UnityEngine.Debug.LogException(new Exception($"Member '{p[1]}' is not found in type '{type}'"));
+                Debug.LogException(new Exception($"Member '{p[1]}' is not found in type '{type}'"));
             }
 
             return pInfo;
@@ -145,55 +165,72 @@ namespace Coffee.NanoMonitor
             switch (Type.GetTypeCode(mInfo.ReturnType))
             {
                 case TypeCode.Boolean:
-                    var f_bool = (Func<bool>) mInfo.CreateDelegate(typeof(Func<bool>));
-                    return () => f_bool() ? 1 : 0;
+                {
+                    var func = (Func<bool>)mInfo.CreateDelegate(typeof(Func<bool>));
+                    return () => func() ? 1 : 0;
+                }
                 case TypeCode.Byte:
-                    var f_byte = (Func<byte>) mInfo.CreateDelegate(typeof(Func<byte>));
-                    return () => f_byte();
+                {
+                    var func = (Func<byte>)mInfo.CreateDelegate(typeof(Func<byte>));
+                    return () => func();
+                }
                 case TypeCode.SByte:
-                    var f_sbyte = (Func<sbyte>) mInfo.CreateDelegate(typeof(Func<sbyte>));
-                    return () => f_sbyte();
+                {
+                    var func = (Func<sbyte>)mInfo.CreateDelegate(typeof(Func<sbyte>));
+                    return () => func();
+                }
                 case TypeCode.UInt16:
-                    var f_ushort = (Func<ushort>) mInfo.CreateDelegate(typeof(Func<ushort>));
-                    return () => f_ushort();
+                {
+                    var func = (Func<ushort>)mInfo.CreateDelegate(typeof(Func<ushort>));
+                    return () => func();
+                }
                 case TypeCode.UInt32:
-                    var f_uint = (Func<uint>) mInfo.CreateDelegate(typeof(Func<uint>));
-                    return () => f_uint();
+                {
+                    var func = (Func<uint>)mInfo.CreateDelegate(typeof(Func<uint>));
+                    return () => func();
+                }
                 case TypeCode.UInt64:
-                    var f_ulong = (Func<ulong>) mInfo.CreateDelegate(typeof(Func<ulong>));
-                    return () => f_ulong();
+                {
+                    var func = (Func<ulong>)mInfo.CreateDelegate(typeof(Func<ulong>));
+                    return () => func();
+                }
                 case TypeCode.Int16:
-                    var f_short = (Func<short>) mInfo.CreateDelegate(typeof(Func<short>));
-                    return () => f_short();
+                {
+                    var func = (Func<short>)mInfo.CreateDelegate(typeof(Func<short>));
+                    return () => func();
+                }
                 case TypeCode.Int32:
-                    var f_int = (Func<int>) mInfo.CreateDelegate(typeof(Func<int>));
-                    return () => f_int();
+                {
+                    var f = (Func<int>)mInfo.CreateDelegate(typeof(Func<int>));
+                    return () => f();
+                }
                 case TypeCode.Int64:
-                    var f_long = (Func<long>) mInfo.CreateDelegate(typeof(Func<long>));
-                    return () => f_long();
+                {
+                    var f = (Func<long>)mInfo.CreateDelegate(typeof(Func<long>));
+                    return () => f();
+                }
                 case TypeCode.Decimal:
-                    var f_decimal = (Func<decimal>) mInfo.CreateDelegate(typeof(Func<decimal>));
-                    return () => (double) f_decimal();
+                {
+                    var f = (Func<decimal>)mInfo.CreateDelegate(typeof(Func<decimal>));
+                    return () => (double)f();
+                }
                 case TypeCode.Double:
-                    var f_double = (Func<double>) mInfo.CreateDelegate(typeof(Func<double>));
-                    return f_double;
+                {
+                    var f = (Func<double>)mInfo.CreateDelegate(typeof(Func<double>));
+                    return f;
+                }
                 case TypeCode.Single:
-                    var f_float = (Func<float>) mInfo.CreateDelegate(typeof(Func<float>));
-                    return () => f_float();
+                {
+                    var f = (Func<float>)mInfo.CreateDelegate(typeof(Func<float>));
+                    return () => f();
+                }
                 default:
-                    UnityEngine.Debug.LogException(new Exception(string.Format("Method '{1}.{0}' is not supported.", mInfo.Name, mInfo.DeclaringType)));
+                {
+                    var message = $"Method '{mInfo.DeclaringType}.{mInfo.Name} ({mInfo.ReturnType})' is not supported.";
+                    Debug.LogException(new Exception(message));
                     return null;
+                }
             }
-        }
-
-        void ISerializationCallbackReceiver.OnBeforeSerialize()
-        {
-        }
-
-        void ISerializationCallbackReceiver.OnAfterDeserialize()
-        {
-            var pInfo = GetPropertyInfo(m_Path);
-            _get = CreateFunc(pInfo?.GetMethod);
         }
     }
 }

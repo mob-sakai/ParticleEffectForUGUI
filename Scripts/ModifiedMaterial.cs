@@ -10,7 +10,7 @@ namespace Coffee.UIParticleExtensions
         public static Material Add(Material baseMat, Texture texture, int id)
         {
             MatEntry e;
-            for (var i = 0; i < s_Entries.Count; ++i)
+            for (var i = 0; i < s_Entries.Count; i++)
             {
                 e = s_Entries[i];
                 if (e.baseMat != baseMat || e.texture != texture || e.id != id) continue;
@@ -18,15 +18,19 @@ namespace Coffee.UIParticleExtensions
                 return e.customMat;
             }
 
-            e = new MatEntry();
-            e.count = 1;
-            e.baseMat = baseMat;
-            e.texture = texture;
-            e.id = id;
-            e.customMat = new Material(baseMat);
-            e.customMat.hideFlags = HideFlags.HideAndDontSave;
-            if (texture)
-                e.customMat.mainTexture = texture;
+            e = new MatEntry
+            {
+                count = 1,
+                baseMat = baseMat,
+                texture = texture,
+                id = id,
+                customMat = new Material(baseMat)
+                {
+                    name = $"{baseMat.name}_{id}",
+                    hideFlags = HideFlags.HideAndDontSave,
+                    mainTexture = texture ? texture : null
+                }
+            };
             s_Entries.Add(e);
             //Debug.LogFormat(">>>> ModifiedMaterial.Add -> count = count:{0}, mat:{1}, tex:{2}, id:{3}", s_Entries.Count, baseMat, texture, id);
             return e.customMat;
@@ -43,7 +47,8 @@ namespace Coffee.UIParticleExtensions
                 if (--e.count == 0)
                 {
                     //Debug.LogFormat(">>>> ModifiedMaterial.Remove -> count:{0}, mat:{1}, tex:{2}, id:{3}", s_Entries.Count - 1, e.customMat, e.texture, e.id);
-                    DestroyImmediate(e.customMat);
+                    Misc.DestroyImmediate(e.customMat);
+                    e.customMat = null;
                     e.baseMat = null;
                     e.texture = null;
                     s_Entries.RemoveAt(i);
@@ -53,22 +58,13 @@ namespace Coffee.UIParticleExtensions
             }
         }
 
-        private static void DestroyImmediate(Object obj)
-        {
-            if (!obj) return;
-            if (Application.isEditor)
-                Object.DestroyImmediate(obj);
-            else
-                Object.Destroy(obj);
-        }
-
         private class MatEntry
         {
             public Material baseMat;
-            public Material customMat;
             public int count;
-            public Texture texture;
+            public Material customMat;
             public int id;
+            public Texture texture;
         }
     }
 }

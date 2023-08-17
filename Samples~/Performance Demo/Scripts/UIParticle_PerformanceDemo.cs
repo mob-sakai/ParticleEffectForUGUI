@@ -1,26 +1,35 @@
 ﻿using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Coffee.UIExtensions.Demo
 {
     public class UIParticle_PerformanceDemo : MonoBehaviour
     {
-        public GameObject copyOrigin;
-        public int copyCount;
-        public Canvas root;
+        [FormerlySerializedAs("copyOrigin")]
+        [SerializeField]
+        private GameObject m_CopyOrigin;
+
+        [FormerlySerializedAs("copyCount")]
+        [SerializeField]
+        public int m_CopyCount;
+
+        [FormerlySerializedAs("root")]
+        [SerializeField]
+        public Canvas m_RootCanvas;
 
         private void Start()
         {
             Application.targetFrameRate = 60;
 
-            if (copyOrigin)
+            if (m_CopyOrigin)
             {
-                copyOrigin.SetActive(false);
+                m_CopyOrigin.SetActive(false);
 
-                var parent = copyOrigin.transform.parent;
-                for (var i = 0; i < copyCount; i++)
+                var parent = m_CopyOrigin.transform.parent;
+                for (var i = 0; i < m_CopyCount; i++)
                 {
-                    var go = GameObject.Instantiate(copyOrigin, parent, false);
-                    go.name = string.Format("{0} {1}", copyOrigin.name, i + 1);
+                    var go = Instantiate(m_CopyOrigin, parent, false);
+                    go.name = string.Format("{0} {1}", m_CopyOrigin.name, i + 1);
                     go.hideFlags = HideFlags.DontSave;
 
                     go.SetActive(true);
@@ -28,32 +37,14 @@ namespace Coffee.UIExtensions.Demo
             }
         }
 
-        public void ChangeScreenSize()
+        public void UIParticle_Enable(bool flag)
         {
-            if (Screen.width == 400 && Screen.height == 720)
-                Screen.SetResolution(720, 720, false);
-            else if (Screen.width == 720 && Screen.height == 720)
-                Screen.SetResolution(720, 400, false);
-            else
-                Screen.SetResolution(400, 720, false);
-        }
-
-        public void EnableAnimations(bool enabled)
-        {
-            foreach (var animator in FindObjectsOfType<Animator>())
+            foreach (var uip in m_RootCanvas.GetComponentsInChildren<UIParticle>(true))
             {
-                animator.enabled = enabled;
+                uip.enabled = flag;
             }
-        }
 
-        public void UIParticle_Enable(bool enabled)
-        {
-
-            foreach (var uip in root.GetComponentsInChildren<UIParticle>(true))
-            {
-                uip.enabled = enabled;
-            }
-            if (!enabled)
+            if (!flag)
             {
                 foreach (var ps in FindObjectsOfType<ParticleSystem>())
                 {
@@ -62,36 +53,23 @@ namespace Coffee.UIExtensions.Demo
             }
         }
 
-        public void UIParticle_MeshSharing(bool enabled)
+        public void UIParticle_MeshSharing(bool flag)
         {
-            foreach (var uip in root.GetComponentsInChildren<UIParticle>(true))
+            foreach (var uip in m_RootCanvas.GetComponentsInChildren<UIParticle>(true))
             {
-                uip.meshSharing = enabled ? UIParticle.MeshSharing.Auto : UIParticle.MeshSharing.None;
+                uip.meshSharing = flag
+                    ? UIParticle.MeshSharing.Auto
+                    : UIParticle.MeshSharing.None;
             }
         }
 
-        public void UIParticle_RandomGroup(bool enabled)
+        public void UIParticle_RandomGroup(bool flag)
         {
-            foreach (var uip in root.GetComponentsInChildren<UIParticle>(true))
+            foreach (var uip in m_RootCanvas.GetComponentsInChildren<UIParticle>(true))
             {
-                uip.groupMaxId = enabled ? 4 : 0;
-            }
-        }
-
-        public void UIParticle_Scale(float scale)
-        {
-            foreach (var uip in FindObjectsOfType<UIParticle>())
-            {
-                uip.scale = scale;
-            }
-        }
-
-        public void ParticleSystem_WorldSpaseSimulation(bool enabled)
-        {
-            foreach (var ps in FindObjectsOfType<ParticleSystem>())
-            {
-                var main = ps.main;
-                main.simulationSpace = enabled ? ParticleSystemSimulationSpace.World : ParticleSystemSimulationSpace.Local;
+                uip.groupMaxId = flag
+                    ? 4
+                    : 0;
             }
         }
 
@@ -100,35 +78,6 @@ namespace Coffee.UIExtensions.Demo
             foreach (var ps in FindObjectsOfType<ParticleSystem>())
             {
                 ps.transform.localScale = new Vector3(scale, scale, scale);
-            }
-        }
-
-        public void Canvas_WorldSpace(bool flag)
-        {
-            if (flag)
-            {
-                var canvas = FindObjectOfType<Canvas>();
-                canvas.renderMode = RenderMode.ScreenSpaceCamera;
-                canvas.renderMode = RenderMode.WorldSpace;
-                canvas.transform.rotation = Quaternion.Euler(new Vector3(0, 10, 0));
-            }
-        }
-
-        public void Canvas_CameraSpace(bool flag)
-        {
-            if (flag)
-            {
-                var canvas = FindObjectOfType<Canvas>();
-                canvas.renderMode = RenderMode.ScreenSpaceCamera;
-            }
-        }
-
-        public void Canvas_Overlay(bool flag)
-        {
-            if (flag)
-            {
-                var canvas = FindObjectOfType<Canvas>();
-                canvas.renderMode = RenderMode.ScreenSpaceOverlay;
             }
         }
     }

@@ -32,11 +32,16 @@ namespace Coffee.UIExtensions
         private static void ImportSample(string jsonGuid, string sampleName)
         {
             var jsonPath = AssetDatabase.GUIDToAssetPath(jsonGuid);
-            var packageRoot = Path.GetDirectoryName(jsonPath).Replace('\\', '/');
+            if (string.IsNullOrEmpty(jsonPath)) return;
+
+            var jsonDir = Path.GetDirectoryName(jsonPath);
+            if (string.IsNullOrEmpty(jsonDir)) return;
+
+            var packageRoot = jsonDir.Replace('\\', '/');
             var json = File.ReadAllText(jsonPath);
             var version = Regex.Match(json, "\"version\"\\s*:\\s*\"([^\"]+)\"").Groups[1].Value;
-            var src = string.Format("{0}/Samples~/{1}", packageRoot, sampleName);
-            var dst = string.Format("Assets/Samples/{0}/{1}/{2}", k_DisplayName, version, sampleName);
+            var src = $"{packageRoot}/Samples~/{sampleName}";
+            var dst = $"Assets/Samples/{k_DisplayName}/{version}/{sampleName}";
             var previousPath = GetPreviousSamplePath(k_DisplayName, sampleName);
 
             // Remove the previous sample directory.
@@ -46,33 +51,45 @@ namespace Coffee.UIExtensions
                           + previousPath
                           + "\n\nIt will be deleted when you update. Are you sure you want to continue?";
                 if (!EditorUtility.DisplayDialog("Sample Importer", msg, "OK", "Cancel"))
+                {
                     return;
+                }
 
                 FileUtil.DeleteFileOrDirectory(previousPath);
 
                 var metaFile = previousPath + ".meta";
                 if (File.Exists(metaFile))
+                {
                     FileUtil.DeleteFileOrDirectory(metaFile);
+                }
             }
 
             if (!Directory.Exists(dst))
+            {
                 FileUtil.DeleteFileOrDirectory(dst);
+            }
 
             var dstDir = Path.GetDirectoryName(dst);
-            if (!Directory.Exists(dstDir))
+            if (!string.IsNullOrEmpty(dstDir) && !Directory.Exists(dstDir))
+            {
                 Directory.CreateDirectory(dstDir);
+            }
 
             if (Directory.Exists(src))
+            {
                 FileUtil.CopyFileOrDirectory(src, dst);
+            }
             else
+            {
                 throw new DirectoryNotFoundException(src);
+            }
 
             AssetDatabase.Refresh(ImportAssetOptions.ImportRecursive);
         }
 
         private static string GetPreviousSamplePath(string displayName, string sampleName)
         {
-            var sampleRoot = string.Format("Assets/Samples/{0}", displayName);
+            var sampleRoot = $"Assets/Samples/{displayName}";
             var sampleRootInfo = new DirectoryInfo(sampleRoot);
             if (!sampleRootInfo.Exists) return null;
 

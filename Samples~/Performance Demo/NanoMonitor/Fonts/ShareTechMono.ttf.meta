@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 70069a8db1df148ae8b4c8108c079acf
+guid: d07e6c2670f164cf7939ab011061a9bf
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
@@ -8,9 +8,9 @@ TrueTypeFontImporter:
   characterSpacing: 0
   characterPadding: 1
   includeFontData: 1
-  fontName: Falstin
+  fontName: Share Tech Mono
   fontNames:
-  - Falstin
+  - Share Tech Mono
   fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 1

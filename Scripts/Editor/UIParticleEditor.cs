@@ -1,19 +1,22 @@
-#if UNITY_2019_3_11 || UNITY_2019_3_12 || UNITY_2019_3_13 || UNITY_2019_3_14 || UNITY_2019_3_15 || UNITY_2019_4_OR_NEWER
-#define SERIALIZE_FIELD_MASKABLE
-#endif
-using UnityEditor;
-using UnityEditor.UI;
-using UnityEngine;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEditorInternal;
-using UnityEngine.UI;
-using System;
 #if UNITY_2021_2_OR_NEWER
 using UnityEditor.Overlays;
 #else
 using System.Reflection;
 #endif
+#if UNITY_2021_2_OR_NEWER
+using UnityEditor.SceneManagement;
+#elif UNITY_2018_3_OR_NEWER
+using UnityEditor.Experimental.SceneManagement;
+#endif
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEditor;
+using UnityEditor.UI;
+using UnityEditorInternal;
+using UnityEngine;
+using UnityEngine.UI;
+using Object = UnityEngine.Object;
 
 namespace Coffee.UIExtensions
 {
@@ -23,7 +26,10 @@ namespace Coffee.UIExtensions
     {
 #if UNITY_2021_2_OR_NEWER
 #if UNITY_2022_1_OR_NEWER
-        [Overlay(typeof(SceneView), "Scene View/UI Particles", "UI Particles", true, defaultDockPosition = DockPosition.Bottom, defaultDockZone = DockZone.Floating, defaultLayout = Layout.Panel)]
+        [Overlay(typeof(SceneView), "Scene View/UI Particles", "UI Particles", true,
+         defaultDockPosition = DockPosition.Bottom,
+         defaultDockZone = DockZone.Floating,
+         defaultLayout = Layout.Panel)]
 #else
         [Overlay(typeof(SceneView), "Scene View/UI Particles", "UI Particles", true)]
 #endif
@@ -52,27 +58,28 @@ namespace Coffee.UIExtensions
         private static readonly GUIContent s_Content3D = new GUIContent("3D");
         private static readonly GUIContent s_ContentRandom = new GUIContent("Random");
         private static readonly GUIContent s_ContentScale = new GUIContent("Scale");
-        private static readonly GUIContent s_ContentAutoScaling = new GUIContent("Auto Scaling", "Transform.lossyScale (=world scale) is automatically set to (1, 1, 1), to prevent the root-Canvas scale from affecting the hierarchy-scaled ParticleSystem.");
+
+        private static readonly GUIContent s_ContentAutoScaling = new GUIContent("Auto Scaling",
+            "Transform.lossyScale (=world scale) is automatically set to (1, 1, 1)," +
+            " to prevent the root-Canvas scale from affecting the hierarchy-scaled ParticleSystem.");
+
         private static SerializedObject s_SerializedObject;
+        private static bool s_XYZMode;
 
-#if !SERIALIZE_FIELD_MASKABLE
-        private SerializedProperty m_Maskable;
-#endif
-        private SerializedProperty m_Scale3D;
-        private SerializedProperty m_AnimatableProperties;
-        private SerializedProperty m_MeshSharing;
-        private SerializedProperty m_GroupId;
-        private SerializedProperty m_GroupMaxId;
-        private SerializedProperty m_AbsoluteMode;
-        private SerializedProperty m_IgnoreCanvasScaler;
-
-
+        private SerializedProperty _maskable;
+        private SerializedProperty _scale3D;
+        private SerializedProperty _animatableProperties;
+        private SerializedProperty _meshSharing;
+        private SerializedProperty _groupId;
+        private SerializedProperty _groupMaxId;
+        private SerializedProperty _absoluteMode;
+        private SerializedProperty _ignoreCanvasScaler;
         private ReorderableList _ro;
-        static private bool _xyzMode;
         private bool _showMax;
 
         private static readonly HashSet<Shader> s_Shaders = new HashSet<Shader>();
         private static readonly List<ParticleSystemVertexStream> s_Streams = new List<ParticleSystemVertexStream>();
+
         private static readonly List<string> s_MaskablePropertyNames = new List<string>
         {
             "_Stencil",
@@ -80,21 +87,20 @@ namespace Coffee.UIExtensions
             "_StencilOp",
             "_StencilWriteMask",
             "_StencilReadMask",
-            "_ColorMask",
+            "_ColorMask"
         };
 
-
         [InitializeOnLoadMethod]
-        static void Init()
+        private static void Init()
         {
 #if !UNITY_2021_2_OR_NEWER
             var miSceneViewOverlayWindow = Type.GetType("UnityEditor.SceneViewOverlay, UnityEditor")
-                .GetMethods(BindingFlags.Public | BindingFlags.Static)
+                ?.GetMethods(BindingFlags.Public | BindingFlags.Static)
                 .First(x => x.Name == "Window" && 5 <= x.GetParameters().Length);
-            var windowFunction = (Action<UnityEngine.Object, SceneView>)WindowFunction;
+            var windowFunction = (Action<Object, SceneView>)WindowFunction;
             var windowFunctionType = Type.GetType("UnityEditor.SceneViewOverlay+WindowFunction, UnityEditor");
             var windowFunctionDelegate = Delegate.CreateDelegate(windowFunctionType, windowFunction.Method);
-            var windowTitle = new GUIContent(ObjectNames.NicifyVariableName(typeof(UIParticle).Name));
+            var windowTitle = new GUIContent(ObjectNames.NicifyVariableName(nameof(UIParticle)));
 #if UNITY_2019_2_OR_NEWER
             //public static void Window(GUIContent title, WindowFunction sceneViewFunc, int order, Object target, WindowDisplayOption option, EditorWindow window = null)
             var sceneViewArgs = new object[] { windowTitle, windowFunctionDelegate, 599, null, 2, null };
@@ -104,7 +110,7 @@ namespace Coffee.UIExtensions
 #endif
 
 #if UNITY_2019_1_OR_NEWER
-            SceneView.duringSceneGui += _ => { if (s_SerializedObject != null) miSceneViewOverlayWindow.Invoke(null, sceneViewArgs); };
+            SceneView.duringSceneGui += _ =>
 #else
             SceneView.onSceneGUIDelegate += _ =>
 #endif
@@ -116,25 +122,21 @@ namespace Coffee.UIExtensions
             };
 #endif
 
-            Func<SerializedObject> createSerializeObject = () =>
+            SerializedObject CreateSerializeObject()
             {
-                var uiParticles = Selection.gameObjects
-                        .Select(x => x.GetComponent<ParticleSystem>())
-                        .Where(x => x)
-                        .Select(x => x.GetComponentInParent<UIParticle>())
-                        .Where(x => x && x.canvas)
-                        .Concat(
-                            Selection.gameObjects
-                                .Select(x => x.GetComponent<UIParticle>())
-                                .Where(x => x && x.canvas)
-                        )
-                        .Distinct()
-                        .ToArray();
+                var uiParticles = Selection.gameObjects.Select(x => x.GetComponent<ParticleSystem>())
+                    .Where(x => x)
+                    .Select(x => x.GetComponentInParent<UIParticle>())
+                    .Where(x => x && x.canvas)
+                    .Concat(Selection.gameObjects.Select(x => x.GetComponent<UIParticle>())
+                        .Where(x => x && x.canvas))
+                    .Distinct()
+                    .ToArray();
                 return 0 < uiParticles.Length ? new SerializedObject(uiParticles) : null;
-            };
+            }
 
-            s_SerializedObject = createSerializeObject();
-            Selection.selectionChanged += () => s_SerializedObject = createSerializeObject();
+            s_SerializedObject = CreateSerializeObject();
+            Selection.selectionChanged += () => s_SerializedObject = CreateSerializeObject();
         }
 
         //################################
@@ -147,64 +149,71 @@ namespace Coffee.UIExtensions
         {
             base.OnEnable();
 
-            m_Maskable = serializedObject.FindProperty("m_Maskable");
-            m_Scale3D = serializedObject.FindProperty("m_Scale3D");
-            m_AnimatableProperties = serializedObject.FindProperty("m_AnimatableProperties");
-            m_MeshSharing = serializedObject.FindProperty("m_MeshSharing");
-            m_GroupId = serializedObject.FindProperty("m_GroupId");
-            m_GroupMaxId = serializedObject.FindProperty("m_GroupMaxId");
-            m_AbsoluteMode = serializedObject.FindProperty("m_AbsoluteMode");
-            m_IgnoreCanvasScaler = serializedObject.FindProperty("m_IgnoreCanvasScaler");
+            _maskable = serializedObject.FindProperty("m_Maskable");
+            _scale3D = serializedObject.FindProperty("m_Scale3D");
+            _animatableProperties = serializedObject.FindProperty("m_AnimatableProperties");
+            _meshSharing = serializedObject.FindProperty("m_MeshSharing");
+            _groupId = serializedObject.FindProperty("m_GroupId");
+            _groupMaxId = serializedObject.FindProperty("m_GroupMaxId");
+            _absoluteMode = serializedObject.FindProperty("m_AbsoluteMode");
+            _ignoreCanvasScaler = serializedObject.FindProperty("m_IgnoreCanvasScaler");
 
             var sp = serializedObject.FindProperty("m_Particles");
-            _ro = new ReorderableList(sp.serializedObject, sp, true, true, true, true);
-            _ro.elementHeight = (EditorGUIUtility.singleLineHeight * 3) + 4;
-            _ro.elementHeightCallback = _ => 3 * (EditorGUIUtility.singleLineHeight + 2);
-            _ro.drawElementCallback = (rect, index, _, __) =>
+            _ro = new ReorderableList(sp.serializedObject, sp, true, true, true, true)
             {
-                EditorGUI.BeginDisabledGroup(sp.hasMultipleDifferentValues);
-                rect.y += 1;
-                rect.height = EditorGUIUtility.singleLineHeight;
-                var p = sp.GetArrayElementAtIndex(index);
-                EditorGUI.ObjectField(rect, p, GUIContent.none);
-                rect.x += 15;
-                rect.width -= 15;
-                var ps = p.objectReferenceValue as ParticleSystem;
-                var materials = ps
-                    ? new SerializedObject(ps.GetComponent<ParticleSystemRenderer>()).FindProperty("m_Materials")
-                    : null;
-                rect.y += rect.height + 1;
-                MaterialField(rect, s_ContentMaterial, materials, 0);
-                rect.y += rect.height + 1;
-                MaterialField(rect, s_ContentTrailMaterial, materials, 1);
-                EditorGUI.EndDisabledGroup();
-                if (materials != null && materials.serializedObject.hasModifiedProperties)
+                elementHeight = EditorGUIUtility.singleLineHeight * 3 + 4,
+                elementHeightCallback = _ => 3 * (EditorGUIUtility.singleLineHeight + 2),
+                drawElementCallback = (rect, index, _, __) =>
                 {
-                    materials.serializedObject.ApplyModifiedProperties();
-                }
-            };
-            _ro.drawHeaderCallback = rect =>
-            {
-#if !UNITY_2019_3_OR_NEWER
-                rect.y -= 1;
-#endif
-                EditorGUI.LabelField(new Rect(rect.x, rect.y, 150, rect.height), s_ContentRenderingOrder);
-
-                if (GUI.Button(new Rect(rect.width - 35, rect.y, 60, rect.height), s_ContentRefresh, EditorStyles.miniButton))
-                {
-                    foreach (UIParticle t in targets)
+                    EditorGUI.BeginDisabledGroup(sp.hasMultipleDifferentValues);
+                    rect.y += 1;
+                    rect.height = EditorGUIUtility.singleLineHeight;
+                    var p = sp.GetArrayElementAtIndex(index);
+                    EditorGUI.ObjectField(rect, p, GUIContent.none);
+                    rect.x += 15;
+                    rect.width -= 15;
+                    var ps = p.objectReferenceValue as ParticleSystem;
+                    var materials = ps
+                        ? new SerializedObject(ps.GetComponent<ParticleSystemRenderer>()).FindProperty("m_Materials")
+                        : null;
+                    rect.y += rect.height + 1;
+                    MaterialField(rect, s_ContentMaterial, materials, 0);
+                    rect.y += rect.height + 1;
+                    MaterialField(rect, s_ContentTrailMaterial, materials, 1);
+                    EditorGUI.EndDisabledGroup();
+                    if (materials != null && materials.serializedObject.hasModifiedProperties)
                     {
-                        t.RefreshParticles();
-                        EditorUtility.SetDirty(t);
+                        materials.serializedObject.ApplyModifiedProperties();
+                    }
+                },
+                drawHeaderCallback = rect =>
+                {
+#if !UNITY_2019_3_OR_NEWER
+                    rect.y -= 1;
+#endif
+                    var pos = new Rect(rect.x, rect.y, 150, rect.height);
+                    EditorGUI.LabelField(pos, s_ContentRenderingOrder);
+
+                    pos = new Rect(rect.width - 35, rect.y, 60, rect.height);
+                    if (GUI.Button(pos, s_ContentRefresh, EditorStyles.miniButton))
+                    {
+                        foreach (var uip in targets.OfType<UIParticle>())
+                        {
+                            uip.RefreshParticles();
+                            EditorUtility.SetDirty(uip);
+                        }
                     }
                 }
             };
 
             // On select UIParticle, refresh particles.
-            foreach (UIParticle t in targets)
+            if (!Application.isPlaying)
             {
-                if (Application.isPlaying || PrefabUtility.GetPrefabAssetType(t) != PrefabAssetType.NotAPrefab) continue;
-                t.RefreshParticles(t.particles);
+                foreach (var uip in targets.OfType<UIParticle>())
+                {
+                    if (PrefabUtility.GetPrefabAssetType(uip) != PrefabAssetType.NotAPrefab) continue;
+                    uip.RefreshParticles(uip.particles);
+                }
             }
         }
 
@@ -233,11 +242,11 @@ namespace Coffee.UIExtensions
             serializedObject.Update();
 
             // Maskable
-            EditorGUILayout.PropertyField(m_Maskable);
+            EditorGUILayout.PropertyField(_maskable);
 
             // Scale
-            EditorGUI.BeginDisabledGroup(!m_MeshSharing.hasMultipleDifferentValues && m_MeshSharing.intValue == 4);
-            _xyzMode = DrawFloatOrVector3Field(m_Scale3D, _xyzMode);
+            EditorGUI.BeginDisabledGroup(!_meshSharing.hasMultipleDifferentValues && _meshSharing.intValue == 4);
+            s_XYZMode = DrawFloatOrVector3Field(_scale3D, s_XYZMode);
             EditorGUI.EndDisabledGroup();
 
             // AnimatableProperties
@@ -247,12 +256,11 @@ namespace Coffee.UIExtensions
                 .Where(x => x)
                 .ToArray();
 
-            // Animated properties
-            AnimatedPropertiesEditor.DrawAnimatableProperties(m_AnimatableProperties, mats);
+            AnimatablePropertyEditor.Draw(_animatableProperties, mats);
 
             // Mesh sharing
             EditorGUI.BeginChangeCheck();
-            _showMax = DrawMeshSharing(m_MeshSharing, m_GroupId, m_GroupMaxId, _showMax);
+            _showMax = DrawMeshSharing(_meshSharing, _groupId, _groupMaxId, _showMax);
             if (EditorGUI.EndChangeCheck())
             {
                 serializedObject.ApplyModifiedProperties();
@@ -263,10 +271,10 @@ namespace Coffee.UIExtensions
             }
 
             // Absolute Mode
-            EditorGUILayout.PropertyField(m_AbsoluteMode);
+            EditorGUILayout.PropertyField(_absoluteMode);
 
             // Auto Scaling
-            DrawInversedToggle(m_IgnoreCanvasScaler, s_ContentAutoScaling, () =>
+            DrawInversedToggle(_ignoreCanvasScaler, s_ContentAutoScaling, () =>
             {
                 foreach (var uip in targets.OfType<UIParticle>())
                 {
@@ -292,6 +300,7 @@ namespace Coffee.UIExtensions
             }
 
             // Does the shader support UI masks?
+
             if (current.maskable && current.GetComponentInParent<Mask>())
             {
                 foreach (var mat in current.materials)
@@ -304,15 +313,19 @@ namespace Coffee.UIExtensions
                     {
                         if (mat.HasProperty(propName)) continue;
 
-                        EditorGUILayout.HelpBox(string.Format("Shader '{0}' doesn't have '{1}' property. This graphic cannot be masked.", shader.name, propName), MessageType.Warning);
+                        EditorGUILayout.HelpBox(
+                            $"Shader '{shader.name}' doesn't have '{propName}' property. This graphic cannot be masked.",
+                            MessageType.Warning);
                         break;
                     }
                 }
             }
+
             s_Shaders.Clear();
 
             // UIParticle for trail should be removed.
-            if (FixButton(current.m_IsTrail, "This UIParticle component should be removed. The UIParticle for trails is no longer needed."))
+            var label = "This UIParticle component should be removed. The UIParticle for trails is no longer needed.";
+            if (FixButton(current.m_IsTrail, label))
             {
                 DestroyUIParticle(current);
             }
@@ -328,7 +341,9 @@ namespace Coffee.UIExtensions
             {
                 var so = new SerializedObject(allPsRenderers);
                 var sp = so.FindProperty("m_ApplyActiveColorSpace");
-                if (FixButton(sp.boolValue || sp.hasMultipleDifferentValues, "When using linear color space, the particle colors are not output correctly.\nTo fix, set 'Apply Active Color Space' in renderer module to false."))
+                label = "When using linear color space, the particle colors are not output correctly.\n" +
+                        "To fix, set 'Apply Active Color Space' in renderer module to false.";
+                if (FixButton(sp.boolValue || sp.hasMultipleDifferentValues, label))
                 {
                     sp.boolValue = false;
                     so.ApplyModifiedProperties();
@@ -343,8 +358,13 @@ namespace Coffee.UIExtensions
 
                     if (2 < s_Streams.Select(GetUsedComponentCount).Sum())
                     {
-                        EditorGUILayout.HelpBox(string.Format("ParticleSystem '{0}' uses 'TEXCOORD*.zw' components as custom vertex stream.\nUIParticle does not support it (See README.md).", psr.name), MessageType.Warning);
+                        EditorGUILayout.HelpBox(
+                            $"ParticleSystem '{psr.name}' uses 'TEXCOORD*.zw' components as custom vertex stream.\n" +
+                            "UIParticle does not support it (See README.md).",
+                            MessageType.Warning);
                     }
+
+                    s_Streams.Clear();
                 }
             }
         }
@@ -404,10 +424,12 @@ namespace Coffee.UIExtensions
                 case ParticleSystemVertexStream.Custom2XYZW:
                     return 4;
             }
+
             return 3;
         }
 
-        private static bool DrawMeshSharing(SerializedProperty spMeshSharing, SerializedProperty spGroupId, SerializedProperty spGroupMaxId, bool showMax)
+        private static bool DrawMeshSharing(SerializedProperty spMeshSharing, SerializedProperty spGroupId,
+            SerializedProperty spGroupMaxId, bool showMax)
         {
             showMax |= spGroupId.intValue != spGroupMaxId.intValue ||
                        spGroupId.hasMultipleDifferentValues ||
@@ -419,7 +441,10 @@ namespace Coffee.UIExtensions
             EditorGUI.BeginChangeCheck();
             showMax = GUILayout.Toggle(showMax, s_ContentRandom, EditorStyles.miniButton, GUILayout.Width(60));
             if (EditorGUI.EndChangeCheck() && !showMax)
+            {
                 spGroupMaxId.intValue = spGroupId.intValue;
+            }
+
             EditorGUILayout.EndHorizontal();
 
             EditorGUI.BeginDisabledGroup(spMeshSharing.intValue == 0);
@@ -432,23 +457,25 @@ namespace Coffee.UIExtensions
             else if (spMeshSharing.intValue == 1 || spMeshSharing.intValue == 4)
             {
                 EditorGUI.BeginDisabledGroup(true);
-                EditorGUILayout.ObjectField("Primary", UIParticleUpdater.GetPrimary(spGroupId.intValue), typeof(UIParticle), false);
+                var obj = UIParticleUpdater.GetPrimary(spGroupId.intValue);
+                EditorGUILayout.ObjectField("Primary", obj, typeof(UIParticle), false);
                 EditorGUI.EndDisabledGroup();
             }
+
             EditorGUI.indentLevel--;
             EditorGUI.EndDisabledGroup();
 
             return showMax;
         }
 
-        private static void DrawInversedToggle(SerializedProperty inversedProperty, GUIContent label, Action onChanged)
+        private static void DrawInversedToggle(SerializedProperty sp, GUIContent label, Action onChanged)
         {
-            EditorGUI.showMixedValue = inversedProperty.hasMultipleDifferentValues;
-            var autoScaling = !inversedProperty.boolValue;
+            EditorGUI.showMixedValue = sp.hasMultipleDifferentValues;
+            var autoScaling = !sp.boolValue;
             EditorGUI.BeginChangeCheck();
             if (autoScaling != EditorGUILayout.Toggle(label, autoScaling))
             {
-                inversedProperty.boolValue = autoScaling;
+                sp.boolValue = autoScaling;
             }
 
             if (EditorGUI.EndChangeCheck())
@@ -459,7 +486,7 @@ namespace Coffee.UIExtensions
             EditorGUI.showMixedValue = false;
         }
 
-        private static void WindowFunction(UnityEngine.Object target, SceneView sceneView)
+        private static void WindowFunction(Object target, SceneView sceneView)
         {
             try
             {
@@ -472,48 +499,45 @@ namespace Coffee.UIExtensions
                     var labelWidth = EditorGUIUtility.labelWidth;
                     EditorGUIUtility.labelWidth = 100;
                     EditorGUILayout.PropertyField(s_SerializedObject.FindProperty("m_Enabled"));
-                    _xyzMode = DrawFloatOrVector3Field(s_SerializedObject.FindProperty("m_Scale3D"), _xyzMode);
+                    s_XYZMode = DrawFloatOrVector3Field(s_SerializedObject.FindProperty("m_Scale3D"), s_XYZMode);
                     EditorGUILayout.PropertyField(s_SerializedObject.FindProperty("m_AbsoluteMode"));
-                    DrawInversedToggle(s_SerializedObject.FindProperty("m_IgnoreCanvasScaler"), s_ContentAutoScaling,
+                    DrawInversedToggle(s_SerializedObject.FindProperty("m_IgnoreCanvasScaler"),
+                        s_ContentAutoScaling,
                         () =>
                         {
-                            foreach (var uip in s_SerializedObject.targetObjects.OfType<UIParticle>())
-                            {
-                                if (uip && !uip.autoScaling)
-                                {
-                                    uip.transform.localScale = Vector3.one;
-                                }
-                            }
+                            s_SerializedObject.targetObjects
+                                .OfType<UIParticle>()
+                                .Where(x => x && !x.autoScaling)
+                                .ToList()
+                                .ForEach(x => x.transform.localScale = Vector3.one);
                         });
                     EditorGUIUtility.labelWidth = labelWidth;
                 }
+
                 s_SerializedObject.ApplyModifiedProperties();
             }
             catch
             {
+                // ignored
             }
         }
 
         private void DestroyUIParticle(UIParticle p, bool ignoreCurrent = false)
         {
-            if (!p || ignoreCurrent && target == p) return;
+            if (!p || (ignoreCurrent && target == p)) return;
 
             var cr = p.canvasRenderer;
             DestroyImmediate(p);
             DestroyImmediate(cr);
 
-#if UNITY_2021_2_OR_NEWER
-            var stage = UnityEditor.SceneManagement.PrefabStageUtility.GetCurrentPrefabStage();
-#elif UNITY_2018_3_OR_NEWER
-            var stage = UnityEditor.Experimental.SceneManagement.PrefabStageUtility.GetCurrentPrefabStage();
-#endif
 #if UNITY_2018_3_OR_NEWER
+            var stage = PrefabStageUtility.GetCurrentPrefabStage();
             if (stage != null && stage.scene.isLoaded)
             {
 #if UNITY_2020_1_OR_NEWER
                 string prefabAssetPath = stage.assetPath;
 #else
-                string prefabAssetPath = stage.prefabAssetPath;
+                var prefabAssetPath = stage.prefabAssetPath;
 #endif
                 PrefabUtility.SaveAsPrefabAsset(stage.prefabContentsRoot, prefabAssetPath);
             }
@@ -562,7 +586,10 @@ namespace Coffee.UIExtensions
             EditorGUI.BeginChangeCheck();
             showXyz = GUILayout.Toggle(showXyz, s_Content3D, EditorStyles.miniButton, GUILayout.Width(30));
             if (EditorGUI.EndChangeCheck() && !showXyz)
+            {
                 z.floatValue = y.floatValue = x.floatValue;
+            }
+
             EditorGUILayout.EndHorizontal();
 
             return showXyz;
