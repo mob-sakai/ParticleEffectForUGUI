@@ -34,10 +34,10 @@ namespace Coffee.UIExtensions
             ps.transform.SetParent(uiParticle.transform, false);
             ps.transform.localPosition = Vector3.zero;
 
-            // Assign default material.
+            // Assign default material (UIAdditive).
             var renderer = ps.GetComponent<ParticleSystemRenderer>();
-            var defaultMat = AssetDatabase.GetBuiltinExtraResource<Material>("Default-Particle.mat");
-            renderer.material = defaultMat ? defaultMat : renderer.material;
+            var path = AssetDatabase.GUIDToAssetPath("9944483a3e009401ba5dcc42f14d5c63");
+            renderer.material = AssetDatabase.LoadAssetAtPath<Material>(path);
 
             // Refresh particles.
             uiParticle.RefreshParticles();

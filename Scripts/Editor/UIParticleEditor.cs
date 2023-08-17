@@ -11,6 +11,7 @@ using UnityEditor.Experimental.SceneManagement;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEditor.UI;
 using UnityEditorInternal;
@@ -299,8 +300,21 @@ namespace Coffee.UIExtensions
                 }
             }
 
-            // Does the shader support UI masks?
+            // Non-UI built-in shader is not supported.
+            foreach (var mat in current.materials)
+            {
+                if (!mat || !mat.shader) continue;
+                var shader = mat.shader;
+                if (IsBuiltInObject(shader) && !shader.name.StartsWith("UI/"))
+                {
+                    EditorGUILayout.HelpBox(
+                        $"Built-in shader '{shader.name}' in '{mat.name}' is not supported.\n" +
+                        "Use UI shaders instead.",
+                        MessageType.Error);
+                }
+            }
 
+            // Does the shader support UI masks?
             if (current.maskable && current.GetComponentInParent<Mask>())
             {
                 foreach (var mat in current.materials)
@@ -314,7 +328,8 @@ namespace Coffee.UIExtensions
                         if (mat.HasProperty(propName)) continue;
 
                         EditorGUILayout.HelpBox(
-                            $"Shader '{shader.name}' doesn't have '{propName}' property. This graphic cannot be masked.",
+                            $"Shader '{shader.name}' doesn't have '{propName}' property." +
+                            "\nThis graphic cannot be masked.",
                             MessageType.Warning);
                         break;
                     }
@@ -367,6 +382,12 @@ namespace Coffee.UIExtensions
                     s_Streams.Clear();
                 }
             }
+        }
+
+        private bool IsBuiltInObject(Object obj)
+        {
+            return AssetDatabase.TryGetGUIDAndLocalFileIdentifier(obj, out var guid, out long _)
+                   && Regex.IsMatch(guid, "^0{16}.0{15}$", RegexOptions.Compiled);
         }
 
         private static int GetUsedComponentCount(ParticleSystemVertexStream s)
