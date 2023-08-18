@@ -74,8 +74,8 @@ namespace Coffee.UIExtensions
         private SerializedProperty _meshSharing;
         private SerializedProperty _groupId;
         private SerializedProperty _groupMaxId;
-        private SerializedProperty _absoluteMode;
         private SerializedProperty _ignoreCanvasScaler;
+        private SerializedProperty _positionMode;
         private ReorderableList _ro;
         private bool _showMax;
 
@@ -157,8 +157,8 @@ namespace Coffee.UIExtensions
             _meshSharing = serializedObject.FindProperty("m_MeshSharing");
             _groupId = serializedObject.FindProperty("m_GroupId");
             _groupMaxId = serializedObject.FindProperty("m_GroupMaxId");
-            _absoluteMode = serializedObject.FindProperty("m_AbsoluteMode");
             _ignoreCanvasScaler = serializedObject.FindProperty("m_IgnoreCanvasScaler");
+            _positionMode = serializedObject.FindProperty("m_PositionMode");
 
             var sp = serializedObject.FindProperty("m_Particles");
             _ro = new ReorderableList(sp.serializedObject, sp, true, true, true, true)
@@ -272,8 +272,8 @@ namespace Coffee.UIExtensions
                 }
             }
 
-            // Absolute Mode
-            EditorGUILayout.PropertyField(_absoluteMode);
+            // Position Mode
+            EditorGUILayout.PropertyField(_positionMode);
 
             // Auto Scaling
             DrawInversedToggle(_ignoreCanvasScaler, s_ContentAutoScaling, () =>
@@ -522,7 +522,6 @@ namespace Coffee.UIExtensions
                     EditorGUIUtility.labelWidth = 100;
                     EditorGUILayout.PropertyField(s_SerializedObject.FindProperty("m_Enabled"));
                     s_XYZMode = DrawFloatOrVector3Field(s_SerializedObject.FindProperty("m_Scale3D"), s_XYZMode);
-                    EditorGUILayout.PropertyField(s_SerializedObject.FindProperty("m_AbsoluteMode"));
                     DrawInversedToggle(s_SerializedObject.FindProperty("m_IgnoreCanvasScaler"),
                         s_ContentAutoScaling,
                         () =>
@@ -533,6 +532,7 @@ namespace Coffee.UIExtensions
                                 .ToList()
                                 .ForEach(x => x.transform.localScale = Vector3.one);
                         });
+                    EditorGUILayout.PropertyField(s_SerializedObject.FindProperty("m_PositionMode"));
                     EditorGUIUtility.labelWidth = labelWidth;
                 }
 

@@ -19,7 +19,7 @@ namespace Coffee.UIExtensions
     [ExecuteAlways]
     [RequireComponent(typeof(RectTransform))]
     [RequireComponent(typeof(CanvasRenderer))]
-    public class UIParticle : MaskableGraphic
+    public class UIParticle : MaskableGraphic, ISerializationCallbackReceiver
     {
         public enum MeshSharing
         {
@@ -30,9 +30,19 @@ namespace Coffee.UIExtensions
             Replica
         }
 
+        public enum PositionMode
+        {
+            Relative,
+            Absolute
+        }
+
         [HideInInspector]
         [SerializeField]
         internal bool m_IsTrail;
+
+        [HideInInspector]
+        [SerializeField]
+        private bool m_AbsoluteMode;
 
         [Tooltip("Particle effect scale")]
         [SerializeField]
@@ -64,13 +74,10 @@ namespace Coffee.UIExtensions
         [SerializeField]
         private int m_GroupMaxId;
 
+        [Tooltip("Relative: The particles will be emitted from the scaled position of ParticleSystem.\n" +
+                 "Absolute: The particles will be emitted from the world position of ParticleSystem.")]
         [SerializeField]
-        [Tooltip("Particle position mode.\n" +
-                 "Absolute Mode: The particles will be emitted from the ParticleSystem position.\n" +
-                 "  Move the UIParticle or ParticleSystem to move the particle.\n" +
-                 "Relative Mode: The particles will be emitted from the scaled ParticleSystem position.\n" +
-                 "  Move the UIParticle to move the particle.")]
-        private bool m_AbsoluteMode = false;
+        private PositionMode m_PositionMode = PositionMode.Relative;
 
         /// <summary>
         /// This field uses the inverted value as "AutoScaling".
@@ -142,15 +149,24 @@ namespace Coffee.UIExtensions
 
         /// <summary>
         /// Particle position mode.
-        /// Absolute Mode: The particles will be emitted from the ParticleSystem position.
-        /// Move the UIParticle or ParticleSystem to move the particle.
-        /// Relative Mode: The particles will be emitted from the scaled ParticleSystem position.
-        /// Move the UIParticle to move the particle.
+        /// Relative: The particles will be emitted from the scaled position of the ParticleSystem.
+        /// Absolute: The particles will be emitted from the world position of the ParticleSystem.
+        /// </summary>
+        public PositionMode positionMode
+        {
+            get { return m_PositionMode; }
+            set { m_PositionMode = value; }
+        }
+
+        /// <summary>
+        /// Particle position mode.
+        /// Relative: The particles will be emitted from the scaled position of the ParticleSystem.
+        /// Absolute: The particles will be emitted from the world position of the ParticleSystem.
         /// </summary>
         public bool absoluteMode
         {
-            get { return m_AbsoluteMode; }
-            set { m_AbsoluteMode = value; }
+            get { return m_PositionMode == PositionMode.Absolute; }
+            set { positionMode = value ? PositionMode.Absolute : PositionMode.Relative; }
         }
 
         /// <summary>
@@ -305,6 +321,19 @@ namespace Coffee.UIExtensions
             UpdateTracker();
         }
 #endif
+
+        void ISerializationCallbackReceiver.OnBeforeSerialize()
+        {
+            m_AbsoluteMode = m_PositionMode == PositionMode.Absolute;
+        }
+
+        void ISerializationCallbackReceiver.OnAfterDeserialize()
+        {
+            if (m_AbsoluteMode)
+            {
+                m_PositionMode = PositionMode.Absolute;
+            }
+        }
 
         public void Play()
         {

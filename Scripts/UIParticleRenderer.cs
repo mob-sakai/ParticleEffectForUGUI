@@ -353,7 +353,7 @@ namespace Coffee.UIExtensions
             Profiler.BeginSample("[UIParticleRenderer] Combine Mesh");
             if (_parent.canSimulate)
             {
-                if (_parent.absoluteMode)
+                if (_parent.positionMode == UIParticle.PositionMode.Absolute)
                 {
                     s_CombineInstances[0].transform =
                         canvasRenderer.transform.worldToLocalMatrix

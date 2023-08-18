@@ -185,7 +185,7 @@ namespace Coffee.UIExtensions
                 dstPos = dstPos.GetScaled(inverseScale, _uiParticle.scale3D.Inverse());
 
                 // Relative mode
-                if (!_uiParticle.absoluteMode)
+                if (_uiParticle.positionMode == UIParticle.PositionMode.Relative)
                 {
                     var diff = _uiParticle.transform.position - psPos;
                     diff.Scale(_uiParticle.scale3D - inverseScale);
