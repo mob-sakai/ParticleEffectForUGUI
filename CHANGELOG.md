@@ -1,3 +1,10 @@
+## [4.2.1](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/4.2.0...4.2.1) (2023-08-18)
+
+
+### Bug Fixes
+
+* autoScaling and PositionMode may be locked ([3f2f12d](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/3f2f12d2cf7541118c02830ec9fdea8183357487))
+
 # [4.2.0](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/4.1.7...4.2.0) (2023-08-18)
 
 
