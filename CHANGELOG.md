@@ -1,3 +1,36 @@
+# [4.2.0](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/4.1.7...4.2.0) (2023-08-18)
+
+
+### Bug Fixes
+
+* assertion 'ps->array_size()' in UpdateMesh() when using trails of type ribbon ([f75fcce](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/f75fcce0dae0bc166bd01d36a150aded1fd721f3)), closes [#241](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/241)
+* built-in shaders are no longer supported ([c2119c1](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/c2119c171a1262431eac7fea6bf3125db2bcaaca)), closes [#233](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/233) [#257](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/257)
+* crash occurs when too many vertices are rendered ([723a04d](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/723a04d0cfd156715a3c92b6d6bd75fdc1862c28))
+* error: SerializedObject target has been destroyed ([e930516](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/e93051603e121732c92bcd89ded48087c2b0d7fb)), closes [#267](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/267)
+* excessive particle emitted on move ParticleSystem for local space simulation and emission over distance ([2fe0bde](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/2fe0bde422f9769dfedaf6b053ea07f773646679)), closes [#265](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/265)
+* fix typos ([52f2ef1](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/52f2ef1f2471a2e1c29fca96255c04b222d9c848))
+* generated GameObject will be named '[generated] *' ([9b2e5c1](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/9b2e5c1d1024e091de6d18a4578cd18b43563e48))
+* inactive ParticleSystems are removed from the list on refresh ([4851a18](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/4851a1880eef9f385dd9db644ea7e544f95da4fc))
+* mesh sharing not working ([8b4ca1a](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/8b4ca1add5c409601e840253e1c0dbcdbf536da8)), closes [#236](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/236)
+* nullptr exceptions when using nested UIParticle components in hierarchy ([e67e948](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/e67e9482e2cb840b16e2cfe76e04f7423fcbd3a3)), closes [#246](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/246)
+* nullReferenceException after copy-n-paste ([425aad0](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/425aad0cbab475635c72bee84ecbf3f2acedccc2)), closes [#258](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/258)
+* remove unnecessary per-frame allocation. ([e92b514](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/e92b514624cc362e53ddeae5ade20fa732f94c7c))
+* scaling ParticleSystem puts prewarmed particles in wrong location ([fb31db4](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/fb31db47f2debb3aadbdc4d1b88d0efd9c4ad7bd)), closes [#235](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/235)
+* sub-emitters option is not work in editor playing ([b308b26](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/b308b2683372662bb834b6f6d23ea3435a68d1b3)), closes [#231](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/231)
+* the camera under UIParticle will be assigned as _orthoCamera ([c42f8c8](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/c42f8c8ab0ff033689349a81e02a4808e071a8a2))
+* UIParticleAttractor attracts the particles at wrong position when in RelativeMode ([68d9925](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/68d9925a16237df3c7b07b4781172cbd03425421)), closes [#262](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/262)
+
+
+### Features
+
+* 'AbsoluteMode' option is renamed to 'PositionMode' ([67eff61](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/67eff610736344ba0122163ff5ee63b25c43f555))
+* 'AutoScaling' option will be imported from 'IgnoreCanvasScale' (for v3.x) ([4103041](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/410304125f3f25f3f543c7bc01dcc661eab00609))
+* add 'AutoScaling' option for UIParticle ([35325c8](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/35325c88996fa6aea19a6dd1395c05884e1f84ae))
+* add 'UpdateMode' option for UIParticleAttractor ([903f702](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/903f702d7be38228841a5a693e3afdceb4a59d9f)), closes [#250](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/250)
+* add particle system getter and setter for attractor ([a4bcf93](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/a4bcf93022d2729f3d2a74a2cac4f52e68641b18)), closes [#253](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/253)
+* add public properties for UIParticleAttractor ([392ab6d](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/392ab6dd76c36e815320d3a50744d19faa631260)), closes [#253](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/253)
+* add Start/StopEmission API for UIParticle ([e499836](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/e4998365c9825fa385e0a317768ce073a1f15b48)), closes [#240](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/240)
+
 ## [4.1.7](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/4.1.6...4.1.7) (2022-08-30)
 
 
