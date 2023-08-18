@@ -582,7 +582,16 @@ namespace Coffee.UIExtensions
             // When render mode is ScreenSpaceOverlay, use ortho-camera.
             if (!_orthoCamera)
             {
-                _orthoCamera = GetComponentInChildren<Camera>();
+                // Find existing ortho-camera.
+                foreach (Transform child in transform)
+                {
+                    var cam = child.GetComponent<Camera>();
+                    if (cam && cam.name == "[generated] UIParticleOverlayCamera")
+                    {
+                        _orthoCamera = cam;
+                        break;
+                    }
+                }
 
                 // Create ortho-camera.
                 if (!_orthoCamera)
