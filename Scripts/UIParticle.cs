@@ -572,20 +572,22 @@ namespace Coffee.UIExtensions
         {
             if (!canvas) return Camera.main;
 
-            // Render mode is not ScreenSpaceOverlay, use world camera.
+            // When render mode is ScreenSpaceCamera or WorldSpace, use world camera.
             var root = canvas.rootCanvas;
             if (root.renderMode != RenderMode.ScreenSpaceOverlay)
             {
                 return root.worldCamera ? root.worldCamera : Camera.main;
             }
 
-            // Create ortho-camera.
+            // When render mode is ScreenSpaceOverlay, use ortho-camera.
             if (!_orthoCamera)
             {
                 _orthoCamera = GetComponentInChildren<Camera>();
+
+                // Create ortho-camera.
                 if (!_orthoCamera)
                 {
-                    var go = new GameObject("UIParticleOverlayCamera") { hideFlags = HideFlags.DontSave };
+                    var go = new GameObject("[generated] UIParticleOverlayCamera") { hideFlags = HideFlags.DontSave };
                     go.SetActive(false);
                     go.transform.SetParent(transform, false);
                     _orthoCamera = go.AddComponent<Camera>();
