@@ -246,6 +246,32 @@ uiParticle.Stop();
 
 ## Development Note
 
+### FAQ: Why are my particle effects not displayed correctly?
+
+If `ParticleSystem` alone displays particles correctly but `UIParticle` does not, please check the following points:
+
+* [Shader Limitation](https://github.com/mob-sakai/ParticleEffectForUGUI#shader-limitation)
+  * Most cases can be solved by using `UI/Additive` or `UI/Default`.
+* Particles are masked
+  * `UIParticle` is maskable.
+  * Set `Mask` or `RectMask2D` component properly.
+* Particles are too small
+  * If particles are small enough, they will not appear on the screen.
+  * Increase the `Scale` value.
+  * If you don't want to change the apparent size depending on the resolution, try `Auto Scaling` option.
+* Particles are too many
+  * No more than 65535 vertices can be displayed (for mesh combination limitations).
+  * Please set `Emission` module and `Max Particles` of ParticleSystem properly.
+* Particles are emitted off-screen.
+  * When `Position Mode = Relative`, particles are emitted from scaled position of the ParticleSystem, not from the screen point of the ParticleSystem.
+  * Place the ParticleSystem in the proper position or try `Position Mode = Absolute`.
+* Attaching `UIParticle` to the same object as `ParticleSystem`
+  * `Transform.localScale` will be overridden by `Auto Scaling` option.
+  * It is recommended to place `ParticleSystem` under `UIParticle`.
+
+
+<br>
+
 ### Shader Limitation
 
 The use of UI shaders is recommended.
