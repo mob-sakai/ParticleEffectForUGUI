@@ -245,7 +245,7 @@ namespace Coffee.UIParticleExtensions
             }
         }
 
-#if !UNITY_2020_3_OR_NEWER
+#if !UNITY_2021_2_OR_NEWER || UNITY_2020_3_45 || UNITY_2020_3_46 || UNITY_2020_3_47 || UNITY_2020_3_48
         public static T GetComponentInParent<T>(this Component self, bool includeInactive) where T : Component
         {
             if (!self) return null;
@@ -257,23 +257,6 @@ namespace Coffee.UIParticleExtensions
                 var component = current.GetComponent<T>();
                 if (component) return component;
                 current = current.parent;
-            }
-
-            return null;
-        }
-
-        public static T GetComponentInChildren<T>(this Component self, bool includeInactive) where T : Component
-        {
-            if (!self) return null;
-            if (!includeInactive) return self.GetComponentInChildren<T>();
-
-            var component = self.GetComponent<T>();
-            if (component) return component;
-
-            foreach (Transform child in self.transform)
-            {
-                component = child.GetComponentInChildren<T>(true);
-                if (component) return component;
             }
 
             return null;
