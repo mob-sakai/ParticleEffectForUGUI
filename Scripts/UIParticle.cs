@@ -41,6 +41,11 @@ namespace Coffee.UIExtensions
         internal bool m_IsTrail;
 
         [HideInInspector]
+        [FormerlySerializedAs("m_IgnoreParent")]
+        [SerializeField]
+        private bool m_IgnoreCanvasScaler;
+
+        [HideInInspector]
         [SerializeField]
         private bool m_AbsoluteMode;
 
@@ -79,12 +84,10 @@ namespace Coffee.UIExtensions
         [SerializeField]
         private PositionMode m_PositionMode = PositionMode.Relative;
 
-        /// <summary>
-        /// This field uses the inverted value as "AutoScaling".
-        /// </summary>
-        [FormerlySerializedAs("m_IgnoreParent")]
         [SerializeField]
-        private bool m_IgnoreCanvasScaler;
+        [Tooltip("Transform.lossyScale (=world scale) is automatically set to (1, 1, 1), " +
+                 "to prevent the root-Canvas scale from affecting the hierarchy-scaled ParticleSystem.")]
+        private bool m_AutoScaling = true;
 
 #if !SERIALIZE_FIELD_MASKABLE
         [SerializeField]
@@ -170,17 +173,16 @@ namespace Coffee.UIExtensions
         }
 
         /// <summary>
-        /// Transform.lossyScale (=world scale) is automatically set to (1, 1, 1).
+        /// Transform.lossyScale (=world scale) will be set to (1, 1, 1) on update.
         /// It prevents the root-Canvas scale from affecting the hierarchy-scaled ParticleSystem.
-        /// Note: This option works in reverse of ’IgnoreCanvasScaler’ option in v3.x.
         /// </summary>
         public bool autoScaling
         {
-            get { return !m_IgnoreCanvasScaler; }
+            get { return m_AutoScaling; }
             set
             {
-                if (m_IgnoreCanvasScaler != value) return;
-                m_IgnoreCanvasScaler = !value;
+                if (m_AutoScaling == value) return;
+                m_AutoScaling = value;
                 UpdateTracker();
             }
         }
@@ -324,11 +326,17 @@ namespace Coffee.UIExtensions
 
         void ISerializationCallbackReceiver.OnBeforeSerialize()
         {
+            m_IgnoreCanvasScaler = !m_AutoScaling;
             m_AbsoluteMode = m_PositionMode == PositionMode.Absolute;
         }
 
         void ISerializationCallbackReceiver.OnAfterDeserialize()
         {
+            if (m_IgnoreCanvasScaler)
+            {
+                m_AutoScaling = false;
+            }
+
             if (m_AbsoluteMode)
             {
                 m_PositionMode = PositionMode.Absolute;

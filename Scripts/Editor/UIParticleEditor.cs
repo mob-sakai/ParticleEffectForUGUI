@@ -60,11 +60,6 @@ namespace Coffee.UIExtensions
         private static readonly GUIContent s_Content3D = new GUIContent("3D");
         private static readonly GUIContent s_ContentRandom = new GUIContent("Random");
         private static readonly GUIContent s_ContentScale = new GUIContent("Scale");
-
-        private static readonly GUIContent s_ContentAutoScaling = new GUIContent("Auto Scaling",
-            "Transform.lossyScale (=world scale) is automatically set to (1, 1, 1)," +
-            " to prevent the root-Canvas scale from affecting the hierarchy-scaled ParticleSystem.");
-
         private static SerializedObject s_SerializedObject;
         private static bool s_XYZMode;
 
@@ -74,8 +69,8 @@ namespace Coffee.UIExtensions
         private SerializedProperty _meshSharing;
         private SerializedProperty _groupId;
         private SerializedProperty _groupMaxId;
-        private SerializedProperty _ignoreCanvasScaler;
         private SerializedProperty _positionMode;
+        private SerializedProperty _autoScaling;
         private ReorderableList _ro;
         private bool _showMax;
 
@@ -157,8 +152,8 @@ namespace Coffee.UIExtensions
             _meshSharing = serializedObject.FindProperty("m_MeshSharing");
             _groupId = serializedObject.FindProperty("m_GroupId");
             _groupMaxId = serializedObject.FindProperty("m_GroupMaxId");
-            _ignoreCanvasScaler = serializedObject.FindProperty("m_IgnoreCanvasScaler");
             _positionMode = serializedObject.FindProperty("m_PositionMode");
+            _autoScaling = serializedObject.FindProperty("m_AutoScaling");
 
             var sp = serializedObject.FindProperty("m_Particles");
             _ro = new ReorderableList(sp.serializedObject, sp, true, true, true, true)
@@ -276,16 +271,7 @@ namespace Coffee.UIExtensions
             EditorGUILayout.PropertyField(_positionMode);
 
             // Auto Scaling
-            DrawInversedToggle(_ignoreCanvasScaler, s_ContentAutoScaling, () =>
-            {
-                foreach (var uip in targets.OfType<UIParticle>())
-                {
-                    if (uip && !uip.autoScaling)
-                    {
-                        uip.transform.localScale = Vector3.one;
-                    }
-                }
-            });
+            DrawAutoScaling(_autoScaling, targets.OfType<UIParticle>());
 
             // Target ParticleSystems.
             EditorGUI.BeginChangeCheck();
@@ -490,22 +476,21 @@ namespace Coffee.UIExtensions
             return showMax;
         }
 
-        private static void DrawInversedToggle(SerializedProperty sp, GUIContent label, Action onChanged)
+        private static void DrawAutoScaling(SerializedProperty prop, IEnumerable<UIParticle> uiParticles)
         {
-            EditorGUI.showMixedValue = sp.hasMultipleDifferentValues;
-            var autoScaling = !sp.boolValue;
             EditorGUI.BeginChangeCheck();
-            if (autoScaling != EditorGUILayout.Toggle(label, autoScaling))
-            {
-                sp.boolValue = autoScaling;
-            }
+            EditorGUILayout.PropertyField(prop);
+            if (!EditorGUI.EndChangeCheck()) return;
 
-            if (EditorGUI.EndChangeCheck())
+            // on changed true->false, reset scale.
+            EditorApplication.delayCall += () =>
             {
-                EditorApplication.delayCall += onChanged.Invoke;
-            }
-
-            EditorGUI.showMixedValue = false;
+                foreach (var uip in uiParticles)
+                {
+                    if (!uip || uip.autoScaling) continue;
+                    uip.transform.localScale = Vector3.one;
+                }
+            };
         }
 
         private static void WindowFunction(Object target, SceneView sceneView)
@@ -513,7 +498,8 @@ namespace Coffee.UIExtensions
             try
             {
                 if (s_SerializedObject == null || !s_SerializedObject.targetObject) return;
-                if (s_SerializedObject.targetObjects.OfType<UIParticle>().Any(x => !x || !x.canvas)) return;
+                var uiParticles = s_SerializedObject.targetObjects.OfType<UIParticle>();
+                if (uiParticles.Any(x => !x || !x.canvas)) return;
 
                 s_SerializedObject.Update();
                 using (new EditorGUILayout.VerticalScope(GUILayout.Width(220f)))
@@ -522,17 +508,8 @@ namespace Coffee.UIExtensions
                     EditorGUIUtility.labelWidth = 100;
                     EditorGUILayout.PropertyField(s_SerializedObject.FindProperty("m_Enabled"));
                     s_XYZMode = DrawFloatOrVector3Field(s_SerializedObject.FindProperty("m_Scale3D"), s_XYZMode);
-                    DrawInversedToggle(s_SerializedObject.FindProperty("m_IgnoreCanvasScaler"),
-                        s_ContentAutoScaling,
-                        () =>
-                        {
-                            s_SerializedObject.targetObjects
-                                .OfType<UIParticle>()
-                                .Where(x => x && !x.autoScaling)
-                                .ToList()
-                                .ForEach(x => x.transform.localScale = Vector3.one);
-                        });
                     EditorGUILayout.PropertyField(s_SerializedObject.FindProperty("m_PositionMode"));
+                    DrawAutoScaling(s_SerializedObject.FindProperty("m_AutoScaling"), uiParticles);
                     EditorGUIUtility.labelWidth = labelWidth;
                 }
 
