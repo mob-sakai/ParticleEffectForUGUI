@@ -2,16 +2,14 @@ Particle Effect For UGUI (UI Particle)
 ===
 
 This plugin provide a component to render particle effect for uGUI in Unity 2018.2 or later.  
-The particle rendering is maskable and sortable, without Camera, RenderTexture or Canvas.
+The particle rendering is maskable and sortable, without Camera, RenderTexture or Canvas.  
 
+![](https://img.shields.io/badge/Editor-2018.2+-4796F2?logo=unity)
 [![](https://img.shields.io/npm/v/com.coffee.ui-particle?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.coffee.ui-particle/)
-[![](https://img.shields.io/github/v/release/mob-sakai/ParticleEffectForUGUI?include_prereleases)](https://github.com/mob-sakai/ParticleEffectForUGUI/releases)
+[![](https://img.shields.io/github/v/release/mob-sakai/ParticleEffectForUGUI?include_prereleases&sort=semver)](https://github.com/mob-sakai/ParticleEffectForUGUI/releases)
+[![](https://img.shields.io/github/v/release/mob-sakai/ParticleEffectForUGUI?include_prereleases&sort=semver&filter=3.%2A&label=release(3.x))](https://github.com/mob-sakai/ParticleEffectForUGUI/releases)
 [![](https://img.shields.io/github/release-date/mob-sakai/ParticleEffectForUGUI.svg)](https://github.com/mob-sakai/ParticleEffectForUGUI/releases)  [![](https://img.shields.io/github/license/mob-sakai/ParticleEffectForUGUI.svg)](https://github.com/mob-sakai/ParticleEffectForUGUI/blob/master/LICENSE.txt)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-orange.svg)](http://makeapullrequest.com)  
-![](https://img.shields.io/badge/Unity%202018.2+-supported-blue.svg)
-![](https://img.shields.io/badge/Unity%202019.x-supported-blue.svg)
-![](https://img.shields.io/badge/Unity%202020.x-supported-blue.svg)  
-![](https://img.shields.io/badge/Universal%20Rendering%20Pipeline-supported-blue.svg)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-orange.svg)](http://makeapullrequest.com)
 
 
 << [Description](#Description) | [Demo](#demo) | [Installation](#installation) | [Usage](#usage) | [Development Note](#development-note) | [Change log](https://github.com/mob-sakai/ParticleEffectForUGUI/blob/upm/CHANGELOG.md) >>
@@ -58,6 +56,8 @@ Compares this "Baking mesh" approach with the conventional approach:
 * Support CanvasGroup alpha
 * No allocations
 * Support overlay, camera space and world space
+* Support Universal Render Pipeline (URP) and High Definition Render Pipeline (HDRP)
+* Support disabling `Enter Play Mode Options > Reload Domain`
 * Support changing material property with AnimationClip (AnimatableProperty)  
 ![](https://user-images.githubusercontent.com/12690315/53286323-2d94a980-37b0-11e9-8afb-c4a207805ff2.gif)
 * [4.0.0+] Support 8+ materials
@@ -92,39 +92,41 @@ Compares this "Baking mesh" approach with the conventional approach:
 
 ### Requirement
 
-![](https://img.shields.io/badge/Unity%202018.2+-supported-blue.svg)
-![](https://img.shields.io/badge/Unity%202019.x-supported-blue.svg)
-![](https://img.shields.io/badge/Unity%202020.x-supported-blue.svg)  
-![](https://img.shields.io/badge/Universal%20Rendering%20Pipeline-supported-blue.svg)
+Unity 2018.2 or later
 
-### Using OpenUPM
+### Install via OpenUPM
 
-This package is available on [OpenUPM](https://openupm.com).  
-You can install it via [openupm-cli](https://github.com/openupm/openupm-cli).
+This package is available on [OpenUPM](https://openupm.com).
+It's recommended to install it via [openupm-cli](https://github.com/openupm/openupm-cli).
 ```
 openupm add com.coffee.ui-particle
 ```
 
-### Using Git
+### Install via Package Manager Window (using Git URL)
 
-Find the manifest.json file in the Packages folder of your project and add a line to `dependencies` field.
+1. Select `Window/Package Manager` menu to open `Package Manager` window.
+2. Click `+` and `Install package from git URL...`  
+![](https://github.com/mob-sakai/ParticleEffectForUGUI/assets/12690315/57317aa4-e55c-4568-b2aa-2ee2a78ddc02)
+3. Input `https://github.com/mob-sakai/ParticleEffectForUGUI.git` and click `Install`  
+![](https://github.com/mob-sakai/ParticleEffectForUGUI/assets/12690315/72cc38b5-cb32-4c85-8209-c85f7bb931ea)
 
-* `"com.coffee.ui-particle": "https://github.com/mob-sakai/ParticleEffectForUGUI.git"`
-
-To update the package, change suffix `#{version}` to the target version.
-
-* `"com.coffee.ui-particle": "https://github.com/mob-sakai/ParticleEffectForUGUI.git#4.0.0",`
 
 Or, use [UpmGitExtension](https://github.com/mob-sakai/UpmGitExtension) to install and update the package.
 
-### For Unity 2018.2
+### Install via manifest.json (using Git URL)
 
-Unity 2018.2 supports embedded packages.
+1. Open `Packages/manifest.json` in your project.
+2. Add this line below `"dependencies": {`
+  * `"com.coffee.ui-particle": "https://github.com/mob-sakai/ParticleEffectForUGUI.git",`  
+  ![](https://github.com/mob-sakai/ParticleEffectForUGUI/assets/12690315/fe1cad9c-8d09-4e17-b6f5-9eac0d267921)
+3. To update the package, change suffix `#{version}`.
+  * `"com.coffee.ui-particle": "https://github.com/mob-sakai/ParticleEffectForUGUI.git#4.2.0",`
+
+### Install as an embed package
 
 1. Download a source code zip file from [Releases](https://github.com/mob-sakai/ParticleEffectForUGUI/releases) page
-2. Extract it
-3. Import it under `Packages` directory in your Unity project
-
+2. Extract it and place it under `Packages` directory in your project.  
+![](https://github.com/mob-sakai/ParticleEffectForUGUI/assets/12690315/4c3d3439-5bb0-4e87-a917-ebe328ef89a8)
 
 
 <br><br><br><br>
@@ -161,17 +163,17 @@ Unity 2018.2 supports embedded packages.
 
 `UIParticle` controls the ParticleSystems that is attached to its own game objects and child game objects.
 
-![](https://user-images.githubusercontent.com/12690315/174413976-691eb38e-7f92-4fbe-9790-8771b9dc70b2.png)
+![](https://github.com/mob-sakai/ParticleEffectForUGUI/assets/12690315/3559df45-63e7-4c4c-9233-f455779efa29)
 
 | Properties | Description |
 | -- | -- |
 | Maskable | Does this graphic allow masking. |
-| Ignore Canvas Scale | Ignore the scale of the root canvas.<br>This prevents it from displaying small even in hierarchy scaling mode of `ParticleSystem`. |
 | Scale | Scale the rendering.<br>When the `3D` toggle is enabled, 3D scale (x,y,z) is supported. |
 | Animatable Properties | If you want update material properties (e.g. `_MainTex_ST`, `_Color`) in AnimationClip, use this to mark the changes. |
 | Mesh Sharing | Particle simulation results are shared within the same group.<br>A large number of the same effects can be displayed with a small load.<br>When the `Random` toggle is enabled, it will be grouped randomaly. |
-| Absolute Mode | The particles will be emitted at the ParticleSystem position.<br>Move the UIParticle/ParticleSystem to move the particle. |
-| Rendering Order | The ParticleSystems to be rendered.<br>You can change the rendering order and the materials. |
+| Position Mode | **Absolute:** Emit from the world position of the `ParticleSystem`.<br>**Relative:** Emit from the scaled position of the `ParticleSystem`. |
+| Auto Scaling | Transform.lossyScale (=world scale) will be set to `(1, 1, 1)` on update.<br>It prevents the root-Canvas scale from affecting the hierarchy-scaled `ParticleSystem`. |
+| Rendering Order | The ParticleSystem list to be rendered.<br>You can change the order and the materials. |
 
 NOTE: Press `Refresh` button to reconstruct rendering order based on children ParticleSystem's sorting order and z position.
 
@@ -227,7 +229,7 @@ uiParticle.Stop();
 
 `UIParticleAttractor` attracts particles generated by the specified ParticleSystem.
 
-![](https://user-images.githubusercontent.com/12690315/174413982-b31c358a-8e1d-4b3e-a6d8-18b050b25d6f.png)
+![](https://github.com/mob-sakai/ParticleEffectForUGUI/assets/12690315/ea6ae0ed-f9a8-437c-8baa-47526303391e)  
 ![](https://user-images.githubusercontent.com/12690315/174311027-462929a4-13f0-4ec4-86ea-9c832f2eecf1.gif)
 
 | Properties | Description |
@@ -237,6 +239,7 @@ uiParticle.Stop();
 | Delay Rate | Delay to start attracting.<br>It is a percentage of the particle's start lifetime. |
 | Max Speed | Maximum speed of attracting.<br> If this value is too small, attracting may not be completed by the end of the lifetime and `OnAttracted` may not be called. |
 | Movement | Attracting movement type. (Linear, Smooth, Sphere) |
+| Update Mode | **Normal:** Update with scaled delta time.<br>**Unscaled Time:** Update with unscaled delta time. |
 | OnAttracted | An event called when attracting is complete (per particle). |
 
 <br><br><br><br>
@@ -245,14 +248,31 @@ uiParticle.Stop();
 
 ### Shader Limitation
 
-UIParticles are based on UIVertex.  
-Therefore, only xy components is available for each UV in the shader. (zw components will be ignored).  
-So unfortunately UIParticles will not work well with some shaders.  
-When using custom vertex streams, you can fill zw components with "unnecessary" data.  
-https://github.com/mob-sakai/ParticleEffectForUGUI/issues/191
+The use of UI shaders is recommended.
 
 - If you need a simple Additive shader, use the `UI/Additive` shader instead.
 - If you need a simple alpha-blend shader, use the `UI/Default` shader instead.
+- If your custom shader does not work properly with UIParticle, consider creating a custom UI shader.
+
+#### Built-in shaders are not supported
+
+UIParticle does not support all built-in shaders except for `UI/Default`.  
+If their use is detected, an error is displayed in the inspector.  
+Use UI shaders instead.
+
+#### UV.zw components will be discarded
+
+UIParticleRenderer renders the particles based on UIVertex.  
+Therefore, only xy components is available for each UV in the shader. (zw components will be discarded).  
+So unfortunately UIParticles will not work well with some shaders.  
+
+#### Custom vertex streams
+
+When using custom vertex streams, you can fill zw components with "unnecessary" data.  
+https://github.com/mob-sakai/ParticleEffectForUGUI/issues/191
+
+
+<br>
 
 ### Overheads
 
