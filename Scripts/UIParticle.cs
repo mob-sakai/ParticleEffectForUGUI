@@ -326,19 +326,19 @@ namespace Coffee.UIExtensions
 
         void ISerializationCallbackReceiver.OnBeforeSerialize()
         {
-            m_IgnoreCanvasScaler = !m_AutoScaling;
-            m_AbsoluteMode = m_PositionMode == PositionMode.Absolute;
         }
 
         void ISerializationCallbackReceiver.OnAfterDeserialize()
         {
             if (m_IgnoreCanvasScaler)
             {
+                m_IgnoreCanvasScaler = false;
                 m_AutoScaling = false;
             }
 
             if (m_AbsoluteMode)
             {
+                m_AbsoluteMode = false;
                 m_PositionMode = PositionMode.Absolute;
             }
         }
