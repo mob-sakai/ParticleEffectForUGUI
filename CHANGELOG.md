@@ -1,3 +1,10 @@
+## [4.2.2](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/4.2.1...4.2.2) (2023-10-25)
+
+
+### Bug Fixes
+
+* il2cpp code stripping bug ([73f6dad](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/73f6dad0f33641a76ddd05ffc6812ced3f8a276d)), closes [#269](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/269)
+
 ## [4.2.1](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/4.2.0...4.2.1) (2023-08-18)
 
 
