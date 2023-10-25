@@ -1,6 +1,3 @@
-#if UNITY_2019_3_11 || UNITY_2019_3_12 || UNITY_2019_3_13 || UNITY_2019_3_14 || UNITY_2019_3_15 || UNITY_2019_4_OR_NEWER
-#define SERIALIZE_FIELD_MASKABLE
-#endif
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Coffee.UIParticleExtensions;
@@ -88,11 +85,7 @@ namespace Coffee.UIExtensions
         [Tooltip("Transform.lossyScale (=world scale) is automatically set to (1, 1, 1), " +
                  "to prevent the root-Canvas scale from affecting the hierarchy-scaled ParticleSystem.")]
         private bool m_AutoScaling = true;
-
-#if !SERIALIZE_FIELD_MASKABLE
-        [SerializeField]
-        private bool m_Maskable = true;
-#endif
+        
         private readonly List<UIParticleRenderer> _renderers = new List<UIParticleRenderer>();
         private int _groupId;
         private Camera _orthoCamera;
@@ -276,9 +269,6 @@ namespace Coffee.UIExtensions
 
         protected override void OnEnable()
         {
-#if !SERIALIZE_FIELD_MASKABLE
-            maskable = m_Maskable;
-#endif
             ResetGroupId();
             UpdateTracker();
             UIParticleUpdater.Register(this);
