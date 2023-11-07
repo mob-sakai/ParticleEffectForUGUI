@@ -70,7 +70,7 @@ namespace Coffee.UIExtensions
         private SerializedProperty _groupId;
         private SerializedProperty _groupMaxId;
         private SerializedProperty _positionMode;
-        private SerializedProperty _autoScaling;
+        private SerializedProperty _autoScalingMode;
         private ReorderableList _ro;
         private bool _showMax;
 
@@ -153,7 +153,7 @@ namespace Coffee.UIExtensions
             _groupId = serializedObject.FindProperty("m_GroupId");
             _groupMaxId = serializedObject.FindProperty("m_GroupMaxId");
             _positionMode = serializedObject.FindProperty("m_PositionMode");
-            _autoScaling = serializedObject.FindProperty("m_AutoScaling");
+            _autoScalingMode = serializedObject.FindProperty("m_AutoScalingMode");
 
             var sp = serializedObject.FindProperty("m_Particles");
             _ro = new ReorderableList(sp.serializedObject, sp, true, true, true, true)
@@ -271,7 +271,7 @@ namespace Coffee.UIExtensions
             EditorGUILayout.PropertyField(_positionMode);
 
             // Auto Scaling
-            DrawAutoScaling(_autoScaling, targets.OfType<UIParticle>());
+            DrawAutoScaling(_autoScalingMode, targets.OfType<UIParticle>());
 
             // Target ParticleSystems.
             EditorGUI.BeginChangeCheck();
@@ -478,16 +478,17 @@ namespace Coffee.UIExtensions
 
         private static void DrawAutoScaling(SerializedProperty prop, IEnumerable<UIParticle> uiParticles)
         {
+            var isTransformMode = prop.intValue == (int)UIParticle.AutoScalingMode.Transform;
             EditorGUI.BeginChangeCheck();
             EditorGUILayout.PropertyField(prop);
-            if (!EditorGUI.EndChangeCheck()) return;
+            if (!EditorGUI.EndChangeCheck() || !isTransformMode) return;
 
             // on changed true->false, reset scale.
             EditorApplication.delayCall += () =>
             {
                 foreach (var uip in uiParticles)
                 {
-                    if (!uip || uip.autoScaling) continue;
+                    if (!uip) continue;
                     uip.transform.localScale = Vector3.one;
                 }
             };
@@ -509,7 +510,7 @@ namespace Coffee.UIExtensions
                     EditorGUILayout.PropertyField(s_SerializedObject.FindProperty("m_Enabled"));
                     s_XYZMode = DrawFloatOrVector3Field(s_SerializedObject.FindProperty("m_Scale3D"), s_XYZMode);
                     EditorGUILayout.PropertyField(s_SerializedObject.FindProperty("m_PositionMode"));
-                    DrawAutoScaling(s_SerializedObject.FindProperty("m_AutoScaling"), uiParticles);
+                    DrawAutoScaling(s_SerializedObject.FindProperty("m_AutoScalingMode"), uiParticles);
                     EditorGUIUtility.labelWidth = labelWidth;
                 }
 

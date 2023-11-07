@@ -182,21 +182,22 @@ namespace Coffee.UIExtensions
             if (isUI)
             {
                 var inverseScale = _uiParticle.parentScale.Inverse();
-                dstPos = dstPos.GetScaled(inverseScale, _uiParticle.scale3D.Inverse());
+                var scale3d = _uiParticle.scale3DForCalc;
+                dstPos = dstPos.GetScaled(inverseScale, scale3d.Inverse());
 
                 // Relative mode
                 if (_uiParticle.positionMode == UIParticle.PositionMode.Relative)
                 {
                     var diff = _uiParticle.transform.position - psPos;
-                    diff.Scale(_uiParticle.scale3D - inverseScale);
-                    diff.Scale(_uiParticle.scale3D.Inverse());
+                    diff.Scale(scale3d - inverseScale);
+                    diff.Scale(scale3d.Inverse());
                     dstPos += diff;
                 }
 
 #if UNITY_EDITOR
                 if (!Application.isPlaying && !isLocalSpace)
                 {
-                    dstPos += psPos - psPos.GetScaled(inverseScale, _uiParticle.scale3D.Inverse());
+                    dstPos += psPos - psPos.GetScaled(inverseScale, scale3d.Inverse());
                 }
 #endif
             }

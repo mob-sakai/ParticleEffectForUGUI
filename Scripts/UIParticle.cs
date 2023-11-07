@@ -1,10 +1,13 @@
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Coffee.UIParticleExtensions;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 [assembly: InternalsVisibleTo("Coffee.UIParticle.Editor")]
 
@@ -31,6 +34,13 @@ namespace Coffee.UIExtensions
         {
             Relative,
             Absolute
+        }
+
+        public enum AutoScalingMode
+        {
+            None,
+            UIParticle,
+            Transform
         }
 
         [HideInInspector]
@@ -82,10 +92,14 @@ namespace Coffee.UIExtensions
         private PositionMode m_PositionMode = PositionMode.Relative;
 
         [SerializeField]
-        [Tooltip("Transform.lossyScale (=world scale) is automatically set to (1, 1, 1), " +
-                 "to prevent the root-Canvas scale from affecting the hierarchy-scaled ParticleSystem.")]
+        [Tooltip("Prevent the root-Canvas scale from affecting the hierarchy-scaled ParticleSystem.")]
         private bool m_AutoScaling = true;
-        
+
+        [SerializeField]
+        [Tooltip("Transform: Transform.lossyScale (=world scale) will be set to (1, 1, 1)." +
+                 "UIParticle: UIParticle.scale will be adjusted.")]
+        private AutoScalingMode m_AutoScalingMode = AutoScalingMode.Transform;
+
         private readonly List<UIParticleRenderer> _renderers = new List<UIParticleRenderer>();
         private int _groupId;
         private Camera _orthoCamera;
@@ -166,16 +180,30 @@ namespace Coffee.UIExtensions
         }
 
         /// <summary>
-        /// Transform.lossyScale (=world scale) will be set to (1, 1, 1) on update.
-        /// It prevents the root-Canvas scale from affecting the hierarchy-scaled ParticleSystem.
+        /// Prevents the root-Canvas scale from affecting the hierarchy-scaled ParticleSystem.
         /// </summary>
+        [Obsolete("The autoScaling is now obsolete. Please use the autoScalingMode instead.", false)]
         public bool autoScaling
         {
-            get { return m_AutoScaling; }
+            get { return m_AutoScalingMode != AutoScalingMode.None; }
             set
             {
-                if (m_AutoScaling == value) return;
-                m_AutoScaling = value;
+                autoScalingMode = value ? AutoScalingMode.Transform : AutoScalingMode.None;
+            }
+        }
+
+        /// <summary>
+        /// Auto scaling mode.
+        /// Transform: Transform.lossyScale (=world scale) will be set to (1, 1, 1).
+        /// UIParticle: UIParticle.scale will be adjusted.
+        /// </summary>
+        public AutoScalingMode autoScalingMode
+        {
+            get { return m_AutoScalingMode; }
+            set
+            {
+                if (m_AutoScalingMode == value) return;
+                m_AutoScalingMode = value;
                 UpdateTracker();
             }
         }
@@ -234,6 +262,14 @@ namespace Coffee.UIExtensions
             set { m_Scale3D = value; }
         }
 
+        /// <summary>
+        /// Particle effect scale.
+        /// </summary>
+        public Vector3 scale3DForCalc
+        {
+            get { return autoScalingMode == AutoScalingMode.UIParticle ? m_Scale3D.GetScaled(canvasScale) : m_Scale3D; }
+        }
+
         public List<ParticleSystem> particles
         {
             get { return m_Particles; }
@@ -266,6 +302,8 @@ namespace Coffee.UIExtensions
         public bool isPaused { get; private set; }
 
         public Vector3 parentScale { get; private set; }
+
+        public Vector3 canvasScale { get; private set; }
 
         protected override void OnEnable()
         {
@@ -320,10 +358,11 @@ namespace Coffee.UIExtensions
 
         void ISerializationCallbackReceiver.OnAfterDeserialize()
         {
-            if (m_IgnoreCanvasScaler)
+            if (m_IgnoreCanvasScaler || m_AutoScaling)
             {
                 m_IgnoreCanvasScaler = false;
                 m_AutoScaling = false;
+                m_AutoScalingMode = AutoScalingMode.Transform;
             }
 
             if (m_AbsoluteMode)
@@ -471,8 +510,9 @@ namespace Coffee.UIExtensions
 
         internal void UpdateTransformScale()
         {
+            canvasScale = canvas.rootCanvas.transform.localScale.Inverse();
             parentScale = transform.parent.lossyScale;
-            if (!autoScaling) return;
+            if (autoScalingMode != AutoScalingMode.Transform) return;
 
             var newScale = parentScale.Inverse();
             if (transform.localScale != newScale)
@@ -606,7 +646,7 @@ namespace Coffee.UIExtensions
 
         private void UpdateTracker()
         {
-            if (!enabled || !autoScaling)
+            if (!enabled || !autoScaling || autoScalingMode != AutoScalingMode.Transform)
             {
                 _tracker.Clear();
             }

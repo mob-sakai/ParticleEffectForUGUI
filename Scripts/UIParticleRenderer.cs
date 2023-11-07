@@ -260,7 +260,7 @@ namespace Coffee.UIExtensions
                 !isActiveAndEnabled || !_particleSystem || !_parent
                 || !canvasRenderer || !canvas || !bakeCamera
                 || _parent.meshSharing == UIParticle.MeshSharing.Replica
-                || !transform.lossyScale.GetScaled(_parent.scale3D).IsVisible() // Scale is not visible.
+                || !transform.lossyScale.GetScaled(_parent.scale3DForCalc).IsVisible() // Scale is not visible.
                 || (!_particleSystem.IsAlive() && !_particleSystem.isPlaying) // No particle.
                 || (_isTrail && !_particleSystem.trails.enabled) // Trail, but it is not enabled.
 #if UNITY_2018_3_OR_NEWER
@@ -462,7 +462,7 @@ namespace Coffee.UIExtensions
         private Vector3 GetWorldScale()
         {
             Profiler.BeginSample("[UIParticleRenderer] GetWorldScale");
-            var scale = _parent.scale3D.GetScaled(_parent.parentScale);
+            var scale = _parent.scale3DForCalc.GetScaled(_parent.parentScale);
             Profiler.EndSample();
             return scale;
         }
