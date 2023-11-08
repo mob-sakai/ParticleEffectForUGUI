@@ -1,3 +1,11 @@
+# [4.3.0](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/4.2.2...4.3.0) (2023-11-08)
+
+
+### Features
+
+* added 'autoScalingMode (None, Transform.localScale, UIParticle.scale)' instead of 'autoScaling' ([107f901](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/107f901fe3232223322681edc4bf908642474298))
+* reset transform.localScale on upgrading v3.x to v4.x ([c710787](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/c710787b5ba496cf73e7eb43458bb3958139baa9)), closes [#277](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/277)
+
 ## [4.2.2](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/4.2.1...4.2.2) (2023-10-25)
 
 
