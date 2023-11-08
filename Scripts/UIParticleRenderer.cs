@@ -18,6 +18,7 @@ namespace Coffee.UIExtensions
         private static readonly List<Material> s_Materials = new List<Material>(2);
         private static MaterialPropertyBlock s_Mpb;
         private static readonly List<UIParticleRenderer> s_Renderers = new List<UIParticleRenderer>();
+        private static readonly List<Color32> s_Colors = new List<Color32>();
         private static readonly Vector3[] s_Corners = new Vector3[4];
         private Material _currentMaterialForRendering;
         private bool _delay;
@@ -380,6 +381,24 @@ namespace Coffee.UIExtensions
                 bounds.extents = extents;
                 workerMesh.bounds = bounds;
                 _lastBounds = bounds;
+
+                // Convert linear color to gamma color.
+                if (QualitySettings.activeColorSpace == ColorSpace.Linear)
+                {
+                    Profiler.BeginSample("[UIParticleRenderer] Convert Linear to Gamma");
+                    workerMesh.GetColors(s_Colors);
+                    var count_c = s_Colors.Count;
+                    for (var i = 0; i < count_c; i++)
+                    {
+                        var c = s_Colors[i];
+                        c.r = c.r.LinearToGamma();
+                        c.g = c.g.LinearToGamma();
+                        c.b = c.b.LinearToGamma();
+                        s_Colors[i] = c;
+                    }
+                    workerMesh.SetColors(s_Colors);
+                    Profiler.EndSample();
+                }
             }
 
             Profiler.EndSample();

@@ -332,8 +332,6 @@ namespace Coffee.UIExtensions
                 DestroyUIParticle(current);
             }
 
-            // #203: When using linear color space, the particle colors are not output correctly.
-            // To fix, set 'Apply Active Color Space' in renderer module to false.
             var allPsRenderers = targets.OfType<UIParticle>()
                 .SelectMany(x => x.particles)
                 .Where(x => x)
@@ -341,16 +339,6 @@ namespace Coffee.UIExtensions
                 .ToArray();
             if (0 < allPsRenderers.Length)
             {
-                var so = new SerializedObject(allPsRenderers);
-                var sp = so.FindProperty("m_ApplyActiveColorSpace");
-                label = "When using linear color space, the particle colors are not output correctly.\n" +
-                        "To fix, set 'Apply Active Color Space' in renderer module to false.";
-                if (FixButton(sp.boolValue || sp.hasMultipleDifferentValues, label))
-                {
-                    sp.boolValue = false;
-                    so.ApplyModifiedProperties();
-                }
-
                 // Check to use 'TEXCOORD*.zw' components as custom vertex stream.
                 foreach (var psr in allPsRenderers)
                 {
