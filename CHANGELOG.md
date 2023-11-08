@@ -1,3 +1,10 @@
+# [4.4.0](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/4.3.0...4.4.0) (2023-11-08)
+
+
+### Features
+
+* support 'Active Apply Color Space' for linear color space ([45c56bb](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/45c56bbd850202365751ea019baf5131b2eb9fbe))
+
 # [4.3.0](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/4.2.2...4.3.0) (2023-11-08)
 
 
