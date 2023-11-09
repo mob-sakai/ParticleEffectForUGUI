@@ -286,13 +286,13 @@ UIParticle does not support all built-in shaders except for `UI/Default`.
 If their use is detected, an error is displayed in the inspector.  
 Use UI shaders instead.
 
-#### UV.zw components will be discarded
+#### (2019.4 or earlier) UV.zw components will be discarded
 
 UIParticleRenderer renders the particles based on UIVertex.  
 Therefore, only xy components is available for each UV in the shader. (zw components will be discarded).  
 So unfortunately UIParticles will not work well with some shaders.  
 
-#### Custom vertex streams
+#### (2019.4 or earlier) Custom vertex streams
 
 When using custom vertex streams, you can fill zw components with "unnecessary" data.  
 https://github.com/mob-sakai/ParticleEffectForUGUI/issues/191
