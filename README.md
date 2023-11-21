@@ -28,7 +28,7 @@ and [CODE_OF_CONDUCT](https://github.com/mob-sakai/ParticleEffectForUGUI/blob/ma
 
 ## How to Release This Package
 
-When you push to the `preview`, `release`, or `v1.x` branch, this package is automatically released by GitHub Action.
+When you push to the `preview`, `release`, or `v4.x` branch, this package is automatically released by GitHub Action.
 
 [Semantic Release](https://semantic-release.gitbook.io/semantic-release/) is used for automatic release.
 
