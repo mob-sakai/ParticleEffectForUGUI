@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "com.unity.ide.rider": "3.0.27",
+    "com.unity.test-framework": "1.1.33",
+    "com.unity.modules.animation": "1.0.0",
+    "com.unity.modules.physics": "1.0.0"
+  }
+}
