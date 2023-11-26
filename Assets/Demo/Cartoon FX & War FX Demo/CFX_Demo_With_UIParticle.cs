@@ -13,6 +13,7 @@ namespace Coffee.UIExtensions.Demo
         private MonoBehaviour _demo;
         private Toggle _spawnOnUI;
         private UIParticle _uiParticle;
+        private string _demoType;
 
         // Start is called before the first frame update
         private void Start()
@@ -20,7 +21,9 @@ namespace Coffee.UIExtensions.Demo
             _uiParticle = GetComponentInChildren<UIParticle>();
             _spawnOnUI = GetComponentInChildren<Toggle>();
             _demo = FindObjectOfType("CFX_Demo_New") as MonoBehaviour
-                    ?? FindObjectOfType("WFX_Demo_New") as MonoBehaviour;
+                    ?? FindObjectOfType("WFX_Demo_New") as MonoBehaviour
+                    ?? FindObjectOfType("CFXR_Demo") as MonoBehaviour;
+            _demoType = _demo?.GetType().Name;
 
             SetCanvasWidth(800);
             SetCanvasRenderOverlay(true);
@@ -31,18 +34,43 @@ namespace Coffee.UIExtensions.Demo
         {
             if (!_spawnOnUI.isOn || !_demo || !Input.GetMouseButtonDown(0)) return;
 
-            foreach (Transform child in _uiParticle.transform)
+            if (_demoType == "CFX_Demo_New" || _demoType == "WFX_Demo_New")
             {
-                Destroy(child.gameObject);
+                SpawnParticleCFX();
             }
+            else if (_demoType == "CFXR_Demo")
+            {
+                SpawnParticleCFXR();
+            }
+        }
 
+        private void SpawnParticleCFXR()
+        {
+            var particle = _demo.GetType()
+                .GetField("currentEffect", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
+                ?.GetValue(_demo) as GameObject;
+            if (!particle) return;
+
+            var instance = Instantiate(particle);
+            foreach (var c in instance.GetComponentsInChildren<MonoBehaviour>())
+            {
+                if (c.GetType().Name == "CFXR_Effect")
+                {
+                    c.enabled = false;
+                }
+            }
+            _uiParticle.SetParticleSystemInstance(instance, true);
+        }
+
+        private void SpawnParticleCFX()
+        {
             var particle = _demo.GetType()
                 .GetMethod("spawnParticle", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
                 ?.Invoke(_demo, Array.Empty<object>()) as GameObject;
             if (!particle) return;
 
             particle.transform.localScale = Vector3.one;
-            _uiParticle.SetParticleSystemInstance(particle);
+            _uiParticle.SetParticleSystemInstance(particle, true);
         }
 
         private static Object FindObjectOfType(string typeName)
