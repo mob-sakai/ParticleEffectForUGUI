@@ -1,4 +1,10 @@
-﻿using System;
+﻿#if UNITY_2022_3_0 || UNITY_2022_3_1 || UNITY_2022_3_2 || UNITY_2022_3_3 || UNITY_2022_3_4 || UNITY_2022_3_5 || UNITY_2022_3_6 || UNITY_2022_3_7 || UNITY_2022_3_8 || UNITY_2022_3_9 || UNITY_2022_3_10
+#elif UNITY_2023_1_0 || UNITY_2023_1_1 || UNITY_2023_1_2 || UNITY_2023_1_3 || UNITY_2023_1_4 || UNITY_2023_1_5 || UNITY_2023_1_6 || UNITY_2023_1_7 || UNITY_2023_1_8 || UNITY_2023_1_9
+#elif UNITY_2023_1_10 || UNITY_2023_1_11 || UNITY_2023_1_12 || UNITY_2023_1_13 || UNITY_2023_1_14 || UNITY_2023_1_15 || UNITY_2023_1_16
+#elif UNITY_2022_3_OR_NEWER
+#define PS_BAKE_API_V2
+#endif
+using System;
 using System.Collections.Generic;
 using Coffee.UIParticleExtensions;
 using UnityEditor;
@@ -333,11 +339,19 @@ namespace Coffee.UIExtensions
             Profiler.BeginSample("[UIParticleRenderer] Bake Mesh");
             if (_isTrail && _parent.canSimulate && 0 < s_CombineInstances[0].mesh.vertexCount)
             {
+#if PS_BAKE_API_V2
+                _renderer.BakeTrailsMesh(s_CombineInstances[0].mesh, bakeCamera, ParticleSystemBakeMeshOptions.BakeRotationAndScale);
+#else
                 _renderer.BakeTrailsMesh(s_CombineInstances[0].mesh, bakeCamera, true);
+#endif
             }
             else if (_renderer.CanBakeMesh())
             {
+#if PS_BAKE_API_V2
+                _renderer.BakeMesh(s_CombineInstances[0].mesh, bakeCamera, ParticleSystemBakeMeshOptions.BakeRotationAndScale);
+#else
                 _renderer.BakeMesh(s_CombineInstances[0].mesh, bakeCamera, true);
+#endif
             }
             else
             {

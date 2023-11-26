@@ -43,7 +43,7 @@ namespace Coffee.UIExtensions
             {
                 if (visible)
                 {
-                    WindowFunction(null, null);
+                    WindowFunction();
                 }
             }
         }
@@ -75,8 +75,9 @@ namespace Coffee.UIExtensions
         private bool _showMax;
 
         private static readonly HashSet<Shader> s_Shaders = new HashSet<Shader>();
+#if UNITY_2018 || UNITY_2019
         private static readonly List<ParticleSystemVertexStream> s_Streams = new List<ParticleSystemVertexStream>();
-
+#endif
         private static readonly List<string> s_MaskablePropertyNames = new List<string>
         {
             "_Stencil",
@@ -128,6 +129,7 @@ namespace Coffee.UIExtensions
                     .Concat(Selection.gameObjects.Select(x => x.GetComponent<UIParticle>())
                         .Where(x => x && x.canvas))
                     .Distinct()
+                    .OfType<Object>()
                     .ToArray();
                 return 0 < uiParticles.Length ? new SerializedObject(uiParticles) : null;
             }
@@ -332,6 +334,8 @@ namespace Coffee.UIExtensions
                 DestroyUIParticle(current);
             }
 
+#if UNITY_2018 || UNITY_2019
+            // (2018, 2019) Check to use 'TEXCOORD*.zw' components as custom vertex stream.
             var allPsRenderers = targets.OfType<UIParticle>()
                 .SelectMany(x => x.particles)
                 .Where(x => x)
@@ -357,6 +361,7 @@ namespace Coffee.UIExtensions
                     s_Streams.Clear();
                 }
             }
+#endif
         }
 
         private bool IsBuiltInObject(Object obj)
@@ -365,6 +370,7 @@ namespace Coffee.UIExtensions
                    && Regex.IsMatch(guid, "^0{16}.0{15}$", RegexOptions.Compiled);
         }
 
+#if UNITY_2018 || UNITY_2019
         private static int GetUsedComponentCount(ParticleSystemVertexStream s)
         {
             switch (s)
@@ -423,6 +429,7 @@ namespace Coffee.UIExtensions
 
             return 3;
         }
+#endif
 
         private static bool DrawMeshSharing(SerializedProperty spMeshSharing, SerializedProperty spGroupId,
             SerializedProperty spGroupMaxId, bool showMax)
@@ -482,12 +489,16 @@ namespace Coffee.UIExtensions
             };
         }
 
-        private static void WindowFunction(Object target, SceneView sceneView)
+#if UNITY_2021_2_OR_NEWER
+        private static void WindowFunction()
+#else
+        private static void WindowFunction(Object _, SceneView __)
+#endif
         {
             try
             {
                 if (s_SerializedObject == null || !s_SerializedObject.targetObject) return;
-                var uiParticles = s_SerializedObject.targetObjects.OfType<UIParticle>();
+                var uiParticles = s_SerializedObject.targetObjects.OfType<UIParticle>().ToArray();
                 if (uiParticles.Any(x => !x || !x.canvas)) return;
 
                 s_SerializedObject.Update();
@@ -523,7 +534,7 @@ namespace Coffee.UIExtensions
             if (stage != null && stage.scene.isLoaded)
             {
 #if UNITY_2020_1_OR_NEWER
-                string prefabAssetPath = stage.assetPath;
+                var prefabAssetPath = stage.assetPath;
 #else
                 var prefabAssetPath = stage.prefabAssetPath;
 #endif
