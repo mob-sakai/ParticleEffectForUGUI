@@ -14,6 +14,7 @@ namespace Coffee.UIExtensions
     [AddComponentMenu("")]
     internal class UIParticleRenderer : MaskableGraphic
     {
+        private static readonly List<Component> s_Components = new List<Component>();
         private static readonly CombineInstance[] s_CombineInstances = { new CombineInstance() };
         private static readonly List<Material> s_Materials = new List<Material>(2);
         private static MaterialPropertyBlock s_Mpb;
@@ -401,6 +402,14 @@ namespace Coffee.UIExtensions
                     workerMesh.SetColors(s_Colors);
                     Profiler.EndSample();
                 }
+
+                GetComponents(typeof(IMeshModifier), s_Components);
+                for (var i = 0; i < s_Components.Count; i++)
+                {
+                    ((IMeshModifier)s_Components[i]).ModifyMesh(workerMesh);
+                }
+
+                s_Components.Clear();
             }
 
             Profiler.EndSample();
