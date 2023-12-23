@@ -444,7 +444,7 @@ namespace Coffee.UIExtensions
             // Update animatable material properties.
             Profiler.BeginSample("[UIParticleRenderer] Update Animatable Material Properties");
             UpdateMaterialProperties();
-            if (!_parent.useMeshSharing)
+            if (_parent.useMeshSharing)
             {
                 if (!_currentMaterialForRendering)
                 {
