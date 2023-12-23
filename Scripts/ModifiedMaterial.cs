@@ -7,13 +7,13 @@ namespace Coffee.UIParticleExtensions
     {
         private static readonly List<MatEntry> s_Entries = new List<MatEntry>();
 
-        public static Material Add(Material baseMat, Texture texture, int id)
+        public static Material Add(Material baseMat, Texture texture, int id, int props)
         {
             MatEntry e;
             for (var i = 0; i < s_Entries.Count; i++)
             {
                 e = s_Entries[i];
-                if (e.baseMat != baseMat || e.texture != texture || e.id != id) continue;
+                if (e.baseMat != baseMat || e.texture != texture || e.id != id || e.props != props) continue;
                 ++e.count;
                 return e.customMat;
             }
@@ -24,6 +24,7 @@ namespace Coffee.UIParticleExtensions
                 baseMat = baseMat,
                 texture = texture,
                 id = id,
+                props = props,
                 customMat = new Material(baseMat)
                 {
                     name = $"{baseMat.name}_{id}",
@@ -64,6 +65,7 @@ namespace Coffee.UIParticleExtensions
             public int count;
             public Material customMat;
             public int id;
+            public int props;
             public Texture texture;
         }
     }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Coffee.UIParticleExtensions;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Profiling;
 using UnityEngine.Rendering;
@@ -200,7 +201,12 @@ namespace Coffee.UIExtensions
 
             //
             var id = _parent.m_AnimatableProperties.Length == 0 ? 0 : GetInstanceID();
-            modifiedMaterial = ModifiedMaterial.Add(modifiedMaterial, texture, id);
+#if UNITY_EDITOR
+            var props = EditorJsonUtility.ToJson(modifiedMaterial).GetHashCode();
+#else
+            var props = 0;
+#endif
+            modifiedMaterial = ModifiedMaterial.Add(modifiedMaterial, texture, id, props);
             ModifiedMaterial.Remove(_modifiedMaterial);
             _modifiedMaterial = modifiedMaterial;
 
@@ -443,6 +449,17 @@ namespace Coffee.UIExtensions
 
             // Update animatable material properties.
             Profiler.BeginSample("[UIParticleRenderer] Update Animatable Material Properties");
+
+#if UNITY_EDITOR
+            if (_modifiedMaterial != material)
+            {
+                _renderer.GetSharedMaterials(s_Materials);
+                material = s_Materials[_isTrail ? 1 : 0];
+                s_Materials.Clear();
+                SetMaterialDirty();
+            }
+#endif
+            
             UpdateMaterialProperties();
             if (_parent.useMeshSharing)
             {
