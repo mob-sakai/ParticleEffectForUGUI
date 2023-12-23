@@ -1,3 +1,17 @@
+# [4.5.0](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/4.4.0...4.5.0) (2023-12-23)
+
+
+### Bug Fixes
+
+* incorrect rendering of world-space simulated particles while animating scale ([ac58475](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/ac584755393d87bda2e80d9653370b7e4c68912f)), closes [#285](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/285)
+* remove obsolete warning ([5d5eb34](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/5d5eb34590b7cefb0e4ac26c0441e104176ce522))
+
+
+### Features
+
+* Automatically generated objects are no longer editable (NotEditable). ([5607dc4](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/5607dc4eed0c086b4651941953df6c7d535712e0))
+* support IMeshModifier ([5c3232f](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/5c3232faf3d2cfad1e3e1a9349b8346c7982a608)), closes [#282](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/282)
+
 # [4.4.0](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/4.3.0...4.4.0) (2023-11-08)
 
 
