@@ -667,7 +667,9 @@ namespace Coffee.UIExtensions
 
         private void UpdateTracker()
         {
+#pragma warning disable CS0618 // Type or member is obsolete
             if (!enabled || !autoScaling || autoScalingMode != AutoScalingMode.Transform)
+#pragma warning restore CS0618 // Type or member is obsolete
             {
                 _tracker.Clear();
             }

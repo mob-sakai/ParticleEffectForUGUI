@@ -406,7 +406,9 @@ namespace Coffee.UIExtensions
                 GetComponents(typeof(IMeshModifier), s_Components);
                 for (var i = 0; i < s_Components.Count; i++)
                 {
+#pragma warning disable CS0618 // Type or member is obsolete
                     ((IMeshModifier)s_Components[i]).ModifyMesh(workerMesh);
+#pragma warning restore CS0618 // Type or member is obsolete
                 }
 
                 s_Components.Clear();
