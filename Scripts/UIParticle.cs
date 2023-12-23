@@ -647,7 +647,7 @@ namespace Coffee.UIExtensions
                 // Create ortho-camera.
                 if (!_orthoCamera)
                 {
-                    var go = new GameObject("[generated] UIParticleOverlayCamera") { hideFlags = HideFlags.DontSave };
+                    var go = new GameObject("[generated] UIParticleOverlayCamera") { hideFlags = HideFlags.DontSave | HideFlags.NotEditable };
                     go.SetActive(false);
                     go.transform.SetParent(transform, false);
                     _orthoCamera = go.AddComponent<Camera>();
