@@ -32,6 +32,7 @@ namespace Coffee.UIExtensions
         private Vector3 _prevPsPos;
         private Vector3 _prevScale;
         private Vector2Int _prevScreenSize;
+        private float _prevCanvasScale;
         private bool _prewarm;
         private ParticleSystemRenderer _renderer;
 
@@ -246,6 +247,7 @@ namespace Coffee.UIExtensions
             _prevScale = GetWorldScale();
             _prevPsPos = _particleSystem.transform.position;
             _prevScreenSize = new Vector2Int(Screen.width, Screen.height);
+            _prevCanvasScale = canvas ? canvas.scaleFactor : 1f;
             _delay = true;
             _prevParticleCount = 0;
 
@@ -534,7 +536,8 @@ namespace Coffee.UIExtensions
         {
             var screenSize = new Vector2Int(Screen.width, Screen.height);
             var isWorldSpace = _particleSystem.IsWorldSpace();
-            var resolutionChanged = _prevScreenSize != screenSize || _prevScale != scale;
+            var canvasScale = _parent.canvas ? _parent.canvas.scaleFactor : 1f;
+            var resolutionChanged = _prevScreenSize != screenSize || _prevCanvasScale != canvasScale;
             if (resolutionChanged && isWorldSpace)
             {
                 // Update particle array size and get particles.
@@ -563,6 +566,7 @@ namespace Coffee.UIExtensions
                 _prevPsPos = psPos;
             }
 
+            _prevCanvasScale = canvas ? canvas.scaleFactor : 1f;
             _prevScreenSize = screenSize;
         }
 
