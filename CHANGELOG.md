@@ -1,3 +1,11 @@
+## [4.5.1](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/4.5.0...4.5.1) (2023-12-23)
+
+
+### Bug Fixes
+
+* fix material for mesh sharing group ([6126af9](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/6126af9f376dd4c100a1b9d19d9499bdef7d5566))
+* the changes made to the material used by the ParticleSystem are not immediately reflected ([3184ba9](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/3184ba94ae08264223c0c71443ad70acc1a1ccb2)), closes [#280](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/280)
+
 # [4.5.0](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/4.4.0...4.5.0) (2023-12-23)
 
 
