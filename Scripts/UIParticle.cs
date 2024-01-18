@@ -378,7 +378,7 @@ namespace Coffee.UIExtensions
 #if UNITY_EDITOR
                 EditorApplication.delayCall += () =>
                 {
-                    if (!this || !gameObject || !transform) return;
+                    if (!this || !gameObject || !transform || Application.isPlaying) return;
                     transform.localScale = Vector3.one;
                     m_ResetScaleOnEnable = false;
                     EditorUtility.SetDirty(this);
