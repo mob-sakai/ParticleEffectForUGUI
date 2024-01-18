@@ -1,3 +1,10 @@
+## [4.5.2](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/4.5.1...4.5.2) (2024-01-18)
+
+
+### Bug Fixes
+
+* (editor) sometimes crashes when entering play mode ([b80c3e6](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/b80c3e6c9fdd2a8fb72ff233edb85df2e3dbba3d))
+
 ## [4.5.1](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/4.5.0...4.5.1) (2023-12-23)
 
 
