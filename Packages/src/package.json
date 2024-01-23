@@ -10,7 +10,10 @@
     "url": "git+https://github.com/mob-sakai/ParticleEffectForUGUI.git"
   },
   "author": "mob-sakai <sakai861104@gmail.com> (https://github.com/mob-sakai)",
-  "dependencies": {},
+  "dependencies": {
+    "com.unity.ugui": "1.0.0",
+    "com.unity.modules.particlesystem": "1.0.0"
+  },
   "keywords": [
     "ui",
     "particle"
