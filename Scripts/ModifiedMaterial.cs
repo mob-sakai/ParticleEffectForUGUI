@@ -28,7 +28,7 @@ namespace Coffee.UIParticleExtensions
                 customMat = new Material(baseMat)
                 {
                     name = $"{baseMat.name}_{id}",
-                    hideFlags = HideFlags.HideAndDontSave,
+                    hideFlags = HideFlags.DontSave | HideFlags.NotEditable,
                     mainTexture = texture ? texture : null
                 }
             };
