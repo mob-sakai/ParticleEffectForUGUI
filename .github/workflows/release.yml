@@ -1,0 +1,87 @@
+name: 🔖 Release
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - preview
+      - release
+    tags-ignore:
+      - "**"
+
+jobs:
+  release:
+    name: 🔖 Release (${{ github.ref_name }})
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+    outputs:
+      channel: ${{ steps.release.outputs.new_release_channel }}
+      released: ${{ steps.release.outputs.new_release_published }}
+      tag: ${{ steps.release.outputs.new_release_git_tag }}
+      version: ${{ steps.release.outputs.new_release_version }}
+      notes: ${{ steps.release.outputs.new_release_notes }}
+    steps:
+      - name: 🚚 Checkout (${{ github.ref_name }})
+        uses: actions/checkout@v4
+
+      - name: 🔖 Run semantic release
+        uses: cycjimmy/semantic-release-action@v4
+        id: release
+        with:
+          working_directory: Packages/src
+          extra_plugins: |
+            @semantic-release/changelog
+            @semantic-release/git
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - run: |
+          echo "🔖 New release published: '${{ steps.release.outputs.new_release_published }}'" | tee -a $GITHUB_STEP_SUMMARY
+          echo "🔖 New release version: '${{ steps.release.outputs.new_release_version }}'" | tee -a $GITHUB_STEP_SUMMARY
+          echo "🔖 New release channel: '${{ steps.release.outputs.new_release_channel }}'" | tee -a $GITHUB_STEP_SUMMARY
+          echo "🔖 New release git tag: '${{ steps.release.outputs.new_release_git_tag }}'" | tee -a $GITHUB_STEP_SUMMARY
+          echo '${{ steps.release.outputs.new_release_notes }}' | tee -a $GITHUB_STEP_SUMMARY
+
+  merge-to-develop:
+    if: needs.release.outputs.released == 'true'
+    needs: release
+    name: 🔀 Merge to develop
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: 🚚 Checkout (develop)
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+      - name: 🔀 Merge '${{ needs.release.outputs.tag }}' into 'develop'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          
+          git merge ${{ needs.release.outputs.tag }}
+          git push origin develop
+
+  split-to-main:
+    if: needs.release.outputs.released == 'true'
+    needs: release
+    name: 🔀 Split package
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: 🚚 Checkout (${{ needs.release.outputs.tag }})
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.release.outputs.tag }}
+          fetch-depth: 0
+      - name: 🔀 Split subtree 'Packages/src' to 'main'
+        run: |
+          git branch main origin/main
+          git subtree split --prefix=Packages/src --branch main
+          git tag ${{ needs.release.outputs.version }} main
+          git push origin ${{ needs.release.outputs.version }} main:main

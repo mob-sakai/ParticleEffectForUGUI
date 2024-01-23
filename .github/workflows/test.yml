@@ -1,0 +1,88 @@
+# Required secrets
+#   UNITY_LICENSE: The contents of Unity license file
+name: 🧪 Test
+
+env:
+  # MINIMUM_VERSION: The minimum version of Unity.
+  MINIMUM_VERSION: 2019.4
+  EXCLUDE_FILTER: '(2020.2.0)'
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - develop
+    tags:
+      - "!*"
+    paths-ignore:
+      - "*.md"
+  pull_request:
+    types:
+      - opened
+      - synchronize
+
+jobs:
+  setup:
+    name: ⚙️ Setup
+    runs-on: ubuntu-latest
+    outputs:
+      unityVersions: ${{ steps.setup.outputs.unityVersions }}
+    steps:
+      - name: ⚙️ Find target Unity versions
+        id: setup
+        run: |
+          echo "==== Target Unity Versions ===="
+          LATEST_VERSIONS=`npx unity-changeset list --versions --latest-patch --min ${MINIMUM_VERSION} --json --all`
+          ADDITIONAL_VERSIONS=`npx unity-changeset list --versions --grep '0f' --min ${MINIMUM_VERSION} --json`
+          
+          VERSIONS=`echo "[${LATEST_VERSIONS}, ${ADDITIONAL_VERSIONS}]" \
+            | jq -c '[ flatten | sort | unique | .[] | select( test("${{ env.EXCLUDE_FILTER }}") | not ) ]'`
+          echo "unityVersions=${VERSIONS}" | tee $GITHUB_OUTPUT
+
+  test:
+    name: 🧪 Run tests
+    runs-on: ubuntu-latest
+    permissions:
+      checks: write
+      contents: read
+    needs: setup
+    strategy:
+      fail-fast: false
+      matrix:
+        unityVersion: ${{ fromJson(needs.setup.outputs.unityVersions) }}
+    steps:
+      - name: 🚚 Checkout
+        uses: actions/checkout@v4
+
+      - name: 📥 Cache library
+        uses: actions/cache@v3
+        with:
+          path: Library
+          key: Library-${{ matrix.unityVersion }}-${{ github.sha }}
+          restore-keys: |
+            Library-${{ matrix.unityVersion }}-
+            Library-
+
+      - name: 🛠️ Build Unity Project
+        uses: game-ci/unity-builder@v3
+        timeout-minutes: 30
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        with:
+          customImage: ghcr.io/mob-sakai/unity3d:${{ matrix.unityVersion }}
+          targetPlatform: StandaloneLinux64
+          allowDirtyBuild: true
+          customParameters: -nographics
+
+      - name: 🧪 Run tests
+        uses: game-ci/unity-test-runner@v3
+        timeout-minutes: 30
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        with:
+          customImage: ghcr.io/mob-sakai/unity3d:${{ matrix.unityVersion }}
+          # unityVersion: ${{ matrix.unityVersion }}
+          customParameters: -nographics
+          checkName: ${{ matrix.unityVersion }} Test Results
+          githubToken: ${{ github.token }}
+          coverageOptions: "dontClear;generateHtmlReport;generateBadgeReport;pathFilters:+**/Packages/src/**;assemblyFilters:+<packages>,-*.Editor,-*.Test"
