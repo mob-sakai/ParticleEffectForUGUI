@@ -565,16 +565,6 @@ namespace Coffee.UIExtensions
             }
         }
 
-        internal void UpdateParticleCount()
-        {
-            for (var i = 0; i < _renderers.Count; i++)
-            {
-                var r = _renderers[i];
-                if (!r) continue;
-                r.UpdateParticleCount();
-            }
-        }
-
         internal void ResetGroupId()
         {
             _groupId = m_GroupId == m_GroupMaxId

@@ -36,7 +36,6 @@ namespace Coffee.UIExtensions
         private Material _modifiedMaterial;
         private UIParticle _parent;
         private ParticleSystem _particleSystem;
-        private int _prevParticleCount;
         private Vector3 _prevPsPos;
         private Vector3 _prevScale;
         private Vector2Int _prevScreenSize;
@@ -108,7 +107,6 @@ namespace Coffee.UIExtensions
             _parent = null;
             _particleSystem = null;
             _renderer = null;
-            _prevParticleCount = 0;
             if (0 <= index)
             {
                 _index = index;
@@ -262,7 +260,6 @@ namespace Coffee.UIExtensions
             _prevScreenSize = new Vector2Int(Screen.width, Screen.height);
             _prevCanvasScale = canvas ? canvas.scaleFactor : 1f;
             _delay = true;
-            _prevParticleCount = 0;
 
             canvasRenderer.SetTexture(null);
 
@@ -496,12 +493,6 @@ namespace Coffee.UIExtensions
             s_Renderers.Clear();
         }
 
-        internal void UpdateParticleCount()
-        {
-            if (!_particleSystem) return;
-            _prevParticleCount = _particleSystem.particleCount;
-        }
-
         /// <summary>
         /// Call to update the geometry of the Graphic onto the CanvasRenderer.
         /// </summary>
@@ -627,25 +618,6 @@ namespace Coffee.UIExtensions
                 deltaTime += main.duration;
                 _prewarm = false;
             }
-
-            // (COMMENT OUT) #231: Sub Emitters option is not work in editor playing
-            /*
-            // Emitted particles found.
-            if (_prevParticleCount != _particleSystem.particleCount)
-            {
-                var size = _particleSystem.particleCount;
-                var particles = ParticleSystemExtensions.GetParticleArray(size);
-                _particleSystem.GetParticles(particles, size);
-                for (var i = _prevParticleCount; i < size; i++)
-                {
-                    var p = particles[i];
-                    p.position = p.position.GetScaled(scale.Inverse());
-                    particles[i] = p;
-                }
-
-                _particleSystem.SetParticles(particles, size);
-            }
-            */
 
             // get world position.
             var isLocalSpace = _particleSystem.IsLocalSpace();
