@@ -1,15 +1,19 @@
 {
   "name": "com.coffee.ui-particle",
   "displayName": "UI Particle",
-  "description": "This plugin provide a component to render particle effect for uGUI.\nThe particle rendering is maskable and sortable, without Camera, RenderTexture or Canvas.",
+  "description": "This package provides a component to render particle effects for uGUI.\nThe particle rendering is maskable and sortable, without the need for an extra Camera, RenderTexture, or Canvas.",
   "version": "4.5.2",
   "unity": "2018.2",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mob-sakai/ParticleEffectForUGUI.git"
+    "url": "https://github.com/mob-sakai/ParticleEffectForUGUI.git"
   },
-  "author": "mob-sakai <sakai861104@gmail.com> (https://github.com/mob-sakai)",
+  "author": {
+    "name": "mob-sakai",
+    "email": "sakai861104@gmail.com",
+    "url": "https://github.com/mob-sakai"
+  },
   "dependencies": {
     "com.unity.ugui": "1.0.0",
     "com.unity.modules.particlesystem": "1.0.0"
