@@ -1,0 +1,24 @@
+name: release
+
+on:
+  push:
+    branches:
+      - preview
+      - main
+      - v*.x
+    tags-ignore:
+      - "**"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: cycjimmy/semantic-release-action@v3
+        with:
+          extra_plugins: |
+            @semantic-release/changelog
+            @semantic-release/git
+        env:
+          GITHUB_TOKEN: ${{ github.token }}

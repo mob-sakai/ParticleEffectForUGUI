@@ -1,0 +1,14 @@
+{
+    "name": "Coffee.UIParticle.Demo",
+    "references": [
+        "Coffee.UIParticle"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": []
+}
