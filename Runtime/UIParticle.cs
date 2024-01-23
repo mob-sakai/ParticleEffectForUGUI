@@ -21,6 +21,13 @@ namespace Coffee.UIExtensions
     [RequireComponent(typeof(CanvasRenderer))]
     public class UIParticle : MaskableGraphic, ISerializationCallbackReceiver
     {
+        public enum AutoScalingMode
+        {
+            None,
+            UIParticle,
+            Transform
+        }
+
         public enum MeshSharing
         {
             None,
@@ -34,13 +41,6 @@ namespace Coffee.UIExtensions
         {
             Relative,
             Absolute
-        }
-
-        public enum AutoScalingMode
-        {
-            None,
-            UIParticle,
-            Transform
         }
 
         [HideInInspector]
@@ -113,7 +113,7 @@ namespace Coffee.UIExtensions
         /// </summary>
         public override bool raycastTarget
         {
-            get { return false; }
+            get => false;
             set { }
         }
 
@@ -127,8 +127,8 @@ namespace Coffee.UIExtensions
         /// </summary>
         public MeshSharing meshSharing
         {
-            get { return m_MeshSharing; }
-            set { m_MeshSharing = value; }
+            get => m_MeshSharing;
+            set => m_MeshSharing = value;
         }
 
         /// <summary>
@@ -137,7 +137,7 @@ namespace Coffee.UIExtensions
         /// </summary>
         public int groupId
         {
-            get { return _groupId; }
+            get => _groupId;
             set
             {
                 if (m_GroupId == value) return;
@@ -151,7 +151,7 @@ namespace Coffee.UIExtensions
 
         public int groupMaxId
         {
-            get { return m_GroupMaxId; }
+            get => m_GroupMaxId;
             set
             {
                 if (m_GroupMaxId == value) return;
@@ -167,8 +167,8 @@ namespace Coffee.UIExtensions
         /// </summary>
         public PositionMode positionMode
         {
-            get { return m_PositionMode; }
-            set { m_PositionMode = value; }
+            get => m_PositionMode;
+            set => m_PositionMode = value;
         }
 
         /// <summary>
@@ -178,8 +178,8 @@ namespace Coffee.UIExtensions
         /// </summary>
         public bool absoluteMode
         {
-            get { return m_PositionMode == PositionMode.Absolute; }
-            set { positionMode = value ? PositionMode.Absolute : PositionMode.Relative; }
+            get => m_PositionMode == PositionMode.Absolute;
+            set => positionMode = value ? PositionMode.Absolute : PositionMode.Relative;
         }
 
         /// <summary>
@@ -188,11 +188,8 @@ namespace Coffee.UIExtensions
         [Obsolete("The autoScaling is now obsolete. Please use the autoScalingMode instead.", false)]
         public bool autoScaling
         {
-            get { return m_AutoScalingMode != AutoScalingMode.None; }
-            set
-            {
-                autoScalingMode = value ? AutoScalingMode.Transform : AutoScalingMode.None;
-            }
+            get => m_AutoScalingMode != AutoScalingMode.None;
+            set => autoScalingMode = value ? AutoScalingMode.Transform : AutoScalingMode.None;
         }
 
         /// <summary>
@@ -202,7 +199,7 @@ namespace Coffee.UIExtensions
         /// </summary>
         public AutoScalingMode autoScalingMode
         {
-            get { return m_AutoScalingMode; }
+            get => m_AutoScalingMode;
             set
             {
                 if (m_AutoScalingMode == value) return;
@@ -211,49 +208,31 @@ namespace Coffee.UIExtensions
             }
         }
 
-        internal bool useMeshSharing
-        {
-            get { return m_MeshSharing != MeshSharing.None; }
-        }
+        internal bool useMeshSharing => m_MeshSharing != MeshSharing.None;
 
-        internal bool isPrimary
-        {
-            get
-            {
-                return m_MeshSharing == MeshSharing.Primary
-                       || m_MeshSharing == MeshSharing.PrimarySimulator;
-            }
-        }
+        internal bool isPrimary =>
+            m_MeshSharing == MeshSharing.Primary
+            || m_MeshSharing == MeshSharing.PrimarySimulator;
 
-        internal bool canSimulate
-        {
-            get
-            {
-                return m_MeshSharing == MeshSharing.None
-                       || m_MeshSharing == MeshSharing.Auto
-                       || m_MeshSharing == MeshSharing.Primary
-                       || m_MeshSharing == MeshSharing.PrimarySimulator;
-            }
-        }
+        internal bool canSimulate =>
+            m_MeshSharing == MeshSharing.None
+            || m_MeshSharing == MeshSharing.Auto
+            || m_MeshSharing == MeshSharing.Primary
+            || m_MeshSharing == MeshSharing.PrimarySimulator;
 
-        internal bool canRender
-        {
-            get
-            {
-                return m_MeshSharing == MeshSharing.None
-                       || m_MeshSharing == MeshSharing.Auto
-                       || m_MeshSharing == MeshSharing.Primary
-                       || m_MeshSharing == MeshSharing.Replica;
-            }
-        }
+        internal bool canRender =>
+            m_MeshSharing == MeshSharing.None
+            || m_MeshSharing == MeshSharing.Auto
+            || m_MeshSharing == MeshSharing.Primary
+            || m_MeshSharing == MeshSharing.Replica;
 
         /// <summary>
         /// Particle effect scale.
         /// </summary>
         public float scale
         {
-            get { return m_Scale3D.x; }
-            set { m_Scale3D = new Vector3(value, value, value); }
+            get => m_Scale3D.x;
+            set => m_Scale3D = new Vector3(value, value, value);
         }
 
         /// <summary>
@@ -261,22 +240,18 @@ namespace Coffee.UIExtensions
         /// </summary>
         public Vector3 scale3D
         {
-            get { return m_Scale3D; }
-            set { m_Scale3D = value; }
+            get => m_Scale3D;
+            set => m_Scale3D = value;
         }
 
         /// <summary>
         /// Particle effect scale.
         /// </summary>
-        public Vector3 scale3DForCalc
-        {
-            get { return autoScalingMode == AutoScalingMode.UIParticle ? m_Scale3D.GetScaled(canvasScale) : m_Scale3D; }
-        }
+        public Vector3 scale3DForCalc => autoScalingMode == AutoScalingMode.UIParticle
+            ? m_Scale3D.GetScaled(canvasScale)
+            : m_Scale3D;
 
-        public List<ParticleSystem> particles
-        {
-            get { return m_Particles; }
-        }
+        public List<ParticleSystem> particles => m_Particles;
 
         /// <summary>
         /// Get all base materials to render.
@@ -294,10 +269,7 @@ namespace Coffee.UIExtensions
             }
         }
 
-        public override Material materialForRendering
-        {
-            get { return null; }
-        }
+        public override Material materialForRendering => null;
 
         /// <summary>
         /// Paused.
@@ -637,7 +609,10 @@ namespace Coffee.UIExtensions
                 // Create ortho-camera.
                 if (!_orthoCamera)
                 {
-                    var go = new GameObject("[generated] UIParticleOverlayCamera") { hideFlags = HideFlags.HideAndDontSave };
+                    var go = new GameObject("[generated] UIParticleOverlayCamera")
+                    {
+                        hideFlags = HideFlags.HideAndDontSave
+                    };
                     go.SetActive(false);
                     go.transform.SetParent(transform, false);
                     _orthoCamera = go.AddComponent<Camera>();

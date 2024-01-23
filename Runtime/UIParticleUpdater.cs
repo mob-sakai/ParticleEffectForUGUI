@@ -11,10 +11,7 @@ namespace Coffee.UIExtensions
         private static readonly HashSet<int> s_UpdatedGroupIds = new HashSet<int>();
         private static int s_FrameCount;
 
-        public static int uiParticleCount
-        {
-            get { return s_ActiveParticles.Count; }
-        }
+        public static int uiParticleCount => s_ActiveParticles.Count;
 
         public static void Register(UIParticle particle)
         {

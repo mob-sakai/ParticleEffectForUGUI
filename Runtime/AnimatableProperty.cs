@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 
 namespace Coffee.UIExtensions
@@ -19,10 +19,7 @@ namespace Coffee.UIExtensions
         [SerializeField] private ShaderPropertyType m_Type = ShaderPropertyType.Vector;
         public int id { get; private set; }
 
-        public ShaderPropertyType type
-        {
-            get { return m_Type; }
-        }
+        public ShaderPropertyType type => m_Type;
 
         void ISerializationCallbackReceiver.OnBeforeSerialize()
         {
