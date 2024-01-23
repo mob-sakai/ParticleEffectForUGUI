@@ -83,13 +83,12 @@ namespace Coffee.UIExtensions
             set => m_OnAttracted = value;
         }
 
-#if UNITY_EDITOR
+        /// <summary>
+        /// The target ParticleSystem to attract.
+        /// </summary>
         public new ParticleSystem particleSystem
-#else
-        public ParticleSystem particleSystem
-#endif
         {
-            get { return m_ParticleSystem; }
+            get => m_ParticleSystem;
             set
             {
                 m_ParticleSystem = value;
