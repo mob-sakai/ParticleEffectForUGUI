@@ -1,4 +1,4 @@
-﻿#if UNITY_2022_3_0 || UNITY_2022_3_1 || UNITY_2022_3_2 || UNITY_2022_3_3 || UNITY_2022_3_4 || UNITY_2022_3_5 || UNITY_2022_3_6 || UNITY_2022_3_7 || UNITY_2022_3_8 || UNITY_2022_3_9 || UNITY_2022_3_10
+#if UNITY_2022_3_0 || UNITY_2022_3_1 || UNITY_2022_3_2 || UNITY_2022_3_3 || UNITY_2022_3_4 || UNITY_2022_3_5 || UNITY_2022_3_6 || UNITY_2022_3_7 || UNITY_2022_3_8 || UNITY_2022_3_9 || UNITY_2022_3_10
 #elif UNITY_2023_1_0 || UNITY_2023_1_1 || UNITY_2023_1_2 || UNITY_2023_1_3 || UNITY_2023_1_4 || UNITY_2023_1_5 || UNITY_2023_1_6 || UNITY_2023_1_7 || UNITY_2023_1_8 || UNITY_2023_1_9
 #elif UNITY_2023_1_10 || UNITY_2023_1_11 || UNITY_2023_1_12 || UNITY_2023_1_13 || UNITY_2023_1_14 || UNITY_2023_1_15 || UNITY_2023_1_16
 #elif UNITY_2022_3_OR_NEWER
@@ -36,22 +36,16 @@ namespace Coffee.UIExtensions
         private Material _modifiedMaterial;
         private UIParticle _parent;
         private ParticleSystem _particleSystem;
+        private float _prevCanvasScale;
         private Vector3 _prevPsPos;
         private Vector3 _prevScale;
         private Vector2Int _prevScreenSize;
-        private float _prevCanvasScale;
         private bool _prewarm;
         private ParticleSystemRenderer _renderer;
 
-        public override Texture mainTexture
-        {
-            get { return _isTrail ? null : _particleSystem.GetTextureForSprite(); }
-        }
+        public override Texture mainTexture => _isTrail ? null : _particleSystem.GetTextureForSprite();
 
-        public override bool raycastTarget
-        {
-            get { return false; }
-        }
+        public override bool raycastTarget => false;
 
         private Rect rootCanvasRect
         {
@@ -337,7 +331,8 @@ namespace Coffee.UIExtensions
             if (_isTrail && _parent.canSimulate && 0 < s_CombineInstances[0].mesh.vertexCount)
             {
 #if PS_BAKE_API_V2
-                _renderer.BakeTrailsMesh(s_CombineInstances[0].mesh, bakeCamera, ParticleSystemBakeMeshOptions.BakeRotationAndScale);
+                _renderer.BakeTrailsMesh(s_CombineInstances[0].mesh, bakeCamera,
+                    ParticleSystemBakeMeshOptions.BakeRotationAndScale);
 #else
                 _renderer.BakeTrailsMesh(s_CombineInstances[0].mesh, bakeCamera, true);
 #endif
@@ -345,7 +340,8 @@ namespace Coffee.UIExtensions
             else if (_renderer.CanBakeMesh())
             {
 #if PS_BAKE_API_V2
-                _renderer.BakeMesh(s_CombineInstances[0].mesh, bakeCamera, ParticleSystemBakeMeshOptions.BakeRotationAndScale);
+                _renderer.BakeMesh(s_CombineInstances[0].mesh, bakeCamera,
+                    ParticleSystemBakeMeshOptions.BakeRotationAndScale);
 #else
                 _renderer.BakeMesh(s_CombineInstances[0].mesh, bakeCamera, true);
 #endif
@@ -416,6 +412,7 @@ namespace Coffee.UIExtensions
                         c.b = c.b.LinearToGamma();
                         s_Colors[i] = c;
                     }
+
                     workerMesh.SetColors(s_Colors);
                     Profiler.EndSample();
                 }
@@ -470,7 +467,7 @@ namespace Coffee.UIExtensions
                 SetMaterialDirty();
             }
 #endif
-            
+
             UpdateMaterialProperties();
             if (_parent.useMeshSharing)
             {

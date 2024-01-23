@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Coffee.UIParticleExtensions;
 using UnityEngine;
 using UnityEngine.Events;
@@ -49,38 +49,38 @@ namespace Coffee.UIExtensions
 
         public float destinationRadius
         {
-            get { return m_DestinationRadius; }
-            set { m_DestinationRadius = Mathf.Clamp(value, 0.1f, 10f); }
+            get => m_DestinationRadius;
+            set => m_DestinationRadius = Mathf.Clamp(value, 0.1f, 10f);
         }
 
         public float delay
         {
-            get { return m_DelayRate; }
-            set { m_DelayRate = value; }
+            get => m_DelayRate;
+            set => m_DelayRate = value;
         }
 
         public float maxSpeed
         {
-            get { return m_MaxSpeed; }
-            set { m_MaxSpeed = value; }
+            get => m_MaxSpeed;
+            set => m_MaxSpeed = value;
         }
 
         public Movement movement
         {
-            get { return m_Movement; }
-            set { m_Movement = value; }
+            get => m_Movement;
+            set => m_Movement = value;
         }
 
         public UpdateMode updateMode
         {
-            get { return m_UpdateMode; }
-            set { m_UpdateMode = value; }
+            get => m_UpdateMode;
+            set => m_UpdateMode = value;
         }
 
         public UnityEvent onAttracted
         {
-            get { return m_OnAttracted; }
-            set { m_OnAttracted = value; }
+            get => m_OnAttracted;
+            set => m_OnAttracted = value;
         }
 
 #if UNITY_EDITOR

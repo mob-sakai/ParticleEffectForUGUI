@@ -1,3 +1,11 @@
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
+using UnityEditor;
+using UnityEditor.UI;
+using UnityEditorInternal;
+using UnityEngine;
+using UnityEngine.UI;
 #if UNITY_2021_2_OR_NEWER
 using UnityEditor.Overlays;
 #else
@@ -8,17 +16,6 @@ using UnityEditor.SceneManagement;
 #elif UNITY_2018_3_OR_NEWER
 using UnityEditor.Experimental.SceneManagement;
 #endif
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
-using Coffee.UIParticleExtensions;
-using UnityEditor;
-using UnityEditor.UI;
-using UnityEditorInternal;
-using UnityEngine;
-using UnityEngine.UI;
-using Object = UnityEngine.Object;
 
 namespace Coffee.UIExtensions
 {
@@ -29,9 +26,9 @@ namespace Coffee.UIExtensions
 #if UNITY_2021_2_OR_NEWER
 #if UNITY_2022_1_OR_NEWER
         [Overlay(typeof(SceneView), "Scene View/UI Particles", "UI Particles", true,
-         defaultDockPosition = DockPosition.Bottom,
-         defaultDockZone = DockZone.Floating,
-         defaultLayout = Layout.Panel)]
+            defaultDockPosition = DockPosition.Bottom,
+            defaultDockZone = DockZone.Floating,
+            defaultLayout = Layout.Panel)]
 #else
         [Overlay(typeof(SceneView), "Scene View/UI Particles", "UI Particles", true)]
 #endif
