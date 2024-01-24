@@ -339,6 +339,7 @@ namespace Coffee.UIExtensions
             }
             else if (_renderer.CanBakeMesh())
             {
+                _particleSystem.ValidateShape();
 #if PS_BAKE_API_V2
                 _renderer.BakeMesh(s_CombineInstances[0].mesh, bakeCamera,
                     ParticleSystemBakeMeshOptions.BakeRotationAndScale);
