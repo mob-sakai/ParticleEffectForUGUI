@@ -109,6 +109,29 @@ namespace Coffee.UIParticleExtensions
             return s_TmpParticles;
         }
 
+        public static void ValidateShape(this ParticleSystem self)
+        {
+            var shape = self.shape;
+            if (shape.enabled && shape.alignToDirection)
+            {
+                if (Mathf.Approximately(shape.scale.x * shape.scale.y * shape.scale.z, 0))
+                {
+                    if (Mathf.Approximately(shape.scale.x, 0))
+                    {
+                        shape.scale.Set(0.0001f, shape.scale.y, shape.scale.z);
+                    }
+                    else if (Mathf.Approximately(shape.scale.y, 0))
+                    {
+                        shape.scale.Set(shape.scale.x, 0.0001f, shape.scale.z);
+                    }
+                    else if (Mathf.Approximately(shape.scale.z, 0))
+                    {
+                        shape.scale.Set(shape.scale.x, shape.scale.y, 0.0001f);
+                    }
+                }
+            }
+        }
+
         public static bool CanBakeMesh(this ParticleSystemRenderer self)
         {
             // #69: Editor crashes when mesh is set to null when `ParticleSystem.RenderMode = Mesh`
