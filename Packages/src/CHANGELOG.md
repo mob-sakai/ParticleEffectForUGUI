@@ -1,3 +1,10 @@
+## [4.6.1](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.6.0...v4.6.1) (2024-01-26)
+
+
+### Bug Fixes
+
+* unintended scaling occurs when `AutoScalingMode=UIParticle` and `ScalingMode=Local` ([1627de1](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/1627de10eb1e742a015603ae9939071665a5bd89)), closes [#292](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/292)
+
 # [4.6.0](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.5.2...v4.6.0) (2024-01-26)
 
 
