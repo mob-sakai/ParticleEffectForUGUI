@@ -1,3 +1,20 @@
+# [4.6.0](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.5.2...v4.6.0) (2024-01-26)
+
+
+### Bug Fixes
+
+* fix abnormal mesh bounds error ([772bf50](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/772bf50d168982bd401c30e58172e0a60fbafe46)), closes [#213](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/213)
+* fix warning ([93d3919](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/93d3919b6fb6ac186b3e99f8baaef9a044f583f2))
+* fix warning ([8a78ec1](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/8a78ec13ad2aad9138a22b67c332871e064a38cc))
+
+
+### Features
+
+* "[generated]" GameObjects on the hierarchy is disturbing ([7c42421](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/7c4242150b591daf64390588afa27efa27368af3)), closes [#288](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/288)
+* add explicit dependencies ([9a0187a](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/9a0187a72a35d378ff7be965bfcb7475f423fe0f))
+* add icon ([0c1022c](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/0c1022c6224394713f62b41e5e4ef0c289610ae1))
+* remove samples ([f53a7fa](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/f53a7faed3ee73ac22d745a778284e818624b510))
+
 # [4.6.0-preview.1](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.5.2...v4.6.0-preview.1) (2024-01-24)
 
 
