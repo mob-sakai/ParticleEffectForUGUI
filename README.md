@@ -218,46 +218,46 @@ uiParticle.Stop();
 
 - **Baking mesh approach (=UIParticle)**  
   ![](https://user-images.githubusercontent.com/12690315/41765089-0302b9a2-763e-11e8-88b3-b6ffa306bbb0.gif)
-    - :+1: Rendered as is.
-    - :+1: Maskable.
-    - :+1: Sortable.
-    - :+1: Less objects.
+    - ✅ Rendered as is.
+    - ✅ Maskable.
+    - ✅ Sortable.
+    - ✅ Less objects.
 
 - **Do nothing (=Plain ParticleSystem)**  
   ![](https://user-images.githubusercontent.com/12690315/41765090-0329828a-763e-11e8-8d8a-f1d269ea3bc7.gif)
-    - :+1: Rendered as is.
-    - :-1: Looks like a glitch.
-    - :-1: Not maskable.
-    - :-1: Not sortable.
+    - ✅ Rendered as is.
+    - ❌ Looks like a glitch.
+    - ❌ Not maskable.
+    - ❌ Not sortable.
 
 - **Convert particle to UIVertex (=[UIParticleSystem][UIParticleSystem])**  
   ![](https://user-images.githubusercontent.com/12690315/41765088-02deb9c6-763e-11e8-98d0-9e0c1766ef39.gif)
-    - :+1: Maskable.
-    - :+1: Sortable.
-    - :-1: Adjustment is difficult.
-    - :-1: Requires UI shaders.
-    - :-1: Difficult to adjust scale.
-    - :-1: Force hierarchy scalling.
-    - :-1: Simulation results are incorrect.
-    - :-1: Trail, rotation of transform, time scaling are not supported.
-    - :-1: Generate heavy GC every frame.
+    - ✅ Maskable.
+    - ✅ Sortable.
+    - ❌ Adjustment is difficult.
+    - ❌ Requires UI shaders.
+    - ❌ Difficult to adjust scale.
+    - ❌ Force hierarchy scalling.
+    - ❌ Simulation results are incorrect.
+    - ❌ Trail, rotation of transform, time scaling are not supported.
+    - ❌ Generate heavy GC every frame.
 
 - **Use Canvas to sort (Sorting By Canvas )**  
   ![](https://user-images.githubusercontent.com/12690315/41765087-02b866ea-763e-11e8-8c33-081c9ad852f8.gif)
-    - :+1: Rendered as is.
-    - :+1: Sortable.
-    - :-1: You must to manage sorting orders.
-    - :-1: Not maskable.
-    - :-1: More batches.
-    - :-1: Requires Canvas.
+    - ✅ Rendered as is.
+    - ✅ Sortable.
+    - ❌ You must to manage sorting orders.
+    - ❌ Not maskable.
+    - ❌ More batches.
+    - ❌ Requires Canvas.
 
 - **Use RenderTexture**  
   ![](https://user-images.githubusercontent.com/12690315/41765085-0291b3e2-763e-11e8-827b-72e5ee9bc556.gif)
-    - :+1: Maskable.
-    - :+1: Sortable.
-    - :-1: Requires Camera and RenderTexture.
-    - :-1: Difficult to adjust position and size.
-    - :-1: Quality depends on the RenderTexture's setting.
+    - ✅ Maskable.
+    - ✅ Sortable.
+    - ❌ Requires Camera and RenderTexture.
+    - ❌ Difficult to adjust position and size.
+    - ❌ Quality depends on the RenderTexture's setting.
 
 [UIParticleSystem]: https://forum.unity.com/threads/free-script-particle-systems-in-ui-screen-space-overlay.406862/
 
