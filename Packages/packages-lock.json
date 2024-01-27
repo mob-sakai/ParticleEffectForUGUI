@@ -1,5 +1,37 @@
 {
   "dependencies": {
+    "com.coffee.development": {
+      "version": "https://github.com/mob-sakai/Coffee.Internal.git?path=Packages/Development",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "41a1b604af8769b600d9c75db02ff35ec30611dc"
+    },
+    "com.coffee.nano-monitor": {
+      "version": "https://github.com/mob-sakai/Coffee.Internal.git?path=Packages/NanoMonitor",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.unity.ugui": "1.0.0"
+      },
+      "hash": "41a1b604af8769b600d9c75db02ff35ec30611dc"
+    },
+    "com.coffee.simple-scene-navigator": {
+      "version": "https://github.com/mob-sakai/Coffee.Internal.git?path=Packages/SceneNavigator",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.unity.ugui": "1.0.0"
+      },
+      "hash": "41a1b604af8769b600d9c75db02ff35ec30611dc"
+    },
+    "com.coffee.sub-asset-editor": {
+      "version": "https://github.com/mob-sakai/SubAssetEditor.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "01464178eec1e4dbe741c11c9baeb94a151c99ee"
+    },
     "com.coffee.ui-particle": {
       "version": "file:src",
       "depth": 0,

@@ -6,7 +6,7 @@
 #endif
 using System;
 using System.Collections.Generic;
-using Coffee.UIParticleExtensions;
+using Coffee.UIParticleInternal;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Profiling;
@@ -28,7 +28,6 @@ namespace Coffee.UIExtensions
         private static readonly List<UIParticleRenderer> s_Renderers = new List<UIParticleRenderer>();
         private static readonly List<Color32> s_Colors = new List<Color32>();
         private static readonly Vector3[] s_Corners = new Vector3[4];
-        private Material _currentMaterialForRendering;
         private bool _delay;
         private int _index;
         private bool _isTrail;
@@ -117,9 +116,8 @@ namespace Coffee.UIExtensions
             }
             else
             {
-                ModifiedMaterial.Remove(_modifiedMaterial);
-                _modifiedMaterial = null;
-                _currentMaterialForRendering = null;
+                MaterialRepository.Release(ref _modifiedMaterial);
+                _materialForRendering = null;
             }
         }
 
@@ -135,17 +133,14 @@ namespace Coffee.UIExtensions
                     hideFlags = HideFlags.HideAndDontSave
                 };
             }
-
-            _currentMaterialForRendering = null;
         }
 
         protected override void OnDisable()
         {
             base.OnDisable();
 
-            ModifiedMaterial.Remove(_modifiedMaterial);
-            _modifiedMaterial = null;
-            _currentMaterialForRendering = null;
+            MaterialRepository.Release(ref _modifiedMaterial);
+            _materialForRendering = null;
         }
 
         public static UIParticleRenderer AddRenderer(UIParticle parent, int index)
@@ -177,12 +172,9 @@ namespace Coffee.UIExtensions
         /// </summary>
         public override Material GetModifiedMaterial(Material baseMaterial)
         {
-            _currentMaterialForRendering = null;
-
             if (!IsActive() || !_parent)
             {
-                ModifiedMaterial.Remove(_modifiedMaterial);
-                _modifiedMaterial = null;
+                MaterialRepository.Release(ref _modifiedMaterial);
                 return baseMaterial;
             }
 
@@ -192,23 +184,30 @@ namespace Coffee.UIExtensions
             var texture = mainTexture;
             if (texture == null && _parent.m_AnimatableProperties.Length == 0)
             {
-                ModifiedMaterial.Remove(_modifiedMaterial);
-                _modifiedMaterial = null;
+                MaterialRepository.Release(ref _modifiedMaterial);
                 return modifiedMaterial;
             }
 
             //
-            var id = _parent.m_AnimatableProperties.Length == 0 ? 0 : GetInstanceID();
+            var hash = new Hash128(
+                modifiedMaterial ? (uint)modifiedMaterial.GetInstanceID() : 0,
+                texture ? (uint)texture.GetInstanceID() : 0,
+                0 < _parent.m_AnimatableProperties.Length ? (uint)GetInstanceID() : 0,
 #if UNITY_EDITOR
-            var props = EditorJsonUtility.ToJson(modifiedMaterial).GetHashCode();
+                (uint)EditorJsonUtility.ToJson(modifiedMaterial).GetHashCode()
 #else
-            var props = 0;
+                0
 #endif
-            modifiedMaterial = ModifiedMaterial.Add(modifiedMaterial, texture, id, props);
-            ModifiedMaterial.Remove(_modifiedMaterial);
-            _modifiedMaterial = modifiedMaterial;
+            );
+            if (!MaterialRepository.Valid(hash, _modifiedMaterial))
+            {
+                MaterialRepository.Get(hash, ref _modifiedMaterial, () => new Material(modifiedMaterial)
+                {
+                    hideFlags = HideFlags.HideAndDontSave
+                });
+            }
 
-            return modifiedMaterial;
+            return _modifiedMaterial;
         }
 
         public void Set(UIParticle parent, ParticleSystem ps, bool isTrail)
@@ -418,15 +417,17 @@ namespace Coffee.UIExtensions
                     Profiler.EndSample();
                 }
 
-                GetComponents(typeof(IMeshModifier), s_Components);
-                for (var i = 0; i < s_Components.Count; i++)
-                {
-#pragma warning disable CS0618 // Type or member is obsolete
-                    ((IMeshModifier)s_Components[i]).ModifyMesh(workerMesh);
-#pragma warning restore CS0618 // Type or member is obsolete
-                }
+                var components = ListPool<Component>.Rent();
+                GetComponents(typeof(IMeshModifier), components);
 
-                s_Components.Clear();
+#pragma warning disable CS0618 // Type or member is obsolete
+                for (var i = 0; i < components.Count; i++)
+                {
+                    ((IMeshModifier)components[i]).ModifyMesh(workerMesh);
+                }
+#pragma warning restore CS0618 // Type or member is obsolete
+
+                ListPool<Component>.Return(ref components);
             }
 
             Profiler.EndSample();
