@@ -1,96 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Coffee.UIParticleExtensions
+namespace Coffee.UIParticleInternal
 {
-    public static class Color32Extensions
-    {
-        private static byte[] s_LinearToGammaLut;
-
-        public static byte LinearToGamma(this byte self)
-        {
-            if (s_LinearToGammaLut == null)
-            {
-                s_LinearToGammaLut = new byte[256];
-                for (var i = 0; i < 256; i++)
-                {
-                    s_LinearToGammaLut[i] = (byte)(Mathf.LinearToGammaSpace(i / 255f) * 255f);
-                }
-            }
-
-            return s_LinearToGammaLut[self];
-        }
-    }
-
-    public static class Vector3Extensions
-    {
-        public static Vector3 Inverse(this Vector3 self)
-        {
-            self.x = Mathf.Approximately(self.x, 0) ? 1 : 1 / self.x;
-            self.y = Mathf.Approximately(self.y, 0) ? 1 : 1 / self.y;
-            self.z = Mathf.Approximately(self.z, 0) ? 1 : 1 / self.z;
-            return self;
-        }
-
-        public static Vector3 GetScaled(this Vector3 self, Vector3 other1)
-        {
-            self.Scale(other1);
-            return self;
-        }
-
-        public static Vector3 GetScaled(this Vector3 self, Vector3 other1, Vector3 other2)
-        {
-            self.Scale(other1);
-            self.Scale(other2);
-            return self;
-        }
-
-        public static Vector3 GetScaled(this Vector3 self, Vector3 other1, Vector3 other2, Vector3 other3)
-        {
-            self.Scale(other1);
-            self.Scale(other2);
-            self.Scale(other3);
-            return self;
-        }
-
-        public static bool IsVisible(this Vector3 self)
-        {
-            return 0 < Mathf.Abs(self.x * self.y * self.z);
-        }
-    }
-
-    internal static class SpriteExtensions
-    {
-#if UNITY_EDITOR
-        private static readonly Type s_SpriteEditorExtensionType =
-            Type.GetType("UnityEditor.Experimental.U2D.SpriteEditorExtension, UnityEditor")
-            ?? Type.GetType("UnityEditor.U2D.SpriteEditorExtension, UnityEditor");
-
-        private static readonly MethodInfo s_GetActiveAtlasTextureMethodInfo = s_SpriteEditorExtensionType
-            .GetMethod("GetActiveAtlasTexture", BindingFlags.Static | BindingFlags.NonPublic);
-
-        public static Texture2D GetActualTexture(this Sprite self)
-        {
-            if (!self) return null;
-
-            if (Application.isPlaying) return self.texture;
-            var ret = s_GetActiveAtlasTextureMethodInfo.Invoke(null, new object[] { self }) as Texture2D;
-            return ret
-                ? ret
-                : self.texture;
-        }
-#else
-        internal static Texture2D GetActualTexture(this Sprite self)
-        {
-            return self ? self.texture : null;
-        }
-#endif
-    }
-
-    public static class ParticleSystemExtensions
+    internal static class ParticleSystemExtensions
     {
         private static ParticleSystem.Particle[] s_TmpParticles = new ParticleSystem.Particle[2048];
 
@@ -250,59 +165,11 @@ namespace Coffee.UIParticleExtensions
 
         public static void Exec(this List<ParticleSystem> self, Action<ParticleSystem> action)
         {
-            self.RemoveAll(p => !p);
-            self.ForEach(action);
-        }
-    }
-
-    internal static class Misc
-    {
-        public static void Destroy(Object obj)
-        {
-            if (!obj) return;
-#if UNITY_EDITOR
-            if (!Application.isPlaying)
+            foreach (var p in self)
             {
-                Object.DestroyImmediate(obj);
-            }
-            else
-#endif
-            {
-                Object.Destroy(obj);
+                if (!p) continue;
+                action.Invoke(p);
             }
         }
-
-        public static void DestroyImmediate(Object obj)
-        {
-            if (!obj) return;
-#if UNITY_EDITOR
-            if (Application.isEditor)
-            {
-                Object.DestroyImmediate(obj);
-            }
-            else
-#endif
-            {
-                Object.Destroy(obj);
-            }
-        }
-
-#if !UNITY_2021_2_OR_NEWER && !UNITY_2020_3_45 && !UNITY_2020_3_46 && !UNITY_2020_3_47 && !UNITY_2020_3_48
-        public static T GetComponentInParent<T>(this Component self, bool includeInactive) where T : Component
-        {
-            if (!self) return null;
-            if (!includeInactive) return self.GetComponentInParent<T>();
-
-            var current = self.transform;
-            while (current)
-            {
-                var component = current.GetComponent<T>();
-                if (component) return component;
-                current = current.parent;
-            }
-
-            return null;
-        }
-#endif
     }
 }
