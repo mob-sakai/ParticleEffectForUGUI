@@ -6,7 +6,6 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Rendering;
 using UnityEngine.Serialization;
-using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 [assembly: InternalsVisibleTo("Coffee.UIParticle.Editor")]
@@ -19,7 +18,7 @@ namespace Coffee.UIExtensions
     [ExecuteAlways]
     [RequireComponent(typeof(RectTransform))]
     [RequireComponent(typeof(CanvasRenderer))]
-    public class UIParticle : MaskableGraphic, ISerializationCallbackReceiver
+    public class UIParticle : UIBehaviour
     {
         public enum AutoScalingMode
         {
@@ -43,18 +42,18 @@ namespace Coffee.UIExtensions
             Absolute
         }
 
+        [SerializeField]
+        private bool m_Maskable = true;
+
         [HideInInspector]
         [SerializeField]
+        [Obsolete]
         internal bool m_IsTrail;
 
         [HideInInspector]
-        [FormerlySerializedAs("m_IgnoreParent")]
         [SerializeField]
-        private bool m_IgnoreCanvasScaler;
-
-        [HideInInspector]
-        [SerializeField]
-        private bool m_AbsoluteMode;
+        [Obsolete]
+        internal bool m_AbsoluteMode;
 
         [Tooltip("Particle effect scale")]
         [SerializeField]
@@ -91,30 +90,55 @@ namespace Coffee.UIExtensions
         [SerializeField]
         private PositionMode m_PositionMode = PositionMode.Relative;
 
+        [FormerlySerializedAs("m_IgnoreParent")]
+        [FormerlySerializedAs("m_IgnoreCanvasScaler")]
         [SerializeField]
         [Tooltip("Prevent the root-Canvas scale from affecting the hierarchy-scaled ParticleSystem.")]
-        private bool m_AutoScaling = true;
+        [Obsolete]
+        internal bool m_AutoScaling;
 
         [SerializeField]
         [Tooltip("Transform: Transform.lossyScale (=world scale) will be set to (1, 1, 1)." +
                  "UIParticle: UIParticle.scale will be adjusted.")]
         private AutoScalingMode m_AutoScalingMode = AutoScalingMode.Transform;
 
-        [SerializeField]
-        private bool m_ResetScaleOnEnable;
-
         private readonly List<UIParticleRenderer> _renderers = new List<UIParticleRenderer>();
+        private Canvas _canvas;
         private int _groupId;
         private Camera _orthoCamera;
         private DrivenRectTransformTracker _tracker;
 
-        /// <summary>
-        /// Should this graphic be considered a target for ray-casting?
-        /// </summary>
-        public override bool raycastTarget
+        public RectTransform rectTransform => transform as RectTransform;
+
+        public Canvas canvas
         {
-            get => false;
-            set { }
+            get
+            {
+                if (_canvas) return _canvas;
+
+                var tr = transform;
+                while (tr && !_canvas)
+                {
+                    if (tr.TryGetComponent(out _canvas)) return _canvas;
+                    tr = tr.parent;
+                }
+
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Does this graphic allow masking.
+        /// </summary>
+        public bool maskable
+        {
+            get => m_Maskable;
+            set
+            {
+                if (value == m_Maskable) return;
+                m_Maskable = value;
+                UpdateRendererMaterial();
+            }
         }
 
         /// <summary>
@@ -269,8 +293,6 @@ namespace Coffee.UIExtensions
             }
         }
 
-        public override Material materialForRendering => null;
-
         /// <summary>
         /// Paused.
         /// </summary>
@@ -285,8 +307,8 @@ namespace Coffee.UIExtensions
             ResetGroupId();
             UpdateTracker();
             UIParticleUpdater.Register(this);
-            RegisterDirtyMaterialCallback(UpdateRendererMaterial);
 
+            //
             if (0 < particles.Count)
             {
                 RefreshParticles(particles);
@@ -296,14 +318,7 @@ namespace Coffee.UIExtensions
                 RefreshParticles();
             }
 
-            base.OnEnable();
-
-            // Reset scale for upgrade.
-            if (m_ResetScaleOnEnable)
-            {
-                m_ResetScaleOnEnable = false;
-                transform.localScale = Vector3.one;
-            }
+            UpdateRendererMaterial();
         }
 
         /// <summary>
@@ -314,9 +329,15 @@ namespace Coffee.UIExtensions
             UpdateTracker();
             UIParticleUpdater.Unregister(this);
             _renderers.ForEach(r => r.Reset());
-            UnregisterDirtyMaterialCallback(UpdateRendererMaterial);
+            _canvas = null;
+        }
 
-            base.OnDisable();
+        /// <summary>
+        /// Called when the state of the parent Canvas is changed.
+        /// </summary>
+        protected override void OnCanvasHierarchyChanged()
+        {
+            _canvas = null;
         }
 
         /// <summary>
@@ -326,68 +347,61 @@ namespace Coffee.UIExtensions
         {
         }
 
+        /// <summary>
+        /// This function is called when a direct or indirect parent of the transform of the GameObject has changed.
+        /// </summary>
+        protected override void OnTransformParentChanged()
+        {
+            _canvas = null;
+        }
+
 #if UNITY_EDITOR
         protected override void OnValidate()
         {
             base.OnValidate();
             UpdateTracker();
+            UpdateRendererMaterial();
         }
 #endif
 
-        void ISerializationCallbackReceiver.OnBeforeSerialize()
-        {
-        }
-
-        void ISerializationCallbackReceiver.OnAfterDeserialize()
-        {
-            if (m_IgnoreCanvasScaler || m_AutoScaling)
-            {
-                m_IgnoreCanvasScaler = false;
-                m_AutoScaling = false;
-                m_AutoScalingMode = AutoScalingMode.Transform;
-                m_ResetScaleOnEnable = true;
-
-#if UNITY_EDITOR
-                EditorApplication.delayCall += () =>
-                {
-                    if (!this || !gameObject || !transform || Application.isPlaying) return;
-                    transform.localScale = Vector3.one;
-                    m_ResetScaleOnEnable = false;
-                    EditorUtility.SetDirty(this);
-                };
-#endif
-            }
-
-            if (m_AbsoluteMode)
-            {
-                m_AbsoluteMode = false;
-                m_PositionMode = PositionMode.Absolute;
-            }
-        }
-
+        /// <summary>
+        /// Play the ParticleSystems.
+        /// </summary>
         public void Play()
         {
             particles.Exec(p => p.Simulate(0, false, true));
             isPaused = false;
         }
 
+        /// <summary>
+        /// Pause the ParticleSystems.
+        /// </summary>
         public void Pause()
         {
             particles.Exec(p => p.Pause());
             isPaused = true;
         }
 
+        /// <summary>
+        /// Unpause the ParticleSystems.
+        /// </summary>
         public void Resume()
         {
             isPaused = false;
         }
 
+        /// <summary>
+        /// Stop the ParticleSystems.
+        /// </summary>
         public void Stop()
         {
             particles.Exec(p => p.Stop());
             isPaused = true;
         }
 
+        /// <summary>
+        /// Start emission of the ParticleSystems.
+        /// </summary>
         public void StartEmission()
         {
             particles.Exec(p =>
@@ -397,6 +411,9 @@ namespace Coffee.UIExtensions
             });
         }
 
+        /// <summary>
+        /// Stop emission of the ParticleSystems.
+        /// </summary>
         public void StopEmission()
         {
             particles.Exec(p =>
@@ -406,24 +423,34 @@ namespace Coffee.UIExtensions
             });
         }
 
+        /// <summary>
+        /// Clear the particles of the ParticleSystems.
+        /// </summary>
         public void Clear()
         {
             particles.Exec(p => p.Clear());
             isPaused = true;
         }
 
+        /// <summary>
+        /// Refresh UIParticle using the ParticleSystem instance.
+        /// </summary>
         public void SetParticleSystemInstance(GameObject instance)
         {
             SetParticleSystemInstance(instance, true);
         }
 
+        /// <summary>
+        /// Refresh UIParticle using the ParticleSystem instance.
+        /// </summary>
         public void SetParticleSystemInstance(GameObject instance, bool destroyOldParticles)
         {
             if (!instance) return;
 
-            foreach (Transform child in transform)
+            var childCount = transform.childCount;
+            for (var i = 0; i < childCount; i++)
             {
-                var go = child.gameObject;
+                var go = transform.GetChild(i).gameObject;
                 go.SetActive(false);
                 if (destroyOldParticles)
                 {
@@ -438,6 +465,10 @@ namespace Coffee.UIExtensions
             RefreshParticles(instance);
         }
 
+        /// <summary>
+        /// Refresh UIParticle using the prefab.
+        /// The prefab is automatically instantiated.
+        /// </summary>
         public void SetParticleSystemPrefab(GameObject prefab)
         {
             if (!prefab) return;
@@ -445,16 +476,31 @@ namespace Coffee.UIExtensions
             SetParticleSystemInstance(Instantiate(prefab.gameObject), true);
         }
 
+        /// <summary>
+        /// Refresh UIParticle.
+        /// Collect ParticleSystems under the GameObject and refresh the UIParticle.
+        /// </summary>
         public void RefreshParticles()
         {
             RefreshParticles(gameObject);
         }
 
+        /// <summary>
+        /// Refresh UIParticle.
+        /// Collect ParticleSystems under the GameObject and refresh the UIParticle.
+        /// </summary>
         private void RefreshParticles(GameObject root)
         {
             if (!root) return;
             root.GetComponentsInChildren(true, particles);
-            particles.RemoveAll(x => x.GetComponentInParent<UIParticle>(true) != this);
+            for (var i = particles.Count - 1; 0 <= i; i--)
+            {
+                var ps = particles[i];
+                if (!ps || ps.GetComponentInParent<UIParticle>(true) != this)
+                {
+                    particles.RemoveAt(i);
+                }
+            }
 
             for (var i = 0; i < particles.Count; i++)
             {
@@ -469,31 +515,39 @@ namespace Coffee.UIExtensions
             RefreshParticles(particles);
         }
 
-        public void RefreshParticles(List<ParticleSystem> particles)
+        /// <summary>
+        /// Refresh UIParticle using a list of ParticleSystems.
+        /// </summary>
+        public void RefreshParticles(List<ParticleSystem> particleSystems)
         {
+            // Collect children UIParticleRenderer components.
             // #246: Nullptr exceptions when using nested UIParticle components in hierarchy
             _renderers.Clear();
-            foreach (Transform child in transform)
+            var childCount = transform.childCount;
+            for (var i = 0; i < childCount; i++)
             {
-                var uiParticleRenderer = child.GetComponent<UIParticleRenderer>();
-
-                if (uiParticleRenderer != null)
+                var child = transform.GetChild(i);
+                if (child.TryGetComponent(out UIParticleRenderer uiParticleRenderer))
                 {
                     _renderers.Add(uiParticleRenderer);
                 }
             }
 
+            // Reset the UIParticleRenderer components.
             for (var i = 0; i < _renderers.Count; i++)
             {
                 _renderers[i].Reset(i);
             }
 
+            // Set the ParticleSystem to the UIParticleRenderer. If the trail is enabled, set it additionally.
             var j = 0;
-            for (var i = 0; i < particles.Count; i++)
+            for (var i = 0; i < particleSystems.Count; i++)
             {
-                var ps = particles[i];
+                var ps = particleSystems[i];
                 if (!ps) continue;
                 GetRenderer(j++).Set(this, ps, false);
+
+                // If the trail is enabled, set it additionally.
                 if (ps.trails.enabled)
                 {
                     GetRenderer(j++).Set(this, ps, true);
@@ -521,11 +575,10 @@ namespace Coffee.UIExtensions
             for (var i = 0; i < _renderers.Count; i++)
             {
                 var r = _renderers[i];
-                if (!r)
-                {
-                    RefreshParticles(particles);
-                    break;
-                }
+                if (r) continue;
+
+                RefreshParticles(particles);
+                break;
             }
 
             var bakeCamera = GetBakeCamera();
@@ -533,6 +586,7 @@ namespace Coffee.UIExtensions
             {
                 var r = _renderers[i];
                 if (!r) continue;
+
                 r.UpdateMesh(bakeCamera);
             }
         }
@@ -542,17 +596,6 @@ namespace Coffee.UIExtensions
             _groupId = m_GroupId == m_GroupMaxId
                 ? m_GroupId
                 : Random.Range(m_GroupId, m_GroupMaxId + 1);
-        }
-
-        protected override void UpdateMaterial()
-        {
-        }
-
-        /// <summary>
-        /// Call to update the geometry of the Graphic onto the CanvasRenderer.
-        /// </summary>
-        protected override void UpdateGeometry()
-        {
         }
 
         private void UpdateRendererMaterial()
@@ -621,8 +664,7 @@ namespace Coffee.UIExtensions
             }
 
             //
-            var size = ((RectTransform)root.transform).rect.size;
-            _orthoCamera.orthographicSize = Mathf.Max(size.x, size.y) * root.scaleFactor;
+            _orthoCamera.orthographicSize = 10;
             _orthoCamera.transform.SetPositionAndRotation(new Vector3(0, 0, -1000), Quaternion.identity);
             _orthoCamera.orthographic = true;
             _orthoCamera.farClipPlane = 2000f;
@@ -633,7 +675,7 @@ namespace Coffee.UIExtensions
         private void UpdateTracker()
         {
 #pragma warning disable CS0618 // Type or member is obsolete
-            if (!enabled || !autoScaling || autoScalingMode != AutoScalingMode.Transform)
+            if (!enabled || autoScalingMode != AutoScalingMode.Transform)
 #pragma warning restore CS0618 // Type or member is obsolete
             {
                 _tracker.Clear();

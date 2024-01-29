@@ -32,6 +32,7 @@ namespace Coffee.UIExtensions
         private int _index;
         private bool _isTrail;
         private Bounds _lastBounds;
+        private Material _materialForRendering;
         private Material _modifiedMaterial;
         private UIParticle _parent;
         private ParticleSystem _particleSystem;
@@ -90,6 +91,19 @@ namespace Coffee.UIExtensions
             }
         }
 
+        public override Material materialForRendering
+        {
+            get
+            {
+                if (!_materialForRendering)
+                {
+                    _materialForRendering = base.materialForRendering;
+                }
+
+                return _materialForRendering;
+            }
+        }
+
         public void Reset(int index = -1)
         {
             if (_renderer)
@@ -109,8 +123,7 @@ namespace Coffee.UIExtensions
             if (this && isActiveAndEnabled)
             {
                 material = null;
-                workerMesh.Clear();
-                canvasRenderer.SetMesh(workerMesh);
+                canvasRenderer.Clear();
                 _lastBounds = new Bounds();
                 enabled = false;
             }
@@ -432,64 +445,47 @@ namespace Coffee.UIExtensions
 
             Profiler.EndSample();
 
+            // Update animatable material properties.
+            Profiler.BeginSample("[UIParticleRenderer] Update Animatable Material Properties");
+            UpdateMaterialProperties();
+            Profiler.EndSample();
 
             // Get grouped renderers.
+            Profiler.BeginSample("[UIParticleRenderer] Set Mesh");
             s_Renderers.Clear();
             if (_parent.useMeshSharing)
             {
                 UIParticleUpdater.GetGroupedRenderers(_parent.groupId, _index, s_Renderers);
             }
 
-            // Set mesh to the CanvasRenderer.
-            Profiler.BeginSample("[UIParticleRenderer] Set Mesh");
             for (var i = 0; i < s_Renderers.Count; i++)
             {
                 if (s_Renderers[i] == this) continue;
+
                 s_Renderers[i].canvasRenderer.SetMesh(workerMesh);
                 s_Renderers[i]._lastBounds = _lastBounds;
+                s_Renderers[i].canvasRenderer.materialCount = 1;
+                s_Renderers[i].canvasRenderer.SetMaterial(materialForRendering, 0);
             }
 
-            if (!_parent.canRender)
+            if (_parent.canRender)
+            {
+                canvasRenderer.SetMesh(workerMesh);
+            }
+            else
             {
                 workerMesh.Clear();
-            }
-
-            canvasRenderer.SetMesh(workerMesh);
-            Profiler.EndSample();
-
-            // Update animatable material properties.
-            Profiler.BeginSample("[UIParticleRenderer] Update Animatable Material Properties");
-
-#if UNITY_EDITOR
-            if (_modifiedMaterial != material)
-            {
-                _renderer.GetSharedMaterials(s_Materials);
-                material = s_Materials[_isTrail ? 1 : 0];
-                s_Materials.Clear();
-                SetMaterialDirty();
-            }
-#endif
-
-            UpdateMaterialProperties();
-            if (_parent.useMeshSharing)
-            {
-                if (!_currentMaterialForRendering)
-                {
-                    _currentMaterialForRendering = materialForRendering;
-                }
-
-                for (var i = 0; i < s_Renderers.Count; i++)
-                {
-                    if (s_Renderers[i] == this) continue;
-
-                    s_Renderers[i].canvasRenderer.materialCount = 1;
-                    s_Renderers[i].canvasRenderer.SetMaterial(_currentMaterialForRendering, 0);
-                }
             }
 
             Profiler.EndSample();
 
             s_Renderers.Clear();
+        }
+
+        public override void SetMaterialDirty()
+        {
+            _materialForRendering = null;
+            base.SetMaterialDirty();
         }
 
         /// <summary>
@@ -694,12 +690,12 @@ namespace Coffee.UIExtensions
             if (s_Mpb.isEmpty) return;
 
             // #41: Copy the value from MaterialPropertyBlock to CanvasRenderer
-            if (!_modifiedMaterial) return;
+            if (!materialForRendering) return;
 
             for (var i = 0; i < _parent.m_AnimatableProperties.Length; i++)
             {
                 var ap = _parent.m_AnimatableProperties[i];
-                ap.UpdateMaterialProperties(_modifiedMaterial, s_Mpb);
+                ap.UpdateMaterialProperties(materialForRendering, s_Mpb);
             }
 
             s_Mpb.Clear();
