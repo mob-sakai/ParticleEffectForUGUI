@@ -16,4 +16,5 @@ MonoBehaviour:
   m_EnabledInEditor: 1
   m_AlwaysIncludeAssembly: 1
   m_InstantiateOnLoad: 1
-  m_Prefab: {fileID: 0}
+  m_Prefab: {fileID: 7211429669315726685, guid: 46deb9632f6a14713b8460bd01e879c9,
+    type: 3}

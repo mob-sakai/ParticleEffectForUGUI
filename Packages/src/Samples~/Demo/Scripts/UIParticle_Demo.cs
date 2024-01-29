@@ -155,26 +155,23 @@ namespace Coffee.UIExtensions.Demo
         {
             if (!flag) return;
 
-            var canvas = FindObjectOfType<Canvas>();
-            canvas.renderMode = RenderMode.ScreenSpaceCamera;
-            canvas.renderMode = RenderMode.WorldSpace;
-            canvas.transform.rotation = Quaternion.Euler(new Vector3(0, 10, 0));
+            m_RootCanvas.renderMode = RenderMode.ScreenSpaceCamera;
+            m_RootCanvas.renderMode = RenderMode.WorldSpace;
+            m_RootCanvas.transform.rotation = Quaternion.Euler(new Vector3(0, 10, 0));
         }
 
         public void Canvas_CameraSpace(bool flag)
         {
             if (!flag) return;
 
-            var canvas = FindObjectOfType<Canvas>();
-            canvas.renderMode = RenderMode.ScreenSpaceCamera;
+            m_RootCanvas.renderMode = RenderMode.ScreenSpaceCamera;
         }
 
         public void Canvas_Overlay(bool flag)
         {
             if (!flag) return;
 
-            var canvas = FindObjectOfType<Canvas>();
-            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            m_RootCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
         }
     }
 }
