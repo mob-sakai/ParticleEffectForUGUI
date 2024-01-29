@@ -326,7 +326,9 @@ namespace Coffee.UIExtensions
 
             // UIParticle for trail should be removed.
             var label = "This UIParticle component should be removed. The UIParticle for trails is no longer needed.";
+#pragma warning disable CS0612
             if (FixButton(current.m_IsTrail, label))
+#pragma warning restore CS0612
             {
                 DestroyUIParticle(current);
             }
