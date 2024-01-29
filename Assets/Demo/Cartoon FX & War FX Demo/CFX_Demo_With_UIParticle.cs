@@ -11,9 +11,9 @@ namespace Coffee.UIExtensions.Demo
     public class CFX_Demo_With_UIParticle : MonoBehaviour
     {
         private MonoBehaviour _demo;
+        private string _demoType;
         private Toggle _spawnOnUI;
         private UIParticle _uiParticle;
-        private string _demoType;
 
         // Start is called before the first frame update
         private void Start()
@@ -59,6 +59,7 @@ namespace Coffee.UIExtensions.Demo
                     c.enabled = false;
                 }
             }
+
             _uiParticle.SetParticleSystemInstance(instance, true);
         }
 
