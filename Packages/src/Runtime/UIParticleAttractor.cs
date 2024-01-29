@@ -86,7 +86,11 @@ namespace Coffee.UIExtensions
         /// <summary>
         /// The target ParticleSystem to attract.
         /// </summary>
+#if UNITY_EDITOR
         public new ParticleSystem particleSystem
+#else
+        public ParticleSystem particleSystem
+#endif
         {
             get => m_ParticleSystem;
             set
