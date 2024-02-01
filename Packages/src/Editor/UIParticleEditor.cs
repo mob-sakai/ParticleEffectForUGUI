@@ -6,10 +6,13 @@ using UnityEditor.UI;
 using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.UI;
+using Coffee.UIParticleExtensions;
 #if UNITY_2021_2_OR_NEWER
 using UnityEditor.Overlays;
 #else
+using System;
 using System.Reflection;
+using Object = UnityEngine.Object;
 #endif
 #if UNITY_2021_2_OR_NEWER
 using UnityEditor.SceneManagement;
