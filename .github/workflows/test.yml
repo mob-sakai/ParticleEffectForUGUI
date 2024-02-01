@@ -1,5 +1,7 @@
 # Required secrets
 #   UNITY_LICENSE: The contents of Unity license file
+#   UNITY_EMAIL: Unity user email to login
+#   UNITY_PASSWORD: Unity user password to login
 name: 🧪 Test
 
 env:
@@ -34,7 +36,7 @@ jobs:
           echo "==== Target Unity Versions ===="
           LATEST_VERSIONS=`npx unity-changeset list --versions --latest-patch --min ${MINIMUM_VERSION} --json --all`
           ADDITIONAL_VERSIONS=`npx unity-changeset list --versions --grep '0f' --min ${MINIMUM_VERSION} --json`
-          
+
           VERSIONS=`echo "[${LATEST_VERSIONS}, ${ADDITIONAL_VERSIONS}]" \
             | jq -c '[ flatten | sort | unique | .[] | select( test("${{ env.EXCLUDE_FILTER }}") | not ) ]'`
           echo "unityVersions=${VERSIONS}" | tee $GITHUB_OUTPUT
@@ -42,6 +44,10 @@ jobs:
   test:
     name: 🧪 Run tests
     runs-on: ubuntu-latest
+    env:
+      UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+      UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+      UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
     permissions:
       checks: write
       contents: read
@@ -55,7 +61,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: 📥 Cache library
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: Library
           key: Library-${{ matrix.unityVersion }}-${{ github.sha }}
@@ -64,10 +70,8 @@ jobs:
             Library-
 
       - name: 🛠️ Build Unity Project
-        uses: game-ci/unity-builder@v3
-        timeout-minutes: 30
-        env:
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        uses: game-ci/unity-builder@v4
+        timeout-minutes: 45
         with:
           customImage: ghcr.io/mob-sakai/unity3d:${{ matrix.unityVersion }}
           targetPlatform: StandaloneLinux64
@@ -75,10 +79,8 @@ jobs:
           customParameters: -nographics
 
       - name: 🧪 Run tests
-        uses: game-ci/unity-test-runner@v3
-        timeout-minutes: 30
-        env:
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        uses: game-ci/unity-test-runner@v4
+        timeout-minutes: 45
         with:
           customImage: ghcr.io/mob-sakai/unity3d:${{ matrix.unityVersion }}
           # unityVersion: ${{ matrix.unityVersion }}
