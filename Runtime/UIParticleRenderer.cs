@@ -328,7 +328,8 @@ namespace Coffee.UIExtensions
 
             // Bake mesh.
             Profiler.BeginSample("[UIParticleRenderer] Bake Mesh");
-            if (_isTrail && _parent.canSimulate && 0 < s_CombineInstances[0].mesh.vertexCount)
+            s_CombineInstances[0].mesh.Clear(false);
+            if (_isTrail && _parent.canSimulate && 0 < _particleSystem.particleCount)
             {
 #if PS_BAKE_API_V2
                 _renderer.BakeTrailsMesh(s_CombineInstances[0].mesh, bakeCamera,
@@ -337,7 +338,7 @@ namespace Coffee.UIExtensions
                 _renderer.BakeTrailsMesh(s_CombineInstances[0].mesh, bakeCamera, true);
 #endif
             }
-            else if (_renderer.CanBakeMesh())
+            else if (!_isTrail && _renderer.CanBakeMesh())
             {
                 _particleSystem.ValidateShape();
 #if PS_BAKE_API_V2
@@ -346,10 +347,6 @@ namespace Coffee.UIExtensions
 #else
                 _renderer.BakeMesh(s_CombineInstances[0].mesh, bakeCamera, true);
 #endif
-            }
-            else
-            {
-                s_CombineInstances[0].mesh.Clear(false);
             }
 
             // Too many vertices to render.
