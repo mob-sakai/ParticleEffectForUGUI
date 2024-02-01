@@ -1,3 +1,12 @@
+## [4.6.2](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.6.1...v4.6.2) (2024-02-01)
+
+
+### Bug Fixes
+
+* fix compile error in Unity 2021.1 or older ([fcae60b](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/fcae60bf29079bac07463bd3a86f8644151d72ba))
+* fix demos ([ad20d12](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/ad20d128a2ad033d9f30b98f0a0dab6091f5aa19))
+* fix warning ([7fd4a8e](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/7fd4a8e343ce587dffa9db5ff186061b3ebb38a6))
+
 ## [4.6.1](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.6.0...v4.6.1) (2024-01-26)
 
 
