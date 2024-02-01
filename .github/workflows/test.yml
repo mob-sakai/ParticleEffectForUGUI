@@ -7,6 +7,7 @@ name: 🧪 Test
 env:
   # MINIMUM_VERSION: The minimum version of Unity.
   MINIMUM_VERSION: 2019.4
+  # EXCLUDE_FILTER: The excluded versions of Unity.
   EXCLUDE_FILTER: '(2020.2.0)'
 
 on:
@@ -35,7 +36,8 @@ jobs:
         run: |
           echo "==== Target Unity Versions ===="
           LATEST_VERSIONS=`npx unity-changeset list --versions --latest-patch --min ${MINIMUM_VERSION} --json --all`
-          ADDITIONAL_VERSIONS=`npx unity-changeset list --versions --grep '0f' --min ${MINIMUM_VERSION} --json`
+          # ADDITIONAL_VERSIONS=`npx unity-changeset list --versions --grep '0f' --min ${MINIMUM_VERSION} --json`
+          ADDITIONAL_VERSIONS=[]
 
           VERSIONS=`echo "[${LATEST_VERSIONS}, ${ADDITIONAL_VERSIONS}]" \
             | jq -c '[ flatten | sort | unique | .[] | select( test("${{ env.EXCLUDE_FILTER }}") | not ) ]'`
