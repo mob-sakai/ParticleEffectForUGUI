@@ -100,9 +100,6 @@ namespace Coffee.UIExtensions
                  "UIParticle: UIParticle.scale will be adjusted.")]
         private AutoScalingMode m_AutoScalingMode = AutoScalingMode.Transform;
 
-        [SerializeField]
-        private bool m_ResetScaleOnEnable;
-
         private readonly List<UIParticleRenderer> _renderers = new List<UIParticleRenderer>();
         private int _groupId;
         private Camera _orthoCamera;
@@ -297,13 +294,6 @@ namespace Coffee.UIExtensions
             }
 
             base.OnEnable();
-
-            // Reset scale for upgrade.
-            if (m_ResetScaleOnEnable)
-            {
-                m_ResetScaleOnEnable = false;
-                transform.localScale = Vector3.one;
-            }
         }
 
         /// <summary>
@@ -345,17 +335,6 @@ namespace Coffee.UIExtensions
                 m_IgnoreCanvasScaler = false;
                 m_AutoScaling = false;
                 m_AutoScalingMode = AutoScalingMode.Transform;
-                m_ResetScaleOnEnable = true;
-
-#if UNITY_EDITOR
-                EditorApplication.delayCall += () =>
-                {
-                    if (!this || !gameObject || !transform || Application.isPlaying) return;
-                    transform.localScale = Vector3.one;
-                    m_ResetScaleOnEnable = false;
-                    EditorUtility.SetDirty(this);
-                };
-#endif
             }
 
             if (m_AbsoluteMode)
