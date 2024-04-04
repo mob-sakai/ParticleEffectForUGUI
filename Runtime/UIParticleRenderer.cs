@@ -514,7 +514,8 @@ namespace Coffee.UIExtensions
             var scale = _parent.scale3DForCalc.GetScaled(_parent.parentScale);
 
             if (_parent.autoScalingMode == UIParticle.AutoScalingMode.UIParticle
-                && _particleSystem.main.scalingMode == ParticleSystemScalingMode.Local)
+                && _particleSystem.main.scalingMode == ParticleSystemScalingMode.Local
+                && _parent.canvas)
             {
                 scale = scale.GetScaled(_parent.canvas.transform.localScale);
             }
