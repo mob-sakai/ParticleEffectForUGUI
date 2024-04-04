@@ -1,3 +1,12 @@
+## [4.6.3](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.6.2...v4.6.3) (2024-04-04)
+
+
+### Bug Fixes
+
+* if only Trail Material is used, it will not be displayed ([2eff411](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/2eff411bd97eb4e6947d29a02b85b414bfdaee3a)), closes [#294](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/294)
+* if the UIParticle parents do not have Canvas, an exception is thrown in OnEnable ([e82c833](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/e82c833d04b819f103984931ba29a3616ef50908)), closes [#300](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/300)
+* particle size too small due to auto scaling ([2ec3748](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/2ec374833614d64406e7c3207ca5fe234a749dcb)), closes [#295](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/295)
+
 ## [4.6.2](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.6.1...v4.6.2) (2024-02-01)
 
 
