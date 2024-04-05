@@ -352,7 +352,6 @@ namespace Coffee.UIExtensions
             // Too many vertices to render.
             if (65535 <= s_CombineInstances[0].mesh.vertexCount)
             {
-                s_CombineInstances[0].mesh.Clear(false);
                 Debug.LogErrorFormat(this,
                     "Too many vertices to render. index={0}, isTrail={1}, vertexCount={2}(>=65535)",
                     _index,
