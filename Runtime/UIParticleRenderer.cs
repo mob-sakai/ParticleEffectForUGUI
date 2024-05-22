@@ -329,6 +329,14 @@ namespace Coffee.UIExtensions
             // Bake mesh.
             Profiler.BeginSample("[UIParticleRenderer] Bake Mesh");
             s_CombineInstances[0].mesh.Clear(false);
+
+            // Assertion failed on expression: 'ps->array_size()' #278
+            var extends = s_CombineInstances[0].mesh.bounds.extents.x;
+            if (!float.IsNaN(extends) && !float.IsInfinity(extends) && 0 < extends)
+            {
+                s_CombineInstances[0].mesh.RecalculateBounds();
+            }
+
             if (_isTrail && _parent.canSimulate && 0 < _particleSystem.particleCount)
             {
 #if PS_BAKE_API_V2
