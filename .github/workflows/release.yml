@@ -43,7 +43,6 @@ jobs:
           echo "🔖 New release version: '${{ steps.release.outputs.new_release_version }}'" | tee -a $GITHUB_STEP_SUMMARY
           echo "🔖 New release channel: '${{ steps.release.outputs.new_release_channel }}'" | tee -a $GITHUB_STEP_SUMMARY
           echo "🔖 New release git tag: '${{ steps.release.outputs.new_release_git_tag }}'" | tee -a $GITHUB_STEP_SUMMARY
-          echo '${{ steps.release.outputs.new_release_notes }}' | tee -a $GITHUB_STEP_SUMMARY
 
   merge-to-develop:
     if: needs.release.outputs.released == 'true'
