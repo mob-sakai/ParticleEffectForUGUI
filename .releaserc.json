@@ -1,8 +1,9 @@
 {
   "branches": [
     "release",
+    "release_v4",
     {
-      "name": "preview",
+      "name": "release_preview",
       "prerelease": true
     }
   ],
