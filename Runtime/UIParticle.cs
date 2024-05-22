@@ -109,7 +109,7 @@ namespace Coffee.UIExtensions
         private readonly List<UIParticleRenderer> _renderers = new List<UIParticleRenderer>();
         private Canvas _canvas;
         private int _groupId;
-        private Camera _orthoCamera;
+        private Camera _orthographicCamera;
         private DrivenRectTransformTracker _tracker;
 
         public RectTransform rectTransform => transform as RectTransform;
@@ -304,7 +304,7 @@ namespace Coffee.UIExtensions
 
         public Vector3 parentScale { get; private set; }
 
-        public Vector3 canvasScale { get; private set; }
+        private Vector3 canvasScale { get; set; }
 
         protected override void OnEnable()
         {
@@ -390,29 +390,44 @@ namespace Coffee.UIExtensions
 #pragma warning restore CS0612 // Type or member is obsolete
         }
 
+        /// <summary>
+        /// Play the ParticleSystems.
+        /// </summary>
         public void Play()
         {
             particles.Exec(p => p.Simulate(0, false, true));
             isPaused = false;
         }
 
+        /// <summary>
+        /// Pause the ParticleSystems.
+        /// </summary>
         public void Pause()
         {
             particles.Exec(p => p.Pause());
             isPaused = true;
         }
 
+        /// <summary>
+        /// Unpause the ParticleSystems.
+        /// </summary>
         public void Resume()
         {
             isPaused = false;
         }
 
+        /// <summary>
+        /// Stop the ParticleSystems.
+        /// </summary>
         public void Stop()
         {
             particles.Exec(p => p.Stop());
             isPaused = true;
         }
 
+        /// <summary>
+        /// Start emission of the ParticleSystems.
+        /// </summary>
         public void StartEmission()
         {
             particles.Exec(p =>
@@ -422,6 +437,9 @@ namespace Coffee.UIExtensions
             });
         }
 
+        /// <summary>
+        /// Stop emission of the ParticleSystems.
+        /// </summary>
         public void StopEmission()
         {
             particles.Exec(p =>
@@ -431,17 +449,26 @@ namespace Coffee.UIExtensions
             });
         }
 
+        /// <summary>
+        /// Clear the particles of the ParticleSystems.
+        /// </summary>
         public void Clear()
         {
             particles.Exec(p => p.Clear());
             isPaused = true;
         }
 
+        /// <summary>
+        /// Refresh UIParticle using the ParticleSystem instance.
+        /// </summary>
         public void SetParticleSystemInstance(GameObject instance)
         {
             SetParticleSystemInstance(instance, true);
         }
 
+        /// <summary>
+        /// Refresh UIParticle using the ParticleSystem instance.
+        /// </summary>
         public void SetParticleSystemInstance(GameObject instance, bool destroyOldParticles)
         {
             if (!instance) return;
@@ -464,6 +491,10 @@ namespace Coffee.UIExtensions
             RefreshParticles(instance);
         }
 
+        /// <summary>
+        /// Refresh UIParticle using the prefab.
+        /// The prefab is automatically instantiated.
+        /// </summary>
         public void SetParticleSystemPrefab(GameObject prefab)
         {
             if (!prefab) return;
@@ -471,11 +502,19 @@ namespace Coffee.UIExtensions
             SetParticleSystemInstance(Instantiate(prefab.gameObject), true);
         }
 
+        /// <summary>
+        /// Refresh UIParticle.
+        /// Collect ParticleSystems under the GameObject and refresh the UIParticle.
+        /// </summary>
         public void RefreshParticles()
         {
             RefreshParticles(gameObject);
         }
 
+        /// <summary>
+        /// Refresh UIParticle.
+        /// Collect ParticleSystems under the GameObject and refresh the UIParticle.
+        /// </summary>
         private void RefreshParticles(GameObject root)
         {
             if (!root) return;
@@ -622,8 +661,8 @@ namespace Coffee.UIExtensions
                 return root.worldCamera ? root.worldCamera : Camera.main;
             }
 
-            // When render mode is ScreenSpaceOverlay, use ortho-camera.
-            if (!_orthoCamera)
+            // When render mode is ScreenSpaceOverlay, use orthographic-camera.
+            if (!_orthographicCamera)
             {
                 // Find existing orthographic-camera.
                 var childCount = transform.childCount;
@@ -632,13 +671,13 @@ namespace Coffee.UIExtensions
                     if (transform.GetChild(i).TryGetComponent<Camera>(out var cam)
                         && cam.name == "[generated] UIParticleOverlayCamera")
                     {
-                        _orthoCamera = cam;
+                        _orthographicCamera = cam;
                         break;
                     }
                 }
 
-                // Create ortho-camera.
-                if (!_orthoCamera)
+                // Create orthographic-camera.
+                if (!_orthographicCamera)
                 {
                     var go = new GameObject("[generated] UIParticleOverlayCamera")
                     {
@@ -646,18 +685,18 @@ namespace Coffee.UIExtensions
                     };
                     go.SetActive(false);
                     go.transform.SetParent(transform, false);
-                    _orthoCamera = go.AddComponent<Camera>();
-                    _orthoCamera.enabled = false;
+                    _orthographicCamera = go.AddComponent<Camera>();
+                    _orthographicCamera.enabled = false;
                 }
             }
 
             //
-            _orthoCamera.orthographicSize = 10;
-            _orthoCamera.transform.SetPositionAndRotation(new Vector3(0, 0, -1000), Quaternion.identity);
-            _orthoCamera.orthographic = true;
-            _orthoCamera.farClipPlane = 2000f;
+            _orthographicCamera.orthographicSize = 10;
+            _orthographicCamera.transform.SetPositionAndRotation(new Vector3(0, 0, -1000), Quaternion.identity);
+            _orthographicCamera.orthographic = true;
+            _orthographicCamera.farClipPlane = 2000f;
 
-            return _orthoCamera;
+            return _orthographicCamera;
         }
 
         private void UpdateTracker()
