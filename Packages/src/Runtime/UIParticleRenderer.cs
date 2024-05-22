@@ -22,12 +22,10 @@ namespace Coffee.UIExtensions
     [AddComponentMenu("")]
     internal class UIParticleRenderer : MaskableGraphic
     {
-        private static readonly List<Component> s_Components = new List<Component>();
         private static readonly CombineInstance[] s_CombineInstances = { new CombineInstance() };
         private static readonly List<Material> s_Materials = new List<Material>(2);
         private static MaterialPropertyBlock s_Mpb;
-        private static readonly List<UIParticleRenderer> s_Renderers = new List<UIParticleRenderer>();
-        private static readonly List<Color32> s_Colors = new List<Color32>();
+        private static readonly List<UIParticleRenderer> s_Renderers = new List<UIParticleRenderer>(8);
         private static readonly Vector3[] s_Corners = new Vector3[4];
         private bool _delay;
         private int _index;
@@ -41,7 +39,7 @@ namespace Coffee.UIExtensions
         private Vector3 _prevPsPos;
         private Vector3 _prevScale;
         private Vector2Int _prevScreenSize;
-        private bool _prewarm;
+        private bool _preWarm;
         private ParticleSystemRenderer _renderer;
 
         public override Texture mainTexture => _isTrail ? null : _particleSystem.GetTextureForSprite();
@@ -233,13 +231,13 @@ namespace Coffee.UIExtensions
             gameObject.layer = parent.gameObject.layer;
 
             _particleSystem = ps;
-            _prewarm = _particleSystem.main.prewarm;
+            _preWarm = _particleSystem.main.prewarm;
 
 #if UNITY_EDITOR
             if (Application.isPlaying)
 #endif
             {
-                if (_particleSystem.isPlaying || _prewarm)
+                if (_particleSystem.isPlaying || _preWarm)
                 {
                     _particleSystem.Clear();
                     _particleSystem.Pause();
@@ -547,10 +545,7 @@ namespace Coffee.UIExtensions
                     return Matrix4x4.Scale(scale);
                 case ParticleSystemSimulationSpace.Custom:
                     return Matrix4x4.Translate(_particleSystem.main.customSimulationSpace.position.GetScaled(scale))
-                           //* Matrix4x4.Translate(wpos)
-                           * Matrix4x4.Scale(scale)
-                        //* Matrix4x4.Translate(-wpos)
-                        ;
+                           * Matrix4x4.Scale(scale);
                 default:
                     throw new NotSupportedException();
             }
@@ -566,7 +561,8 @@ namespace Coffee.UIExtensions
             var screenSize = new Vector2Int(Screen.width, Screen.height);
             var isWorldSpace = _particleSystem.IsWorldSpace();
             var canvasScale = _parent.canvas ? _parent.canvas.scaleFactor : 1f;
-            var resolutionChanged = _prevScreenSize != screenSize || _prevCanvasScale != canvasScale;
+            var resolutionChanged = _prevScreenSize != screenSize
+                                    || !Mathf.Approximately(_prevCanvasScale, canvasScale);
             if (resolutionChanged && isWorldSpace)
             {
                 // Update particle array size and get particles.
@@ -574,7 +570,7 @@ namespace Coffee.UIExtensions
                 var particles = ParticleSystemExtensions.GetParticleArray(size);
                 _particleSystem.GetParticles(particles, size);
 
-                // Resolusion resolver:
+                // Resolution resolver:
                 // (psPos / scale) / (prevPsPos / prevScale) -> psPos * scale.inv * prevPsPos.inv * prevScale
                 var modifier = psPos.GetScaled(
                     scale.Inverse(),
@@ -608,11 +604,11 @@ namespace Coffee.UIExtensions
                     ? Time.unscaledDeltaTime
                     : Time.deltaTime;
 
-            // Prewarm:
-            if (0 < deltaTime && _prewarm)
+            // Pre-warm:
+            if (0 < deltaTime && _preWarm)
             {
                 deltaTime += main.duration;
-                _prewarm = false;
+                _preWarm = false;
             }
 
             // get world position.
