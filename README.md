@@ -1,4 +1,4 @@
-# Particle Effect For UGUI (UI Particle)
+# <img alt="UIParticleIcon" src="https://github.com/mob-sakai/ParticleEffectForUGUI/assets/12690315/d76e105e-a840-4f61-a1f6-8cf311c0812d" width="26"/> Particle Effect For UGUI (UI Particle)
 
 This package provides a component to render particle effects for uGUI in Unity 2018.2 or later.  
 The particle rendering is maskable and sortable, without the need for an extra Camera, RenderTexture, or Canvas.
@@ -117,6 +117,16 @@ Or, use [UpmGitExtension](https://github.com/mob-sakai/UpmGitExtension) to insta
 
 <br><br>
 
+## ⚙ Upgrading from 3.x/4.x to 5.x
+
+### Breaking Changes
+
+- The default value of `UIParticle.scale` has been changed from `10` to `1`.
+- `UIParticle` no longer inherits from `MaskableGraphic`.
+- 
+
+<br><br>
+
 ## 🚀 Usage
 
 ### UIParticle Component
@@ -176,9 +186,10 @@ section.
 ### Script usage
 
 ```cs
-// Instant ParticleSystem prefab with UIParticle on runtime.
+// Instantiate ParticleSystem prefab with UIParticle on runtime.
 var go = GameObject.Instantiate(prefab);
 var uiParticle = go.AddComponent<UIParticle>();
+uiParticle.scale = 100;
 
 // Control by ParticleSystem.
 particleSystem.Play();
