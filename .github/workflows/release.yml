@@ -4,8 +4,9 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - preview
       - release
+      - release_preview
+      - release_v4
     tags-ignore:
       - "**"
 
@@ -22,7 +23,8 @@ jobs:
       released: ${{ steps.release.outputs.new_release_published }}
       tag: ${{ steps.release.outputs.new_release_git_tag }}
       version: ${{ steps.release.outputs.new_release_version }}
-      notes: ${{ steps.release.outputs.new_release_notes }}
+      merge_to: ${{ steps.summary.outputs.merge_to }}
+      split_to: ${{ steps.summary.outputs.split_to }}
     steps:
       - name: 🚚 Checkout (${{ github.ref_name }})
         uses: actions/checkout@v4
@@ -38,37 +40,49 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
 
-      - run: |
+      - id: summary
+        run: |
           echo "🔖 New release published: '${{ steps.release.outputs.new_release_published }}'" | tee -a $GITHUB_STEP_SUMMARY
           echo "🔖 New release version: '${{ steps.release.outputs.new_release_version }}'" | tee -a $GITHUB_STEP_SUMMARY
           echo "🔖 New release channel: '${{ steps.release.outputs.new_release_channel }}'" | tee -a $GITHUB_STEP_SUMMARY
           echo "🔖 New release git tag: '${{ steps.release.outputs.new_release_git_tag }}'" | tee -a $GITHUB_STEP_SUMMARY
+          
+          if [ '${{ steps.release.outputs.new_release_published }}' = 'false' ]; then
+            echo "No new release published." | tee -a $GITHUB_STEP_SUMMARY
+          elif [ '${{ github.ref_name }}' = 'release' ]; then
+            echo "merge_to=develop" | tee -a $GITHUB_OUTPUT
+            echo "split_to=main" | tee -a $GITHUB_OUTPUT
+          elif [ '${{ github.ref_name }}' = 'release_preview' ]; then
+            echo "split_to=preview" | tee -a $GITHUB_OUTPUT
+          elif [ '${{ github.ref_name }}' = 'release_v4' ]; then
+            echo "split_to=v4" | tee -a $GITHUB_OUTPUT
+          fi
 
-  merge-to-develop:
-    if: needs.release.outputs.released == 'true'
+  merge-to:
+    if: needs.release.outputs.merge_to != ''
     needs: release
-    name: 🔀 Merge to develop
+    name: 🔀 Merge to ${{ needs.release.outputs.merge_to }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
-      - name: 🚚 Checkout (develop)
+      - name: 🚚 Checkout (${{ needs.release.outputs.merge_to }})
         uses: actions/checkout@v4
         with:
-          ref: develop
+          ref: ${{ needs.release.outputs.merge_to }}
           fetch-depth: 0
-      - name: 🔀 Merge '${{ needs.release.outputs.tag }}' into 'develop'
+      - name: 🔀 Merge '${{ needs.release.outputs.tag }}' into '${{ needs.release.outputs.merge_to }}'
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           
           git merge ${{ needs.release.outputs.tag }}
-          git push origin develop
+          git push origin ${{ needs.release.outputs.merge_to }}
 
-  split-to-main:
-    if: needs.release.outputs.released == 'true'
+  split-to:
+    if: needs.release.outputs.split_to != ''
     needs: release
-    name: 🔀 Split package
+    name: 🔀 Split package to ${{ needs.release.outputs.split_to }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -78,9 +92,10 @@ jobs:
         with:
           ref: ${{ needs.release.outputs.tag }}
           fetch-depth: 0
-      - name: 🔀 Split subtree 'Packages/src' to 'main'
+      - name: 🔀 Split subtree 'Packages/src' to '${{ needs.release.outputs.split_to }}'
         run: |
-          git branch main origin/main
-          git subtree split --prefix=Packages/src --branch main
-          git tag ${{ needs.release.outputs.version }} main
-          git push origin ${{ needs.release.outputs.version }} main:main
+          split_to=${{ needs.release.outputs.split_to }}
+          git branch $split_to origin/$split_to
+          git subtree split --prefix=Packages/src --branch $split_to
+          git tag ${{ needs.release.outputs.version }} $split_to
+          git push origin ${{ needs.release.outputs.version }} $split_to:$split_to
