@@ -1,3 +1,12 @@
+## [4.6.4](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.6.3...v4.6.4) (2024-05-22)
+
+
+### Bug Fixes
+
+* assertion failed on expression: 'ps->array_size()' ([1b5c359](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/1b5c359058289895caf5f245fe09abb643bc38eb)), closes [#278](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/278)
+* lost Material.mainTexture when using AnimatableProperties ([ea04352](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/ea043524c0b00f67cba26a1f9ea537ee4a56d6ff)), closes [#311](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/311)
+* remove unnecessary code ([c37c014](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/c37c01486499773e3d7e8296c95bb4c3fae94abb))
+
 ## [4.6.3](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.6.2...v4.6.3) (2024-04-04)
 
 
