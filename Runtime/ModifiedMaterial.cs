@@ -29,7 +29,7 @@ namespace Coffee.UIParticleExtensions
                 {
                     name = $"{baseMat.name}_{id}",
                     hideFlags = HideFlags.DontSave | HideFlags.NotEditable,
-                    mainTexture = texture ? texture : null
+                    mainTexture = texture ? texture : baseMat.mainTexture
                 }
             };
             s_Entries.Add(e);
