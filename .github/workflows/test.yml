@@ -15,7 +15,8 @@ on:
   push:
     branches:
       - develop
-      - develop_v5
+      - develop-preview
+      - develop-4.x
     tags:
       - "!*"
     paths-ignore:

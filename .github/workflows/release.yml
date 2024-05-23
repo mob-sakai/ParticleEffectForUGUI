@@ -5,8 +5,8 @@ on:
   push:
     branches:
       - release
-      - release_preview
-      - release_v4
+      - release-preview
+      - release-v4
     tags-ignore:
       - "**"
 
@@ -52,10 +52,12 @@ jobs:
           elif [ '${{ github.ref_name }}' = 'release' ]; then
             echo "merge_to=develop" | tee -a $GITHUB_OUTPUT
             echo "split_to=main" | tee -a $GITHUB_OUTPUT
-          elif [ '${{ github.ref_name }}' = 'release_preview' ]; then
+          elif [ '${{ github.ref_name }}' = 'release-preview' ]; then
+            echo "merge_to=develop-preview" | tee -a $GITHUB_OUTPUT
             echo "split_to=preview" | tee -a $GITHUB_OUTPUT
-          elif [ '${{ github.ref_name }}' = 'release_v4' ]; then
-            echo "split_to=v4" | tee -a $GITHUB_OUTPUT
+          elif [ '${{ github.ref_name }}' = 'release-4.x' ]; then
+            echo "merge_to=develop-4.x" | tee -a $GITHUB_OUTPUT
+            echo "split_to=4.x" | tee -a $GITHUB_OUTPUT
           fi
 
   merge-to:
