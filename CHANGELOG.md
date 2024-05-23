@@ -1,3 +1,17 @@
+# [5.0.0-preview.1](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.6.6...v5.0.0-preview.1) (2024-05-23)
+
+
+### Features
+
+* add project settings for UIParticle ([b6e6185](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/b6e6185c521fef0f118f61cfdfdac07b87555c01))
+* change the default value of `UIParticle.scale` from `10` to `1` ([1b3c0f9](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/1b3c0f92dcc6a1974d1ea074821e5264200e9711)), closes [#310](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/310)
+* UIParticle no longer inherits from MaskableGraphic ([b6d921b](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/b6d921b3e47f749b5028d22b0e89b6eb3a1af7de))
+
+
+### BREAKING CHANGES
+
+* Some members inherited from MaskableGraphic will no longer be available.
+
 ## [4.6.6](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.6.5...v4.6.6) (2024-05-23)
 
 
