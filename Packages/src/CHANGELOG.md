@@ -1,3 +1,10 @@
+## [4.6.5](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.6.4...v4.6.5) (2024-05-23)
+
+
+### Bug Fixes
+
+* update workflows (for preview and v4) ([3eab097](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/3eab0979b9b85919b804442ab05735b7120eade5))
+
 ## [4.6.4](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.6.3...v4.6.4) (2024-05-22)
 
 
