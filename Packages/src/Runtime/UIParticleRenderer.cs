@@ -632,6 +632,8 @@ namespace Coffee.UIExtensions
             // get world position.
             var isLocalSpace = _particleSystem.IsLocalSpace();
             var psTransform = _particleSystem.transform;
+            var originLocalPosition = psTransform.localPosition;
+            var originLocalRotation = psTransform.localRotation;
             var originWorldPosition = psTransform.position;
             var originWorldRotation = psTransform.rotation;
             var emission = _particleSystem.emission;
@@ -654,7 +656,8 @@ namespace Coffee.UIExtensions
                 : originWorldPosition.GetScaled(scale.Inverse());
             psTransform.SetPositionAndRotation(scaledPos, originWorldRotation);
             _particleSystem.Simulate(deltaTime, false, false, false);
-            psTransform.SetPositionAndRotation(originWorldPosition, originWorldRotation);
+            psTransform.localPosition = originLocalPosition;
+            psTransform.localRotation = originLocalRotation;
         }
 
 #if UNITY_EDITOR
