@@ -28,29 +28,6 @@ namespace Coffee.UIExtensions
     [CanEditMultipleObjects]
     internal class UIParticleEditor : Editor
     {
-#if UNITY_2021_2_OR_NEWER
-#if UNITY_2022_1_OR_NEWER
-        [Overlay(typeof(SceneView), "Scene View/UI Particles", "UI Particles", true,
-            defaultDockPosition = DockPosition.Bottom,
-            defaultDockZone = DockZone.Floating,
-            defaultLayout = Layout.Panel)]
-#else
-        [Overlay(typeof(SceneView), "Scene View/UI Particles", "UI Particles", true)]
-#endif
-        private class UIParticleOverlay : IMGUIOverlay, ITransientOverlay
-        {
-            public bool visible => s_SerializedObject != null;
-
-            public override void OnGUI()
-            {
-                if (visible)
-                {
-                    WindowFunction();
-                }
-            }
-        }
-#endif
-
         //################################
         // Constant or Static Members.
         //################################
@@ -62,7 +39,6 @@ namespace Coffee.UIExtensions
         private static readonly GUIContent s_Content3D = new GUIContent("3D");
         private static readonly GUIContent s_ContentRandom = new GUIContent("Random");
         private static readonly GUIContent s_ContentScale = new GUIContent("Scale");
-        private static SerializedObject s_SerializedObject;
         private static bool s_XYZMode;
 
         private SerializedProperty _maskable;
@@ -89,56 +65,6 @@ namespace Coffee.UIExtensions
             "_StencilReadMask",
             "_ColorMask"
         };
-
-        [InitializeOnLoadMethod]
-        private static void Init()
-        {
-#if !UNITY_2021_2_OR_NEWER
-            var miSceneViewOverlayWindow = Type.GetType("UnityEditor.SceneViewOverlay, UnityEditor")
-                ?.GetMethods(BindingFlags.Public | BindingFlags.Static)
-                .First(x => x.Name == "Window" && 5 <= x.GetParameters().Length);
-            var windowFunction = (Action<Object, SceneView>)WindowFunction;
-            var windowFunctionType = Type.GetType("UnityEditor.SceneViewOverlay+WindowFunction, UnityEditor");
-            var windowFunctionDelegate = Delegate.CreateDelegate(windowFunctionType, windowFunction.Method);
-            var windowTitle = new GUIContent(ObjectNames.NicifyVariableName(nameof(UIParticle)));
-#if UNITY_2019_2_OR_NEWER
-            //public static void Window(GUIContent title, WindowFunction sceneViewFunc, int order, Object target, WindowDisplayOption option, EditorWindow window = null)
-            var sceneViewArgs = new object[] { windowTitle, windowFunctionDelegate, 599, null, 2, null };
-#else
-            //public static void Window(GUIContent title, WindowFunction sceneViewFunc, int order, Object target, WindowDisplayOption option)
-            var sceneViewArgs = new object[] { windowTitle, windowFunctionDelegate, 599, null, 2 };
-#endif
-
-#if UNITY_2019_1_OR_NEWER
-            SceneView.duringSceneGui += _ =>
-#else
-            SceneView.onSceneGUIDelegate += _ =>
-#endif
-            {
-                if (s_SerializedObject != null)
-                {
-                    miSceneViewOverlayWindow.Invoke(null, sceneViewArgs);
-                }
-            };
-#endif
-
-            SerializedObject CreateSerializeObject()
-            {
-                var uiParticles = Selection.gameObjects.Select(x => x.GetComponent<ParticleSystem>())
-                    .Where(x => x)
-                    .Select(x => x.GetComponentInParent<UIParticle>(true))
-                    .Where(x => x && x.canvas)
-                    .Concat(Selection.gameObjects.Select(x => x.GetComponent<UIParticle>())
-                        .Where(x => x && x.canvas))
-                    .Distinct()
-                    .OfType<Object>()
-                    .ToArray();
-                return 0 < uiParticles.Length ? new SerializedObject(uiParticles) : null;
-            }
-
-            s_SerializedObject = CreateSerializeObject();
-            Selection.selectionChanged += () => s_SerializedObject = CreateSerializeObject();
-        }
 
         //################################
         // Public/Protected Members.
@@ -481,6 +407,11 @@ namespace Coffee.UIExtensions
             if (!EditorGUI.EndChangeCheck() || !isTransformMode) return;
 
             // on changed true->false, reset scale.
+            ResetScale(uiParticles);
+        }
+
+        private static void ResetScale(IEnumerable<UIParticle> uiParticles)
+        {
             EditorApplication.delayCall += () =>
             {
                 foreach (var uip in uiParticles)
@@ -489,38 +420,6 @@ namespace Coffee.UIExtensions
                     uip.transform.localScale = Vector3.one;
                 }
             };
-        }
-
-#if UNITY_2021_2_OR_NEWER
-        private static void WindowFunction()
-#else
-        private static void WindowFunction(Object _, SceneView __)
-#endif
-        {
-            try
-            {
-                if (s_SerializedObject == null || !s_SerializedObject.targetObject) return;
-                var uiParticles = s_SerializedObject.targetObjects.OfType<UIParticle>().ToArray();
-                if (uiParticles.Any(x => !x || !x.canvas)) return;
-
-                s_SerializedObject.Update();
-                using (new EditorGUILayout.VerticalScope(GUILayout.Width(220f)))
-                {
-                    var labelWidth = EditorGUIUtility.labelWidth;
-                    EditorGUIUtility.labelWidth = 100;
-                    EditorGUILayout.PropertyField(s_SerializedObject.FindProperty("m_Enabled"));
-                    s_XYZMode = DrawFloatOrVector3Field(s_SerializedObject.FindProperty("m_Scale3D"), s_XYZMode);
-                    EditorGUILayout.PropertyField(s_SerializedObject.FindProperty("m_PositionMode"));
-                    DrawAutoScaling(s_SerializedObject.FindProperty("m_AutoScalingMode"), uiParticles);
-                    EditorGUIUtility.labelWidth = labelWidth;
-                }
-
-                s_SerializedObject.ApplyModifiedProperties();
-            }
-            catch
-            {
-                // ignored
-            }
         }
 
         private void DestroyUIParticle(UIParticle p, bool ignoreCurrent = false)
