@@ -1,3 +1,10 @@
+## [4.6.7](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.6.6...v4.6.7) (2024-05-24)
+
+
+### Bug Fixes
+
+* the ParticleSystem's localPosition drifts at certain scales due to floating-point precision issues ([e924eb4](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/e924eb45968a112347471cabaeabc274e4c37ce4)), closes [#299](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/299) [#312](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/312)
+
 ## [4.6.6](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.6.5...v4.6.6) (2024-05-23)
 
 
