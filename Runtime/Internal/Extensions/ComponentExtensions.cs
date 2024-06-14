@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Profiling;
@@ -11,6 +12,48 @@ namespace Coffee.UIParticleInternal
     /// </summary>
     internal static class ComponentExtensions
     {
+        /// <summary>
+        /// Get components in children of a specific type in the hierarchy of a GameObject.
+        /// </summary>
+        public static T[] GetComponentsInChildren<T>(this Component self, int depth)
+            where T : Component
+        {
+            var results = ListPool<T>.Rent();
+            self.GetComponentsInChildren_Internal(results, depth);
+            var array = results.ToArray();
+            ListPool<T>.Return(ref results);
+            return array;
+        }
+
+        /// <summary>
+        /// Get components in children of a specific type in the hierarchy of a GameObject.
+        /// </summary>
+        public static void GetComponentsInChildren<T>(this Component self, List<T> results, int depth)
+            where T : Component
+        {
+            results.Clear();
+            self.GetComponentsInChildren_Internal(results, depth);
+        }
+
+        private static void GetComponentsInChildren_Internal<T>(this Component self, List<T> results, int depth)
+            where T : Component
+        {
+            if (!self || results == null || depth < 0) return;
+
+            var tr = self.transform;
+            if (tr.TryGetComponent<T>(out var t))
+            {
+                results.Add(t);
+            }
+
+            if (depth - 1 < 0) return;
+            var childCount = tr.childCount;
+            for (var i = 0; i < childCount; i++)
+            {
+                tr.GetChild(i).GetComponentsInChildren(results, depth - 1);
+            }
+        }
+
         /// <summary>
         /// Get or add a component of a specific type to a GameObject.
         /// </summary>

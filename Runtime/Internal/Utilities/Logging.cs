@@ -1,11 +1,13 @@
 using System;
 using System.Text;
 using UnityEngine;
-using Conditional = System.Diagnostics.ConditionalAttribute;
 using Object = UnityEngine.Object;
 #if ENABLE_COFFEE_LOGGER
 using System.Reflection;
 using System.Collections.Generic;
+
+#else
+using Conditional = System.Diagnostics.ConditionalAttribute;
 #endif
 
 namespace Coffee.UIParticleInternal
