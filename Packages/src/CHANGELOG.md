@@ -1,3 +1,10 @@
+## [4.6.8](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.6.7...v4.6.8) (2024-06-14)
+
+
+### Bug Fixes
+
+* 'Resource ID out of range in GetResource' error in overlay rendering mode ([05286ce](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/05286cedfd17b1a0cb90a5e918513644f47cd831)), closes [#308](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/308)
+
 ## [4.6.7](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.6.6...v4.6.7) (2024-05-24)
 
 
