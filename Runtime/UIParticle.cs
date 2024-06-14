@@ -605,6 +605,12 @@ namespace Coffee.UIExtensions
             _orthoCamera.transform.SetPositionAndRotation(new Vector3(0, 0, -1000), Quaternion.identity);
             _orthoCamera.orthographic = true;
             _orthoCamera.farClipPlane = 2000f;
+            _orthoCamera.clearFlags = CameraClearFlags.Nothing;
+            _orthoCamera.cullingMask = 0; // Nothing
+            _orthoCamera.allowHDR = false;
+            _orthoCamera.allowMSAA = false;
+            _orthoCamera.renderingPath = RenderingPath.Forward;
+            _orthoCamera.useOcclusionCulling = false;
 
             return _orthoCamera;
         }
