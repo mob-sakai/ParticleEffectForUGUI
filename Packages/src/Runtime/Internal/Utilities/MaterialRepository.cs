@@ -45,6 +45,34 @@ namespace Coffee.UIParticleInternal
         /// <summary>
         /// Adds or retrieves a cached material based on the hash.
         /// </summary>
+        public static void Get(Hash128 hash, ref Material material, string shaderName)
+        {
+            Profiler.BeginSample("(COF)[MaterialRepository] Get");
+            s_Repository.Get(hash, ref material, x => new Material(Shader.Find(x))
+            {
+                hideFlags = HideFlags.DontSave | HideFlags.NotEditable
+            }, shaderName);
+            Profiler.EndSample();
+        }
+
+
+        /// <summary>
+        /// Adds or retrieves a cached material based on the hash.
+        /// </summary>
+        public static void Get(Hash128 hash, ref Material material, string shaderName, string[] keywords)
+        {
+            Profiler.BeginSample("(COF)[MaterialRepository] Get");
+            s_Repository.Get(hash, ref material, x => new Material(Shader.Find(x.shaderName))
+            {
+                hideFlags = HideFlags.DontSave | HideFlags.NotEditable,
+                shaderKeywords = x.keywords
+            }, (shaderName, keywords));
+            Profiler.EndSample();
+        }
+
+        /// <summary>
+        /// Adds or retrieves a cached material based on the hash.
+        /// </summary>
         public static void Get<T>(Hash128 hash, ref Material material, Func<T, Material> onCreate, T source)
         {
             Profiler.BeginSample("(COF)[MaterialRepository] Get");
