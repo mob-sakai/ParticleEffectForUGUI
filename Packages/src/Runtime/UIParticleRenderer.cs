@@ -38,6 +38,7 @@ namespace Coffee.UIExtensions
         private float _prevCanvasScale;
         private Vector3 _prevPsPos;
         private Vector3 _prevScale;
+        private bool _isPrevStored;
         private Vector2Int _prevScreenSize;
         private bool _preWarm;
         private ParticleSystemRenderer _renderer;
@@ -153,6 +154,7 @@ namespace Coffee.UIExtensions
 
             MaterialRepository.Release(ref _modifiedMaterial);
             _materialForRendering = null;
+            _isPrevStored = false;
         }
 
         public static UIParticleRenderer AddRenderer(UIParticle parent, int index)
@@ -563,7 +565,7 @@ namespace Coffee.UIExtensions
             var canvasScale = _parent.canvas ? _parent.canvas.scaleFactor : 1f;
             var resolutionChanged = _prevScreenSize != screenSize
                                     || !Mathf.Approximately(_prevCanvasScale, canvasScale);
-            if (resolutionChanged && isWorldSpace)
+            if (resolutionChanged && isWorldSpace && _isPrevStored)
             {
                 // Update particle array size and get particles.
                 var size = _particleSystem.particleCount;
@@ -589,6 +591,7 @@ namespace Coffee.UIExtensions
                 _delay = true;
                 _prevScale = scale;
                 _prevPsPos = psPos;
+                _isPrevStored = true;
             }
 
             _prevCanvasScale = canvas ? canvas.scaleFactor : 1f;
@@ -622,7 +625,7 @@ namespace Coffee.UIExtensions
             var rateOverDistance = emission.enabled
                                    && 0 < emission.rateOverDistance.constant
                                    && 0 < emission.rateOverDistanceMultiplier;
-            if (rateOverDistance && !paused)
+            if (rateOverDistance && !paused && _isPrevStored)
             {
                 // (For rate-over-distance emission,) Move to previous scaled position, simulate (delta = 0).
                 var prevScaledPos = isLocalSpace
