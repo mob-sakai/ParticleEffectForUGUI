@@ -250,9 +250,9 @@ namespace Coffee.UIExtensions
         /// <summary>
         /// Particle effect scale.
         /// </summary>
-        public Vector3 scale3DForCalc => autoScalingMode == AutoScalingMode.UIParticle
-            ? m_Scale3D.GetScaled(canvasScale)
-            : m_Scale3D;
+        public Vector3 scale3DForCalc => autoScalingMode == AutoScalingMode.Transform
+            ? m_Scale3D
+            : m_Scale3D.GetScaled(canvasScale);
 
         public List<ParticleSystem> particles => m_Particles;
 
