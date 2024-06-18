@@ -508,7 +508,7 @@ namespace Coffee.UIExtensions
                 && _particleSystem.main.scalingMode == ParticleSystemScalingMode.Local
                 && _parent.canvas)
             {
-                scale = scale.GetScaled(_parent.canvas.transform.localScale);
+                scale = scale.GetScaled(_parent.canvas.rootCanvas.transform.localScale);
             }
 
             Profiler.EndSample();
