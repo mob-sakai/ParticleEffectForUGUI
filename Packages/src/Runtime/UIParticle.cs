@@ -252,7 +252,7 @@ namespace Coffee.UIExtensions
         /// </summary>
         public Vector3 scale3DForCalc => autoScalingMode == AutoScalingMode.Transform
             ? m_Scale3D
-            : m_Scale3D.GetScaled(canvasScale);
+            : m_Scale3D.GetScaled(canvasScale, transform.localScale);
 
         public List<ParticleSystem> particles => m_Particles;
 
