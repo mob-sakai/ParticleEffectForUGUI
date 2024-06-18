@@ -57,9 +57,8 @@ namespace Coffee.UIExtensions
             for (var i = 0; i < s_ActiveParticles.Count; i++)
             {
                 var uip = s_ActiveParticles[i];
-                if (!uip || !uip.canvas || !uip.isPrimary || s_UpdatedGroupIds.Contains(uip.groupId)) continue;
+                if (!uip || !uip.canvas || !uip.isPrimary || !s_UpdatedGroupIds.Add(uip.groupId)) continue;
 
-                s_UpdatedGroupIds.Add(uip.groupId);
                 uip.UpdateTransformScale();
                 uip.UpdateRenderers();
             }
@@ -76,9 +75,8 @@ namespace Coffee.UIExtensions
                 {
                     uip.UpdateRenderers();
                 }
-                else if (!s_UpdatedGroupIds.Contains(uip.groupId))
+                else if (s_UpdatedGroupIds.Add(uip.groupId))
                 {
-                    s_UpdatedGroupIds.Add(uip.groupId);
                     uip.UpdateRenderers();
                 }
             }
