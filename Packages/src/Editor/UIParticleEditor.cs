@@ -475,20 +475,7 @@ namespace Coffee.UIExtensions
 
         private static void DrawAutoScaling(SerializedProperty prop, IEnumerable<UIParticle> uiParticles)
         {
-            var isTransformMode = prop.intValue == (int)UIParticle.AutoScalingMode.Transform;
-            EditorGUI.BeginChangeCheck();
             EditorGUILayout.PropertyField(prop);
-            if (!EditorGUI.EndChangeCheck() || !isTransformMode) return;
-
-            // on changed true->false, reset scale.
-            EditorApplication.delayCall += () =>
-            {
-                foreach (var uip in uiParticles)
-                {
-                    if (!uip) continue;
-                    uip.transform.localScale = Vector3.one;
-                }
-            };
         }
 
 #if UNITY_2021_2_OR_NEWER
