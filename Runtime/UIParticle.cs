@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Coffee.UIParticleExtensions;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Serialization;
@@ -104,6 +103,8 @@ namespace Coffee.UIExtensions
         private int _groupId;
         private Camera _orthoCamera;
         private DrivenRectTransformTracker _tracker;
+        private Vector3 _storedScale;
+        private bool _isScaleStored;
 
         /// <summary>
         /// Should this graphic be considered a target for ray-casting?
@@ -201,7 +202,12 @@ namespace Coffee.UIExtensions
             {
                 if (m_AutoScalingMode == value) return;
                 m_AutoScalingMode = value;
-                UpdateTracker();
+
+                if (autoScalingMode != AutoScalingMode.Transform && _isScaleStored)
+                {
+                    transform.localScale = _storedScale;
+                    _isScaleStored = false;
+                }
             }
         }
 
@@ -279,8 +285,8 @@ namespace Coffee.UIExtensions
 
         protected override void OnEnable()
         {
+            _isScaleStored = false;
             ResetGroupId();
-            UpdateTracker();
             UIParticleUpdater.Register(this);
             RegisterDirtyMaterialCallback(UpdateRendererMaterial);
 
@@ -301,7 +307,13 @@ namespace Coffee.UIExtensions
         /// </summary>
         protected override void OnDisable()
         {
-            UpdateTracker();
+            _tracker.Clear();
+            if (autoScalingMode == AutoScalingMode.Transform && _isScaleStored)
+            {
+                transform.localScale = _storedScale;
+            }
+
+            _isScaleStored = false;
             UIParticleUpdater.Unregister(this);
             _renderers.ForEach(r => r.Reset());
             UnregisterDirtyMaterialCallback(UpdateRendererMaterial);
@@ -315,14 +327,6 @@ namespace Coffee.UIExtensions
         protected override void OnDidApplyAnimationProperties()
         {
         }
-
-#if UNITY_EDITOR
-        protected override void OnValidate()
-        {
-            base.OnValidate();
-            UpdateTracker();
-        }
-#endif
 
         void ISerializationCallbackReceiver.OnBeforeSerialize()
         {
@@ -482,12 +486,26 @@ namespace Coffee.UIExtensions
 
         internal void UpdateTransformScale()
         {
+            _tracker.Clear();
             canvasScale = canvas.rootCanvas.transform.localScale.Inverse();
             parentScale = transform.parent.lossyScale;
-            if (autoScalingMode != AutoScalingMode.Transform) return;
+            if (autoScalingMode != AutoScalingMode.Transform)
+            {
+                if (_isScaleStored)
+                {
+                    transform.localScale = _storedScale;
+                }
 
+                _isScaleStored = false;
+                return;
+            }
+
+            var currentScale = transform.localScale;
+            _storedScale = currentScale;
+            _isScaleStored = true;
+            _tracker.Add(this, rectTransform, DrivenTransformProperties.Scale);
             var newScale = parentScale.Inverse();
-            if (transform.localScale != newScale)
+            if (currentScale != newScale)
             {
                 transform.localScale = newScale;
             }
@@ -613,20 +631,6 @@ namespace Coffee.UIExtensions
             _orthoCamera.useOcclusionCulling = false;
 
             return _orthoCamera;
-        }
-
-        private void UpdateTracker()
-        {
-#pragma warning disable CS0618 // Type or member is obsolete
-            if (!enabled || !autoScaling || autoScalingMode != AutoScalingMode.Transform)
-#pragma warning restore CS0618 // Type or member is obsolete
-            {
-                _tracker.Clear();
-            }
-            else
-            {
-                _tracker.Add(this, rectTransform, DrivenTransformProperties.Scale);
-            }
         }
     }
 }
