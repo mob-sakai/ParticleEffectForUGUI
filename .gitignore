@@ -28,3 +28,4 @@ Assets/Plugins/
 obj/
 bin/
 UserSettings/
+*.app
