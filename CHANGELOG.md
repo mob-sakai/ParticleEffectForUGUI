@@ -1,3 +1,18 @@
+# [4.7.0](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.6.8...v4.7.0) (2024-06-19)
+
+
+### Bug Fixes
+
+* `UIParticle.transform.localScale` does not scale particles ([1d40e24](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/1d40e24c742741e97f03c55468ccb1e505341133)), closes [#313](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/313)
+* UIParticle is scaled by canvas size even when `AutoScalingMode.None` and `ScalingMode.Local` ([54a4b1c](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/54a4b1cdfd06400c7be89c1ee704bb42a659c7c2)), closes [#313](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/313)
+* UIParticle is scaled incorrectly with nested canvases ([f26920f](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/f26920f9825547222a4afbb31cc5dc5a002c3e9b)), closes [#313](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/313)
+
+
+### Features
+
+* reset previous position on start play for world space simulation ([3880484](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/3880484ce5190c42fc79c81d0b69e3fbeda09dd0)), closes [#303](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/303)
+* restore `Transform.localScale` when setting `autoScalingMode` to something other than `Transform` ([5505247](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/5505247a94a929ff89635fde512a9b95691e0043))
+
 ## [4.6.8](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.6.7...v4.6.8) (2024-06-14)
 
 
