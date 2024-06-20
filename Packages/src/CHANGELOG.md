@@ -1,3 +1,22 @@
+# [5.0.0-preview.2](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v5.0.0-preview.1...v5.0.0-preview.2) (2024-06-20)
+
+
+### Bug Fixes
+
+* 'Resource ID out of range in GetResource' error in overlay rendering mode ([ff78b6f](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/ff78b6fe32ceed8ddad50e63dcb7a202eab95266)), closes [#308](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/308)
+* `UIParticle.transform.localScale` does not scale particles ([491ee7b](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/491ee7b0c3e528e1e577ae5ff2588d7c3bd8ecdb)), closes [#313](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/313)
+* despite not using the size module, particles become smaller based on their z position ([c96ddf2](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/c96ddf293e855f7ebccaaaf3b112092955545e61)), closes [#316](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/316)
+* the ParticleSystem's localPosition drifts at certain scales due to floating-point precision issues ([a9c2b19](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/a9c2b19edf00e1c86c928ef23405906952ede852)), closes [#299](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/299) [#312](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/312)
+* UIParticle is scaled by canvas size even when `AutoScalingMode.None` and `ScalingMode.Local` ([63b24d8](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/63b24d8a8b478b3165733ece3eec524e88b28855)), closes [#313](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/313)
+* UIParticle is scaled incorrectly with nested canvases ([c95d8c6](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/c95d8c6b1774396ff252d13121ad32a3cab0fe5c)), closes [#313](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/313)
+
+
+### Features
+
+* remove overlay window (editor) ([fc3fbdd](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/fc3fbdd230595ad3471875ec6fec384a3dad0d17))
+* reset previous position on start play for world space simulation ([e741584](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/e7415845074143abae23e3ae7eedc767a01d020d)), closes [#303](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/303)
+* restore `Transform.localScale` when setting `autoScalingMode` to something other than `Transform` ([dfb94f4](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/dfb94f4badfb3035a4374579c53293460b4fd946))
+
 # [5.0.0-preview.1](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.6.6...v5.0.0-preview.1) (2024-05-23)
 
 
