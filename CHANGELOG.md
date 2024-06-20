@@ -1,3 +1,10 @@
+## [4.7.1](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.7.0...v4.7.1) (2024-06-20)
+
+
+### Bug Fixes
+
+* despite not using the size module, particles become smaller based on their z position ([a8ed6e6](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/a8ed6e68584e1d9e45ed852eefcc03979ea7e0e1)), closes [#316](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/316)
+
 # [4.7.0](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.6.8...v4.7.0) (2024-06-19)
 
 
