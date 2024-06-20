@@ -101,7 +101,7 @@ namespace Coffee.UIExtensions
 
         private readonly List<UIParticleRenderer> _renderers = new List<UIParticleRenderer>();
         private int _groupId;
-        private Camera _orthoCamera;
+        private Camera _bakeCamera;
         private DrivenRectTransformTracker _tracker;
         private Vector3 _storedScale;
         private bool _isScaleStored;
@@ -581,56 +581,47 @@ namespace Coffee.UIExtensions
         private Camera GetBakeCamera()
         {
             if (!canvas) return Camera.main;
+            if (_bakeCamera) return _bakeCamera;
 
-            // When render mode is ScreenSpaceCamera or WorldSpace, use world camera.
-            var root = canvas.rootCanvas;
-            if (root.renderMode != RenderMode.ScreenSpaceOverlay)
+            // Find existing baking camera.
+            var childCount = transform.childCount;
+            for (var i = 0; i < childCount; i++)
             {
-                return root.worldCamera ? root.worldCamera : Camera.main;
-            }
-
-            // When render mode is ScreenSpaceOverlay, use ortho-camera.
-            if (!_orthoCamera)
-            {
-                // Find existing ortho-camera.
-                foreach (Transform child in transform)
+                if (transform.GetChild(i).TryGetComponent<Camera>(out var cam)
+                    && cam.name == "[generated] UIParticle BakingCamera")
                 {
-                    var cam = child.GetComponent<Camera>();
-                    if (cam && cam.name == "[generated] UIParticleOverlayCamera")
-                    {
-                        _orthoCamera = cam;
-                        break;
-                    }
-                }
-
-                // Create ortho-camera.
-                if (!_orthoCamera)
-                {
-                    var go = new GameObject("[generated] UIParticleOverlayCamera")
-                    {
-                        hideFlags = HideFlags.HideAndDontSave
-                    };
-                    go.SetActive(false);
-                    go.transform.SetParent(transform, false);
-                    _orthoCamera = go.AddComponent<Camera>();
-                    _orthoCamera.enabled = false;
+                    _bakeCamera = cam;
+                    break;
                 }
             }
 
-            //
-            var size = ((RectTransform)root.transform).rect.size;
-            _orthoCamera.orthographicSize = Mathf.Max(size.x, size.y) * root.scaleFactor;
-            _orthoCamera.transform.SetPositionAndRotation(new Vector3(0, 0, -1000), Quaternion.identity);
-            _orthoCamera.orthographic = true;
-            _orthoCamera.farClipPlane = 2000f;
-            _orthoCamera.clearFlags = CameraClearFlags.Nothing;
-            _orthoCamera.cullingMask = 0; // Nothing
-            _orthoCamera.allowHDR = false;
-            _orthoCamera.allowMSAA = false;
-            _orthoCamera.renderingPath = RenderingPath.Forward;
-            _orthoCamera.useOcclusionCulling = false;
+            // Create baking camera.
+            if (!_bakeCamera)
+            {
+                var go = new GameObject("[generated] UIParticle BakingCamera")
+                {
+                    // hideFlags = HideFlags.HideAndDontSave
+                    hideFlags = HideFlags.DontSave
+                };
+                go.SetActive(false);
+                go.transform.SetParent(transform, false);
+                _bakeCamera = go.AddComponent<Camera>();
+            }
 
-            return _orthoCamera;
+            // Setup baking camera.
+            _bakeCamera.enabled = false;
+            _bakeCamera.orthographicSize = 1000;
+            _bakeCamera.transform.SetPositionAndRotation(new Vector3(0, 0, -1000), Quaternion.identity);
+            _bakeCamera.orthographic = true;
+            _bakeCamera.farClipPlane = 2000f;
+            _bakeCamera.clearFlags = CameraClearFlags.Nothing;
+            _bakeCamera.cullingMask = 0; // Nothing
+            _bakeCamera.allowHDR = false;
+            _bakeCamera.allowMSAA = false;
+            _bakeCamera.renderingPath = RenderingPath.Forward;
+            _bakeCamera.useOcclusionCulling = false;
+
+            return _bakeCamera;
         }
     }
 }
