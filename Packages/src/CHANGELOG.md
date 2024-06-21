@@ -1,3 +1,10 @@
+# [5.0.0-preview.3](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v5.0.0-preview.2...v5.0.0-preview.3) (2024-06-21)
+
+
+### Bug Fixes
+
+* generated baking-camera object remains in the prefab or scene ([fd66928](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/fd66928efe584aeb4f6347b9a9dca97d9512eb88))
+
 # [5.0.0-preview.2](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v5.0.0-preview.1...v5.0.0-preview.2) (2024-06-20)
 
 
