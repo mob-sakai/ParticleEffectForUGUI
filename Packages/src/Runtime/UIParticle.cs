@@ -690,8 +690,7 @@ namespace Coffee.UIExtensions
             {
                 var go = new GameObject("[generated] UIParticle BakingCamera")
                 {
-                    // hideFlags = HideFlags.HideAndDontSave
-                    hideFlags = HideFlags.DontSave
+                    hideFlags = HideFlags.HideAndDontSave
                 };
                 go.SetActive(false);
                 go.transform.SetParent(transform, false);
