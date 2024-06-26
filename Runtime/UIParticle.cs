@@ -535,8 +535,12 @@ namespace Coffee.UIExtensions
             }
 
             var currentScale = transform.localScale;
-            _storedScale = currentScale;
-            _isScaleStored = true;
+            if (!_isScaleStored)
+            {
+                _storedScale = currentScale.IsVisible() ? currentScale : Vector3.one;
+                _isScaleStored = true;
+            }
+
             _tracker.Add(this, rectTransform, DrivenTransformProperties.Scale);
             var newScale = parentScale.Inverse();
             if (currentScale != newScale)
