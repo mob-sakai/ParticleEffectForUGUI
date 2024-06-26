@@ -29,14 +29,19 @@ namespace Coffee.UIExtensions
         //################################
         // Constant or Static Members.
         //################################
+        private static readonly GUIContent[] s_ContentMaterials = new[]
+        {
+            new GUIContent("Material"),
+            new GUIContent("Trail Material")
+        };
+
         private static readonly GUIContent s_ContentRenderingOrder = new GUIContent("Rendering Order");
         private static readonly GUIContent s_ContentRefresh = new GUIContent("Refresh");
         private static readonly GUIContent s_ContentFix = new GUIContent("Fix");
-        private static readonly GUIContent s_ContentMaterial = new GUIContent("Material");
-        private static readonly GUIContent s_ContentTrailMaterial = new GUIContent("Trail Material");
         private static readonly GUIContent s_Content3D = new GUIContent("3D");
         private static readonly GUIContent s_ContentRandom = new GUIContent("Random");
         private static readonly GUIContent s_ContentScale = new GUIContent("Scale");
+        private static readonly GUIContent s_ContentPrimary = new GUIContent("Primary");
         private static bool s_XYZMode;
 
         private SerializedProperty _maskable;
@@ -90,27 +95,37 @@ namespace Coffee.UIExtensions
             var sp = serializedObject.FindProperty("m_Particles");
             _ro = new ReorderableList(sp.serializedObject, sp, true, true, true, true)
             {
-                elementHeight = EditorGUIUtility.singleLineHeight * 3 + 4,
-                elementHeightCallback = _ => 3 * (EditorGUIUtility.singleLineHeight + 2),
+                elementHeightCallback = index =>
+                {
+                    var ps = sp.GetArrayElementAtIndex(index).objectReferenceValue as ParticleSystem;
+                    var materialCount = 0;
+                    if (ps && ps.TryGetComponent<ParticleSystemRenderer>(out var psr))
+                    {
+                        materialCount = psr.sharedMaterials.Length;
+                    }
+
+                    return (materialCount + 1) * (EditorGUIUtility.singleLineHeight + 2);
+                },
                 drawElementCallback = (rect, index, _, __) =>
                 {
-                    EditorGUI.BeginDisabledGroup(sp.hasMultipleDifferentValues);
-                    rect.y += 1;
+                    rect.y += 2;
                     rect.height = EditorGUIUtility.singleLineHeight;
                     var p = sp.GetArrayElementAtIndex(index);
                     EditorGUI.ObjectField(rect, p, GUIContent.none);
+                    var ps = p.objectReferenceValue as ParticleSystem;
+                    if (!ps || !ps.TryGetComponent<ParticleSystemRenderer>(out var psr)) return;
+
                     rect.x += 15;
                     rect.width -= 15;
-                    var ps = p.objectReferenceValue as ParticleSystem;
-                    var materials = ps
-                        ? new SerializedObject(ps.GetComponent<ParticleSystemRenderer>()).FindProperty("m_Materials")
-                        : null;
-                    rect.y += rect.height + 1;
-                    MaterialField(rect, s_ContentMaterial, materials, 0);
-                    rect.y += rect.height + 1;
-                    MaterialField(rect, s_ContentTrailMaterial, materials, 1);
-                    EditorGUI.EndDisabledGroup();
-                    if (materials != null && materials.serializedObject.hasModifiedProperties)
+                    var materials = new SerializedObject(psr).FindProperty("m_Materials");
+                    var count = Mathf.Min(materials.arraySize, 2);
+                    for (var i = 0; i < count; i++)
+                    {
+                        rect.y += rect.height + 2;
+                        EditorGUI.PropertyField(rect, materials.GetArrayElementAtIndex(i), s_ContentMaterials[i]);
+                    }
+
+                    if (materials.serializedObject.hasModifiedProperties)
                     {
                         materials.serializedObject.ApplyModifiedProperties();
                     }
@@ -143,20 +158,6 @@ namespace Coffee.UIExtensions
                     if (PrefabUtility.GetPrefabAssetType(uip) != PrefabAssetType.NotAPrefab) continue;
                     uip.RefreshParticles(uip.particles);
                 }
-            }
-        }
-
-        private static void MaterialField(Rect rect, GUIContent label, SerializedProperty sp, int index)
-        {
-            if (sp == null || sp.arraySize <= index)
-            {
-                EditorGUI.BeginDisabledGroup(true);
-                EditorGUI.ObjectField(rect, label, null, typeof(Material), true);
-                EditorGUI.EndDisabledGroup();
-            }
-            else
-            {
-                EditorGUI.PropertyField(rect, sp.GetArrayElementAtIndex(index), label);
             }
         }
 
@@ -311,7 +312,7 @@ namespace Coffee.UIExtensions
 #endif
         }
 
-        private bool IsBuiltInObject(Object obj)
+        private static bool IsBuiltInObject(Object obj)
         {
             return AssetDatabase.TryGetGUIDAndLocalFileIdentifier(obj, out var guid, out long _)
                    && Regex.IsMatch(guid, "^0{16}.0{15}$", RegexOptions.Compiled);
@@ -408,7 +409,7 @@ namespace Coffee.UIExtensions
             {
                 EditorGUI.BeginDisabledGroup(true);
                 var obj = UIParticleUpdater.GetPrimary(spGroupId.intValue);
-                EditorGUILayout.ObjectField("Primary", obj, typeof(UIParticle), false);
+                EditorGUILayout.ObjectField(s_ContentPrimary, obj, typeof(UIParticle), false);
                 EditorGUI.EndDisabledGroup();
             }
 
