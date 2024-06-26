@@ -49,6 +49,8 @@ namespace Coffee.UIExtensions
         private SerializedProperty _groupMaxId;
         private SerializedProperty _positionMode;
         private SerializedProperty _autoScalingMode;
+        private SerializedProperty _useCustomView;
+        private SerializedProperty _customViewSize;
         private ReorderableList _ro;
         private bool _showMax;
 
@@ -82,6 +84,8 @@ namespace Coffee.UIExtensions
             _groupMaxId = serializedObject.FindProperty("m_GroupMaxId");
             _positionMode = serializedObject.FindProperty("m_PositionMode");
             _autoScalingMode = serializedObject.FindProperty("m_AutoScalingMode");
+            _useCustomView = serializedObject.FindProperty("m_UseCustomView");
+            _customViewSize = serializedObject.FindProperty("m_CustomViewSize");
 
             var sp = serializedObject.FindProperty("m_Particles");
             _ro = new ReorderableList(sp.serializedObject, sp, true, true, true, true)
@@ -201,14 +205,29 @@ namespace Coffee.UIExtensions
             // Auto Scaling
             DrawAutoScaling(_autoScalingMode, targets.OfType<UIParticle>());
 
+            // Custom View Size
+            EditorGUILayout.PropertyField(_useCustomView);
+            EditorGUI.BeginChangeCheck();
+            EditorGUI.BeginDisabledGroup(!_useCustomView.boolValue);
+            EditorGUI.indentLevel++;
+            EditorGUILayout.PropertyField(_customViewSize);
+            EditorGUI.indentLevel--;
+            EditorGUI.EndDisabledGroup();
+            if (EditorGUI.EndChangeCheck())
+            {
+                _customViewSize.floatValue = Mathf.Max(0.1f, _customViewSize.floatValue);
+            }
+
             // Target ParticleSystems.
             EditorGUI.BeginChangeCheck();
             EditorGUI.BeginDisabledGroup(targets.OfType<UIParticle>().Any(x => !x.canvas));
             _ro.DoLayoutList();
             EditorGUI.EndDisabledGroup();
             serializedObject.ApplyModifiedProperties();
+
             if (EditorGUI.EndChangeCheck())
             {
+                EditorApplication.QueuePlayerLoopUpdate();
                 foreach (var uip in targets.OfType<UIParticle>())
                 {
                     uip.RefreshParticles(uip.particles);
