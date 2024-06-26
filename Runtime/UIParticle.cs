@@ -690,10 +690,7 @@ namespace Coffee.UIExtensions
             // Create baking camera.
             if (!_bakeCamera)
             {
-                var go = new GameObject("[generated] UIParticle BakingCamera")
-                {
-                    hideFlags = HideFlags.HideAndDontSave
-                };
+                var go = new GameObject("[generated] UIParticle BakingCamera");
                 go.SetActive(false);
                 go.transform.SetParent(transform, false);
                 _bakeCamera = go.AddComponent<Camera>();
@@ -711,6 +708,9 @@ namespace Coffee.UIExtensions
             _bakeCamera.allowMSAA = false;
             _bakeCamera.renderingPath = RenderingPath.Forward;
             _bakeCamera.useOcclusionCulling = false;
+
+            _bakeCamera.gameObject.SetActive(false);
+            _bakeCamera.gameObject.hideFlags = HideFlags.HideAndDontSave;
 
             return _bakeCamera;
         }
