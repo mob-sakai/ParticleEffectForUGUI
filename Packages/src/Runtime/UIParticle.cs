@@ -99,6 +99,16 @@ namespace Coffee.UIExtensions
                  "UIParticle: UIParticle.scale will be adjusted.")]
         private AutoScalingMode m_AutoScalingMode = AutoScalingMode.Transform;
 
+        [SerializeField]
+        [Tooltip("Use a custom view.\n" +
+                 "Use this if the particles are not displayed correctly due to min/max particle size.")]
+        private bool m_UseCustomView;
+
+        [SerializeField]
+        [Tooltip("Custom view size.\n" +
+                 "Change the bake view size.")]
+        private float m_CustomViewSize = 10;
+
         private readonly List<UIParticleRenderer> _renderers = new List<UIParticleRenderer>();
         private int _groupId;
         private Camera _bakeCamera;
@@ -209,6 +219,26 @@ namespace Coffee.UIExtensions
                     _isScaleStored = false;
                 }
             }
+        }
+
+        /// <summary>
+        /// Use a custom view.
+        /// Use this if the particles are not displayed correctly due to min/max particle size.
+        /// </summary>
+        public bool useCustomView
+        {
+            get => m_UseCustomView;
+            set => m_UseCustomView = value;
+        }
+
+        /// <summary>
+        /// Custom view size.
+        /// Change the bake view size.
+        /// </summary>
+        public float customViewSize
+        {
+            get => m_CustomViewSize;
+            set => m_CustomViewSize = Mathf.Max(0.1f, value);
         }
 
         internal bool useMeshSharing => m_MeshSharing != MeshSharing.None;
@@ -585,7 +615,16 @@ namespace Coffee.UIExtensions
         private Camera GetBakeCamera()
         {
             if (!canvas) return Camera.main;
-            if (_bakeCamera) return _bakeCamera;
+            if (!useCustomView && canvas.renderMode != RenderMode.ScreenSpaceOverlay && canvas.rootCanvas.worldCamera)
+            {
+                return canvas.rootCanvas.worldCamera;
+            }
+
+            if (_bakeCamera)
+            {
+                _bakeCamera.orthographicSize = useCustomView ? customViewSize : 10;
+                return _bakeCamera;
+            }
 
             // Find existing baking camera.
             var childCount = transform.childCount;
@@ -610,7 +649,7 @@ namespace Coffee.UIExtensions
 
             // Setup baking camera.
             _bakeCamera.enabled = false;
-            _bakeCamera.orthographicSize = 1000;
+            _bakeCamera.orthographicSize = useCustomView ? customViewSize : 10;
             _bakeCamera.transform.SetPositionAndRotation(new Vector3(0, 0, -1000), Quaternion.identity);
             _bakeCamera.orthographic = true;
             _bakeCamera.farClipPlane = 2000f;
