@@ -404,9 +404,13 @@ namespace Coffee.UIExtensions
         {
             if (!instance) return;
 
-            foreach (Transform child in transform)
+            var childCount = transform.childCount;
+            for (var i = 0; i < childCount; i++)
             {
-                var go = child.gameObject;
+                var go = transform.GetChild(i).gameObject;
+                if (go.TryGetComponent<Camera>(out var cam) && cam == _bakeCamera) continue;
+                if (go.TryGetComponent<UIParticleRenderer>(out var _)) continue;
+
                 go.SetActive(false);
                 if (destroyOldParticles)
                 {
