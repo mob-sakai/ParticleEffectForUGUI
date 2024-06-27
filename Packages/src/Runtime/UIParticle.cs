@@ -58,12 +58,12 @@ namespace Coffee.UIExtensions
         [Obsolete]
         internal bool m_AbsoluteMode;
 
-        [Tooltip("Particle effect scale")]
+        [Tooltip("Scale the rendering particles. When the `3D` toggle is enabled, 3D scale (x, y, z) is supported.")]
         [SerializeField]
         private Vector3 m_Scale3D = new Vector3(1, 1, 1);
 
-        [Tooltip("Animatable material properties.\n" +
-                 "If you want to change the material properties of the ParticleSystem in Animation, enable it.")]
+        [Tooltip("If you want to update material properties (e.g. _MainTex_ST, _Color) in AnimationClip, " +
+                 "use this to mark as animatable.")]
         [SerializeField]
         internal AnimatableProperty[] m_AnimatableProperties = new AnimatableProperty[0];
 
@@ -71,12 +71,13 @@ namespace Coffee.UIExtensions
         [SerializeField]
         private List<ParticleSystem> m_Particles = new List<ParticleSystem>();
 
-        [Tooltip("Mesh sharing.\n" +
-                 "None: disable mesh sharing.\n" +
-                 "Auto: automatically select Primary/Replica.\n" +
-                 "Primary: provides particle simulation results to the same group.\n" +
+        [Tooltip("Particle simulation results are shared within the same group. " +
+                 "A large number of the same effects can be displayed with a small load.\n" +
+                 "None: Disable mesh sharing.\n" +
+                 "Auto: Automatically select Primary/Replica.\n" +
+                 "Primary: Provides particle simulation results to the same group.\n" +
                  "Primary Simulator: Primary, but do not render the particle (simulation only).\n" +
-                 "Replica: render simulation results provided by the primary.")]
+                 "Replica: Render simulation results provided by the primary.")]
         [SerializeField]
         private MeshSharing m_MeshSharing = MeshSharing.None;
 
@@ -88,19 +89,22 @@ namespace Coffee.UIExtensions
         [SerializeField]
         private int m_GroupMaxId;
 
-        [Tooltip("Relative: The particles will be emitted from the scaled position of ParticleSystem.\n" +
-                 "Absolute: The particles will be emitted from the world position of ParticleSystem.")]
+        [Tooltip("Emission position mode.\n" +
+                 "Relative: The particles will be emitted from the scaled position.\n" +
+                 "Absolute: The particles will be emitted from the world position.")]
         [SerializeField]
         private PositionMode m_PositionMode = PositionMode.Relative;
 
         [SerializeField]
-        [Tooltip("Prevent the root-Canvas scale from affecting the hierarchy-scaled ParticleSystem.")]
         [Obsolete]
         internal bool m_AutoScaling;
 
         [SerializeField]
-        [Tooltip("Transform: Transform.lossyScale (=world scale) will be set to (1, 1, 1)." +
-                 "UIParticle: UIParticle.scale will be adjusted.")]
+        [Tooltip(
+            "How to automatically adjust when the Canvas scale is changed by the screen size or reference resolution.\n" +
+            "None: Do nothing.\n" +
+            "Transform: Transform.lossyScale (=world scale) will be set to (1, 1, 1).\n" +
+            "UIParticle: UIParticle.scale will be adjusted.")]
         private AutoScalingMode m_AutoScalingMode = AutoScalingMode.Transform;
 
         [SerializeField]
@@ -117,12 +121,12 @@ namespace Coffee.UIExtensions
         private bool m_Maskable = true;
 
         private readonly List<UIParticleRenderer> _renderers = new List<UIParticleRenderer>();
+        private Camera _bakeCamera;
         private Canvas _canvas;
         private int _groupId;
-        private Camera _bakeCamera;
-        private DrivenRectTransformTracker _tracker;
-        private Vector3 _storedScale;
         private bool _isScaleStored;
+        private Vector3 _storedScale;
+        private DrivenRectTransformTracker _tracker;
 
         public RectTransform rectTransform => transform as RectTransform;
 
@@ -158,7 +162,8 @@ namespace Coffee.UIExtensions
         }
 
         /// <summary>
-        /// Mesh sharing.
+        /// Particle simulation results are shared within the same group.
+        /// A large number of the same effects can be displayed with a small load.
         /// None: disable mesh sharing.
         /// Auto: automatically select Primary/Replica.
         /// Primary: provides particle simulation results to the same group.
@@ -201,9 +206,9 @@ namespace Coffee.UIExtensions
         }
 
         /// <summary>
-        /// Particle position mode.
-        /// Relative: The particles will be emitted from the scaled position of the ParticleSystem.
-        /// Absolute: The particles will be emitted from the world position of the ParticleSystem.
+        /// Emission position mode.
+        /// Relative: The particles will be emitted from the scaled position.
+        /// Absolute: The particles will be emitted from the world position.
         /// </summary>
         public PositionMode positionMode
         {
@@ -216,6 +221,7 @@ namespace Coffee.UIExtensions
         /// Relative: The particles will be emitted from the scaled position of the ParticleSystem.
         /// Absolute: The particles will be emitted from the world position of the ParticleSystem.
         /// </summary>
+        [Obsolete("The absoluteMode is now obsolete. Please use the autoScalingMode instead.", false)]
         public bool absoluteMode
         {
             get => m_PositionMode == PositionMode.Absolute;
@@ -233,8 +239,12 @@ namespace Coffee.UIExtensions
         }
 
         /// <summary>
-        /// Auto scaling mode.
+        /// How to automatically adjust when the Canvas scale is changed by the screen size or reference resolution.
+        /// <para/>
+        /// None: Do nothing.
+        /// <para/>
         /// Transform: Transform.lossyScale (=world scale) will be set to (1, 1, 1).
+        /// <para/>
         /// UIParticle: UIParticle.scale will be adjusted.
         /// </summary>
         public AutoScalingMode autoScalingMode
@@ -317,22 +327,6 @@ namespace Coffee.UIExtensions
             : m_Scale3D.GetScaled(canvasScale, transform.localScale);
 
         public List<ParticleSystem> particles => m_Particles;
-
-        /// <summary>
-        /// Get all base materials to render.
-        /// </summary>
-        public IEnumerable<Material> materials
-        {
-            get
-            {
-                for (var i = 0; i < _renderers.Count; i++)
-                {
-                    var r = _renderers[i];
-                    if (!r || !r.material) continue;
-                    yield return r.material;
-                }
-            }
-        }
 
         /// <summary>
         /// Paused.
@@ -490,6 +484,21 @@ namespace Coffee.UIExtensions
         {
             particles.Exec(p => p.Clear());
             isPaused = true;
+        }
+
+        /// <summary>
+        /// Get all base materials to render.
+        /// </summary>
+        public void GetMaterials(List<Material> result)
+        {
+            if (result == null) return;
+
+            for (var i = 0; i < _renderers.Count; i++)
+            {
+                var r = _renderers[i];
+                if (!r || !r.material) continue;
+                result.Add(r.material);
+            }
         }
 
         /// <summary>
