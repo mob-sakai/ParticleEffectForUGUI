@@ -60,7 +60,7 @@ namespace Coffee.UIExtensions
 
         [Tooltip("Scale the rendering particles. When the `3D` toggle is enabled, 3D scale (x, y, z) is supported.")]
         [SerializeField]
-        private Vector3 m_Scale3D = new Vector3(10, 10, 10);
+        private Vector3 m_Scale3D = new Vector3(1, 1, 1);
 
         [Tooltip("If you want to update material properties (e.g. _MainTex_ST, _Color) in AnimationClip, " +
                  "use this to mark as animatable.")]
