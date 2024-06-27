@@ -29,6 +29,7 @@ namespace Coffee.UIExtensions
         private static readonly Vector3[] s_Corners = new Vector3[4];
         private bool _delay;
         private int _index;
+        private bool _isPrevStored;
         private bool _isTrail;
         private Bounds _lastBounds;
         private Material _materialForRendering;
@@ -38,7 +39,6 @@ namespace Coffee.UIExtensions
         private float _prevCanvasScale;
         private Vector3 _prevPsPos;
         private Vector3 _prevScale;
-        private bool _isPrevStored;
         private Vector2Int _prevScreenSize;
         private bool _preWarm;
         private ParticleSystemRenderer _renderer;

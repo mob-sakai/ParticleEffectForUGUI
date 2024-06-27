@@ -17,45 +17,36 @@ The particle rendering is maskable and sortable, without the need for an extra C
 
 ## 📝 Description
 
-![](https://user-images.githubusercontent.com/12690315/41771577-8da4b968-7650-11e8-9524-cd162c422d9d.gif)
+![Demo](https://user-images.githubusercontent.com/12690315/41771577-8da4b968-7650-11e8-9524-cd162c422d9d.gif)
 
-This package utilizes the new APIs `MeshBake/MashTrailBake` (introduced with Unity 2018.2) to render particles through
-CanvasRenderer.  
-You can render, mask, and sort your ParticleSystems for UI without the necessity of an additional Camera, RenderTexture,
-or Canvas.
+This package uses the new APIs `MeshBake/MeshTrailBake` (introduced in Unity 2018.2) to render particles through CanvasRenderer.  
+You can render, mask, and sort your ParticleSystems for UI without the need for an additional Camera, RenderTexture, or Canvas.
 
-### Features
+### Key Features
 
-* Easy to use: The package is ready to use out of the box.
-* Sort particle effects and other UI by sibling index.
-* No extra Camera, RenderTexture, or Canvas required.
-* Masking options for Mask or RectMask2D.
-* Support for the Trail module.
-* Support for CanvasGroup alpha.
-* No allocations needed to render particles.
-* Compatibility with overlay, camera space, and world space.
-* Support for Universal Render Pipeline (URP) and High Definition Render Pipeline (HDRP).
-* Support for disabling `Enter Play Mode Options > Reload Domain`.
-* Support for changing material property with AnimationClip (AnimatableProperty).  
-  ![AnimatableProperty.gif][AnimatableProperty.gif]
-* [4.0.0+] Support for 8+ materials.
-* [4.0.0+] Correct world space particle position adjustment when changing window size for standalone platforms (Windows,
-  MacOSX, and Linux).
-* [4.0.0+] Adaptive scaling for UI.
-* [4.0.0+] Mesh sharing group to improve performance.  
-  ![MeshSharing.gif][MeshSharing.gif]
-* [4.0.0+] Particle attractor component.  
-  ![ParticleAttractor.gif][ParticleAttractor.gif]
-* [4.1.0+] Relative/Absolute particle position mode.  
-  ![AbsolutePosition.gif][AbsolutePosition.gif]
-
-[AnimatableProperty.gif]: https://user-images.githubusercontent.com/12690315/53286323-2d94a980-37b0-11e9-8afb-c4a207805ff2.gif
-
-[MeshSharing.gif]: https://user-images.githubusercontent.com/12690315/174311048-c882df81-6c34-4eba-b0aa-5645457692f1.gif
-
-[ParticleAttractor.gif]: https://user-images.githubusercontent.com/12690315/174311027-462929a4-13f0-4ec4-86ea-9c832f2eecf1.gif
-
-[AbsolutePosition.gif]: https://user-images.githubusercontent.com/12690315/175751579-5a2357e8-2ecf-4afd-83c8-66e9771bde39.gif
+* **Easy to use:** The package is ready to use out of the box.
+* **Sortable:** Sort particle effects and other UI elements by sibling index.
+* **Maskable:** Supports `Mask` or `RectMask2D`.
+* **No extra components required:** No need for an additional `Camera`, `RenderTexture`, or `Canvas`.
+* **Trail module support:** Fully supports the Trail module.
+* **CanvasGroup alpha support:** Integrates with `CanvasGroup` alpha.
+* **No allocations:** Efficiently renders particles without allocations.
+* **Any canvas render mode support:** Works with overlay, camera space, and world space.
+* **Any Render pipeline support:** Compatible with Universal Render Pipeline (URP) and High Definition Render Pipeline (HDRP).
+* **Disabling domain reload support:** Supports disabling `Enter Play Mode Options > Reload Domain`.
+* **Animatable material properties:** Supports changing material properties with AnimationClip (AnimatableProperty).  
+  ![AnimatableProperty.gif](https://user-images.githubusercontent.com/12690315/53286323-2d94a980-37b0-11e9-8afb-c4a207805ff2.gif)
+* **Multiple materials:** Supports 8+ materials.
+* **Correct positioning:** Adjusts world space particle positions correctly when changing window size for standalone platforms (Windows, MacOSX, and Linux).
+* **Adaptive scaling:** Provides adaptive scaling for UI (AutoScalingMode).
+* **Performance optimization:** Mesh sharing group to improve performance.  
+  <img alt="MeshSharing.gif" src="https://user-images.githubusercontent.com/12690315/174311048-c882df81-6c34-4eba-b0aa-5645457692f1.gif" width="450"/>
+* **Particle attractor:** Includes a particle attractor component.  
+  <img alt="ParticleAttractor.gif" src="https://user-images.githubusercontent.com/12690315/174311027-462929a4-13f0-4ec4-86ea-9c832f2eecf1.gif" width="450"/>
+* **Emission position mode:** Supports relative/absolute particle emission position modes.  
+  <img alt="AbsolutePosition.gif" src="https://user-images.githubusercontent.com/12690315/175751579-5a2357e8-2ecf-4afd-83c8-66e9771bde39.gif" width="450"/>
+* **Custom view size:** Fixes min/max particle size mismatch.  
+  ![CustomViewSize.gif](https://github.com/mob-sakai/ParticleEffectForUGUI/assets/12690315/dd929959-1a37-420b-b13d-e849022b9c9d)
 
 <br><br>
 
@@ -76,44 +67,55 @@ or Canvas.
 
 [JMO]: https://assetstore.unity.com/publishers/1669
 
-
 <br><br>
 
 ## ⚙ Installation
 
-_This package requires Unity 2018.3 or later._
+_This package requires **Unity 2018.3 or later**._
 
 #### Install via OpenUPM
 
-This package is available on [OpenUPM](https://openupm.com) package registry.
-This is the preferred method of installation, as you can easily receive updates as they're released.
+- This package is available on [OpenUPM](https://openupm.com) package registry.
+- This is the preferred method of installation, as you can easily receive updates as they're released.
+- If you have [openupm-cli](https://github.com/openupm/openupm-cli) installed, then run the following command in your project's directory:
+  ```
+  openupm add com.coffee.ui-particle
+  ```
+- To update the package, use Package Manager UI (`Window > Package Manager`) or run the following command with `@{version}`:
+  ```
+  openupm add com.coffee.ui-particle@4.8.0
+  ```
 
-If you have [openupm-cli](https://github.com/openupm/openupm-cli) installed, then run the following command in your
-project's directory:
+#### Install via UPM (with Package Manager UI)
 
-```sh
-openupm add com.coffee.ui-particle
-```
+- Click `Window > Package Manager` to open Package Manager UI.
+- Click `+ > Add package from git URL...` and input the repository URL: `https://github.com/mob-sakai/ParticleEffectForUGUI.git`  
+  ![](https://gist.github.com/assets/12690315/24af63ed-8a2e-483d-9023-7aa53d913330)
+- To update the package, change suffix `#{version}` to the target version.
+  - e.g. `https://github.com/mob-sakai/ParticleEffectForUGUI.git#4.8.0`
 
-#### Install via UPM (using Git URL)
+#### Install via UPM (Manually)
 
-Navigate to your project's Packages folder and open the `manifest.json` file. Then add this package somewhere in
-the `dependencies` block:
-
-```json
-{
-  "dependencies": {
-    "com.coffee.ui-particle": "https://github.com/mob-sakai/ParticleEffectForUGUI.git",
-    ...
+- Open the `Packages/manifest.json` file in your project. Then add this package somewhere in the `dependencies` block:
+  ```json
+  {
+    "dependencies": {
+      "com.coffee.ui-particle": "https://github.com/mob-sakai/ParticleEffectForUGUI.git",
+      ...
+    }
   }
-}
-```
+  ```
 
-To update the package, change suffix `#{version}` to the target version.
+- To update the package, change suffix `#{version}` to the target version.
+  - e.g. `"com.coffee.ui-particle": "https://github.com/mob-sakai/ParticleEffectForUGUI.git#4.8.0",`
 
-* e.g. `"com.coffee.ui-particle": "https://github.com/mob-sakai/ParticleEffectForUGUI.git#4.6.0",`
+#### Install as Embedded Package
 
-Or, use [UpmGitExtension](https://github.com/mob-sakai/UpmGitExtension) to install and update the package.
+1. Download a source code zip file from [Releases](https://github.com/mob-sakai/ParticleEffectForUGUI.git/releases) and extract it.
+2. Place it in your project's `Packages` directory.  
+   ![](https://github.com/mob-sakai/mob-sakai/assets/12690315/0b7484b4-5fca-43b0-a9ef-e5dbd99bcdb4)
+- If you want to fix bugs or add features, install it as an embedded package.
+- To update the package, you need to re-download it and replace the contents.
 
 <br><br>
 
@@ -133,19 +135,28 @@ Or, use [UpmGitExtension](https://github.com/mob-sakai/UpmGitExtension) to insta
 
 `UIParticle` controls the ParticleSystems that are attached to its own game objects and child game objects.
 
-![](https://github.com/mob-sakai/ParticleEffectForUGUI/assets/12690315/3559df45-63e7-4c4c-9233-f455779efa29)
+![](https://github.com/mob-sakai/ParticleEffectForUGUI/assets/12690315/1cf5753b-33fc-4cef-91c3-413c515a954f)
 
-- **Maskable**: Does this graphic allow masking.
-- **Scale**: Scale the rendering. When the `3D` toggle is enabled, 3D scale (x, y, z) is supported.
+- **Maskable**: Does this graphic allow maskable.
+- **Scale**: Scale the rendering particles. When the `3D` toggle is enabled, 3D scale (x, y, z) is supported.
 - **Animatable Properties**: If you want to update material properties (e.g., `_MainTex_ST`, `_Color`) in AnimationClip,
-  use this to mark the changes.
+  use this to mark as animatable.
 - **Mesh Sharing**: Particle simulation results are shared within the same group. A large number of the same effects can
   be displayed with a small load. When the `Random` toggle is enabled, it will be grouped randomly.
+  - **None:** Disable mesh sharing.
+  - **Auto:** Automatically select Primary/Replica.
+  - **Primary:** Provides particle simulation results to the same group.
+  - **Primary Simulator:** Primary, but do not render the particle (simulation only).
+  - **Replica:** Render simulation results provided by the primary.
 - **Position Mode**: Emission position mode.
-    - **Absolute:** Emit from the world position of the `ParticleSystem`.
-    - **Relative:** Emit from the scaled position of the `ParticleSystem`.
-- **Auto Scaling**: `Transform.lossyScale` (=world scale) will be set to `(1, 1, 1)` on update. It prevents the
-  root-Canvas scale from affecting the hierarchy-scaled `ParticleSystem`.
+  - **Absolute:** The particles will be emitted from the world position.
+  - **Relative:** The particles will be emitted from the scaled position.
+- **Auto Scaling Mode**: How to automatically adjust when the Canvas scale is changed by the screen size or reference resolution.
+  - **None:** Do nothing.
+  - **Transform:** Transform.lossyScale (=world scale) will be set to (1, 1, 1).
+  - **UIParticle:** UIParticle.scale will be adjusted.
+- **Use Custom View:** Use this if the particles are not displayed correctly due to min/max particle size.
+  - **Custom view size:** Change the bake view size.
 - **Rendering Order**: The ParticleSystem list to be rendered. You can change the order and the materials.
 
 **NOTE:** Press the `Refresh` button to reconstruct the rendering order based on children ParticleSystem's sorting order
@@ -206,7 +217,7 @@ uiParticle.Stop();
 
 `UIParticleAttractor` attracts particles generated by the specified ParticleSystem.
 
-![](https://github.com/mob-sakai/ParticleEffectForUGUI/assets/12690315/ea6ae0ed-f9a8-437c-8baa-47526303391e)  
+![](https://github.com/mob-sakai/ParticleEffectForUGUI/assets/12690315/5c20ad73-4b9a-4f38-9cdc-119df5cce077)
 ![](https://user-images.githubusercontent.com/12690315/174311027-462929a4-13f0-4ec4-86ea-9c832f2eecf1.gif)
 
 - **Particle System**: Attracts particles generated by the specified particle system.
