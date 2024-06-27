@@ -4,7 +4,7 @@
     "release-4.x",
     {
       "name": "release-preview",
-      "prerelease": true
+      "prerelease": "preview"
     }
   ],
   "plugins": [

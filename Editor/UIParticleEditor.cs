@@ -5,6 +5,7 @@ using UnityEditor;
 using UnityEditor.UI;
 using UnityEditorInternal;
 using UnityEngine;
+using UnityEngine.Profiling;
 using UnityEngine.UI;
 using Coffee.UIParticleExtensions;
 #if UNITY_2021_2_OR_NEWER
@@ -42,6 +43,8 @@ namespace Coffee.UIExtensions
         private static readonly GUIContent s_ContentRandom = new GUIContent("Random");
         private static readonly GUIContent s_ContentScale = new GUIContent("Scale");
         private static readonly GUIContent s_ContentPrimary = new GUIContent("Primary");
+        private static readonly Regex s_RegexBuiltInGuid = new Regex(@"^0{16}.0{15}$", RegexOptions.Compiled);
+        private static readonly List<Material> s_TempMaterials = new List<Material>();
         private static bool s_XYZMode;
 
         private SerializedProperty _maskable;
@@ -169,6 +172,7 @@ namespace Coffee.UIExtensions
             var current = target as UIParticle;
             if (!current) return;
 
+            Profiler.BeginSample("(UIP:E) OnInspectorGUI");
             serializedObject.Update();
 
             // Maskable
@@ -180,13 +184,8 @@ namespace Coffee.UIExtensions
             EditorGUI.EndDisabledGroup();
 
             // AnimatableProperties
-            var mats = current.particles
-                .Where(x => x)
-                .Select(x => x.GetComponent<ParticleSystemRenderer>().sharedMaterial)
-                .Where(x => x)
-                .ToArray();
-
-            AnimatablePropertyEditor.Draw(_animatableProperties, mats);
+            current.GetMaterials(s_TempMaterials);
+            AnimatablePropertyEditor.Draw(_animatableProperties, s_TempMaterials);
 
             // Mesh sharing
             EditorGUI.BeginChangeCheck();
@@ -194,9 +193,12 @@ namespace Coffee.UIExtensions
             if (EditorGUI.EndChangeCheck())
             {
                 serializedObject.ApplyModifiedProperties();
-                foreach (var uip in targets.OfType<UIParticle>())
+                foreach (var t in targets)
                 {
-                    uip.ResetGroupId();
+                    if (t is UIParticle uip)
+                    {
+                        uip.ResetGroupId();
+                    }
                 }
             }
 
@@ -204,7 +206,7 @@ namespace Coffee.UIExtensions
             EditorGUILayout.PropertyField(_positionMode);
 
             // Auto Scaling
-            DrawAutoScaling(_autoScalingMode, targets.OfType<UIParticle>());
+            EditorGUILayout.PropertyField(_autoScalingMode);
 
             // Custom View Size
             EditorGUILayout.PropertyField(_useCustomView);
@@ -221,9 +223,7 @@ namespace Coffee.UIExtensions
 
             // Target ParticleSystems.
             EditorGUI.BeginChangeCheck();
-            EditorGUI.BeginDisabledGroup(targets.OfType<UIParticle>().Any(x => !x.canvas));
             _ro.DoLayoutList();
-            EditorGUI.EndDisabledGroup();
             serializedObject.ApplyModifiedProperties();
 
             if (EditorGUI.EndChangeCheck())
@@ -236,7 +236,8 @@ namespace Coffee.UIExtensions
             }
 
             // Non-UI built-in shader is not supported.
-            foreach (var mat in current.materials)
+            Profiler.BeginSample("(UIP:E) Non-UI built-in shader is not supported.");
+            foreach (var mat in s_TempMaterials)
             {
                 if (!mat || !mat.shader) continue;
                 var shader = mat.shader;
@@ -249,15 +250,18 @@ namespace Coffee.UIExtensions
                 }
             }
 
+            Profiler.EndSample();
+
             // Does the shader support UI masks?
+            Profiler.BeginSample("(UIP:E) Does the shader support UI masks?");
             if (current.maskable && current.GetComponentInParent<Mask>(false))
             {
-                foreach (var mat in current.materials)
+                foreach (var mat in s_TempMaterials)
                 {
                     if (!mat || !mat.shader) continue;
                     var shader = mat.shader;
-                    if (s_Shaders.Contains(shader)) continue;
-                    s_Shaders.Add(shader);
+                    if (!s_Shaders.Add(shader)) continue;
+
                     foreach (var propName in s_MaskablePropertyNames)
                     {
                         if (mat.HasProperty(propName)) continue;
@@ -271,7 +275,9 @@ namespace Coffee.UIExtensions
                 }
             }
 
+            s_TempMaterials.Clear();
             s_Shaders.Clear();
+            Profiler.EndSample();
 
             // UIParticle for trail should be removed.
             var label = "This UIParticle component should be removed. The UIParticle for trails is no longer needed.";
@@ -310,12 +316,15 @@ namespace Coffee.UIExtensions
                 }
             }
 #endif
+            Profiler.EndSample();
+            EditorApplication.delayCall += () => Profiler.enabled = false;
         }
 
         private static bool IsBuiltInObject(Object obj)
         {
-            return AssetDatabase.TryGetGUIDAndLocalFileIdentifier(obj, out var guid, out long _)
-                   && Regex.IsMatch(guid, "^0{16}.0{15}$", RegexOptions.Compiled);
+            return AssetDatabase.IsMainAsset(obj)
+                   && AssetDatabase.TryGetGUIDAndLocalFileIdentifier(obj, out var guid, out long _)
+                   && s_RegexBuiltInGuid.IsMatch(guid);
         }
 
 #if UNITY_2018 || UNITY_2019
@@ -419,7 +428,7 @@ namespace Coffee.UIExtensions
             return showMax;
         }
 
-        private static void DrawAutoScaling(SerializedProperty prop, IEnumerable<UIParticle> uiParticles)
+        private static void DrawAutoScaling(SerializedProperty prop)
         {
             EditorGUILayout.PropertyField(prop);
         }

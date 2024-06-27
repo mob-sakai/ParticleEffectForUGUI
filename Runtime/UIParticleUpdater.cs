@@ -39,8 +39,9 @@ namespace Coffee.UIExtensions
 
 #if UNITY_EDITOR
         [InitializeOnLoadMethod]
+#else
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
 #endif
-        [RuntimeInitializeOnLoadMethod]
         private static void InitializeOnLoad()
         {
             Canvas.willRenderCanvases -= Refresh;
