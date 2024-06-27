@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEditor;
-using UnityEditor.UI;
 using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.Profiling;
@@ -25,7 +24,7 @@ namespace Coffee.UIExtensions
 {
     [CustomEditor(typeof(UIParticle))]
     [CanEditMultipleObjects]
-    internal class UIParticleEditor : GraphicEditor
+    internal class UIParticleEditor : Editor
     {
         //################################
         // Constant or Static Members.
@@ -80,10 +79,8 @@ namespace Coffee.UIExtensions
         /// <summary>
         /// This function is called when the object becomes enabled and active.
         /// </summary>
-        protected override void OnEnable()
+        private void OnEnable()
         {
-            base.OnEnable();
-
             _maskable = serializedObject.FindProperty("m_Maskable");
             _scale3D = serializedObject.FindProperty("m_Scale3D");
             _animatableProperties = serializedObject.FindProperty("m_AnimatableProperties");
@@ -436,9 +433,7 @@ namespace Coffee.UIExtensions
         {
             if (!p || (ignoreCurrent && target == p)) return;
 
-            var cr = p.canvasRenderer;
             DestroyImmediate(p);
-            DestroyImmediate(cr);
 
 #if UNITY_2018_3_OR_NEWER
             var stage = PrefabStageUtility.GetCurrentPrefabStage();

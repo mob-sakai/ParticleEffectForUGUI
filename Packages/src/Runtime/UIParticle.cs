@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Coffee.UIParticleExtensions;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.Rendering;
 using UnityEngine.Serialization;
-using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 [assembly: InternalsVisibleTo("Coffee.UIParticle.Editor")]
@@ -18,7 +18,7 @@ namespace Coffee.UIExtensions
     [ExecuteAlways]
     [RequireComponent(typeof(RectTransform))]
     [RequireComponent(typeof(CanvasRenderer))]
-    public class UIParticle : MaskableGraphic, ISerializationCallbackReceiver
+    public class UIParticle : UIBehaviour, ISerializationCallbackReceiver
     {
         public enum AutoScalingMode
         {
@@ -117,6 +117,9 @@ namespace Coffee.UIExtensions
                  "Change the bake view size.")]
         private float m_CustomViewSize = 10;
 
+        [SerializeField]
+        private bool m_Maskable = true;
+
         private readonly List<UIParticleRenderer> _renderers = new List<UIParticleRenderer>();
         private Camera _bakeCamera;
         private Canvas _canvas;
@@ -125,13 +128,37 @@ namespace Coffee.UIExtensions
         private Vector3 _storedScale;
         private DrivenRectTransformTracker _tracker;
 
-        /// <summary>
-        /// Should this graphic be considered a target for ray-casting?
-        /// </summary>
-        public override bool raycastTarget
+        public RectTransform rectTransform => transform as RectTransform;
+
+        public Canvas canvas
         {
-            get => false;
-            set { }
+            get
+            {
+                if (_canvas) return _canvas;
+
+                var tr = transform;
+                while (tr && !_canvas)
+                {
+                    if (tr.TryGetComponent(out _canvas)) return _canvas;
+                    tr = tr.parent;
+                }
+
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Does this graphic allow masking.
+        /// </summary>
+        public bool maskable
+        {
+            get => m_Maskable;
+            set
+            {
+                if (value == m_Maskable) return;
+                m_Maskable = value;
+                UpdateRendererMaterial();
+            }
         }
 
         /// <summary>
@@ -308,15 +335,15 @@ namespace Coffee.UIExtensions
 
         public Vector3 parentScale { get; private set; }
 
-        public Vector3 canvasScale { get; private set; }
+        private Vector3 canvasScale { get; set; }
 
         protected override void OnEnable()
         {
             _isScaleStored = false;
             ResetGroupId();
             UIParticleUpdater.Register(this);
-            RegisterDirtyMaterialCallback(UpdateRendererMaterial);
 
+            //
             if (0 < particles.Count)
             {
                 RefreshParticles(particles);
@@ -326,7 +353,7 @@ namespace Coffee.UIExtensions
                 RefreshParticles();
             }
 
-            base.OnEnable();
+            UpdateRendererMaterial();
         }
 
         /// <summary>
@@ -343,9 +370,15 @@ namespace Coffee.UIExtensions
             _isScaleStored = false;
             UIParticleUpdater.Unregister(this);
             _renderers.ForEach(r => r.Reset());
-            UnregisterDirtyMaterialCallback(UpdateRendererMaterial);
+            _canvas = null;
+        }
 
-            base.OnDisable();
+        /// <summary>
+        /// Called when the state of the parent Canvas is changed.
+        /// </summary>
+        protected override void OnCanvasHierarchyChanged()
+        {
+            _canvas = null;
         }
 
         /// <summary>
@@ -360,6 +393,7 @@ namespace Coffee.UIExtensions
         /// </summary>
         protected override void OnTransformParentChanged()
         {
+            _canvas = null;
         }
 
         void ISerializationCallbackReceiver.OnBeforeSerialize()
@@ -652,17 +686,6 @@ namespace Coffee.UIExtensions
             _groupId = m_GroupId == m_GroupMaxId
                 ? m_GroupId
                 : Random.Range(m_GroupId, m_GroupMaxId + 1);
-        }
-
-        protected override void UpdateMaterial()
-        {
-        }
-
-        /// <summary>
-        /// Call to update the geometry of the Graphic onto the CanvasRenderer.
-        /// </summary>
-        protected override void UpdateGeometry()
-        {
         }
 
         private void UpdateRendererMaterial()
