@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using Coffee.UIParticleExtensions;
+using Coffee.UIParticleInternal;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Rendering;

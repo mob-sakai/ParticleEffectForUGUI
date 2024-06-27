@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Coffee.UIParticleInternal;
 using UnityEditor;
 using UnityEngine;
 
@@ -44,8 +45,7 @@ namespace Coffee.UIExtensions
 #endif
         private static void InitializeOnLoad()
         {
-            Canvas.willRenderCanvases -= Refresh;
-            Canvas.willRenderCanvases += Refresh;
+            UIExtraCallbacks.onAfterCanvasRebuild += Refresh;
         }
 
         private static void Refresh()
