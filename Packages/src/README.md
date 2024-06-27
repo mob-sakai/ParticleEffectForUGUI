@@ -11,7 +11,7 @@
 [![](https://img.shields.io/github/watchers/mob-sakai/ParticleEffectForUGUI.svg?style=social&label=Watch)](https://github.com/mob-sakai/ParticleEffectForUGUI/subscription)
 [![](https://img.shields.io/twitter/follow/mob_sakai.svg?label=Follow&style=social)](https://twitter.com/intent/follow?screen_name=mob_sakai)
 
-<< [📝 Description](#-description-) | [📌 Key Features](#-key-features) | [🎮 Demo](#-demo) | [⚙ Installation](#-installation) | [🚀 Usage](#-usage) | [🛠 Development Note](#-development-note) | [🤝 Contributing](#-contributing) >>
+<< [📝 Description](#-description-) | [📌 Key Features](#-key-features) | [🎮 Demo](#-demo) | [⚙ Installation](#-installation) | [🔄 Upgrading to 5.x](#-upgrading-from-3x4x-to-5x) | [🚀 Usage](#-usage) | [🛠 Development Note](#-development-note) | [🤝 Contributing](#-contributing) >>
 
 ## 📝 Description <!-- omit in toc -->
 
@@ -27,6 +27,8 @@ You can render, mask, and sort your `ParticleSystems` for UI without the need fo
     - [Install via UPM (with Package Manager UI)](#install-via-upm-with-package-manager-ui)
     - [Install via UPM (Manually)](#install-via-upm-manually)
     - [Install as Embedded Package](#install-as-embedded-package)
+- [🔄 Upgrading from 3.x/4.x to 5.x](#-upgrading-from-3x4x-to-5x)
+  - [Breaking Changes](#breaking-changes)
 - [🚀 Usage](#-usage)
   - [Component: UIParticle](#component-uiparticle)
   - [Basic Usage](#basic-usage)
@@ -148,6 +150,17 @@ _This package requires **Unity 2018.3 or later**._
    ![](https://github.com/mob-sakai/mob-sakai/assets/12690315/0b7484b4-5fca-43b0-a9ef-e5dbd99bcdb4)
 - If you want to fix bugs or add features, install it as an embedded package.
 - To update the package, you need to re-download it and replace the contents.
+
+<br><br>
+
+## 🔄 Upgrading from 3.x/4.x to 5.x
+
+### Breaking Changes
+
+- The default value of `UIParticle.scale` has been changed from `10` to `1`.
+- `UIParticle` no longer inherits from `MaskableGraphic`.
+- Add project settings for UIParticle
+  - enableLinearToGamma: Enables LinearToGamma during mesh baking
 
 <br><br>
 
