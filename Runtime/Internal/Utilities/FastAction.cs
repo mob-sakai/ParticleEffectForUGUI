@@ -20,6 +20,7 @@ namespace Coffee.UIParticleInternal
         /// </summary>
         public void Add(T rhs)
         {
+            if (rhs == null) return;
             Profiler.BeginSample("(COF)[FastAction] Add Action");
             var node = s_NodePool.Rent();
             node.Value = rhs;
@@ -32,6 +33,7 @@ namespace Coffee.UIParticleInternal
         /// </summary>
         public void Remove(T rhs)
         {
+            if (rhs == null) return;
             Profiler.BeginSample("(COF)[FastAction] Remove Action");
             var node = _delegates.Find(rhs);
             if (node != null)
@@ -62,6 +64,11 @@ namespace Coffee.UIParticleInternal
 
                 node = node.Next;
             }
+        }
+
+        public void Clear()
+        {
+            _delegates.Clear();
         }
     }
 
