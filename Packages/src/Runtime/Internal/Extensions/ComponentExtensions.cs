@@ -50,7 +50,7 @@ namespace Coffee.UIParticleInternal
             var childCount = tr.childCount;
             for (var i = 0; i < childCount; i++)
             {
-                tr.GetChild(i).GetComponentsInChildren(results, depth - 1);
+                tr.GetChild(i).GetComponentsInChildren_Internal(results, depth - 1);
             }
         }
 

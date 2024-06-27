@@ -64,11 +64,12 @@ namespace Coffee.UIParticleInternal
 
 #if UNITY_EDITOR
         [InitializeOnLoadMethod]
-#else
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
 #endif
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void InitializeOnLoad()
         {
+            Canvas.willRenderCanvases -= OnAfterCanvasRebuild;
+            s_IsInitializedAfterCanvasRebuild = false;
         }
 
         /// <summary>
