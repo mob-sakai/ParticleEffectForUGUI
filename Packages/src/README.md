@@ -125,7 +125,8 @@ _This package requires **Unity 2018.3 or later**._
 
 - The default value of `UIParticle.scale` has been changed from `10` to `1`.
 - `UIParticle` no longer inherits from `MaskableGraphic`.
-- 
+- Add project settings for UIParticle
+  - enableLinearToGamma: Enables LinearToGamma during mesh baking
 
 <br><br>
 

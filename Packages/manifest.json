@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.unity.ide.rider": "3.0.31",
     "com.coffee.development": "https://github.com/mob-sakai/Coffee.Internal.git?path=Packages/Development",
     "com.coffee.nano-monitor": "https://github.com/mob-sakai/Coffee.Internal.git?path=Packages/NanoMonitor",
     "com.coffee.sub-asset-editor": "https://github.com/mob-sakai/SubAssetEditor.git",

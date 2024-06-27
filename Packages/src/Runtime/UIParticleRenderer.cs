@@ -25,7 +25,6 @@ namespace Coffee.UIExtensions
         private static readonly CombineInstance[] s_CombineInstances = { new CombineInstance() };
         private static readonly List<Material> s_Materials = new List<Material>(2);
         private static MaterialPropertyBlock s_Mpb;
-        private static readonly List<UIParticleRenderer> s_Renderers = new List<UIParticleRenderer>(8);
         private static readonly Vector3[] s_Corners = new Vector3[4];
         private bool _delay;
         private int _index;
@@ -445,21 +444,24 @@ namespace Coffee.UIExtensions
 
             // Get grouped renderers.
             Profiler.BeginSample("[UIParticleRenderer] Set Mesh");
-            s_Renderers.Clear();
+            var renderers = ListPool<UIParticleRenderer>.Rent();
             if (_parent.useMeshSharing)
             {
-                UIParticleUpdater.GetGroupedRenderers(_parent.groupId, _index, s_Renderers);
+                UIParticleUpdater.GetGroupedRenderers(_parent.groupId, _index, renderers);
             }
 
-            for (var i = 0; i < s_Renderers.Count; i++)
+            for (var i = 0; i < renderers.Count; i++)
             {
-                if (s_Renderers[i] == this) continue;
+                var r = renderers[i];
+                if (r == this) continue;
 
-                s_Renderers[i].canvasRenderer.SetMesh(workerMesh);
-                s_Renderers[i]._lastBounds = _lastBounds;
-                s_Renderers[i].canvasRenderer.materialCount = 1;
-                s_Renderers[i].canvasRenderer.SetMaterial(materialForRendering, 0);
+                r.canvasRenderer.SetMesh(workerMesh);
+                r._lastBounds = _lastBounds;
+                r.canvasRenderer.materialCount = 1;
+                r.canvasRenderer.SetMaterial(materialForRendering, 0);
             }
+
+            ListPool<UIParticleRenderer>.Return(ref renderers);
 
             if (_parent.canRender)
             {
@@ -471,8 +473,6 @@ namespace Coffee.UIExtensions
             }
 
             Profiler.EndSample();
-
-            s_Renderers.Clear();
         }
 
         public override void SetMaterialDirty()
