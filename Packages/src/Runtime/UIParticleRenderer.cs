@@ -31,6 +31,7 @@ namespace Coffee.UIExtensions
         private Material _currentMaterialForRendering;
         private bool _delay;
         private int _index;
+        private bool _isPrevStored;
         private bool _isTrail;
         private Bounds _lastBounds;
         private Material _modifiedMaterial;
@@ -39,9 +40,8 @@ namespace Coffee.UIExtensions
         private float _prevCanvasScale;
         private Vector3 _prevPsPos;
         private Vector3 _prevScale;
-        private bool _isPrevStored;
         private Vector2Int _prevScreenSize;
-        private bool _prewarm;
+        private bool _preWarm;
         private ParticleSystemRenderer _renderer;
 
         public override Texture mainTexture => _isTrail ? null : _particleSystem.GetTextureForSprite();
@@ -111,8 +111,7 @@ namespace Coffee.UIExtensions
             if (this && isActiveAndEnabled)
             {
                 material = null;
-                workerMesh.Clear();
-                canvasRenderer.SetMesh(workerMesh);
+                canvasRenderer.Clear();
                 _lastBounds = new Bounds();
                 enabled = false;
             }
@@ -221,20 +220,20 @@ namespace Coffee.UIExtensions
             gameObject.layer = parent.gameObject.layer;
 
             _particleSystem = ps;
-            _prewarm = _particleSystem.main.prewarm;
+            _preWarm = _particleSystem.main.prewarm;
 
 #if UNITY_EDITOR
             if (Application.isPlaying)
 #endif
             {
-                if (_particleSystem.isPlaying || _prewarm)
+                if (_particleSystem.isPlaying || _preWarm)
                 {
                     _particleSystem.Clear();
                     _particleSystem.Pause();
                 }
             }
 
-            _renderer = ps.GetComponent<ParticleSystemRenderer>();
+            ps.TryGetComponent(out _renderer);
             _renderer.enabled = false;
 
             //_emitter = emitter;
@@ -563,10 +562,7 @@ namespace Coffee.UIExtensions
                     return Matrix4x4.Scale(scale);
                 case ParticleSystemSimulationSpace.Custom:
                     return Matrix4x4.Translate(_particleSystem.main.customSimulationSpace.position.GetScaled(scale))
-                           //* Matrix4x4.Translate(wpos)
-                           * Matrix4x4.Scale(scale)
-                        //* Matrix4x4.Translate(-wpos)
-                        ;
+                           * Matrix4x4.Scale(scale);
                 default:
                     throw new NotSupportedException();
             }
@@ -582,7 +578,8 @@ namespace Coffee.UIExtensions
             var screenSize = new Vector2Int(Screen.width, Screen.height);
             var isWorldSpace = _particleSystem.IsWorldSpace();
             var canvasScale = _parent.canvas ? _parent.canvas.scaleFactor : 1f;
-            var resolutionChanged = _prevScreenSize != screenSize || _prevCanvasScale != canvasScale;
+            var resolutionChanged = _prevScreenSize != screenSize
+                                    || !Mathf.Approximately(_prevCanvasScale, canvasScale);
             if (resolutionChanged && isWorldSpace && _isPrevStored)
             {
                 // Update particle array size and get particles.
@@ -590,7 +587,7 @@ namespace Coffee.UIExtensions
                 var particles = ParticleSystemExtensions.GetParticleArray(size);
                 _particleSystem.GetParticles(particles, size);
 
-                // Resolusion resolver:
+                // Resolution resolver:
                 // (psPos / scale) / (prevPsPos / prevScale) -> psPos * scale.inv * prevPsPos.inv * prevScale
                 var modifier = psPos.GetScaled(
                     scale.Inverse(),
@@ -625,11 +622,11 @@ namespace Coffee.UIExtensions
                     ? Time.unscaledDeltaTime
                     : Time.deltaTime;
 
-            // Prewarm:
-            if (0 < deltaTime && _prewarm)
+            // Pre-warm:
+            if (0 < deltaTime && _preWarm)
             {
                 deltaTime += main.duration;
-                _prewarm = false;
+                _preWarm = false;
             }
 
             // get world position.

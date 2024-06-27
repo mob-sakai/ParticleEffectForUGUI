@@ -31,35 +31,35 @@ namespace Coffee.UIExtensions
             }
             else
             {
-                result.Aggregate(s_Sb, (a, b) => s_Sb.AppendFormat("{0}, ", b));
+                result.Aggregate(s_Sb, (a, b) =>
+                {
+                    s_Sb.Append(b);
+                    return s_Sb.Append(", ");
+                });
                 s_Sb.Length -= 2;
             }
 
             return s_Sb.ToString();
         }
 
-        public static void Draw(SerializedProperty sp, Material[] mats)
+        public static void Draw(SerializedProperty sp, List<Material> mats)
         {
-            bool isClicked;
-            using (new EditorGUILayout.HorizontalScope(GUILayout.ExpandWidth(false)))
-            {
-                var pos = EditorGUILayout.GetControlRect(true);
-                var label = new GUIContent(sp.displayName, sp.tooltip);
-                var rect = EditorGUI.PrefixLabel(pos, label);
-                var text = sp.hasMultipleDifferentValues
-                    ? "-"
-                    : CollectActiveNames(sp, s_ActiveNames);
-                isClicked = GUI.Button(rect, text, EditorStyles.popup);
-            }
+            var pos = EditorGUILayout.GetControlRect(true);
+            var label = new GUIContent(sp.displayName, sp.tooltip);
+            var rect = EditorGUI.PrefixLabel(pos, label);
+            var text = sp.hasMultipleDifferentValues
+                ? "-"
+                : CollectActiveNames(sp, s_ActiveNames);
 
-            if (!isClicked) return;
+            if (!GUI.Button(rect, text, EditorStyles.popup)) return;
 
             var gm = new GenericMenu();
-            gm.AddItem(s_ContentNothing, s_ActiveNames.Count == 0, () =>
+            gm.AddItem(s_ContentNothing, s_ActiveNames.Count == 0, x =>
             {
-                sp.ClearArray();
-                sp.serializedObject.ApplyModifiedProperties();
-            });
+                var current = (SerializedProperty)x;
+                current.ClearArray();
+                current.serializedObject.ApplyModifiedProperties();
+            }, sp);
 
             if (!sp.hasMultipleDifferentValues)
             {
@@ -73,7 +73,7 @@ namespace Coffee.UIExtensions
             }
 
             s_Names.Clear();
-            for (var j = 0; j < mats.Length; j++)
+            for (var j = 0; j < mats.Count; j++)
             {
                 var mat = mats[j];
                 if (!mat || !mat.shader) continue;
@@ -82,8 +82,7 @@ namespace Coffee.UIExtensions
                 {
                     var name = ShaderUtil.GetPropertyName(mat.shader, i);
                     var type = (AnimatableProperty.ShaderPropertyType)ShaderUtil.GetPropertyType(mat.shader, i);
-                    if (s_Names.Contains(name)) continue;
-                    s_Names.Add(name);
+                    if (!s_Names.Add(name)) continue;
 
                     AddMenu(gm, sp, new ShaderProperty(name, type), true);
 

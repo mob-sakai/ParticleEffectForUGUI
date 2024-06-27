@@ -25,6 +25,7 @@ indent_size = 4
 trim_trailing_whitespace = true
 insert_final_newline = true
 
+csharp_style_namespace_declarations = block_scoped
 csharp_style_implicit_object_creation_when_type_is_apparent = false
 resharper_object_creation_when_type_evident = explicitly_typed
 
@@ -86,6 +87,9 @@ csharp_style_var_elsewhere = true:suggestion
 dotnet_style_predefined_type_for_locals_parameters_members = true:suggestion
 dotnet_style_predefined_type_for_member_access = true:suggestion
 
+# 
+resharper_keep_existing_embedded_arrangement = true
+
 # Arguments
 csharp_arguments_literal = named:suggestion
 csharp_arguments_string_literal = named:suggestion
@@ -134,7 +138,7 @@ dotnet_naming_style._camel_case.capitalization = camel_case
 
 # Code style defaults
 dotnet_sort_system_directives_first = true
-csharp_preserve_single_line_statements = false:none
+csharp_preserve_single_line_statements = false
 csharp_prefer_static_local_function = true:suggestion
 csharp_prefer_simple_using_statement = false:none
 csharp_style_prefer_switch_expression = true:suggestion
@@ -186,7 +190,7 @@ csharp_space_after_dot = false
 csharp_space_after_keywords_in_control_flow_statements = true
 csharp_space_after_semicolon_in_for_statement = true
 csharp_space_around_binary_operators = before_and_after
-csharp_space_around_declaration_statements = do_not_ignore
+csharp_space_around_declaration_statements = false
 csharp_space_before_colon_in_inheritance_clause = true
 csharp_space_before_comma = false
 csharp_space_before_dot = false

@@ -44,23 +44,26 @@ namespace Coffee.UIExtensions
 
         [HideInInspector]
         [SerializeField]
+        [Obsolete]
         internal bool m_IsTrail;
 
         [HideInInspector]
         [FormerlySerializedAs("m_IgnoreParent")]
         [SerializeField]
+        [Obsolete]
         private bool m_IgnoreCanvasScaler;
 
         [HideInInspector]
         [SerializeField]
-        private bool m_AbsoluteMode;
+        [Obsolete]
+        internal bool m_AbsoluteMode;
 
-        [Tooltip("Particle effect scale")]
+        [Tooltip("Scale the rendering particles. When the `3D` toggle is enabled, 3D scale (x, y, z) is supported.")]
         [SerializeField]
         private Vector3 m_Scale3D = new Vector3(10, 10, 10);
 
-        [Tooltip("Animatable material properties.\n" +
-                 "If you want to change the material properties of the ParticleSystem in Animation, enable it.")]
+        [Tooltip("If you want to update material properties (e.g. _MainTex_ST, _Color) in AnimationClip, " +
+                 "use this to mark as animatable.")]
         [SerializeField]
         internal AnimatableProperty[] m_AnimatableProperties = new AnimatableProperty[0];
 
@@ -68,12 +71,13 @@ namespace Coffee.UIExtensions
         [SerializeField]
         private List<ParticleSystem> m_Particles = new List<ParticleSystem>();
 
-        [Tooltip("Mesh sharing.\n" +
-                 "None: disable mesh sharing.\n" +
-                 "Auto: automatically select Primary/Replica.\n" +
-                 "Primary: provides particle simulation results to the same group.\n" +
+        [Tooltip("Particle simulation results are shared within the same group. " +
+                 "A large number of the same effects can be displayed with a small load.\n" +
+                 "None: Disable mesh sharing.\n" +
+                 "Auto: Automatically select Primary/Replica.\n" +
+                 "Primary: Provides particle simulation results to the same group.\n" +
                  "Primary Simulator: Primary, but do not render the particle (simulation only).\n" +
-                 "Replica: render simulation results provided by the primary.")]
+                 "Replica: Render simulation results provided by the primary.")]
         [SerializeField]
         private MeshSharing m_MeshSharing = MeshSharing.None;
 
@@ -85,18 +89,22 @@ namespace Coffee.UIExtensions
         [SerializeField]
         private int m_GroupMaxId;
 
-        [Tooltip("Relative: The particles will be emitted from the scaled position of ParticleSystem.\n" +
-                 "Absolute: The particles will be emitted from the world position of ParticleSystem.")]
+        [Tooltip("Emission position mode.\n" +
+                 "Relative: The particles will be emitted from the scaled position.\n" +
+                 "Absolute: The particles will be emitted from the world position.")]
         [SerializeField]
         private PositionMode m_PositionMode = PositionMode.Relative;
 
         [SerializeField]
-        [Tooltip("Prevent the root-Canvas scale from affecting the hierarchy-scaled ParticleSystem.")]
-        private bool m_AutoScaling = true;
+        [Obsolete]
+        internal bool m_AutoScaling;
 
         [SerializeField]
-        [Tooltip("Transform: Transform.lossyScale (=world scale) will be set to (1, 1, 1)." +
-                 "UIParticle: UIParticle.scale will be adjusted.")]
+        [Tooltip(
+            "How to automatically adjust when the Canvas scale is changed by the screen size or reference resolution.\n" +
+            "None: Do nothing.\n" +
+            "Transform: Transform.lossyScale (=world scale) will be set to (1, 1, 1).\n" +
+            "UIParticle: UIParticle.scale will be adjusted.")]
         private AutoScalingMode m_AutoScalingMode = AutoScalingMode.Transform;
 
         [SerializeField]
@@ -110,11 +118,12 @@ namespace Coffee.UIExtensions
         private float m_CustomViewSize = 10;
 
         private readonly List<UIParticleRenderer> _renderers = new List<UIParticleRenderer>();
-        private int _groupId;
         private Camera _bakeCamera;
-        private DrivenRectTransformTracker _tracker;
-        private Vector3 _storedScale;
+        private Canvas _canvas;
+        private int _groupId;
         private bool _isScaleStored;
+        private Vector3 _storedScale;
+        private DrivenRectTransformTracker _tracker;
 
         /// <summary>
         /// Should this graphic be considered a target for ray-casting?
@@ -126,7 +135,8 @@ namespace Coffee.UIExtensions
         }
 
         /// <summary>
-        /// Mesh sharing.
+        /// Particle simulation results are shared within the same group.
+        /// A large number of the same effects can be displayed with a small load.
         /// None: disable mesh sharing.
         /// Auto: automatically select Primary/Replica.
         /// Primary: provides particle simulation results to the same group.
@@ -169,9 +179,9 @@ namespace Coffee.UIExtensions
         }
 
         /// <summary>
-        /// Particle position mode.
-        /// Relative: The particles will be emitted from the scaled position of the ParticleSystem.
-        /// Absolute: The particles will be emitted from the world position of the ParticleSystem.
+        /// Emission position mode.
+        /// Relative: The particles will be emitted from the scaled position.
+        /// Absolute: The particles will be emitted from the world position.
         /// </summary>
         public PositionMode positionMode
         {
@@ -184,6 +194,7 @@ namespace Coffee.UIExtensions
         /// Relative: The particles will be emitted from the scaled position of the ParticleSystem.
         /// Absolute: The particles will be emitted from the world position of the ParticleSystem.
         /// </summary>
+        [Obsolete("The absoluteMode is now obsolete. Please use the autoScalingMode instead.", false)]
         public bool absoluteMode
         {
             get => m_PositionMode == PositionMode.Absolute;
@@ -201,8 +212,12 @@ namespace Coffee.UIExtensions
         }
 
         /// <summary>
-        /// Auto scaling mode.
+        /// How to automatically adjust when the Canvas scale is changed by the screen size or reference resolution.
+        /// <para/>
+        /// None: Do nothing.
+        /// <para/>
         /// Transform: Transform.lossyScale (=world scale) will be set to (1, 1, 1).
+        /// <para/>
         /// UIParticle: UIParticle.scale will be adjusted.
         /// </summary>
         public AutoScalingMode autoScalingMode
@@ -287,24 +302,6 @@ namespace Coffee.UIExtensions
         public List<ParticleSystem> particles => m_Particles;
 
         /// <summary>
-        /// Get all base materials to render.
-        /// </summary>
-        public IEnumerable<Material> materials
-        {
-            get
-            {
-                for (var i = 0; i < _renderers.Count; i++)
-                {
-                    var r = _renderers[i];
-                    if (!r || !r.material) continue;
-                    yield return r.material;
-                }
-            }
-        }
-
-        public override Material materialForRendering => null;
-
-        /// <summary>
         /// Paused.
         /// </summary>
         public bool isPaused { get; private set; }
@@ -358,12 +355,20 @@ namespace Coffee.UIExtensions
         {
         }
 
+        /// <summary>
+        /// This function is called when a direct or indirect parent of the transform of the GameObject has changed.
+        /// </summary>
+        protected override void OnTransformParentChanged()
+        {
+        }
+
         void ISerializationCallbackReceiver.OnBeforeSerialize()
         {
         }
 
         void ISerializationCallbackReceiver.OnAfterDeserialize()
         {
+#pragma warning disable CS0612 // Type or member is obsolete
             if (m_IgnoreCanvasScaler || m_AutoScaling)
             {
                 m_IgnoreCanvasScaler = false;
@@ -376,31 +381,47 @@ namespace Coffee.UIExtensions
                 m_AbsoluteMode = false;
                 m_PositionMode = PositionMode.Absolute;
             }
+#pragma warning restore CS0612 // Type or member is obsolete
         }
 
+        /// <summary>
+        /// Play the ParticleSystems.
+        /// </summary>
         public void Play()
         {
             particles.Exec(p => p.Simulate(0, false, true));
             isPaused = false;
         }
 
+        /// <summary>
+        /// Pause the ParticleSystems.
+        /// </summary>
         public void Pause()
         {
             particles.Exec(p => p.Pause());
             isPaused = true;
         }
 
+        /// <summary>
+        /// Unpause the ParticleSystems.
+        /// </summary>
         public void Resume()
         {
             isPaused = false;
         }
 
+        /// <summary>
+        /// Stop the ParticleSystems.
+        /// </summary>
         public void Stop()
         {
             particles.Exec(p => p.Stop());
             isPaused = true;
         }
 
+        /// <summary>
+        /// Start emission of the ParticleSystems.
+        /// </summary>
         public void StartEmission()
         {
             particles.Exec(p =>
@@ -410,6 +431,9 @@ namespace Coffee.UIExtensions
             });
         }
 
+        /// <summary>
+        /// Stop emission of the ParticleSystems.
+        /// </summary>
         public void StopEmission()
         {
             particles.Exec(p =>
@@ -419,17 +443,41 @@ namespace Coffee.UIExtensions
             });
         }
 
+        /// <summary>
+        /// Clear the particles of the ParticleSystems.
+        /// </summary>
         public void Clear()
         {
             particles.Exec(p => p.Clear());
             isPaused = true;
         }
 
+        /// <summary>
+        /// Get all base materials to render.
+        /// </summary>
+        public void GetMaterials(List<Material> result)
+        {
+            if (result == null) return;
+
+            for (var i = 0; i < _renderers.Count; i++)
+            {
+                var r = _renderers[i];
+                if (!r || !r.material) continue;
+                result.Add(r.material);
+            }
+        }
+
+        /// <summary>
+        /// Refresh UIParticle using the ParticleSystem instance.
+        /// </summary>
         public void SetParticleSystemInstance(GameObject instance)
         {
             SetParticleSystemInstance(instance, true);
         }
 
+        /// <summary>
+        /// Refresh UIParticle using the ParticleSystem instance.
+        /// </summary>
         public void SetParticleSystemInstance(GameObject instance, bool destroyOldParticles)
         {
             if (!instance) return;
@@ -455,6 +503,10 @@ namespace Coffee.UIExtensions
             RefreshParticles(instance);
         }
 
+        /// <summary>
+        /// Refresh UIParticle using the prefab.
+        /// The prefab is automatically instantiated.
+        /// </summary>
         public void SetParticleSystemPrefab(GameObject prefab)
         {
             if (!prefab) return;
@@ -462,16 +514,31 @@ namespace Coffee.UIExtensions
             SetParticleSystemInstance(Instantiate(prefab.gameObject), true);
         }
 
+        /// <summary>
+        /// Refresh UIParticle.
+        /// Collect ParticleSystems under the GameObject and refresh the UIParticle.
+        /// </summary>
         public void RefreshParticles()
         {
             RefreshParticles(gameObject);
         }
 
+        /// <summary>
+        /// Refresh UIParticle.
+        /// Collect ParticleSystems under the GameObject and refresh the UIParticle.
+        /// </summary>
         private void RefreshParticles(GameObject root)
         {
             if (!root) return;
             root.GetComponentsInChildren(true, particles);
-            particles.RemoveAll(x => x.GetComponentInParent<UIParticle>(true) != this);
+            for (var i = particles.Count - 1; 0 <= i; i--)
+            {
+                var ps = particles[i];
+                if (!ps || ps.GetComponentInParent<UIParticle>(true) != this)
+                {
+                    particles.RemoveAt(i);
+                }
+            }
 
             for (var i = 0; i < particles.Count; i++)
             {
@@ -486,31 +553,39 @@ namespace Coffee.UIExtensions
             RefreshParticles(particles);
         }
 
-        public void RefreshParticles(List<ParticleSystem> particles)
+        /// <summary>
+        /// Refresh UIParticle using a list of ParticleSystems.
+        /// </summary>
+        public void RefreshParticles(List<ParticleSystem> particleSystems)
         {
+            // Collect children UIParticleRenderer components.
             // #246: Nullptr exceptions when using nested UIParticle components in hierarchy
             _renderers.Clear();
-            foreach (Transform child in transform)
+            var childCount = transform.childCount;
+            for (var i = 0; i < childCount; i++)
             {
-                var uiParticleRenderer = child.GetComponent<UIParticleRenderer>();
-
-                if (uiParticleRenderer != null)
+                var child = transform.GetChild(i);
+                if (child.TryGetComponent(out UIParticleRenderer uiParticleRenderer))
                 {
                     _renderers.Add(uiParticleRenderer);
                 }
             }
 
+            // Reset the UIParticleRenderer components.
             for (var i = 0; i < _renderers.Count; i++)
             {
                 _renderers[i].Reset(i);
             }
 
+            // Set the ParticleSystem to the UIParticleRenderer. If the trail is enabled, set it additionally.
             var j = 0;
-            for (var i = 0; i < particles.Count; i++)
+            for (var i = 0; i < particleSystems.Count; i++)
             {
-                var ps = particles[i];
+                var ps = particleSystems[i];
                 if (!ps) continue;
                 GetRenderer(j++).Set(this, ps, false);
+
+                // If the trail is enabled, set it additionally.
                 if (ps.trails.enabled)
                 {
                     GetRenderer(j++).Set(this, ps, true);
@@ -556,11 +631,10 @@ namespace Coffee.UIExtensions
             for (var i = 0; i < _renderers.Count; i++)
             {
                 var r = _renderers[i];
-                if (!r)
-                {
-                    RefreshParticles(particles);
-                    break;
-                }
+                if (r) continue;
+
+                RefreshParticles(particles);
+                break;
             }
 
             var bakeCamera = GetBakeCamera();
@@ -568,6 +642,7 @@ namespace Coffee.UIExtensions
             {
                 var r = _renderers[i];
                 if (!r) continue;
+
                 r.UpdateMesh(bakeCamera);
             }
         }
