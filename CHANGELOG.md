@@ -1,3 +1,18 @@
+# [5.0.0-preview.4](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v5.0.0-preview.3...v5.0.0-preview.4) (2024-06-27)
+
+
+### Bug Fixes
+
+* generated baking-camera object remains in the prefab or scene (again) ([5babd6d](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/5babd6d07b2ac17341a29964baf552785cefd90e))
+* SetParticleSystemInstance/Prefab APIs destroy generated objects ([4b30c16](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/4b30c16b9a48531873f9be91eec2a573370d17a1))
+
+
+### Features
+
+* add 'custom view' option. ([4252f11](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/4252f1199b8a7038a6fb447989534c512ec40283))
+* restore `Transform.localScale` when setting `autoScalingMode` to something other than `Transform` (again) ([04232b6](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/04232b67491e4506dbf84ce77c1dee7127936a3a))
+* the rendering order list in inspector is now more compact ([9212eaa](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/9212eaa84c85524c00f9228ff8ba887e028838dc))
+
 # [5.0.0-preview.3](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v5.0.0-preview.2...v5.0.0-preview.3) (2024-06-21)
 
 
