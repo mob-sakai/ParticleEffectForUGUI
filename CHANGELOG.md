@@ -1,3 +1,19 @@
+# [4.8.0](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.7.2...v4.8.0) (2024-06-27)
+
+
+### Bug Fixes
+
+* generated baking-camera object remains in the prefab or scene (again) ([de35cba](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/de35cba34c6312c1405ed522e9927c620c78e72d))
+* SetParticleSystemInstance/Prefab APIs destroy generated objects ([ae3f3a8](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/ae3f3a8e62cc733420354d237ab765ac777127c8))
+
+
+### Features
+
+* add 'custom view' option. ([a703c29](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/a703c2921ca08c2280d0c8fde01e4c0b33b5c69e))
+* remove overlay window (editor) ([8358170](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/835817049f4fcf00dd2bf98dbada14f041ad3544))
+* restore `Transform.localScale` when setting `autoScalingMode` to something other than `Transform` (again) ([88a970d](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/88a970d93a2b69cf011d86bd1807569e90538e0e))
+* the rendering order list in inspector is now more compact ([be90172](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/be901724e064befacf617f4940b0331e1d31e1ca))
+
 ## [4.7.2](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.7.1...v4.7.2) (2024-06-21)
 
 
