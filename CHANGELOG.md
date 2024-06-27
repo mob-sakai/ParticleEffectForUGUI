@@ -1,3 +1,10 @@
+## [4.8.1](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.8.0...v4.8.1) (2024-06-27)
+
+
+### Bug Fixes
+
+* remove debug code ([669deb4](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/669deb41d4ac589d9db93b29bc8e95383e7f28a5))
+
 # [4.8.0](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.7.2...v4.8.0) (2024-06-27)
 
 
