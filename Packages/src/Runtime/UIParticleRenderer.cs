@@ -417,22 +417,9 @@ namespace Coffee.UIExtensions
                 _lastBounds = bounds;
 
                 // Convert linear color to gamma color.
-                if (QualitySettings.activeColorSpace == ColorSpace.Linear)
+                if (UIParticleProjectSettings.enableLinearToGamma && canvas.ShouldGammaToLinearInMesh())
                 {
-                    Profiler.BeginSample("[UIParticleRenderer] Convert Linear to Gamma");
-                    workerMesh.GetColors(s_Colors);
-                    var count_c = s_Colors.Count;
-                    for (var i = 0; i < count_c; i++)
-                    {
-                        var c = s_Colors[i];
-                        c.r = c.r.LinearToGamma();
-                        c.g = c.g.LinearToGamma();
-                        c.b = c.b.LinearToGamma();
-                        s_Colors[i] = c;
-                    }
-
-                    workerMesh.SetColors(s_Colors);
-                    Profiler.EndSample();
+                    workerMesh.LinearToGamma();
                 }
 
                 var components = ListPool<Component>.Rent();
