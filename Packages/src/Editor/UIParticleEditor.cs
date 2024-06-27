@@ -317,7 +317,6 @@ namespace Coffee.UIExtensions
             }
 #endif
             Profiler.EndSample();
-            EditorApplication.delayCall += () => Profiler.enabled = false;
         }
 
         private static bool IsBuiltInObject(Object obj)
