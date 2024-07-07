@@ -7,7 +7,7 @@ using UnityEngine.Events;
 namespace Coffee.UIExtensions
 {
     [ExecuteAlways]
-    public class UIParticleAttractor : MonoBehaviour
+    public class UIParticleAttractor : MonoBehaviour, ISerializationCallbackReceiver
     {
         public enum Movement
         {
@@ -23,7 +23,11 @@ namespace Coffee.UIExtensions
         }
 
         [SerializeField]
-        private List<ParticleSystem> m_ParticleSystems;
+        [HideInInspector]
+        private ParticleSystem m_ParticleSystem;
+
+        [SerializeField]
+        private List<ParticleSystem> m_ParticleSystems = new List<ParticleSystem>();
 
         [Range(0.1f, 10f)]
         [SerializeField]
@@ -46,7 +50,7 @@ namespace Coffee.UIExtensions
         [SerializeField]
         private UnityEvent m_OnAttracted;
 
-        private UIParticle[] _uiParticles;
+        private List<UIParticle> _uiParticles = new List<UIParticle>();
 
         public float destinationRadius
         {
@@ -97,11 +101,11 @@ namespace Coffee.UIExtensions
                 m_ParticleSystems = new List<ParticleSystem>();
             }
 
-            if (!m_ParticleSystems.Contains(ps))
-            {
-                m_ParticleSystems.Add(ps);
-                ApplyParticleSystems();
-            }
+            var i = m_ParticleSystems.IndexOf(ps);
+            if (0 <= i) return; // Already added: skip
+
+            m_ParticleSystems.Add(ps);
+            _uiParticles.Clear();
         }
 
         public void RemoveParticleSystem(ParticleSystem ps)
@@ -111,16 +115,20 @@ namespace Coffee.UIExtensions
                 return;
             }
 
-            if (m_ParticleSystems.Contains(ps))
-            {
-                m_ParticleSystems.Remove(ps);
-                ApplyParticleSystems();
-            }
+            var i = m_ParticleSystems.IndexOf(ps);
+            if (i < 0) return; // Not found. skip
+
+            m_ParticleSystems.RemoveAt(i);
+            _uiParticles.Clear();
+        }
+
+        private void Awake()
+        {
+            UpgradeIfNeeded();
         }
 
         private void OnEnable()
         {
-            ApplyParticleSystems();
             UIParticleUpdater.Register(this);
         }
 
@@ -137,23 +145,24 @@ namespace Coffee.UIExtensions
 
         internal void Attract()
         {
-            if (m_ParticleSystems == null) return;
+            // Collect UIParticle if needed (same size as m_ParticleSystems)
+            CollectUIParticlesIfNeeded();
 
             for (var particleIndex = 0; particleIndex < this.m_ParticleSystems.Count; particleIndex++)
             {
                 var particleSystem = m_ParticleSystems[particleIndex];
+
+                // Skip: The ParticleSystem is not active
                 if (particleSystem == null || !particleSystem.gameObject.activeInHierarchy) continue;
 
+                // Skip: No active particles
                 var count = particleSystem.particleCount;
                 if (count == 0) continue;
 
                 var particles = ParticleSystemExtensions.GetParticleArray(count);
                 particleSystem.GetParticles(particles, count);
 
-                var uiParticle = this._uiParticles != null && particleIndex < _uiParticles.Length
-                    ? _uiParticles[particleIndex]
-                    : null;
-
+                var uiParticle = _uiParticles[particleIndex];
                 var dstPos = this.GetDestinationPosition(uiParticle, particleSystem);
                 for (var i = 0; i < count; i++)
                 {
@@ -265,22 +274,59 @@ namespace Coffee.UIExtensions
             return Vector3.MoveTowards(current, target, speed);
         }
 
-        private void ApplyParticleSystems()
+        private void CollectUIParticlesIfNeeded()
         {
-            _uiParticles = null;
-            if (m_ParticleSystems == null || m_ParticleSystems.Count == 0)
+            if (m_ParticleSystems.Count == 0 || _uiParticles.Count != 0) return;
+
+            // Expand capacity
+            if (_uiParticles.Capacity < m_ParticleSystems.Capacity)
             {
-                return;
+                _uiParticles.Capacity = m_ParticleSystems.Capacity;
             }
 
-            _uiParticles = new UIParticle[m_ParticleSystems.Count];
-            for (var i = 0; i < this.m_ParticleSystems.Count; i++)
+            // Find UIParticle that controls the ParticleSystem
+            for (var i = 0; i < m_ParticleSystems.Count; i++)
             {
-                var particleSystem = m_ParticleSystems[i];
-                if (particleSystem == null) continue;
+                var ps = m_ParticleSystems[i];
+                if (ps == null)
+                {
+                    _uiParticles.Add(null);
+                    continue;
+                }
 
-                var uiParticle = particleSystem.GetComponentInParent<UIParticle>(true);
-                _uiParticles[i] = uiParticle.particles.Contains(particleSystem) ? uiParticle : null;
+                var uiParticle = ps.GetComponentInParent<UIParticle>(true);
+                _uiParticles.Add(uiParticle.particles.Contains(ps) ? uiParticle : null);
+            }
+        }
+
+#if UNITY_EDITOR
+        private void OnValidate()
+        {
+            _uiParticles.Clear();
+        }
+#endif
+
+        void ISerializationCallbackReceiver.OnBeforeSerialize()
+        {
+            UpgradeIfNeeded();
+        }
+
+        void ISerializationCallbackReceiver.OnAfterDeserialize()
+        {
+        }
+
+        private void UpgradeIfNeeded()
+        {
+            // Multiple ParticleSystems support: from 'm_ParticleSystem' to 'm_ParticleSystems'
+            if (m_ParticleSystem != null)
+            {
+                if (!m_ParticleSystems.Contains(m_ParticleSystem))
+                {
+                    m_ParticleSystems.Add(m_ParticleSystem);
+                }
+
+                m_ParticleSystem = null;
+                Debug.Log($"Upgraded!");
             }
         }
     }
