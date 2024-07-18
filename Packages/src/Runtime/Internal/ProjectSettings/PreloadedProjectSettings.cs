@@ -13,13 +13,15 @@ namespace Coffee.UIParticleInternal
 {
     public abstract class PreloadedProjectSettings : ScriptableObject
 #if UNITY_EDITOR
-        , IPreprocessBuildWithReport
     {
-        int IOrderedCallback.callbackOrder => 0;
-
-        void IPreprocessBuildWithReport.OnPreprocessBuild(BuildReport report)
+        private class PreprocessBuildWithReport : IPreprocessBuildWithReport
         {
-            Initialize();
+            int IOrderedCallback.callbackOrder => 0;
+
+            void IPreprocessBuildWithReport.OnPreprocessBuild(BuildReport report)
+            {
+                Initialize();
+            }
         }
 
         [InitializeOnLoadMethod]
