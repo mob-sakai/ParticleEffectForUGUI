@@ -1,5 +1,14 @@
 {
   "dependencies": {
+    "com.coffee.nano-monitor": {
+      "version": "https://github.com/mob-sakai/Coffee.Internal.git?path=Packages/NanoMonitor",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.unity.ugui": "1.0.0"
+      },
+      "hash": "c51e4514c9ab944915a639433ee52342e55a644e"
+    },
     "com.coffee.ui-particle": {
       "version": "file:src",
       "depth": 0,
