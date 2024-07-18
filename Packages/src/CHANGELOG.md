@@ -1,3 +1,10 @@
+# [4.9.0](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.8.1...v4.9.0) (2024-07-18)
+
+
+### Features
+
+* ParticleAttractor supports multiple ParticleSystems ([3834780](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/3834780fdb43443fe6e1ef89df54d26a24d62a91))
+
 ## [4.8.1](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.8.0...v4.8.1) (2024-06-27)
 
 
