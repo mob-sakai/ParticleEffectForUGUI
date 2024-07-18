@@ -5,6 +5,7 @@ using Object = UnityEngine.Object;
 #if ENABLE_COFFEE_LOGGER
 using System.Reflection;
 using System.Collections.Generic;
+
 #else
 using Conditional = System.Diagnostics.ConditionalAttribute;
 #endif
@@ -140,6 +141,9 @@ namespace Coffee.UIParticleInternal
 
                 switch (tag)
                 {
+                    case string name:
+                        sb.Append(name);
+                        break;
                     case Type type:
                         AppendType(sb, type);
                         break;

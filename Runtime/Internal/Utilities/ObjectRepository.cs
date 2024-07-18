@@ -8,10 +8,11 @@ namespace Coffee.UIParticleInternal
 {
     internal class ObjectRepository<T> where T : Object
     {
-        private readonly List<Entry> _cache = new List<Entry>();
+        private readonly Dictionary<Hash128, Entry> _cache = new Dictionary<Hash128, Entry>(8);
+        private readonly Dictionary<int, Hash128> _objectKey = new Dictionary<int, Hash128>(8);
         private readonly string _name;
         private readonly Action<T> _onRelease;
-        private readonly Stack<Entry> _pool = new Stack<Entry>();
+        private readonly Stack<Entry> _pool = new Stack<Entry>(8);
 
         public ObjectRepository(Action<T> onRelease = null)
         {
@@ -36,40 +37,33 @@ namespace Coffee.UIParticleInternal
             {
                 _onRelease = onRelease;
             }
+
+            for (var i = 0; i < 8; i++)
+            {
+                _pool.Push(new Entry());
+            }
         }
 
         public int count => _cache.Count;
 
         public void Clear()
         {
-            for (var i = 0; i < _cache.Count; i++)
+            foreach (var kv in _cache)
             {
-                var entry = _cache[i];
+                var entry = kv.Value;
                 if (entry == null) continue;
 
                 entry.Release(_onRelease);
+                _pool.Push(entry);
             }
 
             _cache.Clear();
+            _objectKey.Clear();
         }
 
         public bool Valid(Hash128 hash, T obj)
         {
-            // Find existing entry.
-            Profiler.BeginSample("(COF)[ObjectRepository] Valid > Find existing entry");
-            for (var i = 0; i < _cache.Count; ++i)
-            {
-                var entry = _cache[i];
-                if (entry.hash != hash) continue;
-                Profiler.EndSample();
-
-                // Existing entry found.
-                return entry.storedObject == obj;
-            }
-
-            Profiler.EndSample();
-
-            return false;
+            return _cache.TryGetValue(hash, out var entry) && entry.storedObject == obj;
         }
 
         /// <summary>
@@ -77,41 +71,8 @@ namespace Coffee.UIParticleInternal
         /// </summary>
         public void Get(Hash128 hash, ref T obj, Func<T> onCreate)
         {
-            // Find existing entry.
-            Profiler.BeginSample("(COF)[ObjectRepository] Get > Find existing entry");
-            for (var i = 0; i < _cache.Count; ++i)
-            {
-                var entry = _cache[i];
-                if (entry.hash != hash) continue;
-
-                // Existing entry found.
-                if (entry.storedObject != obj)
-                {
-                    // if the object is different, release the old one.
-                    Release(ref obj);
-                    ++entry.reference;
-                    obj = entry.storedObject;
-                    Logging.Log(_name, $"Get(#{count}): {entry}");
-                }
-
-                Profiler.EndSample();
-                return;
-            }
-
-            Profiler.EndSample();
-
-            // Create new entry.
-            Profiler.BeginSample("(COF)[ObjectRepository] Get > Create new entry");
-            var newEntry = 0 < _pool.Count ? _pool.Pop() : new Entry();
-            newEntry.storedObject = onCreate();
-            newEntry.hash = hash;
-            newEntry.reference = 1;
-            _cache.Add(newEntry);
-            Logging.Log(_name, $"Get(#{count}): {newEntry}");
-
-            Release(ref obj);
-            obj = newEntry.storedObject;
-            Profiler.EndSample();
+            if (GetFromCache(hash, ref obj)) return;
+            Add(hash, ref obj, onCreate());
         }
 
         /// <summary>
@@ -119,40 +80,60 @@ namespace Coffee.UIParticleInternal
         /// </summary>
         public void Get<TS>(Hash128 hash, ref T obj, Func<TS, T> onCreate, TS source)
         {
-            // Find existing entry.
-            Profiler.BeginSample("(COF)[ObjectRepository] Get > Find existing entry");
-            for (var i = 0; i < _cache.Count; ++i)
-            {
-                var entry = _cache[i];
-                if (entry.hash != hash) continue;
+            if (GetFromCache(hash, ref obj)) return;
+            Add(hash, ref obj, onCreate(source));
+        }
 
-                // Existing entry found.
+        private bool GetFromCache(Hash128 hash, ref T obj)
+        {
+            // Find existing entry.
+            Profiler.BeginSample("(COF)[ObjectRepository] GetFromCache");
+            if (_cache.TryGetValue(hash, out var entry))
+            {
+                if (!entry.storedObject)
+                {
+                    Release(ref entry.storedObject);
+                    Profiler.EndSample();
+                    return false;
+                }
+
                 if (entry.storedObject != obj)
                 {
                     // if the object is different, release the old one.
                     Release(ref obj);
                     ++entry.reference;
                     obj = entry.storedObject;
-                    Logging.Log(_name, $"Get(#{count}): {entry}");
+                    Logging.Log(_name, $"Get(total#{count}): {entry}");
                 }
 
                 Profiler.EndSample();
-                return;
+                return true;
             }
 
             Profiler.EndSample();
+            return false;
+        }
 
-            // Create new entry.
-            Profiler.BeginSample("(COF)[ObjectRepository] Get > Create new entry");
+        private void Add(Hash128 hash, ref T obj, T newObject)
+        {
+            if (!newObject)
+            {
+                Release(ref obj);
+                obj = newObject;
+                return;
+            }
+
+            // Create and add a new entry.
+            Profiler.BeginSample("(COF)[ObjectRepository] Add");
             var newEntry = 0 < _pool.Count ? _pool.Pop() : new Entry();
-            newEntry.storedObject = onCreate(source);
+            newEntry.storedObject = newObject;
             newEntry.hash = hash;
             newEntry.reference = 1;
-            _cache.Add(newEntry);
-            Logging.Log(_name, $"Get(#{count}): {newEntry}");
-
+            _cache[hash] = newEntry;
+            _objectKey[newObject.GetInstanceID()] = hash;
+            Logging.Log(_name, $"<color=#03c700>Add</color>(total#{count}): {newEntry}");
             Release(ref obj);
-            obj = newEntry.storedObject;
+            obj = newObject;
             Profiler.EndSample();
         }
 
@@ -163,32 +144,42 @@ namespace Coffee.UIParticleInternal
         {
             if (ReferenceEquals(obj, null)) return;
 
+            // Find and release the entry.
             Profiler.BeginSample("(COF)[ObjectRepository] Release");
-            for (var i = 0; i < _cache.Count; i++)
+            var id = obj.GetInstanceID();
+            if (_objectKey.TryGetValue(id, out var hash)
+                && _cache.TryGetValue(hash, out var entry))
             {
-                var entry = _cache[i];
-
-                if (entry.storedObject != obj)
+                entry.reference--;
+                if (entry.reference <= 0 || !entry.storedObject)
                 {
-                    continue;
+                    Remove(entry);
                 }
-
-                if (--entry.reference <= 0)
+                else
                 {
-                    Profiler.BeginSample("(COF)[ObjectRepository] Release > RemoveAt");
-                    _cache.RemoveAtFast(i);
-                    Logging.Log(_name, $"Release(#{_cache.Count}): {entry}");
-                    entry.Release(_onRelease);
-                    _pool.Push(entry);
-                    Profiler.EndSample();
-                    break;
+                    Logging.Log(_name, $"Release(total#{_cache.Count}): {entry}");
                 }
-
-                Logging.Log(_name, $"Release(#{count}): {entry}");
-                break;
+            }
+            else
+            {
+                Logging.Log(_name, $"Release(total#{_cache.Count}): <color=red>Already released: {obj}</color>");
             }
 
             obj = null;
+            Profiler.EndSample();
+        }
+
+        private void Remove(Entry entry)
+        {
+            if (ReferenceEquals(entry, null)) return;
+
+            Profiler.BeginSample("(COF)[ObjectRepository] Remove");
+            _cache.Remove(entry.hash);
+            _objectKey.Remove(entry.storedObject.GetInstanceID());
+            _pool.Push(entry);
+            entry.reference = 0;
+            Logging.Log(_name, $"<color=#f29e03>Remove</color>(total#{_cache.Count}): {entry}");
+            entry.Release(_onRelease);
             Profiler.EndSample();
         }
 
@@ -211,7 +202,7 @@ namespace Coffee.UIParticleInternal
 
             public override string ToString()
             {
-                return $"h{(uint)hash.GetHashCode()} (#{reference}), {storedObject}";
+                return $"h{(uint)hash.GetHashCode()} (refs#{reference}), {storedObject}";
             }
         }
     }
