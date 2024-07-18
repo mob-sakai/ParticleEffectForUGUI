@@ -31,3 +31,10 @@ MonoBehaviour:
       m_Path: UnityEngine.Screen, UnityEngine.CoreModule;height
     m_Arg2:
       m_Path: 
+  - m_Format: UIParticles:{0} Materials:{1}
+    m_Arg0:
+      m_Path: Coffee.UIExtensions.UIParticleUpdater, Coffee.UIParticle;uiParticleCount
+    m_Arg1:
+      m_Path: Coffee.UIParticleInternal.MaterialRepository, Coffee.UIParticle;count
+    m_Arg2:
+      m_Path: 
