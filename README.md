@@ -1,28 +1,60 @@
-# <img alt="UIParticleIcon" src="https://github.com/mob-sakai/ParticleEffectForUGUI/assets/12690315/d76e105e-a840-4f61-a1f6-8cf311c0812d" width="26"/> Particle Effect For UGUI (UI Particle)
-
-This package provides a component to render particle effects for uGUI in Unity 2018.2 or later.  
-The particle rendering is maskable and sortable, without the need for an extra Camera, RenderTexture, or Canvas.
+# <img alt="UIParticleIcon" src="https://github.com/mob-sakai/ParticleEffectForUGUI/assets/12690315/d76e105e-a840-4f61-a1f6-8cf311c0812d" width="26"/> Particle Effect For UGUI (UI Particle) <!-- omit in toc -->
 
 [![](https://img.shields.io/npm/v/com.coffee.ui-particle?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.coffee.ui-particle/)
-[![](https://img.shields.io/github/v/release/mob-sakai/ParticleEffectForUGUI?include_prereleases)](https://github.com/mob-sakai/ParticleEffectForUGUI/releases)
-[![](https://img.shields.io/github/license/mob-sakai/ParticleEffectForUGUI.svg)](https://github.com/mob-sakai/ParticleEffectForUGUI/blob/main/LICENSE.txt)  
+[![](https://img.shields.io/github/v/release/mob-sakai/ParticleEffectForUGUI)](https://github.com/mob-sakai/ParticleEffectForUGUI/releases)
+[![](https://img.shields.io/github/license/mob-sakai/ParticleEffectForUGUI.svg)](https://github.com/mob-sakai/ParticleEffectForUGUI/blob/main/LICENSE.md)  
 ![](https://img.shields.io/badge/Unity-2018.2+-57b9d3.svg?style=flat&logo=unity)
+![](https://img.shields.io/badge/uGUI_2.0_Ready-57b9d3.svg?style=flat)
+![](https://img.shields.io/badge/UPR%2FHDPR_Ready-57b9d3.svg?style=flat)  
 ![](https://github.com/mob-sakai/ParticleEffectForUGUI/actions/workflows/test.yml/badge.svg?branch=develop)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-orange.svg)](http://makeapullrequest.com)
+[![](https://img.shields.io/github/watchers/mob-sakai/ParticleEffectForUGUI.svg?style=social&label=Watch)](https://github.com/mob-sakai/ParticleEffectForUGUI/subscription)
 [![](https://img.shields.io/twitter/follow/mob_sakai.svg?label=Follow&style=social)](https://twitter.com/intent/follow?screen_name=mob_sakai)
 
-<< [📝 Description](#-description) | [🎮 Demo](#-demo) | [⚙ Installation](#-installation) | [🚀 Usage](#-usage) | [🛠 Development Note](#-development-note) | [🤝 Contributing](#-contributing) >>
+<< [📝 Description](#-description-) | [📌 Key Features](#-key-features) | [🎮 Demo](#-demo) | [⚙ Installation](#-installation) | [🚀 Usage](#-usage) | [🛠 Development Note](#-development-note) | [🤝 Contributing](#-contributing) >>
+
+## 📝 Description <!-- omit in toc -->
+
+![](https://user-images.githubusercontent.com/12690315/41771577-8da4b968-7650-11e8-9524-cd162c422d9d.gif)
+
+This package uses the new APIs `MeshBake/MeshTrailBake` (introduced in Unity 2018.2) to render particles through `CanvasRenderer`.  
+You can render, mask, and sort your `ParticleSystems` for UI without the need for an additional `Camera`, `RenderTexture`, or `Canvas`.
+
+- [📌 Key Features](#-key-features)
+- [🎮 Demo](#-demo)
+- [⚙ Installation](#-installation)
+    - [Install via OpenUPM](#install-via-openupm)
+    - [Install via UPM (with Package Manager UI)](#install-via-upm-with-package-manager-ui)
+    - [Install via UPM (Manually)](#install-via-upm-manually)
+    - [Install as Embedded Package](#install-as-embedded-package)
+- [🚀 Usage](#-usage)
+  - [Component: UIParticle](#component-uiparticle)
+  - [Basic Usage](#basic-usage)
+  - [Usage with Your Existing ParticleSystem Prefab](#usage-with-your-existing-particlesystem-prefab)
+  - [Usage with `Mask` or `RectMask2D` Component](#usage-with-mask-or-rectmask2d-component)
+  - [Usage with Script](#usage-with-script)
+  - [Component: UIParticleAttractor](#component-uiparticleattractor)
+- [🛠 Development Note](#-development-note)
+  - [Compares the Baking mesh approach with the conventional approach](#compares-the-baking-mesh-approach-with-the-conventional-approach)
+    - [Performance test results](#performance-test-results)
+  - [🔍 FAQ: Why Are My UIParticles Not Displayed Correctly?](#-faq-why-are-my-uiparticles-not-displayed-correctly)
+  - [Shader Limitation](#shader-limitation)
+    - [Built-in shaders are not supported](#built-in-shaders-are-not-supported)
+    - [(Unity 2018 or 2019) UV.zw components will be discarded](#unity-2018-or-2019-uvzw-components-will-be-discarded)
+    - [(Unity 2018 or 2019) Custom vertex streams](#unity-2018-or-2019-custom-vertex-streams)
+  - [Overheads](#overheads)
+  - [How to Make a Custom Shader to Support `Mask` and `RectMask2D` Component](#how-to-make-a-custom-shader-to-support-mask-and-rectmask2d-component)
+- [🤝 Contributing](#-contributing)
+  - [Issues](#issues)
+  - [Pull Requests](#pull-requests)
+  - [Support](#support)
+- [License](#license)
+- [Author](#author)
+- [See Also](#see-also)
 
 <br><br>
 
-## 📝 Description
-
-![Demo](https://user-images.githubusercontent.com/12690315/41771577-8da4b968-7650-11e8-9524-cd162c422d9d.gif)
-
-This package uses the new APIs `MeshBake/MeshTrailBake` (introduced in Unity 2018.2) to render particles through CanvasRenderer.  
-You can render, mask, and sort your ParticleSystems for UI without the need for an additional Camera, RenderTexture, or Canvas.
-
-### Key Features
+## 📌 Key Features
 
 * **Easy to use:** The package is ready to use out of the box.
 * **Sortable:** Sort particle effects and other UI elements by sibling index.
@@ -83,16 +115,16 @@ _This package requires **Unity 2018.3 or later**._
   ```
 - To update the package, use Package Manager UI (`Window > Package Manager`) or run the following command with `@{version}`:
   ```
-  openupm add com.coffee.ui-particle@4.8.0
+  openupm add com.coffee.ui-particle@4.9.0
   ```
 
 #### Install via UPM (with Package Manager UI)
 
 - Click `Window > Package Manager` to open Package Manager UI.
 - Click `+ > Add package from git URL...` and input the repository URL: `https://github.com/mob-sakai/ParticleEffectForUGUI.git`  
-  ![](https://gist.github.com/assets/12690315/24af63ed-8a2e-483d-9023-7aa53d913330)
+  ![](https://github.com/user-attachments/assets/f88f47ad-c606-44bd-9e86-ee3f72eac548)
 - To update the package, change suffix `#{version}` to the target version.
-  - e.g. `https://github.com/mob-sakai/ParticleEffectForUGUI.git#4.8.0`
+  - e.g. `https://github.com/mob-sakai/ParticleEffectForUGUI.git#4.9.0`
 
 #### Install via UPM (Manually)
 
@@ -107,7 +139,7 @@ _This package requires **Unity 2018.3 or later**._
   ```
 
 - To update the package, change suffix `#{version}` to the target version.
-  - e.g. `"com.coffee.ui-particle": "https://github.com/mob-sakai/ParticleEffectForUGUI.git#4.8.0",`
+  - e.g. `"com.coffee.ui-particle": "https://github.com/mob-sakai/ParticleEffectForUGUI.git#4.9.0",`
 
 #### Install as Embedded Package
 
@@ -121,7 +153,7 @@ _This package requires **Unity 2018.3 or later**._
 
 ## 🚀 Usage
 
-### UIParticle Component
+### Component: UIParticle
 
 `UIParticle` controls the ParticleSystems that are attached to its own game objects and child game objects.
 
@@ -154,7 +186,7 @@ and z-position.
 
 <br><br>
 
-#### Basic Usage
+### Basic Usage
 
 1. Select `GameObject/UI/ParticleSystem` to create UIParticle with a ParticleSystem.
    ![particle](https://user-images.githubusercontent.com/12690315/95007361-cad0e880-0649-11eb-8835-f145d62c5977.png)
@@ -163,7 +195,7 @@ and z-position.
 
 <br>
 
-#### With Your Existing ParticleSystem Prefab
+### Usage with Your Existing ParticleSystem Prefab
 
 1. Select `GameObject/UI/ParticleSystem (Empty)` to create UIParticle.
    ![empty](https://user-images.githubusercontent.com/12690315/95007362-cb697f00-0649-11eb-8a09-29b0a13791e4.png)
@@ -172,7 +204,7 @@ and z-position.
 
 <br>
 
-#### With `Mask` or `RectMask2D` Component
+### Usage with `Mask` or `RectMask2D` Component
 
 If you want to mask particles, set a stencil-supported shader (such as `UI/UIAdditive`) to the material for
 ParticleSystem.
@@ -184,7 +216,7 @@ section.
 
 <br><br>
 
-### Script usage
+### Usage with Script
 
 ```cs
 // Instantiate ParticleSystem prefab with UIParticle on runtime.
@@ -203,14 +235,14 @@ uiParticle.Stop();
 
 <br><br>
 
-### UIParticleAttractor component
+### Component: UIParticleAttractor
 
 `UIParticleAttractor` attracts particles generated by the specified ParticleSystem.
 
 ![](https://github.com/mob-sakai/ParticleEffectForUGUI/assets/12690315/5c20ad73-4b9a-4f38-9cdc-119df5cce077)
 ![](https://user-images.githubusercontent.com/12690315/174311027-462929a4-13f0-4ec4-86ea-9c832f2eecf1.gif)
 
-- **Particle System**: Attracts particles generated by the specified particle system.
+- **Particle Systems**: Attracts particles generated by the specified ParticleSystems.
 - **Destination Radius**: Once the particle is within the radius, the particle lifetime will become 0, and `OnAttracted`
   will be called.
 - **Delay Rate**: Delay to start attracting. It is a percentage of the particle's start lifetime.
@@ -355,7 +387,7 @@ When improving performance, keep the following in mind:
     - Consider a single material, atlasing the sprites, and using `Sprite` mode in the `Texture Sheet Animation` module
       in the ParticleSystem.
 
-### How to Make a Custom Shader to Support Mask/RectMask2D Component
+### How to Make a Custom Shader to Support `Mask` and `RectMask2D` Component
 
 <details>
 <summary>Shader tips</summary>
