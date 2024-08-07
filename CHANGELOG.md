@@ -1,3 +1,10 @@
+## [4.9.1](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.9.0...v4.9.1) (2024-08-07)
+
+
+### Bug Fixes
+
+* ParticleSystem trails gain offset on parent canvas change ([2a1cd50](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/2a1cd502b452b5b56edf8bcfe91adf99d1bb5147)), closes [#323](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/323)
+
 # [4.9.0](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.8.1...v4.9.0) (2024-07-18)
 
 
