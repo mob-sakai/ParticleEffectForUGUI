@@ -355,13 +355,6 @@ namespace Coffee.UIExtensions
         {
         }
 
-        /// <summary>
-        /// This function is called when a direct or indirect parent of the transform of the GameObject has changed.
-        /// </summary>
-        protected override void OnTransformParentChanged()
-        {
-        }
-
         void ISerializationCallbackReceiver.OnBeforeSerialize()
         {
         }
