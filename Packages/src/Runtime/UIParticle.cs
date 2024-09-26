@@ -586,7 +586,7 @@ namespace Coffee.UIExtensions
             }
         }
 
-        internal void UpdateTransformScale()
+        internal void UpdateTransformScale(Vector3 ratio)
         {
             _tracker.Clear();
             canvasScale = canvas.rootCanvas.transform.localScale.Inverse();
@@ -610,7 +610,7 @@ namespace Coffee.UIExtensions
             }
 
             _tracker.Add(this, rectTransform, DrivenTransformProperties.Scale);
-            var newScale = parentScale.Inverse();
+            var newScale = parentScale.GetScaled(ratio).Inverse();
             if (currentScale != newScale)
             {
                 transform.localScale = newScale;
