@@ -1,9 +1,9 @@
-# <img alt="UIParticleIcon" src="https://github.com/mob-sakai/ParticleEffectForUGUI/assets/12690315/d76e105e-a840-4f61-a1f6-8cf311c0812d" width="26"/> Particle Effect For UGUI (UI Particle) <!-- omit in toc -->
+# <img alt="UIParticleIcon" src="https://github.com/mob-sakai/ParticleEffectForUGUI/assets/12690315/d76e105e-a840-4f61-a1f6-8cf311c0812d" width="26"/> UI Particle v5 <!-- omit in toc -->
 
 [![](https://img.shields.io/npm/v/com.coffee.ui-particle?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.coffee.ui-particle/)
 [![](https://img.shields.io/github/v/release/mob-sakai/ParticleEffectForUGUI)](https://github.com/mob-sakai/ParticleEffectForUGUI/releases)
 [![](https://img.shields.io/github/license/mob-sakai/ParticleEffectForUGUI.svg)](https://github.com/mob-sakai/ParticleEffectForUGUI/blob/main/LICENSE.md)  
-![](https://img.shields.io/badge/Unity-2018.2+-57b9d3.svg?style=flat&logo=unity)
+![](https://img.shields.io/badge/Unity-2019.3+-57b9d3.svg?style=flat&logo=unity)
 ![](https://img.shields.io/badge/uGUI_2.0_Ready-57b9d3.svg?style=flat)
 ![](https://img.shields.io/badge/UPR%2FHDPR_Ready-57b9d3.svg?style=flat)  
 ![](https://github.com/mob-sakai/ParticleEffectForUGUI/actions/workflows/test.yml/badge.svg?branch=develop)
@@ -11,7 +11,7 @@
 [![](https://img.shields.io/github/watchers/mob-sakai/ParticleEffectForUGUI.svg?style=social&label=Watch)](https://github.com/mob-sakai/ParticleEffectForUGUI/subscription)
 [![](https://img.shields.io/twitter/follow/mob_sakai.svg?label=Follow&style=social)](https://twitter.com/intent/follow?screen_name=mob_sakai)
 
-<< [📝 Description](#-description-) | [📌 Key Features](#-key-features) | [🎮 Demo](#-demo) | [⚙ Installation](#-installation) | [🚀 Usage](#-usage) | [🛠 Development Note](#-development-note) | [🤝 Contributing](#-contributing) >>
+<< [📝 Description](#-description-) | [📌 Key Features](#-key-features) | [🎮 Demo](#-demo) | [⚙ Installation](#-installation) | [🔄 Upgrading to 5.x](#-upgrading-from-3x4x-to-5x) | [🚀 Usage](#-usage) | [🛠 Development Note](#-development-note) | [🤝 Contributing](#-contributing) >>
 
 ## 📝 Description <!-- omit in toc -->
 
@@ -26,7 +26,9 @@ You can render, mask, and sort your `ParticleSystems` for UI without the need fo
     - [Install via OpenUPM](#install-via-openupm)
     - [Install via UPM (with Package Manager UI)](#install-via-upm-with-package-manager-ui)
     - [Install via UPM (Manually)](#install-via-upm-manually)
-    - [Install as Embedded Package](#install-as-embedded-package)
+  - [Install as Embedded Package](#install-as-embedded-package)
+- [🔄 Upgrading from v3/v4 to v5](#-upgrading-from-v3v4-to-v5)
+  - [Breaking Changes](#breaking-changes)
 - [🚀 Usage](#-usage)
   - [Component: UIParticle](#component-uiparticle)
   - [Basic Usage](#basic-usage)
@@ -104,7 +106,7 @@ You can render, mask, and sort your `ParticleSystems` for UI without the need fo
 
 ## ⚙ Installation
 
-_This package requires **Unity 2018.3 or later**._
+_This package requires **Unity 2019.3 or later**._
 
 #### Install via OpenUPM
 
@@ -116,16 +118,16 @@ _This package requires **Unity 2018.3 or later**._
   ```
 - To update the package, use Package Manager UI (`Window > Package Manager`) or run the following command with `@{version}`:
   ```
-  openupm add com.coffee.ui-particle@4.9.0
+  openupm add com.coffee.ui-particle@5.0.0
   ```
 
 #### Install via UPM (with Package Manager UI)
 
 - Click `Window > Package Manager` to open Package Manager UI.
-- Click `+ > Add package from git URL...` and input the repository URL: `https://github.com/mob-sakai/ParticleEffectForUGUI.git`  
+- Click `+ > Add package from git URL...` and input the repository URL: `https://github.com/mob-sakai/ParticleEffectForUGUI.git?path=Packages/src`  
   ![](https://github.com/user-attachments/assets/f88f47ad-c606-44bd-9e86-ee3f72eac548)
 - To update the package, change suffix `#{version}` to the target version.
-  - e.g. `https://github.com/mob-sakai/ParticleEffectForUGUI.git#4.9.0`
+  - e.g. `https://github.com/mob-sakai/ParticleEffectForUGUI.git?path=Packages/src#5.0.0`
 
 #### Install via UPM (Manually)
 
@@ -133,22 +135,41 @@ _This package requires **Unity 2018.3 or later**._
   ```json
   {
     "dependencies": {
-      "com.coffee.ui-particle": "https://github.com/mob-sakai/ParticleEffectForUGUI.git",
+      "com.coffee.ui-particle": "https://github.com/mob-sakai/ParticleEffectForUGUI.git?path=Packages/src",
       ...
     }
   }
   ```
 
 - To update the package, change suffix `#{version}` to the target version.
-  - e.g. `"com.coffee.ui-particle": "https://github.com/mob-sakai/ParticleEffectForUGUI.git#4.9.0",`
+  - e.g. `"com.coffee.ui-particle": "https://github.com/mob-sakai/ParticleEffectForUGUI.git?path=Packages/src#5.0.0",`
 
-#### Install as Embedded Package
+### Install as Embedded Package
 
-1. Download a source code zip file from [Releases](https://github.com/mob-sakai/ParticleEffectForUGUI.git/releases) and extract it.
-2. Place it in your project's `Packages` directory.  
-   ![](https://github.com/mob-sakai/mob-sakai/assets/12690315/0b7484b4-5fca-43b0-a9ef-e5dbd99bcdb4)
-- If you want to fix bugs or add features, install it as an embedded package.
-- To update the package, you need to re-download it and replace the contents.
+1. Download the `Source code (zip)` file from [Releases](https://github.com/mob-sakai/SoftMaskForUGUI/releases) and
+   extract it.
+2. Move the `<extracted_dir>/Packages/src` directory into your project's `Packages` directory.  
+   ![](https://github.com/user-attachments/assets/187cbcbe-5922-4ed5-acec-cf19aa17d208)
+    - You can rename the `src` directory if needed.
+    - If you intend to fix bugs or add features, installing it as an embedded package is recommended.
+    - To update the package, re-download it and replace the existing contents.
+
+<br><br>
+
+## 🔄 Upgrading from v3/v4 to v5
+
+### Breaking Changes
+
+- The default value of `UIParticle.scale` has been changed from `10` to `1`.
+- `UIParticle` no longer inherits from `MaskableGraphic`.
+- If you are installing via git URL, add `?path=Packages/src`.
+   ```json
+   // v3/v4
+   "com.coffee.ui-particle": "https://github.com/mob-sakai/ParticleEffectForUGUI.git",
+   
+   // v5
+   "com.coffee.ui-particle": "https://github.com/mob-sakai/ParticleEffectForUGUI.git?path=Packages/src",
+   ```
 
 <br><br>
 
