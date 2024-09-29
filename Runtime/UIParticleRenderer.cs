@@ -24,7 +24,6 @@ namespace Coffee.UIExtensions
         private static readonly CombineInstance[] s_CombineInstances = { new CombineInstance() };
         private static readonly List<Material> s_Materials = new List<Material>(2);
         private static MaterialPropertyBlock s_Mpb;
-        private static readonly List<Color32> s_Colors = new List<Color32>();
         private static readonly Vector3[] s_Corners = new Vector3[4];
         private bool _delay;
         private int _index;
@@ -189,7 +188,6 @@ namespace Coffee.UIExtensions
             if (!IsActive() || !_parent)
             {
                 MaterialRepository.Release(ref _modifiedMaterial);
-                _modifiedMaterial = null;
                 return baseMaterial;
             }
 
@@ -215,10 +213,11 @@ namespace Coffee.UIExtensions
             );
             if (!MaterialRepository.Valid(hash, _modifiedMaterial))
             {
-                MaterialRepository.Get(hash, ref _modifiedMaterial, () => new Material(modifiedMaterial)
+                MaterialRepository.Get(hash, ref _modifiedMaterial, x => new Material(x.mat)
                 {
-                    hideFlags = HideFlags.HideAndDontSave
-                });
+                    hideFlags = HideFlags.HideAndDontSave,
+                    mainTexture = x.texture ? x.texture : x.mat.mainTexture
+                }, (mat: modifiedMaterial, texture));
             }
 
             return _modifiedMaterial;
