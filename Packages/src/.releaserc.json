@@ -1,12 +1,13 @@
 {
   "branches": [
-    "release",
-    "release-4.x",
+    "main",
+    "[0-9]+.x",
     {
-      "name": "release-preview",
-      "prerelease": "preview"
+      "name": "preview",
+      "prerelease": true
     }
   ],
+  "tagFormat": "${version}",
   "plugins": [
     "@semantic-release/commit-analyzer",
     "@semantic-release/release-notes-generator",
