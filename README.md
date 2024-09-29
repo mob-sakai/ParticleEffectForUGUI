@@ -34,6 +34,7 @@ You can render, mask, and sort your `ParticleSystems` for UI without the need fo
   - [Usage with `Mask` or `RectMask2D` Component](#usage-with-mask-or-rectmask2d-component)
   - [Usage with Script](#usage-with-script)
   - [Component: UIParticleAttractor](#component-uiparticleattractor)
+  - [Project Settings](#project-settings)
 - [🛠 Development Note](#-development-note)
   - [Compares the Baking mesh approach with the conventional approach](#compares-the-baking-mesh-approach-with-the-conventional-approach)
     - [Performance test results](#performance-test-results)
@@ -253,6 +254,14 @@ uiParticle.Stop();
     - **Normal:** Update with scaled delta time.
     - **Unscaled Time:** Update with unscaled delta time.
 - **OnAttracted**: An event called when attracting is complete (per particle).
+
+<br><br>
+
+### Project Settings
+
+![](https://github.com/user-attachments/assets/befc7f34-fb47-4006-831a-eba79fda11ca)
+
+- Click `Edit > Project Settings` to open the Project Settings window and then select `UI > UI Particle` category.
 
 <br><br>
 
