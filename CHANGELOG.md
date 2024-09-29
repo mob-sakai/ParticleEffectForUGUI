@@ -1,3 +1,10 @@
+## [4.10.1](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.10.0...v4.10.1) (2024-09-29)
+
+
+### Bug Fixes
+
+* mainTex will be ignored ([2ee69d0](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/2ee69d04245fabce185f67dc9bd68c870e556564))
+
 # [4.10.0](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.9.1...v4.10.0) (2024-09-29)
 
 
