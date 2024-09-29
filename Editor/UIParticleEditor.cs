@@ -17,6 +17,7 @@ using Object = UnityEngine.Object;
 #endif
 #if UNITY_2021_2_OR_NEWER
 using UnityEditor.SceneManagement;
+
 #elif UNITY_2018_3_OR_NEWER
 using UnityEditor.Experimental.SceneManagement;
 #endif

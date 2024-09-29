@@ -40,7 +40,10 @@
         Lighting Off
         ZWrite Off
         ZTest [unity_GUIZTestMode]
-        Fog { Mode Off }
+        Fog
+        {
+            Mode Off
+        }
         Blend One One
 
         ColorMask [_ColorMask]
@@ -61,21 +64,21 @@
 
             struct appdata_t
             {
-                float4 vertex   : POSITION;
-                float4 color    : COLOR;
+                float4 vertex : POSITION;
+                float4 color : COLOR;
                 float2 texcoord : TEXCOORD0;
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
             struct v2f
             {
-                float4 vertex           : SV_POSITION;
-                fixed4 color            : COLOR;
-                float2 texcoord         : TEXCOORD0;
-                float4 worldPosition    : TEXCOORD1;
+                float4 vertex : SV_POSITION;
+                fixed4 color : COLOR;
+                float2 texcoord : TEXCOORD0;
+                float4 worldPosition : TEXCOORD1;
                 UNITY_VERTEX_OUTPUT_STEREO
             };
-            
+
             fixed4 _Color;
             sampler2D _MainTex;
             float4 _MainTex_ST;

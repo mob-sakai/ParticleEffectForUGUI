@@ -148,7 +148,7 @@ namespace Coffee.UIExtensions
             // Collect UIParticle if needed (same size as m_ParticleSystems)
             CollectUIParticlesIfNeeded();
 
-            for (var particleIndex = 0; particleIndex < this.m_ParticleSystems.Count; particleIndex++)
+            for (var particleIndex = 0; particleIndex < m_ParticleSystems.Count; particleIndex++)
             {
                 var particleSystem = m_ParticleSystems[particleIndex];
 
@@ -163,21 +163,21 @@ namespace Coffee.UIExtensions
                 particleSystem.GetParticles(particles, count);
 
                 var uiParticle = _uiParticles[particleIndex];
-                var dstPos = this.GetDestinationPosition(uiParticle, particleSystem);
+                var dstPos = GetDestinationPosition(uiParticle, particleSystem);
                 for (var i = 0; i < count; i++)
                 {
                     // Attracted
                     var p = particles[i];
-                    if (0f < p.remainingLifetime && Vector3.Distance(p.position, dstPos) < this.m_DestinationRadius)
+                    if (0f < p.remainingLifetime && Vector3.Distance(p.position, dstPos) < m_DestinationRadius)
                     {
                         p.remainingLifetime = 0f;
                         particles[i] = p;
 
-                        if (this.m_OnAttracted != null)
+                        if (m_OnAttracted != null)
                         {
                             try
                             {
-                                this.m_OnAttracted.Invoke();
+                                m_OnAttracted.Invoke();
                             }
                             catch (Exception e)
                             {
@@ -189,7 +189,7 @@ namespace Coffee.UIExtensions
                     }
 
                     // Calc attracting time
-                    var delayTime = p.startLifetime * this.m_DelayRate;
+                    var delayTime = p.startLifetime * m_DelayRate;
                     var duration = p.startLifetime - delayTime;
                     var time = Mathf.Max(0, p.startLifetime - p.remainingLifetime - delayTime);
 
@@ -197,7 +197,7 @@ namespace Coffee.UIExtensions
                     if (time <= 0) continue;
 
                     // Attract
-                    p.position = this.GetAttractedPosition(p.position, dstPos, duration, time);
+                    p.position = GetAttractedPosition(p.position, dstPos, duration, time);
                     p.velocity *= 0.5f;
                     particles[i] = p;
                 }
