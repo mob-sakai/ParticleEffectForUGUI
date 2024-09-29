@@ -7,7 +7,7 @@ using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.Profiling;
 using UnityEngine.UI;
-using Coffee.UIParticleExtensions;
+using Coffee.UIParticleInternal;
 #if UNITY_2021_2_OR_NEWER
 using UnityEditor.Overlays;
 #else
