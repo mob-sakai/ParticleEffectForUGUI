@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using Coffee.UIParticleExtensions;
+using Coffee.UIParticleInternal;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Serialization;
@@ -119,7 +119,6 @@ namespace Coffee.UIExtensions
 
         private readonly List<UIParticleRenderer> _renderers = new List<UIParticleRenderer>();
         private Camera _bakeCamera;
-        private Canvas _canvas;
         private int _groupId;
         private bool _isScaleStored;
         private Vector3 _storedScale;

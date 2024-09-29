@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Coffee.UIParticleExtensions;
+using Coffee.UIParticleInternal;
 using UnityEngine;
 using UnityEngine.Events;
 
