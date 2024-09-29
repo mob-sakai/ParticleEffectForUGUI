@@ -732,7 +732,7 @@ namespace Coffee.UIExtensions
             _bakeCamera.useOcclusionCulling = false;
 
             _bakeCamera.gameObject.SetActive(false);
-            _bakeCamera.gameObject.hideFlags = HideFlags.HideAndDontSave;
+            _bakeCamera.gameObject.hideFlags = UIParticleProjectSettings.globalHideFlags;
 
             return _bakeCamera;
         }

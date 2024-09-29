@@ -137,6 +137,7 @@ namespace Coffee.UIExtensions
         {
             base.OnEnable();
 
+            hideFlags = UIParticleProjectSettings.globalHideFlags;
             if (!s_CombineInstances[0].mesh)
             {
                 s_CombineInstances[0].mesh = new Mesh
@@ -161,7 +162,7 @@ namespace Coffee.UIExtensions
             // Create renderer object.
             var go = new GameObject("[generated] UIParticleRenderer", typeof(UIParticleRenderer))
             {
-                hideFlags = HideFlags.HideAndDontSave,
+                hideFlags = UIParticleProjectSettings.globalHideFlags,
                 layer = parent.gameObject.layer
             };
 
@@ -416,7 +417,7 @@ namespace Coffee.UIExtensions
                 _lastBounds = bounds;
 
                 // Convert linear color to gamma color.
-                if (canvas.ShouldGammaToLinearInMesh())
+                if (UIParticleProjectSettings.enableLinearToGamma && canvas.ShouldGammaToLinearInMesh())
                 {
                     workerMesh.LinearToGamma();
                 }
