@@ -1,3 +1,15 @@
+# [4.10.0](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.9.1...v4.10.0) (2024-09-29)
+
+
+### Bug Fixes
+
+* component icon is not set ([5ff6ec8](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/5ff6ec815a174de5d3f16d424f1204c60912a8d8))
+
+
+### Features
+
+* add project settings ([1ce4e31](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/1ce4e31a9681bf1a201d2723c8d97e07ecc16592))
+
 ## [4.9.1](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.9.0...v4.9.1) (2024-08-07)
 
 
