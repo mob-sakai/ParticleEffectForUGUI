@@ -1,12 +1,12 @@
 name: 🔖 Release
+run-name: 🔖 Release (${{ github.ref_name }})
 
 on:
   workflow_dispatch:
   push:
     branches:
       - release
-      - release-preview
-      - release-v4
+      - release-*
     tags-ignore:
       - "**"
 
@@ -50,14 +50,12 @@ jobs:
           if [ '${{ steps.release.outputs.new_release_published }}' = 'false' ]; then
             echo "No new release published." | tee -a $GITHUB_STEP_SUMMARY
           elif [ '${{ github.ref_name }}' = 'release' ]; then
-            echo "merge_to=develop" | tee -a $GITHUB_OUTPUT
-            echo "split_to=main" | tee -a $GITHUB_OUTPUT
-          elif [ '${{ github.ref_name }}' = 'release-preview' ]; then
-            echo "merge_to=develop-preview" | tee -a $GITHUB_OUTPUT
-            echo "split_to=preview" | tee -a $GITHUB_OUTPUT
-          elif [ '${{ github.ref_name }}' = 'release-4.x' ]; then
-            echo "merge_to=develop-4.x" | tee -a $GITHUB_OUTPUT
-            echo "split_to=4.x" | tee -a $GITHUB_OUTPUT
+            echo "merge_to=develop" | tee -a $GITHUB_OUTPUT $GITHUB_STEP_SUMMARY
+            echo "split_to=main" | tee -a $GITHUB_OUTPUT $GITHUB_STEP_SUMMARY
+          else
+            channel=$(echo ${{ github.ref_name }} | sed 's/^release-//')
+            echo "merge_to=develop-${channel}" | tee -a $GITHUB_OUTPUT $GITHUB_STEP_SUMMARY
+            echo "split_to=${channel}" | tee -a $GITHUB_OUTPUT $GITHUB_STEP_SUMMARY
           fi
 
   merge-to:

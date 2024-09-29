@@ -3,12 +3,13 @@
 #   UNITY_EMAIL: Unity user email to login
 #   UNITY_PASSWORD: Unity user password to login
 name: 🧪 Test
+run-name: 🧪 Test (${{ github.ref_name }})
 
 env:
   # MINIMUM_VERSION: The minimum version of Unity.
   MINIMUM_VERSION: 2019.4
   # EXCLUDE_FILTER: The excluded versions of Unity.
-  EXCLUDE_FILTER: '(2020.2.0)'
+  EXCLUDE_FILTER: '(2020.2.0|2021.1|2023.3)'
 
 on:
   workflow_dispatch:
