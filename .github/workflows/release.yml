@@ -1,0 +1,103 @@
+name: 🔖 Release
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - release
+      - release-preview
+      - release-v4
+    tags-ignore:
+      - "**"
+
+jobs:
+  release:
+    name: 🔖 Release (${{ github.ref_name }})
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+    outputs:
+      channel: ${{ steps.release.outputs.new_release_channel }}
+      released: ${{ steps.release.outputs.new_release_published }}
+      tag: ${{ steps.release.outputs.new_release_git_tag }}
+      version: ${{ steps.release.outputs.new_release_version }}
+      merge_to: ${{ steps.summary.outputs.merge_to }}
+      split_to: ${{ steps.summary.outputs.split_to }}
+    steps:
+      - name: 🚚 Checkout (${{ github.ref_name }})
+        uses: actions/checkout@v4
+
+      - name: 🔖 Run semantic release
+        uses: cycjimmy/semantic-release-action@v4
+        id: release
+        with:
+          working_directory: Packages/src
+          extra_plugins: |
+            @semantic-release/changelog
+            @semantic-release/git
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - id: summary
+        run: |
+          echo "🔖 New release published: '${{ steps.release.outputs.new_release_published }}'" | tee -a $GITHUB_STEP_SUMMARY
+          echo "🔖 New release version: '${{ steps.release.outputs.new_release_version }}'" | tee -a $GITHUB_STEP_SUMMARY
+          echo "🔖 New release channel: '${{ steps.release.outputs.new_release_channel }}'" | tee -a $GITHUB_STEP_SUMMARY
+          echo "🔖 New release git tag: '${{ steps.release.outputs.new_release_git_tag }}'" | tee -a $GITHUB_STEP_SUMMARY
+          
+          if [ '${{ steps.release.outputs.new_release_published }}' = 'false' ]; then
+            echo "No new release published." | tee -a $GITHUB_STEP_SUMMARY
+          elif [ '${{ github.ref_name }}' = 'release' ]; then
+            echo "merge_to=develop" | tee -a $GITHUB_OUTPUT
+            echo "split_to=main" | tee -a $GITHUB_OUTPUT
+          elif [ '${{ github.ref_name }}' = 'release-preview' ]; then
+            echo "merge_to=develop-preview" | tee -a $GITHUB_OUTPUT
+            echo "split_to=preview" | tee -a $GITHUB_OUTPUT
+          elif [ '${{ github.ref_name }}' = 'release-4.x' ]; then
+            echo "merge_to=develop-4.x" | tee -a $GITHUB_OUTPUT
+            echo "split_to=4.x" | tee -a $GITHUB_OUTPUT
+          fi
+
+  merge-to:
+    if: needs.release.outputs.merge_to != ''
+    needs: release
+    name: 🔀 Merge to ${{ needs.release.outputs.merge_to }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: 🚚 Checkout (${{ needs.release.outputs.merge_to }})
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.release.outputs.merge_to }}
+          fetch-depth: 0
+      - name: 🔀 Merge '${{ needs.release.outputs.tag }}' into '${{ needs.release.outputs.merge_to }}'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          
+          git merge ${{ needs.release.outputs.tag }}
+          git push origin ${{ needs.release.outputs.merge_to }}
+
+  split-to:
+    if: needs.release.outputs.split_to != ''
+    needs: release
+    name: 🔀 Split package to ${{ needs.release.outputs.split_to }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: 🚚 Checkout (${{ needs.release.outputs.tag }})
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.release.outputs.tag }}
+          fetch-depth: 0
+      - name: 🔀 Split subtree 'Packages/src' to '${{ needs.release.outputs.split_to }}'
+        run: |
+          split_to=${{ needs.release.outputs.split_to }}
+          git branch $split_to origin/$split_to
+          git subtree split --prefix=Packages/src --branch $split_to
+          git tag ${{ needs.release.outputs.version }} $split_to
+          git push origin ${{ needs.release.outputs.version }} $split_to:$split_to

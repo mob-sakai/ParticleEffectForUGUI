@@ -1,0 +1,16 @@
+{
+    "name": "Coffee.UIParticle.Tests",
+    "references": [
+        "Coffee.UIParticle"
+    ],
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": []
+}

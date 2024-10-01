@@ -1,0 +1,14 @@
+{
+    "name": "Coffee.CFX_Demo_With_UIParticle",
+    "references": [
+        "Coffee.UIParticle"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": []
+}

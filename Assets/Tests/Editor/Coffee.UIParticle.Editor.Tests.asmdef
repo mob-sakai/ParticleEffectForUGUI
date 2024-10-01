@@ -1,0 +1,19 @@
+{
+    "name": "Coffee.UIParticle.Editor.Tests",
+    "references": [
+        "Coffee.UIParticle",
+        "Coffee.UIParticle.Editor"
+    ],
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": []
+}

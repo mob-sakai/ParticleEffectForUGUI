@@ -1,0 +1,30 @@
+# Windows
+Thumbs.db
+Desktop.ini
+/*.csproj
+/*.sln
+
+# macOS
+.DS_Store
+
+# Vim
+*.swp
+
+# Unity
+/Logs
+/Library
+/Temp
+Assets/Plugins.meta
+Assets/JMO Assets.meta
+Assets/JMO Assets
+Assets/EffectExamples/
+Assets/EffectExamples.meta
+Assets/Plugins/
+
+# VS
+.vs/
+.vscode/
+.idea/
+obj/
+bin/
+UserSettings/

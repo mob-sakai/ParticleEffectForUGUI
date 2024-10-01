@@ -45,6 +45,9 @@ namespace Coffee.UIExtensions
         [SerializeField]
         private UnityEvent m_OnAttracted;
 
+        [SerializeField]
+        private bool m_KillParticlesOnAttract = true;
+
         private UIParticle _uiParticle;
 
         public float destinationRadius
@@ -134,8 +137,11 @@ namespace Coffee.UIExtensions
                 var p = particles[i];
                 if (0f < p.remainingLifetime && Vector3.Distance(p.position, dstPos) < m_DestinationRadius)
                 {
-                    p.remainingLifetime = 0f;
-                    particles[i] = p;
+                    if (m_KillParticlesOnAttract)
+                    {
+                        p.remainingLifetime = 0f;
+                        particles[i] = p;
+                    }
 
                     if (m_OnAttracted != null)
                     {
