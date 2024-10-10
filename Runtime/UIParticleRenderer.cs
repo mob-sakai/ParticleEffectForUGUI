@@ -542,6 +542,12 @@ namespace Coffee.UIExtensions
                     return Matrix4x4.Translate(psPos)
                            * Matrix4x4.Scale(scale);
                 case ParticleSystemSimulationSpace.World:
+                    if (_isTrail)
+                    {
+                        return Matrix4x4.Translate(psPos)
+                               * Matrix4x4.Scale(scale)
+                               * Matrix4x4.Translate(-psPos);
+                    }
                     return Matrix4x4.Scale(scale);
                 case ParticleSystemSimulationSpace.Custom:
                     return Matrix4x4.Translate(_particleSystem.main.customSimulationSpace.position.GetScaled(scale))
