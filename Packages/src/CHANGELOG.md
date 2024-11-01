@@ -1,3 +1,10 @@
+## [4.10.2](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.10.1...v4.10.2) (2024-11-01)
+
+
+### Bug Fixes
+
+* trail incorrect offset ([afe00a1](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/afe00a1dde80eb1c0a7bb668b75f4c3733d3fa43)), closes [#335](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/335)
+
 ## [4.10.1](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.10.0...v4.10.1) (2024-09-29)
 
 
