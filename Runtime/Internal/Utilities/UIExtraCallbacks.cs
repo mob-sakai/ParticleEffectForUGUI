@@ -14,6 +14,8 @@ namespace Coffee.UIParticleInternal
         private static readonly FastAction s_AfterCanvasRebuildAction = new FastAction();
         private static readonly FastAction s_LateAfterCanvasRebuildAction = new FastAction();
         private static readonly FastAction s_BeforeCanvasRebuildAction = new FastAction();
+        private static readonly FastAction s_OnScreenSizeChangedAction = new FastAction();
+        private static Vector2Int s_LastScreenSize;
 
         static UIExtraCallbacks()
         {
@@ -49,6 +51,15 @@ namespace Coffee.UIParticleInternal
         }
 
         /// <summary>
+        /// Event that occurs when the screen size changes.
+        /// </summary>
+        public static event Action onScreenSizeChanged
+        {
+            add => s_OnScreenSizeChangedAction.Add(value);
+            remove => s_OnScreenSizeChangedAction.Remove(value);
+        }
+
+        /// <summary>
         /// Initializes the UIExtraCallbacks to ensure proper event handling.
         /// </summary>
         private static void InitializeAfterCanvasRebuild()
@@ -77,6 +88,17 @@ namespace Coffee.UIParticleInternal
         /// </summary>
         private static void OnBeforeCanvasRebuild()
         {
+            var screenSize = new Vector2Int(Screen.width, Screen.height);
+            if (s_LastScreenSize != screenSize)
+            {
+                if (s_LastScreenSize != default)
+                {
+                    s_OnScreenSizeChangedAction.Invoke();
+                }
+
+                s_LastScreenSize = screenSize;
+            }
+
             s_BeforeCanvasRebuildAction.Invoke();
             InitializeAfterCanvasRebuild();
         }

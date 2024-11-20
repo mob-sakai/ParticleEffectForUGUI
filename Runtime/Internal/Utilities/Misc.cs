@@ -6,6 +6,15 @@ namespace Coffee.UIParticleInternal
 {
     internal static class Misc
     {
+        public static T[] FindObjectsOfType<T>() where T : Object
+        {
+#if UNITY_2023_1_OR_NEWER
+            return Object.FindObjectsByType<T>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+#else
+            return Object.FindObjectsOfType<T>();
+#endif
+        }
+
         public static void Destroy(Object obj)
         {
             if (!obj) return;

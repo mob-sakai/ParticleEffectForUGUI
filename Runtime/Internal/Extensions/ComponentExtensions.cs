@@ -134,6 +134,35 @@ namespace Coffee.UIParticleInternal
             Profiler.EndSample();
         }
 
+        /// <summary>
+        /// Add a component of a specific type to the children of a GameObject.
+        /// </summary>
+        public static void AddComponentOnChildren<T>(this Component self, bool includeSelf)
+            where T : Component
+        {
+            if (self == null) return;
+
+            Profiler.BeginSample("(COF)[ComponentExt] AddComponentOnChildren > Self");
+            if (includeSelf && !self.TryGetComponent<T>(out _))
+            {
+                self.gameObject.AddComponent<T>();
+            }
+
+            Profiler.EndSample();
+
+            Profiler.BeginSample("(COF)[ComponentExt] AddComponentOnChildren > Child");
+            var childCount = self.transform.childCount;
+            for (var i = 0; i < childCount; i++)
+            {
+                var child = self.transform.GetChild(i);
+                if (child.TryGetComponent<T>(out _)) continue;
+
+                child.gameObject.AddComponent<T>();
+            }
+
+            Profiler.EndSample();
+        }
+
 #if !UNITY_2021_2_OR_NEWER && !UNITY_2020_3_45 && !UNITY_2020_3_46 && !UNITY_2020_3_47 && !UNITY_2020_3_48
         public static T GetComponentInParent<T>(this Component self, bool includeInactive) where T : Component
         {

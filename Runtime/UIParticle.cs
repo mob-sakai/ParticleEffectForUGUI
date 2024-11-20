@@ -9,6 +9,8 @@ using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 [assembly: InternalsVisibleTo("Coffee.UIParticle.Editor")]
+[assembly: InternalsVisibleTo("Coffee.UIParticle.PerformanceDemo")]
+[assembly: InternalsVisibleTo("Coffee.UIParticle.Demo")]
 
 namespace Coffee.UIExtensions
 {
