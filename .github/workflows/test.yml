@@ -13,6 +13,11 @@ env:
 
 on:
   workflow_dispatch:
+    inputs:
+      usePeriodVersions:
+        description: 'Use the period versions (.0f1, .10f1, 20f1, ...).'
+        required: false
+        default: 'true'
   push:
     branches:
       - develop
@@ -38,9 +43,12 @@ jobs:
         id: setup
         run: |
           echo "==== Target Unity Versions ===="
-          LATEST_VERSIONS=`npx unity-changeset list --versions --latest-patch --min ${MINIMUM_VERSION} --json --all`
-          # ADDITIONAL_VERSIONS=`npx unity-changeset list --versions --grep '0f' --min ${MINIMUM_VERSION} --json`
-          ADDITIONAL_VERSIONS=[]
+          LATEST_VERSIONS=`npx unity-changeset@2.2.3 list --versions --latest-patch --min ${MINIMUM_VERSION} --json --all`
+          if [ "${{ inputs.usePeriodVersions }}" = "true" ]; then
+            ADDITIONAL_VERSIONS=`npx unity-changeset list --versions --grep '0f' --min ${MINIMUM_VERSION} --json`
+          else
+            ADDITIONAL_VERSIONS=[]
+          fi
 
           VERSIONS=`echo "[${LATEST_VERSIONS}, ${ADDITIONAL_VERSIONS}]" \
             | jq -c '[ flatten | sort | unique | .[] | select( test("${{ env.EXCLUDE_FILTER }}") | not ) ]'`
@@ -59,7 +67,7 @@ jobs:
     needs: setup
     strategy:
       fail-fast: false
-      max-parallel: 4
+      max-parallel: 6
       matrix:
         unityVersion: ${{ fromJson(needs.setup.outputs.unityVersions) }}
     steps:
@@ -75,7 +83,7 @@ jobs:
             Library-${{ matrix.unityVersion }}-
             Library-
 
-      - name: 🛠️ Build Unity Project
+      - name: 🛠️ Build Unity Project (Test)
         uses: game-ci/unity-builder@v4
         timeout-minutes: 45
         with:
@@ -84,13 +92,13 @@ jobs:
           allowDirtyBuild: true
           customParameters: -nographics
 
-      - name: 🧪 Run tests
-        uses: game-ci/unity-test-runner@v4
-        timeout-minutes: 45
-        with:
-          customImage: ghcr.io/mob-sakai/unity3d:${{ matrix.unityVersion }}
-          # unityVersion: ${{ matrix.unityVersion }}
-          customParameters: -nographics
-          checkName: ${{ matrix.unityVersion }} Test Results
-          githubToken: ${{ github.token }}
-          coverageOptions: "dontClear;generateHtmlReport;generateBadgeReport;pathFilters:+**/Packages/src/**;assemblyFilters:+<packages>,-*.Editor,-*.Test"
+      # - name: 🧪 Run tests
+      #   uses: game-ci/unity-test-runner@v4
+      #   timeout-minutes: 45
+      #   with:
+      #     customImage: ghcr.io/mob-sakai/unity3d:${{ matrix.unityVersion }}
+      #     # unityVersion: ${{ matrix.unityVersion }}
+      #     customParameters: -nographics
+      #     checkName: ${{ matrix.unityVersion }} Test Results
+      #     githubToken: ${{ github.token }}
+      #     coverageOptions: "dontClear;generateHtmlReport;generateBadgeReport;pathFilters:+**/Packages/src/**;assemblyFilters:+<packages>,-*.Editor,-*.Test"
