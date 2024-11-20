@@ -1,3 +1,10 @@
+## [4.10.3](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.10.2...v4.10.3) (2024-11-20)
+
+
+### Bug Fixes
+
+* if not configured as a preloaded asset, the project settings asset will be regenerated ([abe0948](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/abe09485f65dd4efd18e74675e752e0213bdf3be)), closes [#342](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/342)
+
 ## [4.10.2](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.10.1...v4.10.2) (2024-11-01)
 
 
