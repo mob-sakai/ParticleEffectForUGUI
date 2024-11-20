@@ -1,3 +1,4 @@
+using Coffee.UIParticleInternal;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
@@ -51,11 +52,7 @@ namespace Coffee.UIExtensions.Demo
 
         public void EnableAnimations(bool flag)
         {
-#if UNITY_2023_1_OR_NEWER
-            foreach (var animator in FindObjectsByType<Animator>(FindObjectsInactive.Include, FindObjectsSortMode.None))
-#else
-            foreach (var animator in FindObjectsOfType<Animator>())
-#endif
+            foreach (var animator in Misc.FindObjectsOfType<Animator>())
             {
                 animator.enabled = flag;
             }
@@ -83,11 +80,7 @@ namespace Coffee.UIExtensions.Demo
 
         public void UIParticle_Scale(float scale)
         {
-#if UNITY_2023_1_OR_NEWER
-            foreach (var uip in FindObjectsByType<UIParticle>(FindObjectsInactive.Include, FindObjectsSortMode.None))
-#else
-            foreach (var uip in FindObjectsOfType<UIParticle>())
-#endif
+            foreach (var uip in Misc.FindObjectsOfType<UIParticle>())
             {
                 uip.scale = scale;
             }
@@ -95,11 +88,7 @@ namespace Coffee.UIExtensions.Demo
 
         public void ParticleSystem_WorldSpaseSimulation(bool flag)
         {
-#if UNITY_2023_1_OR_NEWER
-            foreach (var p in FindObjectsByType<ParticleSystem>(FindObjectsInactive.Include, FindObjectsSortMode.None))
-#else
-            foreach (var p in FindObjectsOfType<ParticleSystem>())
-#endif
+            foreach (var p in Misc.FindObjectsOfType<ParticleSystem>())
             {
                 var main = p.main;
                 main.simulationSpace = flag
@@ -135,11 +124,7 @@ namespace Coffee.UIExtensions.Demo
 
         public void ParticleSystem_SetScale(float scale)
         {
-#if UNITY_2023_1_OR_NEWER
-            foreach (var ps in FindObjectsByType<ParticleSystem>(FindObjectsInactive.Include, FindObjectsSortMode.None))
-#else
-            foreach (var ps in FindObjectsOfType<ParticleSystem>())
-#endif
+            foreach (var ps in Misc.FindObjectsOfType<ParticleSystem>())
             {
                 ps.transform.localScale = new Vector3(scale, scale, scale);
             }

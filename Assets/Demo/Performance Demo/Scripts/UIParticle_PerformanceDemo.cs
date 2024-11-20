@@ -1,3 +1,4 @@
+using Coffee.UIParticleInternal;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -46,11 +47,7 @@ namespace Coffee.UIExtensions.Demo
 
             if (!flag)
             {
-#if UNITY_2023_1_OR_NEWER
-                foreach (var ps in FindObjectsByType<ParticleSystem>(FindObjectsInactive.Include, FindObjectsSortMode.None))
-#else
-                foreach (var ps in FindObjectsOfType<ParticleSystem>())
-#endif
+                foreach (var ps in Misc.FindObjectsOfType<ParticleSystem>())
                 {
                     ps.Play(false);
                 }
@@ -79,11 +76,7 @@ namespace Coffee.UIExtensions.Demo
 
         public void ParticleSystem_SetScale(float scale)
         {
-#if UNITY_2023_1_OR_NEWER
-            foreach (var ps in FindObjectsByType<ParticleSystem>(FindObjectsInactive.Include, FindObjectsSortMode.None))
-#else
-            foreach (var ps in FindObjectsOfType<ParticleSystem>())
-#endif
+            foreach (var ps in Misc.FindObjectsOfType<ParticleSystem>())
             {
                 ps.transform.localScale = new Vector3(scale, scale, scale);
             }
