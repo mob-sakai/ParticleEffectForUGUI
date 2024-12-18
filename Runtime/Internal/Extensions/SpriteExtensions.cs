@@ -17,11 +17,15 @@ namespace Coffee.UIParticleInternal
             Type.GetType("UnityEditor.Experimental.U2D.SpriteEditorExtension, UnityEditor")
             ?? Type.GetType("UnityEditor.U2D.SpriteEditorExtension, UnityEditor");
 
-        private static readonly MethodInfo s_GetActiveAtlasTextureMethod = s_SpriteEditorExtensionType
-            .GetMethod("GetActiveAtlasTexture", BindingFlags.Static | BindingFlags.NonPublic);
+        private static readonly Func<Sprite, Texture2D> s_GetActiveAtlasTextureMethod =
+            (Func<Sprite, Texture2D>)Delegate.CreateDelegate(typeof(Func<Sprite, Texture2D>),
+                s_SpriteEditorExtensionType
+                    .GetMethod("GetActiveAtlasTexture", BindingFlags.Static | BindingFlags.NonPublic));
 
-        private static readonly MethodInfo s_GetActiveAtlasMethod = s_SpriteEditorExtensionType
-            .GetMethod("GetActiveAtlas", BindingFlags.Static | BindingFlags.NonPublic);
+        private static readonly Func<Sprite, SpriteAtlas> s_GetActiveAtlasMethod =
+            (Func<Sprite, SpriteAtlas>)Delegate.CreateDelegate(typeof(Func<Sprite, SpriteAtlas>),
+                s_SpriteEditorExtensionType
+                    .GetMethod("GetActiveAtlas", BindingFlags.Static | BindingFlags.NonPublic));
 
         /// <summary>
         /// Get the actual texture of a sprite in play mode or edit mode.
@@ -30,9 +34,7 @@ namespace Coffee.UIParticleInternal
         {
             if (!self) return null;
 
-            if (Application.isPlaying) return self.texture;
-
-            var ret = s_GetActiveAtlasTextureMethod.Invoke(null, new object[] { self }) as Texture2D;
+            var ret = s_GetActiveAtlasTextureMethod(self);
             return ret ? ret : self.texture;
         }
 
@@ -43,7 +45,7 @@ namespace Coffee.UIParticleInternal
         {
             if (!self) return null;
 
-            return s_GetActiveAtlasMethod.Invoke(null, new object[] { self }) as SpriteAtlas;
+            return s_GetActiveAtlasMethod(self);
         }
 #else
         /// <summary>
