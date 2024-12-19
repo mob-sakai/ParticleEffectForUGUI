@@ -1,3 +1,10 @@
+## [4.10.4](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.10.3...v4.10.4) (2024-12-19)
+
+
+### Bug Fixes
+
+* rendering issues when playing with opening a prefab stage ([95235a9](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/95235a929b82cf681365ed6eba837d857f83e3d2)), closes [#345](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/345)
+
 ## [4.10.3](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.10.2...v4.10.3) (2024-11-20)
 
 
