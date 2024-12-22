@@ -1,6 +1,13 @@
+using System;
 using System.Diagnostics;
 using UnityEditor;
 using UnityEngine;
+using Object = UnityEngine.Object;
+#if UNITY_EDITOR && UNITY_2021_2_OR_NEWER
+using UnityEditor.SceneManagement;
+#elif UNITY_EDITOR
+using UnityEditor.Experimental.SceneManagement;
+#endif
 
 namespace Coffee.UIParticleInternal
 {
@@ -53,5 +60,15 @@ namespace Coffee.UIParticleInternal
             EditorUtility.SetDirty(obj);
 #endif
         }
+
+#if UNITY_EDITOR
+        public static T[] GetAllComponentsInPrefabStage<T>() where T : Component
+        {
+            var prefabStage = PrefabStageUtility.GetCurrentPrefabStage();
+            if (prefabStage == null) return Array.Empty<T>();
+
+            return prefabStage.prefabContentsRoot.GetComponentsInChildren<T>(true);
+        }
+#endif
     }
 }
