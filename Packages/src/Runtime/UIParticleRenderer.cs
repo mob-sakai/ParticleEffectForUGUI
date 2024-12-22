@@ -421,7 +421,7 @@ namespace Coffee.UIExtensions
                     workerMesh.LinearToGamma();
                 }
 
-                var components = ListPool<Component>.Rent();
+                var components = InternalListPool<Component>.Rent();
                 GetComponents(typeof(IMeshModifier), components);
                 for (var i = 0; i < components.Count; i++)
                 {
@@ -430,7 +430,7 @@ namespace Coffee.UIExtensions
 #pragma warning restore CS0618 // Type or member is obsolete
                 }
 
-                ListPool<Component>.Return(ref components);
+                InternalListPool<Component>.Return(ref components);
             }
 
             Profiler.EndSample();
@@ -442,7 +442,7 @@ namespace Coffee.UIExtensions
 
             // Get grouped renderers.
             Profiler.BeginSample("[UIParticleRenderer] Set Mesh");
-            var renderers = ListPool<UIParticleRenderer>.Rent();
+            var renderers = InternalListPool<UIParticleRenderer>.Rent();
             if (_parent.useMeshSharing)
             {
                 UIParticleUpdater.GetGroupedRenderers(_parent.groupId, _index, renderers);
@@ -459,7 +459,7 @@ namespace Coffee.UIExtensions
                 r.canvasRenderer.SetMaterial(materialForRendering, 0);
             }
 
-            ListPool<UIParticleRenderer>.Return(ref renderers);
+            InternalListPool<UIParticleRenderer>.Return(ref renderers);
 
             if (_parent.canRender)
             {
