@@ -28,6 +28,11 @@ namespace Coffee.UIExtensions
     [CanEditMultipleObjects]
     internal class UIParticleEditor : GraphicEditor
     {
+        internal class State : ScriptableSingleton<State>
+        {
+            public bool is3DScaleMode;
+        }
+
         //################################
         // Constant or Static Members.
         //################################
@@ -46,7 +51,6 @@ namespace Coffee.UIExtensions
         private static readonly GUIContent s_ContentPrimary = new GUIContent("Primary");
         private static readonly Regex s_RegexBuiltInGuid = new Regex(@"^0{16}.0{15}$", RegexOptions.Compiled);
         private static readonly List<Material> s_TempMaterials = new List<Material>();
-        private static bool s_XYZMode;
 
         private SerializedProperty _maskable;
         private SerializedProperty _scale3D;
@@ -60,6 +64,7 @@ namespace Coffee.UIExtensions
         private SerializedProperty _customViewSize;
         private ReorderableList _ro;
         private bool _showMax;
+        private bool _is3DScaleMode;
 
         private static readonly HashSet<Shader> s_Shaders = new HashSet<Shader>();
 #if UNITY_2018 || UNITY_2019
@@ -163,6 +168,19 @@ namespace Coffee.UIExtensions
                     uip.RefreshParticles(uip.particles);
                 }
             }
+
+            // Initialize 3D scale mode.
+            _is3DScaleMode = State.instance.is3DScaleMode;
+            if (!_is3DScaleMode)
+            {
+                var x = _scale3D.FindPropertyRelative("x");
+                var y = _scale3D.FindPropertyRelative("y");
+                var z = _scale3D.FindPropertyRelative("z");
+                _is3DScaleMode = !Mathf.Approximately(x.floatValue, y.floatValue) ||
+                                 !Mathf.Approximately(y.floatValue, z.floatValue) ||
+                                 y.hasMultipleDifferentValues ||
+                                 z.hasMultipleDifferentValues;
+            }
         }
 
         /// <summary>
@@ -181,7 +199,11 @@ namespace Coffee.UIExtensions
 
             // Scale
             EditorGUI.BeginDisabledGroup(!_meshSharing.hasMultipleDifferentValues && _meshSharing.intValue == 4);
-            s_XYZMode = DrawFloatOrVector3Field(_scale3D, s_XYZMode);
+            if (DrawFloatOrVector3Field(_scale3D, _is3DScaleMode) != _is3DScaleMode)
+            {
+                State.instance.is3DScaleMode = _is3DScaleMode = !_is3DScaleMode;
+            }
+
             EditorGUI.EndDisabledGroup();
 
             // AnimatableProperties
