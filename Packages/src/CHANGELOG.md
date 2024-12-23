@@ -1,3 +1,10 @@
+## [4.10.5](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.10.4...v4.10.5) (2024-12-23)
+
+
+### Bug Fixes
+
+* '3D' scale toggle in the inspector does not keep on reload ([934f4b8](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/934f4b8f1c61f8ff20228d0ebcea9f636a3758ed)), closes [#346](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/346)
+
 ## [4.10.4](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.10.3...v4.10.4) (2024-12-19)
 
 
