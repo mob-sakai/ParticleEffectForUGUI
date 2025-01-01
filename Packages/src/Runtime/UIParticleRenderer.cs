@@ -40,6 +40,7 @@ namespace Coffee.UIExtensions
         private Vector2Int _prevScreenSize;
         private bool _preWarm;
         private ParticleSystemRenderer _renderer;
+        private ParticleSystem _mainEmitter;
 
         public override Texture mainTexture => _isTrail ? null : _particleSystem.GetTextureForSprite();
 
@@ -112,6 +113,7 @@ namespace Coffee.UIExtensions
             _parent = null;
             _particleSystem = null;
             _renderer = null;
+            _mainEmitter = null;
             if (0 <= index)
             {
                 _index = index;
@@ -223,7 +225,7 @@ namespace Coffee.UIExtensions
             return _modifiedMaterial;
         }
 
-        public void Set(UIParticle parent, ParticleSystem ps, bool isTrail)
+        public void Set(UIParticle parent, ParticleSystem ps, bool isTrail, ParticleSystem mainEmitter)
         {
             _parent = parent;
             maskable = parent.maskable;
@@ -246,10 +248,7 @@ namespace Coffee.UIExtensions
 
             ps.TryGetComponent(out _renderer);
             _renderer.enabled = false;
-
-            //_emitter = emitter;
             _isTrail = isTrail;
-
             _renderer.GetSharedMaterials(s_Materials);
             material = s_Materials[isTrail ? 1 : 0];
             s_Materials.Clear();
@@ -266,6 +265,7 @@ namespace Coffee.UIExtensions
             _prevScreenSize = new Vector2Int(Screen.width, Screen.height);
             _prevCanvasScale = canvas ? canvas.scaleFactor : 1f;
             _delay = true;
+            _mainEmitter = mainEmitter;
 
             canvasRenderer.SetTexture(null);
 
@@ -303,7 +303,7 @@ namespace Coffee.UIExtensions
 
             // Simulate particles.
             Profiler.BeginSample("[UIParticle] Bake Mesh > Simulate Particles");
-            if (!_isTrail && _parent.canSimulate)
+            if (!_isTrail && _parent.canSimulate && !_mainEmitter)
             {
 #if UNITY_EDITOR
                 if (!Application.isPlaying)

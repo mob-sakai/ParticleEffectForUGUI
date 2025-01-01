@@ -577,12 +577,14 @@ namespace Coffee.UIExtensions
             {
                 var ps = particleSystems[i];
                 if (!ps) continue;
-                GetRenderer(j++).Set(this, ps, false);
+
+                var mainEmitter = ps.GetMainEmitter(particleSystems);
+                GetRenderer(j++).Set(this, ps, false, mainEmitter);
 
                 // If the trail is enabled, set it additionally.
                 if (ps.trails.enabled)
                 {
-                    GetRenderer(j++).Set(this, ps, true);
+                    GetRenderer(j++).Set(this, ps, true, mainEmitter);
                 }
             }
         }
