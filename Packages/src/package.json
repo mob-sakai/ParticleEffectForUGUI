@@ -2,7 +2,7 @@
   "name": "com.coffee.ui-particle",
   "displayName": "UI Particle",
   "description": "This package provides a component to render particle effects for uGUI.\nThe particle rendering is maskable and sortable, without the need for an extra Camera, RenderTexture, or Canvas.",
-  "version": "5.0.0-preview.13",
+  "version": "5.0.0-preview.14",
   "unity": "2019.3",
   "license": "MIT",
   "repository": {
