@@ -1,3 +1,11 @@
+## [4.10.6](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.10.5...v4.10.6) (2025-01-03)
+
+
+### Bug Fixes
+
+* sub-emitter particles may not render correctly in certain scenarios ([8276684](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/8276684c3b1646f0490ed64557547ba15281664a)), closes [#348](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/348)
+* sub-emitter's `inherit velocity` module doubles at runtime ([67de3d1](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/67de3d1bd3e16dc9b564625cb990c53d75769506)), closes [#349](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/349)
+
 ## [4.10.5](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.10.4...v4.10.5) (2024-12-23)
 
 
