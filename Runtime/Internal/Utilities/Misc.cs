@@ -69,6 +69,8 @@ namespace Coffee.UIParticleInternal
 
             return prefabStage.prefabContentsRoot.GetComponentsInChildren<T>(true);
         }
+
+        public static bool isBatchOrBuilding => Application.isBatchMode || BuildPipeline.isBuildingPlayer;
 #endif
     }
 }
