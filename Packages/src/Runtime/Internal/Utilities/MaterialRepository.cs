@@ -15,7 +15,7 @@ namespace Coffee.UIParticleInternal
 
 #if UNITY_EDITOR
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        private static void Clear()
+        public static void Clear()
         {
             s_Repository.Clear();
         }
