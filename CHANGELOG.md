@@ -1,3 +1,10 @@
+## [4.10.7](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.10.6...v4.10.7) (2025-01-14)
+
+
+### Bug Fixes
+
+* editor crashed on exit play mode (editor, windows) ([47ee45c](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/47ee45cbbe651a8f87ca2b8a3948f8b88db8211e)), closes [#351](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/351)
+
 ## [4.10.6](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.10.5...v4.10.6) (2025-01-03)
 
 
