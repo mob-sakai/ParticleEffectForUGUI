@@ -1,3 +1,10 @@
+## [4.11.1](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.11.0...v4.11.1) (2025-02-21)
+
+
+### Bug Fixes
+
+* component icons will no longer be displayed in the scene view ([6dfbdae](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/6dfbdae38d3822ab9c2c6f0e4ca1ca32ee98a239))
+
 # [4.11.0](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.10.7...v4.11.0) (2025-02-21)
 
 
