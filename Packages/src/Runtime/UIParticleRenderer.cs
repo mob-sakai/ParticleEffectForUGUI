@@ -626,7 +626,7 @@ namespace Coffee.UIExtensions
             var deltaTime = paused
                 ? 0
                 : main.useUnscaledTime
-                    ? Time.unscaledDeltaTime
+                    ? 0
                     : Time.deltaTime;
 
             // Pre-warm:
