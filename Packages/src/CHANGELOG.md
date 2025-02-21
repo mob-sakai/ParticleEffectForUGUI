@@ -1,3 +1,10 @@
+# [4.11.0](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.10.7...v4.11.0) (2025-02-21)
+
+
+### Features
+
+* add 'TimeScaleMultiplier' option ([925af0b](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/925af0b6046f65f23a778f67cefa8ff9cbedb513))
+
 ## [4.10.7](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.10.6...v4.10.7) (2025-01-14)
 
 
