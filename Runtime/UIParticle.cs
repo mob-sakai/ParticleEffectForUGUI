@@ -119,6 +119,10 @@ namespace Coffee.UIExtensions
                  "Change the bake view size.")]
         private float m_CustomViewSize = 10;
 
+        [SerializeField]
+        [Tooltip("Time scale multiplier.")]
+        private float m_TimeScaleMultiplier = 1;
+
         private readonly List<UIParticleRenderer> _renderers = new List<UIParticleRenderer>();
         private Camera _bakeCamera;
         private int _groupId;
@@ -255,6 +259,15 @@ namespace Coffee.UIExtensions
         {
             get => m_CustomViewSize;
             set => m_CustomViewSize = Mathf.Max(0.1f, value);
+        }
+
+        /// <summary>
+        /// Time scale multiplier.
+        /// </summary>
+        public float timeScaleMultiplier
+        {
+            get => m_TimeScaleMultiplier;
+            set => m_TimeScaleMultiplier = value;
         }
 
         internal bool useMeshSharing => m_MeshSharing != MeshSharing.None;

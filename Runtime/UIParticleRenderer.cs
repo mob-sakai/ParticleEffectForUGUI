@@ -628,6 +628,7 @@ namespace Coffee.UIExtensions
                 : main.useUnscaledTime
                     ? Time.unscaledDeltaTime
                     : Time.deltaTime;
+            deltaTime *= _parent.timeScaleMultiplier;
 
             // Pre-warm:
             if (0 < deltaTime && _preWarm)
