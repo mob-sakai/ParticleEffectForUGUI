@@ -17,6 +17,7 @@ namespace Coffee.UIExtensions
     /// <summary>
     /// Render maskable and sortable particle effect ,without Camera, RenderTexture or Canvas.
     /// </summary>
+    [Icon("Packages/com.coffee.ui-particle/Icons/UIParticleIcon.png")]
     [ExecuteAlways]
     [RequireComponent(typeof(RectTransform))]
     [RequireComponent(typeof(CanvasRenderer))]
@@ -118,6 +119,10 @@ namespace Coffee.UIExtensions
         [Tooltip("Custom view size.\n" +
                  "Change the bake view size.")]
         private float m_CustomViewSize = 10;
+
+        [SerializeField]
+        [Tooltip("Time scale multiplier.")]
+        private float m_TimeScaleMultiplier = 1;
 
         [SerializeField]
         private bool m_Maskable = true;
@@ -283,6 +288,15 @@ namespace Coffee.UIExtensions
         {
             get => m_CustomViewSize;
             set => m_CustomViewSize = Mathf.Max(0.1f, value);
+        }
+
+        /// <summary>
+        /// Time scale multiplier.
+        /// </summary>
+        public float timeScaleMultiplier
+        {
+            get => m_TimeScaleMultiplier;
+            set => m_TimeScaleMultiplier = value;
         }
 
         internal bool useMeshSharing => m_MeshSharing != MeshSharing.None;

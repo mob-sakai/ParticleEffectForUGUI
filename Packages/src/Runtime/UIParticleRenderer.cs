@@ -15,6 +15,7 @@ using UnityEngine.UI;
 
 namespace Coffee.UIExtensions
 {
+    [Icon("Packages/com.coffee.ui-particle/Icons/UIParticleIcon.png")]
     [ExecuteAlways]
     [RequireComponent(typeof(RectTransform))]
     [RequireComponent(typeof(CanvasRenderer))]
@@ -628,6 +629,7 @@ namespace Coffee.UIExtensions
                 : main.useUnscaledTime
                     ? Time.unscaledDeltaTime
                     : Time.deltaTime;
+            deltaTime *= _parent.timeScaleMultiplier;
 
             // Pre-warm:
             if (0 < deltaTime && _preWarm)

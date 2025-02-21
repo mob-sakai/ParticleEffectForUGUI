@@ -40,13 +40,26 @@ namespace Coffee.UIExtensions
 
 #if UNITY_EDITOR
         [InitializeOnLoadMethod]
+        private static void InitializeOnLoad()
+        {
+            UIExtraCallbacks.onAfterCanvasRebuild += Refresh;
+
+            EditorApplication.playModeStateChanged += state =>
+            {
+                UIExtraCallbacks.onAfterCanvasRebuild -= Refresh;
+                if (state == PlayModeStateChange.EnteredEditMode || state == PlayModeStateChange.EnteredPlayMode)
+                {
+                    UIExtraCallbacks.onAfterCanvasRebuild += Refresh;
+                }
+            };
+        }
 #else
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-#endif
         private static void InitializeOnLoad()
         {
             UIExtraCallbacks.onAfterCanvasRebuild += Refresh;
         }
+#endif
 
         private static void Refresh()
         {
