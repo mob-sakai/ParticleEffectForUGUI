@@ -62,6 +62,7 @@ namespace Coffee.UIExtensions
         private SerializedProperty _autoScalingMode;
         private SerializedProperty _useCustomView;
         private SerializedProperty _customViewSize;
+        private SerializedProperty _timeScaleMultiplier;
         private ReorderableList _ro;
         private bool _showMax;
         private bool _is3DScaleMode;
@@ -100,6 +101,7 @@ namespace Coffee.UIExtensions
             _autoScalingMode = serializedObject.FindProperty("m_AutoScalingMode");
             _useCustomView = serializedObject.FindProperty("m_UseCustomView");
             _customViewSize = serializedObject.FindProperty("m_CustomViewSize");
+            _timeScaleMultiplier = serializedObject.FindProperty("m_TimeScaleMultiplier");
 
             var sp = serializedObject.FindProperty("m_Particles");
             _ro = new ReorderableList(sp.serializedObject, sp, true, true, true, true)
@@ -243,6 +245,9 @@ namespace Coffee.UIExtensions
             {
                 _customViewSize.floatValue = Mathf.Max(0.1f, _customViewSize.floatValue);
             }
+
+            // Time Scale Multiplier
+            EditorGUILayout.PropertyField(_timeScaleMultiplier);
 
             // Target ParticleSystems.
             EditorGUI.BeginChangeCheck();
