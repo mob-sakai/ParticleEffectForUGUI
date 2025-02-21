@@ -1,3 +1,16 @@
+# [5.0.0-preview.15](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/5.0.0-preview.14...5.0.0-preview.15) (2025-02-21)
+
+
+### Bug Fixes
+
+* component icons will no longer be displayed in the scene view ([6dfbdae](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/6dfbdae38d3822ab9c2c6f0e4ca1ca32ee98a239))
+* editor crashed on exit play mode (editor, windows) ([47ee45c](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/47ee45cbbe651a8f87ca2b8a3948f8b88db8211e)), closes [#351](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/351)
+
+
+### Features
+
+* add 'TimeScaleMultiplier' option ([925af0b](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/925af0b6046f65f23a778f67cefa8ff9cbedb513))
+
 # [5.0.0-preview.14](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/5.0.0-preview.13...5.0.0-preview.14) (2025-01-03)
 
 
