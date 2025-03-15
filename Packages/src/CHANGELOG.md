@@ -1,3 +1,11 @@
+# [5.0.0-preview.16](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/5.0.0-preview.15...5.0.0-preview.16) (2025-03-15)
+
+
+### Bug Fixes
+
+* IL2CPP build fails on older versions of Unity ([0da6525](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/0da652520cd165b43de7404c0b0ab1fbcf9349d1))
+* NRE on enable ([0cff50e](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/0cff50ef696aa53fb7c46a9a737b7cf3a05b7b9b)), closes [#359](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/359)
+
 # [5.0.0-preview.15](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/5.0.0-preview.14...5.0.0-preview.15) (2025-02-21)
 
 
