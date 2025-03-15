@@ -5,7 +5,6 @@ using UnityEngine;
 
 namespace Coffee.UIExtensions
 {
-    [Icon("Packages/com.coffee.ui-particle/Icons/UIParticleIcon.png")]
     public class UIParticleProjectSettings : PreloadedProjectSettings<UIParticleProjectSettings>
     {
         [Header("Setting")]

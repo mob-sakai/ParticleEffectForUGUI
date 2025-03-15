@@ -18,11 +18,12 @@ MonoBehaviour:
   m_EnabledInEditor: 1
   m_AlwaysIncludeAssembly: 1
   m_InstantiateOnLoad: 1
-  m_Prefab: {fileID: 7211429669315726685, guid: b73940fc30a2f4eb9a73783e9c1f8da6,
+  m_Prefab: {fileID: 4567906826058368312, guid: 7cebff2d255b9433cbe23b243c193329,
     type: 3}
   m_Interval: 0.5
   m_Anchor: 0
   m_Width: 750
+  m_HelpUrl: https://github.com/mob-sakai/ParticleEffectForUGUI
   m_CustomMonitorItems:
   - m_Format: Screen:{0}x{1}
     m_Arg0:

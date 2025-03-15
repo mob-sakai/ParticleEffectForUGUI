@@ -187,6 +187,8 @@ namespace Coffee.UIParticleInternal
 
         public static bool IsSubEmitterOf(this ParticleSystem self, ParticleSystem parent)
         {
+            if (!self || !parent) return false;
+
             var subEmitters = parent.subEmitters;
             var count = subEmitters.subEmittersCount;
             for (var i = 0; i < count; i++)
