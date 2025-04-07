@@ -283,10 +283,6 @@ namespace Coffee.UIExtensions
                 || !transform.lossyScale.GetScaled(_parent.scale3DForCalc).IsVisible() // Scale is not visible.
                 || (!_particleSystem.IsAlive() && !_particleSystem.isPlaying) // No particle.
                 || (_isTrail && !_particleSystem.trails.enabled) // Trail, but it is not enabled.
-#if UNITY_2018_3_OR_NEWER
-                || canvasRenderer.GetInheritedAlpha() <
-                0.01f // #102: Do not bake particle system to mesh when the alpha is zero.
-#endif
             )
             {
                 Profiler.BeginSample("[UIParticleRenderer] Clear Mesh");
