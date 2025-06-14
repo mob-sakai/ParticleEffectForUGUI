@@ -15,7 +15,7 @@ using UnityEngine.UI;
 
 namespace Coffee.UIExtensions
 {
-    [Icon("Packages/com.coffee.ui-particle/Icons/UIParticleIcon.png")]
+    [Icon("Packages/com.coffee.ui-particle/Editor/UIParticleIcon.png")]
     [ExecuteAlways]
     [RequireComponent(typeof(RectTransform))]
     [RequireComponent(typeof(CanvasRenderer))]
