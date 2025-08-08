@@ -144,7 +144,7 @@ _This package requires **Unity 2018.3 or later**._
 
 #### Install as Embedded Package
 
-1. Download a source code zip file from [Releases](https://github.com/mob-sakai/ParticleEffectForUGUI.git/releases) and extract it.
+1. Download a source code zip file from [Releases](https://github.com/mob-sakai/ParticleEffectForUGUI/releases) and extract it.
 2. Place it in your project's `Packages` directory.  
    ![](https://github.com/mob-sakai/mob-sakai/assets/12690315/0b7484b4-5fca-43b0-a9ef-e5dbd99bcdb4)
 - If you want to fix bugs or add features, install it as an embedded package.
