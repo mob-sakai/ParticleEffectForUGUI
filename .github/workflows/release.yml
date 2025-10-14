@@ -27,10 +27,10 @@ jobs:
       split_to: ${{ steps.summary.outputs.split_to }}
     steps:
       - name: 🚚 Checkout (${{ github.ref_name }})
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: 🔖 Run semantic release
-        uses: cycjimmy/semantic-release-action@v4
+        uses: cycjimmy/semantic-release-action@v5
         id: release
         with:
           working_directory: Packages/src
@@ -67,7 +67,7 @@ jobs:
       contents: write
     steps:
       - name: 🚚 Checkout (${{ needs.release.outputs.merge_to }})
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: ${{ needs.release.outputs.merge_to }}
           fetch-depth: 0
@@ -88,7 +88,7 @@ jobs:
       contents: write
     steps:
       - name: 🚚 Checkout (${{ needs.release.outputs.tag }})
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: ${{ needs.release.outputs.tag }}
           fetch-depth: 0
