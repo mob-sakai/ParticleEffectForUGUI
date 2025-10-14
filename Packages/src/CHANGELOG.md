@@ -1,3 +1,13 @@
+## [4.11.3](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.11.2...v4.11.3) (2025-10-14)
+
+
+### Bug Fixes
+
+* fix icon ([a9461ec](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/a9461ecb4d40d7fe878e12465d6e38faae7ae65b))
+* fix URL link in README ([1c8c65d](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/1c8c65d25e7f6fe7b1d20da4461333df8fc7578e)), closes [#376](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/376)
+* fix: second and subsequent bursts not displayed when world simulation and non-looping ([df2f3ca](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/df2f3caafbe279f1457d74f8183cb561ac14aa17)), closes [#326](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/326)
+* UIParticle in canvas with 0f-0.01f alpha value does not start to play until alpha value is greater than 0.01f, causes play calls to be delayed unintentionally if canvas alpha value is set to mentioned value range ([38aec2e](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/38aec2ea1afd77677d629c86665a3342d92e49d9))
+
 ## [4.11.2](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.11.1...v4.11.2) (2025-03-15)
 
 
