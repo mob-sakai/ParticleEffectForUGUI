@@ -146,7 +146,7 @@ _This package requires **Unity 2019.3 or later**._
 
 ### Install as Embedded Package
 
-1. Download the `Source code (zip)` file from [Releases](https://github.com/mob-sakai/SoftMaskForUGUI/releases) and
+1. Download the `Source code (zip)` file from [Releases](https://github.com/mob-sakai/ParticleEffectForUGUI/releases) and
    extract it.
 2. Move the `<extracted_dir>/Packages/src` directory into your project's `Packages` directory.  
    ![](https://github.com/user-attachments/assets/187cbcbe-5922-4ed5-acec-cf19aa17d208)
