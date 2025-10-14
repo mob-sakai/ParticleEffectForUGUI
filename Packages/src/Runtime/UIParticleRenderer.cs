@@ -311,6 +311,13 @@ namespace Coffee.UIExtensions
 #endif
                 {
                     ResolveResolutionChange(psPos, scale);
+
+                    // fix: second and subsequent bursts not displayed when world simulation and non-looping. (#326)
+                    if (!_particleSystem.IsLocalSpace() && !main.loop && _particleSystem.time == 0)
+                    {
+                        _delay = true;
+                    }
+
                     Simulate(scale, _parent.isPaused || _delay);
 
                     if (_delay && !_parent.isPaused)
