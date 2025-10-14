@@ -15,7 +15,7 @@ using UnityEngine.UI;
 
 namespace Coffee.UIExtensions
 {
-    [Icon("Packages/com.coffee.ui-particle/Icons/UIParticleIcon.png")]
+    [Icon("Packages/com.coffee.ui-particle/Editor/UIParticleIcon.png")]
     [ExecuteAlways]
     [RequireComponent(typeof(RectTransform))]
     [RequireComponent(typeof(CanvasRenderer))]
@@ -283,10 +283,6 @@ namespace Coffee.UIExtensions
                 || !transform.lossyScale.GetScaled(_parent.scale3DForCalc).IsVisible() // Scale is not visible.
                 || (!_particleSystem.IsAlive() && !_particleSystem.isPlaying) // No particle.
                 || (_isTrail && !_particleSystem.trails.enabled) // Trail, but it is not enabled.
-#if UNITY_2018_3_OR_NEWER
-                || canvasRenderer.GetInheritedAlpha() <
-                0.01f // #102: Do not bake particle system to mesh when the alpha is zero.
-#endif
             )
             {
                 Profiler.BeginSample("[UIParticleRenderer] Clear Mesh");
@@ -315,6 +311,13 @@ namespace Coffee.UIExtensions
 #endif
                 {
                     ResolveResolutionChange(psPos, scale);
+
+                    // fix: second and subsequent bursts not displayed when world simulation and non-looping. (#326)
+                    if (!_particleSystem.IsLocalSpace() && !main.loop && _particleSystem.time == 0)
+                    {
+                        _delay = true;
+                    }
+
                     Simulate(scale, _parent.isPaused || _delay);
 
                     if (_delay && !_parent.isPaused)
