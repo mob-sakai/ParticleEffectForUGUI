@@ -190,6 +190,8 @@ namespace Coffee.UIParticleInternal
             if (!self || !parent) return false;
 
             var subEmitters = parent.subEmitters;
+            if (!subEmitters.enabled) return false; // No sub emitters.
+
             var count = subEmitters.subEmittersCount;
             for (var i = 0; i < count; i++)
             {
