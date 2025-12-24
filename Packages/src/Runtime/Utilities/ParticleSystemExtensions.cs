@@ -13,11 +13,7 @@ namespace Coffee.UIParticleInternal
         {
             if (s_TmpParticles.Length < size)
             {
-                while (s_TmpParticles.Length < size)
-                {
-                    size = Mathf.NextPowerOfTwo(size);
-                }
-
+                size = Mathf.NextPowerOfTwo(size);
                 s_TmpParticles = new ParticleSystem.Particle[size];
             }
 

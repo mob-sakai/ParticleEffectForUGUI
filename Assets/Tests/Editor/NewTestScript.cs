@@ -1,16 +1,21 @@
 using System.Collections;
+using Coffee.UIParticleInternal;
 using NUnit.Framework;
+using UnityEngine;
 using UnityEngine.TestTools;
 
 namespace Coffee.UIParticle.Editor.Tests
 {
     public class NewTestScript
     {
-        // A Test behaves as an ordinary method
-        [Test]
-        public void NewTestScriptSimplePasses()
+        [TestCase(-1)]
+        [TestCase(0)]
+        [TestCase(2048)]
+        [TestCase(3000)]
+        public void GetParticleArray(int requiredSize)
         {
-            // Use the Assert class to test conditions
+            var array = ParticleSystemExtensions.GetParticleArray(requiredSize);
+            Debug.Log($"requiredSize: {requiredSize}, array.Length: {array.Length}");
         }
 
         // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
