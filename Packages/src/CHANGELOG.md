@@ -1,3 +1,11 @@
+## [4.11.4](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.11.3...v4.11.4) (2025-12-24)
+
+
+### Bug Fixes
+
+* add early return for case where subEmitter module is disabled ([d1386a1](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/d1386a12216743a6e09f1b9b87bea1dfcf7702e4))
+* avoid endless loop ([eb2e862](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/eb2e862e80e549c8cf16ddfed776c101c2413bac)), closes [#392](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/392)
+
 ## [4.11.3](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.11.2...v4.11.3) (2025-10-14)
 
 
