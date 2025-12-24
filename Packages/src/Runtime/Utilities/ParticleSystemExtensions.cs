@@ -13,11 +13,7 @@ namespace Coffee.UIParticleInternal
         {
             if (s_TmpParticles.Length < size)
             {
-                while (s_TmpParticles.Length < size)
-                {
-                    size = Mathf.NextPowerOfTwo(size);
-                }
-
+                size = Mathf.NextPowerOfTwo(size);
                 s_TmpParticles = new ParticleSystem.Particle[size];
             }
 
@@ -190,6 +186,8 @@ namespace Coffee.UIParticleInternal
             if (!self || !parent) return false;
 
             var subEmitters = parent.subEmitters;
+            if (!subEmitters.enabled) return false; // No sub emitters.
+
             var count = subEmitters.subEmittersCount;
             for (var i = 0; i < count; i++)
             {
