@@ -107,7 +107,7 @@ namespace Coffee.UIExtensions
                 {
                     var ps = sp.GetArrayElementAtIndex(index).objectReferenceValue as ParticleSystem;
                     var materialCount = 0;
-                    if (ps && ps.TryGetComponent<ParticleSystemRenderer>(out var psr))
+                    if (ps != null && ps.TryGetComponent<ParticleSystemRenderer>(out var psr))
                     {
                         materialCount = psr.sharedMaterials.Length;
                     }
@@ -121,7 +121,7 @@ namespace Coffee.UIExtensions
                     var p = sp.GetArrayElementAtIndex(index);
                     EditorGUI.ObjectField(rect, p, GUIContent.none);
                     var ps = p.objectReferenceValue as ParticleSystem;
-                    if (!ps || !ps.TryGetComponent<ParticleSystemRenderer>(out var psr)) return;
+                    if (ps == null || !ps.TryGetComponent<ParticleSystemRenderer>(out var psr)) return;
 
                     rect.x += 15;
                     rect.width -= 15;
@@ -188,7 +188,7 @@ namespace Coffee.UIExtensions
         public override void OnInspectorGUI()
         {
             var current = target as UIParticle;
-            if (!current) return;
+            if (current == null) return;
 
             Profiler.BeginSample("(UIP:E) OnInspectorGUI");
             serializedObject.Update();
@@ -264,7 +264,7 @@ namespace Coffee.UIExtensions
             Profiler.BeginSample("(UIP:E) Non-UI built-in shader is not supported.");
             foreach (var mat in s_TempMaterials)
             {
-                if (!mat || !mat.shader) continue;
+                if (mat == null || mat.shader == null) continue;
                 var shader = mat.shader;
                 if (IsBuiltInObject(shader) && !shader.name.StartsWith("UI/"))
                 {
@@ -283,7 +283,7 @@ namespace Coffee.UIExtensions
             {
                 foreach (var mat in s_TempMaterials)
                 {
-                    if (!mat || !mat.shader) continue;
+                    if (mat == null || mat.shader == null) continue;
                     var shader = mat.shader;
                     if (!s_Shaders.Add(shader)) continue;
 

@@ -90,7 +90,7 @@ namespace Coffee.UIParticleInternal
             Profiler.BeginSample("(COF)[ObjectRepository] GetFromCache");
             if (_cache.TryGetValue(hash, out var entry))
             {
-                if (!entry.storedObject)
+                if (entry.storedObject == null)
                 {
                     Release(ref entry.storedObject);
                     Profiler.EndSample();
@@ -116,7 +116,7 @@ namespace Coffee.UIParticleInternal
 
         private void Add(Hash128 hash, ref T obj, T newObject)
         {
-            if (!newObject)
+            if (newObject == null)
             {
                 Release(ref obj);
                 obj = newObject;
@@ -151,7 +151,7 @@ namespace Coffee.UIParticleInternal
                 && _cache.TryGetValue(hash, out var entry))
             {
                 entry.reference--;
-                if (entry.reference <= 0 || !entry.storedObject)
+                if (entry.reference <= 0 || entry.storedObject == null)
                 {
                     Remove(entry);
                 }
@@ -192,7 +192,7 @@ namespace Coffee.UIParticleInternal
             public void Release(Action<T> onRelease)
             {
                 reference = 0;
-                if (storedObject)
+                if (storedObject != null)
                 {
                     onRelease?.Invoke(storedObject);
                 }

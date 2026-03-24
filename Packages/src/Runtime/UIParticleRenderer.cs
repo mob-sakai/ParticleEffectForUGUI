@@ -55,7 +55,7 @@ namespace Coffee.UIExtensions
                 s_Corners[1] = transform.TransformPoint(_lastBounds.min.x, _lastBounds.max.y, 0);
                 s_Corners[2] = transform.TransformPoint(_lastBounds.max.x, _lastBounds.max.y, 0);
                 s_Corners[3] = transform.TransformPoint(_lastBounds.max.x, _lastBounds.min.y, 0);
-                if (canvas)
+                if (canvas != null)
                 {
                     var worldToLocalMatrix = canvas.rootCanvas.transform.worldToLocalMatrix;
                     for (var i = 0; i < 4; ++i)
@@ -95,7 +95,7 @@ namespace Coffee.UIExtensions
         {
             get
             {
-                if (!_materialForRendering)
+                if (_materialForRendering == null)
                 {
                     _materialForRendering = base.materialForRendering;
                 }
@@ -106,7 +106,7 @@ namespace Coffee.UIExtensions
 
         public void Reset(int index = -1)
         {
-            if (_renderer)
+            if (_renderer != null)
             {
                 _renderer.enabled = true;
             }
@@ -121,7 +121,7 @@ namespace Coffee.UIExtensions
             }
 
             //_emitter = null;
-            if (this && isActiveAndEnabled)
+            if (isActiveAndEnabled)
             {
                 material = null;
                 canvasRenderer.Clear();
@@ -140,7 +140,7 @@ namespace Coffee.UIExtensions
             base.OnEnable();
 
             hideFlags = UIParticleProjectSettings.globalHideFlags;
-            if (!s_CombineInstances[0].mesh)
+            if (s_CombineInstances[0].mesh == null)
             {
                 s_CombineInstances[0].mesh = new Mesh
                 {
@@ -293,6 +293,24 @@ namespace Coffee.UIExtensions
 
                 return;
             }
+
+            // Reset custom data.
+            // var customData = _particleSystem.customData;
+            // if (!customData.enabled || customData.GetMode(ParticleSystemCustomData.Custom1) == ParticleSystemCustomDataMode.Disabled)
+            // {
+            //     customData.SetVector(ParticleSystemCustomData.Custom1, 0, 0);
+            //     customData.SetVector(ParticleSystemCustomData.Custom1, 1, 0);
+            //     customData.SetVector(ParticleSystemCustomData.Custom1, 2, 0);
+            //     customData.SetVector(ParticleSystemCustomData.Custom1, 3, 0);
+            // }
+            //
+            // if (!customData.enabled || customData.GetMode(ParticleSystemCustomData.Custom2) == ParticleSystemCustomDataMode.Disabled)
+            // {
+            //     customData.SetVector(ParticleSystemCustomData.Custom2, 0, 0);
+            //     customData.SetVector(ParticleSystemCustomData.Custom2, 1, 0);
+            //     customData.SetVector(ParticleSystemCustomData.Custom2, 2, 0);
+            //     customData.SetVector(ParticleSystemCustomData.Custom2, 3, 0);
+            // }
 
             var main = _particleSystem.main;
             var scale = GetWorldScale();
@@ -713,7 +731,7 @@ namespace Coffee.UIExtensions
             if (s_Mpb.isEmpty) return;
 
             // #41: Copy the value from MaterialPropertyBlock to CanvasRenderer
-            if (!materialForRendering) return;
+            if (materialForRendering == null) return;
 
             for (var i = 0; i < _parent.m_AnimatableProperties.Length; i++)
             {

@@ -42,7 +42,7 @@ public class UIElementDragger : MonoBehaviour, IBeginDragHandler, IDragHandler, 
                 break;
             case Target.Custom:
                 _rectTransform.localPosition += delta;
-                if (m_CustomTarget)
+                if (m_CustomTarget != null)
                 {
                     if (m_UseCanvasScale)
                     {

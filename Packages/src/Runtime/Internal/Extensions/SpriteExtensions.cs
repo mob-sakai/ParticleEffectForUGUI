@@ -32,10 +32,10 @@ namespace Coffee.UIParticleInternal
         /// </summary>
         public static Texture2D GetActualTexture(this Sprite self)
         {
-            if (!self) return null;
+            if (self == null) return null;
 
             var ret = s_GetActiveAtlasTextureMethod(self);
-            return ret ? ret : self.texture;
+            return ret != null ? ret : self.texture;
         }
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace Coffee.UIParticleInternal
         /// </summary>
         public static SpriteAtlas GetActiveAtlas(this Sprite self)
         {
-            if (!self) return null;
+            if (self == null) return null;
 
             return s_GetActiveAtlasMethod(self);
         }
@@ -53,7 +53,7 @@ namespace Coffee.UIParticleInternal
         /// </summary>
         internal static Texture2D GetActualTexture(this Sprite self)
         {
-            return self ? self.texture : null;
+            return self != null ? self.texture : null;
         }
 #endif
     }

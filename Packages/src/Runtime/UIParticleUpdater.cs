@@ -16,25 +16,25 @@ namespace Coffee.UIExtensions
 
         public static void Register(UIParticle particle)
         {
-            if (!particle) return;
+            if (particle == null) return;
             s_ActiveParticles.Add(particle);
         }
 
         public static void Unregister(UIParticle particle)
         {
-            if (!particle) return;
+            if (particle == null) return;
             s_ActiveParticles.Remove(particle);
         }
 
         public static void Register(UIParticleAttractor attractor)
         {
-            if (!attractor) return;
+            if (attractor == null) return;
             s_ActiveAttractors.Add(attractor);
         }
 
         public static void Unregister(UIParticleAttractor attractor)
         {
-            if (!attractor) return;
+            if (attractor == null) return;
             s_ActiveAttractors.Remove(attractor);
         }
 
@@ -71,7 +71,7 @@ namespace Coffee.UIExtensions
             for (var i = 0; i < s_ActiveParticles.Count; i++)
             {
                 var uip = s_ActiveParticles[i];
-                if (!uip || !uip.canvas || !uip.isPrimary || !s_UpdatedGroupIds.Add(uip.groupId)) continue;
+                if (uip == null || uip.canvas == null || !uip.isPrimary || !s_UpdatedGroupIds.Add(uip.groupId)) continue;
 
                 uip.UpdateTransformScale();
                 uip.UpdateRenderers();
@@ -81,7 +81,7 @@ namespace Coffee.UIExtensions
             for (var i = 0; i < s_ActiveParticles.Count; i++)
             {
                 var uip = s_ActiveParticles[i];
-                if (!uip || !uip.canvas) continue;
+                if (uip == null || uip.canvas == null) continue;
 
                 uip.UpdateTransformScale();
 
@@ -125,7 +125,7 @@ namespace Coffee.UIExtensions
                 var uip = s_ActiveParticles[i];
                 if (!uip.useMeshSharing || uip.groupId != groupId) continue;
                 if (uip.isPrimary) return uip;
-                if (!primary && uip.canSimulate) primary = uip;
+                if (primary == null && uip.canSimulate) primary = uip;
             }
 
             return primary;
