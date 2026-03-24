@@ -1,3 +1,10 @@
+## [4.12.1](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.12.0...v4.12.1) (2026-03-24)
+
+
+### Bug Fixes
+
+* ignore "EditorOnly" tagged gameObjects on refresh ([031d46a](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/031d46a3216c942d2d1a6ccfadf5f0b9e3ce3006))
+
 # [4.12.0](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.11.4...v4.12.0) (2026-03-24)
 
 
