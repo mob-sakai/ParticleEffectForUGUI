@@ -37,7 +37,7 @@ namespace Coffee.UIParticleInternal
             foreach (var t in TypeCache.GetTypesDerivedFrom(typeof(PreloadedProjectSettings<>)))
             {
                 var defaultSettings = GetDefaultSettings(t);
-                if (!defaultSettings)
+                if (defaultSettings == null)
                 {
                     // When create a new instance, automatically set it as default settings.
                     defaultSettings = CreateInstance(t) as PreloadedProjectSettings;
@@ -48,7 +48,7 @@ namespace Coffee.UIParticleInternal
                     SetDefaultSettings(defaultSettings);
                 }
 
-                if (defaultSettings)
+                if (defaultSettings != null)
                 {
                     defaultSettings.OnInitialize();
                 }
@@ -66,7 +66,7 @@ namespace Coffee.UIParticleInternal
         private static Object[] GetPreloadedSettings(Type type)
         {
             return PlayerSettings.GetPreloadedAssets()
-                .Where(x => x && x.GetType() == type)
+                .Where(x => x != null && x.GetType() == type)
                 .ToArray();
         }
 
@@ -76,12 +76,12 @@ namespace Coffee.UIParticleInternal
                    ?? AssetDatabase.FindAssets($"t:{nameof(PreloadedProjectSettings)}")
                        .Select(AssetDatabase.GUIDToAssetPath)
                        .Select(AssetDatabase.LoadAssetAtPath<PreloadedProjectSettings>)
-                       .FirstOrDefault(x => x && x.GetType() == type);
+                       .FirstOrDefault(x => x != null && x.GetType() == type);
         }
 
         protected static void SetDefaultSettings(PreloadedProjectSettings asset)
         {
-            if (!asset) return;
+            if (asset == null) return;
 
             var type = asset.GetType();
             if (string.IsNullOrEmpty(AssetDatabase.GetAssetPath(asset)))
@@ -103,7 +103,7 @@ namespace Coffee.UIParticleInternal
             var preloadedAssets = PlayerSettings.GetPreloadedAssets();
             var projectSettings = GetPreloadedSettings(type);
             PlayerSettings.SetPreloadedAssets(preloadedAssets
-                .Where(x => x)
+                .Where(x => x != null)
                 .Except(projectSettings.Except(new[] { asset }))
                 .Append(asset)
                 .Distinct()
@@ -133,19 +133,19 @@ namespace Coffee.UIParticleInternal
 #if UNITY_EDITOR
         private string _jsonText;
 
-        public static bool hasInstance => s_Instance;
+        public static bool hasInstance => s_Instance != null;
 
         public static T instance
         {
             get
             {
-                if (s_Instance) return s_Instance;
+                if (s_Instance != null) return s_Instance;
 
                 s_Instance = GetDefaultSettings(typeof(T)) as T;
-                if (s_Instance) return s_Instance;
+                if (s_Instance != null) return s_Instance;
 
                 s_Instance = CreateInstance<T>();
-                if (!s_Instance)
+                if (s_Instance == null)
                 {
                     s_Instance = null;
                     return s_Instance;
@@ -174,7 +174,7 @@ namespace Coffee.UIParticleInternal
             }
         }
 #else
-        public static T instance => s_Instance ? s_Instance : s_Instance = CreateInstance<T>();
+    public static T instance => s_Instance != null ? s_Instance : s_Instance = CreateInstance<T>();
 #endif
 
         /// <summary>
@@ -183,7 +183,7 @@ namespace Coffee.UIParticleInternal
         protected virtual void OnEnable()
         {
 #if UNITY_EDITOR
-            var isDefaultSettings = !s_Instance || s_Instance == this || GetDefaultSettings(typeof(T)) == this;
+            var isDefaultSettings = s_Instance == null || s_Instance == this || GetDefaultSettings(typeof(T)) == this;
             if (!isDefaultSettings)
             {
                 DestroyImmediate(this, true);
@@ -193,7 +193,7 @@ namespace Coffee.UIParticleInternal
             EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
 #endif
 
-            if (s_Instance) return;
+            if (s_Instance != null) return;
             s_Instance = this as T;
         }
 
@@ -222,7 +222,7 @@ namespace Coffee.UIParticleInternal
 
             public override void OnGUI(string searchContext)
             {
-                if (!_target)
+                if (_target == null)
                 {
                     if (_editor)
                     {

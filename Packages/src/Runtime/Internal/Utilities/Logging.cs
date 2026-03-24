@@ -48,7 +48,7 @@ namespace Coffee.UIParticleInternal
         public static void LogIf(bool enable, object tag, object message, Object context = null)
         {
             if (!enable) return;
-            Log_Internal(LogType.Log, tag, message, context ? context : tag as Object);
+            Log_Internal(LogType.Log, tag, message, context != null ? context : tag as Object);
         }
 
 #if !ENABLE_COFFEE_LOGGER
@@ -56,7 +56,7 @@ namespace Coffee.UIParticleInternal
 #endif
         public static void Log(object tag, object message, Object context = null)
         {
-            Log_Internal(LogType.Log, tag, message, context ? context : tag as Object);
+            Log_Internal(LogType.Log, tag, message, context != null ? context : tag as Object);
         }
 
 #if !ENABLE_COFFEE_LOGGER
@@ -64,13 +64,13 @@ namespace Coffee.UIParticleInternal
 #endif
         public static void LogWarning(object tag, object message, Object context = null)
         {
-            Log_Internal(LogType.Warning, tag, message, context ? context : tag as Object);
+            Log_Internal(LogType.Warning, tag, message, context != null ? context : tag as Object);
         }
 
         public static void LogError(object tag, object message, Object context = null)
         {
 #if ENABLE_COFFEE_LOGGER
-            Log_Internal(LogType.Error, tag, message, context ? context : tag as Object);
+            Log_Internal(LogType.Error, tag, message, context != null ? context : tag as Object);
 #else
             Debug.LogError($"{tag}: {message}", context);
 #endif

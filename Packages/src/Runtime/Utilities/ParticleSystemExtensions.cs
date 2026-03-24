@@ -84,11 +84,11 @@ namespace Coffee.UIParticleInternal
                 var bRenderer = b.GetComponent<ParticleSystemRenderer>();
 
                 // Render queue: ascending
-                var aMat = aRenderer.sharedMaterial ? aRenderer.sharedMaterial : aRenderer.trailMaterial;
-                var bMat = bRenderer.sharedMaterial ? bRenderer.sharedMaterial : bRenderer.trailMaterial;
-                if (!aMat && !bMat) return 0;
-                if (!aMat) return -1;
-                if (!bMat) return 1;
+                var aMat = aRenderer.sharedMaterial != null ? aRenderer.sharedMaterial : aRenderer.trailMaterial;
+                var bMat = bRenderer.sharedMaterial != null ? bRenderer.sharedMaterial : bRenderer.trailMaterial;
+                if (aMat == null && bMat == null) return 0;
+                if (aMat == null) return -1;
+                if (bMat == null) return 1;
 
                 if (sortByMaterial)
                 {
@@ -142,7 +142,7 @@ namespace Coffee.UIParticleInternal
 
         public static Texture2D GetTextureForSprite(this ParticleSystem self)
         {
-            if (!self) return null;
+            if (self == null) return null;
 
             // Get sprite's texture.
             var tsaModule = self.textureSheetAnimation;
@@ -151,7 +151,7 @@ namespace Coffee.UIParticleInternal
             for (var i = 0; i < tsaModule.spriteCount; i++)
             {
                 var sprite = tsaModule.GetSprite(i);
-                if (!sprite) continue;
+                if (sprite == null) continue;
 
                 return sprite.GetActualTexture();
             }
@@ -163,14 +163,14 @@ namespace Coffee.UIParticleInternal
         {
             foreach (var p in self)
             {
-                if (!p) continue;
+                if (p == null) continue;
                 action.Invoke(p);
             }
         }
 
         public static ParticleSystem GetMainEmitter(this ParticleSystem self, List<ParticleSystem> list)
         {
-            if (!self || list == null || list.Count == 0) return null;
+            if (self == null || list == null || list.Count == 0) return null;
 
             for (var i = 0; i < list.Count; i++)
             {
@@ -183,7 +183,7 @@ namespace Coffee.UIParticleInternal
 
         public static bool IsSubEmitterOf(this ParticleSystem self, ParticleSystem parent)
         {
-            if (!self || !parent) return false;
+            if (self == null || parent == null) return false;
 
             var subEmitters = parent.subEmitters;
             if (!subEmitters.enabled) return false; // No sub emitters.

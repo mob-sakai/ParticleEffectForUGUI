@@ -208,7 +208,7 @@ namespace Coffee.UIExtensions
 
         private Vector3 GetDestinationPosition(UIParticle uiParticle, ParticleSystem particleSystem)
         {
-            var isUI = uiParticle && uiParticle.enabled;
+            var isUI = uiParticle != null && uiParticle.enabled;
             var psPos = particleSystem.transform.position;
             var attractorPos = transform.position;
             var dstPos = attractorPos;
