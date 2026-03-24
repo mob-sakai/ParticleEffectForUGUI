@@ -1,3 +1,10 @@
+# [4.12.0](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.11.4...v4.12.0) (2026-03-24)
+
+
+### Features
+
+* explicit null checks ([5384f61](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/5384f61c569e9f78ff9d5b45acfc6f5c2f021a87))
+
 ## [4.11.4](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.11.3...v4.11.4) (2025-12-24)
 
 
