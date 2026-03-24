@@ -543,7 +543,9 @@ namespace Coffee.UIExtensions
             for (var i = particles.Count - 1; 0 <= i; i--)
             {
                 var ps = particles[i];
-                if (!ps || ps.GetComponentInParent<UIParticle>(true) != this)
+                if (!ps
+                    || ps.gameObject.CompareTag("EditorOnly") // Ignore "EditorOnly" tagged ParticleSystems.
+                    || ps.GetComponentInParent<UIParticle>(true) != this) // Ignore ParticleSystems that are not under this UIParticle.
                 {
                     particles.RemoveAt(i);
                 }
