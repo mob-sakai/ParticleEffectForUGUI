@@ -471,7 +471,7 @@ namespace Coffee.UIExtensions
             for (var i = 0; i < _renderers.Count; i++)
             {
                 var r = _renderers[i];
-                if (!r || !r.material) continue;
+                if (r == null || r.material == null) continue;
                 result.Add(r.material);
             }
         }
@@ -489,7 +489,7 @@ namespace Coffee.UIExtensions
         /// </summary>
         public void SetParticleSystemInstance(GameObject instance, bool destroyOldParticles)
         {
-            if (!instance) return;
+            if (instance == null) return;
 
             var childCount = transform.childCount;
             for (var i = 0; i < childCount; i++)
@@ -518,7 +518,7 @@ namespace Coffee.UIExtensions
         /// </summary>
         public void SetParticleSystemPrefab(GameObject prefab)
         {
-            if (!prefab) return;
+            if (prefab == null) return;
 
             SetParticleSystemInstance(Instantiate(prefab.gameObject), true);
         }
@@ -538,7 +538,7 @@ namespace Coffee.UIExtensions
         /// </summary>
         private void RefreshParticles(GameObject root)
         {
-            if (!root) return;
+            if (root == null) return;
             root.GetComponentsInChildren(true, particles);
             for (var i = particles.Count - 1; 0 <= i; i--)
             {
@@ -591,7 +591,7 @@ namespace Coffee.UIExtensions
             for (var i = 0; i < particleSystems.Count; i++)
             {
                 var ps = particleSystems[i];
-                if (!ps) continue;
+                if (ps == null) continue;
 
                 var mainEmitter = ps.GetMainEmitter(particleSystems);
                 GetRenderer(j++).Set(this, ps, false, mainEmitter);
@@ -642,7 +642,7 @@ namespace Coffee.UIExtensions
             for (var i = 0; i < _renderers.Count; i++)
             {
                 var r = _renderers[i];
-                if (r) continue;
+                if (r != null) continue;
 
                 RefreshParticles(particles);
                 break;
@@ -652,7 +652,7 @@ namespace Coffee.UIExtensions
             for (var i = 0; i < _renderers.Count; i++)
             {
                 var r = _renderers[i];
-                if (!r) continue;
+                if (r == null) continue;
 
                 r.UpdateMesh(bakeCamera);
             }
@@ -681,7 +681,7 @@ namespace Coffee.UIExtensions
             for (var i = 0; i < _renderers.Count; i++)
             {
                 var r = _renderers[i];
-                if (!r) continue;
+                if (r == null) continue;
                 r.maskable = maskable;
                 r.SetMaterialDirty();
             }
@@ -694,7 +694,7 @@ namespace Coffee.UIExtensions
                 _renderers.Add(UIParticleRenderer.AddRenderer(this, index));
             }
 
-            if (!_renderers[index])
+            if (_renderers[index] == null)
             {
                 _renderers[index] = UIParticleRenderer.AddRenderer(this, index);
             }
@@ -704,13 +704,13 @@ namespace Coffee.UIExtensions
 
         private Camera GetBakeCamera()
         {
-            if (!canvas) return Camera.main;
+            if (canvas == null) return Camera.main;
             if (!useCustomView && canvas.renderMode != RenderMode.ScreenSpaceOverlay && canvas.rootCanvas.worldCamera)
             {
                 return canvas.rootCanvas.worldCamera;
             }
 
-            if (_bakeCamera)
+            if (_bakeCamera != null)
             {
                 _bakeCamera.orthographicSize = useCustomView ? customViewSize : 10;
                 return _bakeCamera;
@@ -729,7 +729,7 @@ namespace Coffee.UIExtensions
             }
 
             // Create baking camera.
-            if (!_bakeCamera)
+            if (_bakeCamera == null)
             {
                 var go = new GameObject("[generated] UIParticle BakingCamera");
                 go.SetActive(false);

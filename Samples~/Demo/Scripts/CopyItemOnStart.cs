@@ -15,7 +15,7 @@ namespace Coffee.UIExtensions.Demo
 
         private void Start()
         {
-            if (!m_Origin) return;
+            if (m_Origin == null) return;
             m_Origin.SetActive(false);
 
             var parent = m_Origin.transform.parent;

@@ -76,7 +76,7 @@ namespace Coffee.UIExtensions
             for (var j = 0; j < mats.Count; j++)
             {
                 var mat = mats[j];
-                if (!mat || !mat.shader) continue;
+                if (mat == null || mat.shader == null) continue;
 
                 for (var i = 0; i < ShaderUtil.GetPropertyCount(mat.shader); i++)
                 {
