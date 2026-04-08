@@ -30,6 +30,7 @@ namespace Coffee.UIExtensions
         private int _index;
         private bool _isPrevStored;
         private bool _isTrail;
+        private bool _meshCleared;
         private Bounds _lastBounds;
         private Material _materialForRendering;
         private Material _modifiedMaterial;
@@ -285,10 +286,14 @@ namespace Coffee.UIExtensions
                 || (_isTrail && !_particleSystem.trails.enabled) // Trail, but it is not enabled.
             )
             {
+                // Skip clearing the mesh if it's already cleared.
+                if (_meshCleared) return;
+
                 Profiler.BeginSample("[UIParticleRenderer] Clear Mesh");
                 workerMesh.Clear();
                 canvasRenderer.SetMesh(workerMesh);
                 _lastBounds = new Bounds();
+                _meshCleared = true;
                 Profiler.EndSample();
 
                 return;
@@ -312,6 +317,7 @@ namespace Coffee.UIExtensions
             //     customData.SetVector(ParticleSystemCustomData.Custom2, 3, 0);
             // }
 
+            _meshCleared = false;
             var main = _particleSystem.main;
             var scale = GetWorldScale();
             var psPos = _particleSystem.transform.position;
