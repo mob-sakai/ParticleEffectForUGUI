@@ -78,10 +78,19 @@ namespace Coffee.UIExtensions
                 var mat = mats[j];
                 if (mat == null || mat.shader == null) continue;
 
+#if UNITY_6000_5_OR_NEWER
+                for (var i = 0; i < mat.shader.GetPropertyCount(); i++)
+#else
                 for (var i = 0; i < ShaderUtil.GetPropertyCount(mat.shader); i++)
+#endif
                 {
+#if UNITY_6000_5_OR_NEWER
+                    var name = mat.shader.GetPropertyName(i);
+                    var type = (AnimatableProperty.ShaderPropertyType)mat.shader.GetPropertyType(i);
+#else
                     var name = ShaderUtil.GetPropertyName(mat.shader, i);
                     var type = (AnimatableProperty.ShaderPropertyType)ShaderUtil.GetPropertyType(mat.shader, i);
+#endif
                     if (!s_Names.Add(name)) continue;
 
                     AddMenu(gm, sp, new ShaderProperty(name, type), true);

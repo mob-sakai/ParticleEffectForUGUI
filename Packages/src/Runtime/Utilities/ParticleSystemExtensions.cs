@@ -92,7 +92,11 @@ namespace Coffee.UIParticleInternal
 
                 if (sortByMaterial)
                 {
+#if UNITY_6000_5_OR_NEWER
+                    return aMat.GetEntityId().GetHashCode() - bMat.GetEntityId().GetHashCode();
+#else
                     return aMat.GetInstanceID() - bMat.GetInstanceID();
+#endif
                 }
 
                 if (aMat.renderQueue != bMat.renderQueue)
@@ -131,7 +135,11 @@ namespace Coffee.UIParticleInternal
         {
             for (var i = 0; i < list.Count; i++)
             {
+#if UNITY_6000_5_OR_NEWER
+                if (list[i].GetEntityId().GetHashCode() == ps.GetEntityId().GetHashCode())
+#else
                 if (list[i].GetInstanceID() == ps.GetInstanceID())
+#endif
                 {
                     return i;
                 }
