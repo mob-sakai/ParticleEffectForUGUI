@@ -206,9 +206,9 @@ namespace Coffee.UIExtensions
             }
 
             var hash = new Hash128(
-                modifiedMaterial ? (uint)modifiedMaterial.GetInstanceID() : 0,
-                texture ? (uint)texture.GetInstanceID() : 0,
-                0 < _parent.m_AnimatableProperties.Length ? (uint)GetInstanceID() : 0,
+                modifiedMaterial ? (uint)modifiedMaterial.GetHashCode() : 0,
+                texture ? (uint)texture.GetHashCode() : 0,
+                0 < _parent.m_AnimatableProperties.Length ? (uint)GetHashCode() : 0,
 #if UNITY_EDITOR
                 (uint)EditorJsonUtility.ToJson(modifiedMaterial).GetHashCode()
 #else
