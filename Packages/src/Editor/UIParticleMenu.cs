@@ -6,11 +6,19 @@ namespace Coffee.UIExtensions
 {
     internal class UIParticleMenu
     {
+#if UNITY_6000_5_OR_NEWER
+        [MenuItem("GameObject/UI (Canvas)/Particle System (Empty)", false, 2018)]
+#else
         [MenuItem("GameObject/UI/Particle System (Empty)", false, 2018)]
+#endif
         private static void AddParticleEmpty(MenuCommand menuCommand)
         {
             // Create empty UI element.
+#if UNITY_6000_5_OR_NEWER
+            EditorApplication.ExecuteMenuItem("GameObject/UI (Canvas)/Image");
+#else
             EditorApplication.ExecuteMenuItem("GameObject/UI/Image");
+#endif
             var ui = Selection.activeGameObject;
             Object.DestroyImmediate(ui.GetComponent<Image>());
 
@@ -21,7 +29,11 @@ namespace Coffee.UIExtensions
             uiParticle.rectTransform.sizeDelta = Vector2.zero;
         }
 
+#if UNITY_6000_5_OR_NEWER
+        [MenuItem("GameObject/UI (Canvas)/Particle System", false, 2019)]
+#else
         [MenuItem("GameObject/UI/Particle System", false, 2019)]
+#endif
         private static void AddParticle(MenuCommand menuCommand)
         {
             // Create empty UIEffect.
@@ -29,7 +41,11 @@ namespace Coffee.UIExtensions
             var uiParticle = Selection.activeGameObject.GetComponent<UIParticle>();
 
             // Create ParticleSystem.
+#if UNITY_6000_5_OR_NEWER
+            EditorApplication.ExecuteMenuItem("GameObject/Visual Effects/Particle System");
+#else
             EditorApplication.ExecuteMenuItem("GameObject/Effects/Particle System");
+#endif
             var ps = Selection.activeGameObject;
             ps.transform.SetParent(uiParticle.transform, false);
             ps.transform.localPosition = Vector3.zero;
