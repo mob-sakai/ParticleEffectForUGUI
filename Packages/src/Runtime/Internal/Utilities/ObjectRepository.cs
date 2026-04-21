@@ -130,7 +130,11 @@ namespace Coffee.UIParticleInternal
             newEntry.hash = hash;
             newEntry.reference = 1;
             _cache[hash] = newEntry;
+#if UNITY_6000_5_OR_NEWER
+            _objectKey[newObject.GetEntityId().GetHashCode()] = hash;
+#else
             _objectKey[newObject.GetInstanceID()] = hash;
+#endif
             Logging.Log(_name, $"<color=#03c700>Add</color>(total#{count}): {newEntry}");
             Release(ref obj);
             obj = newObject;
@@ -146,7 +150,11 @@ namespace Coffee.UIParticleInternal
 
             // Find and release the entry.
             Profiler.BeginSample("(COF)[ObjectRepository] Release");
+#if UNITY_6000_5_OR_NEWER
+            var id = obj.GetEntityId().GetHashCode();
+#else
             var id = obj.GetInstanceID();
+#endif
             if (_objectKey.TryGetValue(id, out var hash)
                 && _cache.TryGetValue(hash, out var entry))
             {
@@ -175,7 +183,11 @@ namespace Coffee.UIParticleInternal
 
             Profiler.BeginSample("(COF)[ObjectRepository] Remove");
             _cache.Remove(entry.hash);
+#if UNITY_6000_5_OR_NEWER
+            _objectKey.Remove(entry.storedObject.GetEntityId().GetHashCode());
+#else
             _objectKey.Remove(entry.storedObject.GetInstanceID());
+#endif
             _pool.Push(entry);
             entry.reference = 0;
             Logging.Log(_name, $"<color=#f29e03>Remove</color>(total#{_cache.Count}): {entry}");

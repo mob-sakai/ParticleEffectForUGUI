@@ -204,10 +204,17 @@ namespace Coffee.UIExtensions
                 return modifiedMaterial;
             }
 
+#if UNITY_6000_5_OR_NEWER
+            var hash = new Hash128(
+                modifiedMaterial ? (uint)modifiedMaterial.GetEntityId().GetHashCode() : 0,
+                texture ? (uint)texture.GetEntityId().GetHashCode() : 0,
+                0 < _parent.m_AnimatableProperties.Length ? (uint)GetEntityId().GetHashCode() : 0,
+#else
             var hash = new Hash128(
                 modifiedMaterial ? (uint)modifiedMaterial.GetInstanceID() : 0,
                 texture ? (uint)texture.GetInstanceID() : 0,
                 0 < _parent.m_AnimatableProperties.Length ? (uint)GetInstanceID() : 0,
+#endif
 #if UNITY_EDITOR
                 (uint)EditorJsonUtility.ToJson(modifiedMaterial).GetHashCode()
 #else
