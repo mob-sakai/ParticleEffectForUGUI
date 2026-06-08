@@ -27,10 +27,10 @@ jobs:
       split_to: ${{ steps.summary.outputs.split_to }}
     steps:
       - name: 🚚 Checkout (${{ github.ref_name }})
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: 🔖 Run semantic release
-        uses: cycjimmy/semantic-release-action@v5
+        uses: cycjimmy/semantic-release-action@v6
         id: release
         with:
           working_directory: Packages/src
