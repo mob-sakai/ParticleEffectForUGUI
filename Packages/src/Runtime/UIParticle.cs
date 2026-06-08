@@ -358,6 +358,7 @@ namespace Coffee.UIExtensions
 
             _isScaleStored = false;
             UIParticleUpdater.Unregister(this);
+            _renderers.RemoveAll(r => r == null);
             _renderers.ForEach(r => r.Reset());
             UnregisterDirtyMaterialCallback(UpdateRendererMaterial);
 
