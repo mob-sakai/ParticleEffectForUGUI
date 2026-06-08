@@ -34,7 +34,7 @@ namespace Coffee.UIParticleInternal
             }
 
             // If there are no instances in the pool, create a new one.
-            Logging.Log(this, $"A new instance is created (pooled: {_pool.CountInactive}, created: {_pool.CountAll}).");
+            Logger.Log(this, $"A new instance is created (pooled: {_pool.CountInactive}, created: {_pool.CountAll}).");
             return _pool.Get();
         }
 
@@ -47,7 +47,7 @@ namespace Coffee.UIParticleInternal
             if (instance == null) return; // Ignore if already pooled or null.
 
             _pool.Release(instance);
-            Logging.Log(this, $"An instance is released (pooled: {_pool.CountInactive}, created: {_pool.CountAll}).");
+            Logger.Log(this, $"An instance is released (pooled: {_pool.CountInactive}, created: {_pool.CountAll}).");
             instance = default; // Set the reference to null.
         }
 #else
@@ -80,7 +80,7 @@ namespace Coffee.UIParticleInternal
             }
 
             // If there are no instances in the pool, create a new one.
-            Logging.Log(this, $"A new instance is created (pooled: {_pool.Count}, created: {++_count}).");
+            Logger.Log(this, $"A new instance is created (pooled: {_pool.Count}, created: {++_count}).");
             return _onCreate();
         }
 
@@ -94,7 +94,7 @@ namespace Coffee.UIParticleInternal
 
             _onReturn(instance); // Return the instance to the pool.
             _pool.Push(instance);
-            Logging.Log(this, $"An instance is released (pooled: {_pool.Count}, created: {_count}).");
+            Logger.Log(this, $"An instance is released (pooled: {_pool.Count}, created: {_count}).");
             instance = default; // Set the reference to null.
         }
 #endif

@@ -92,7 +92,7 @@ namespace Coffee.UIParticleInternal
 
                 if (sortByMaterial)
                 {
-                    return aMat.GetInstanceID() - bMat.GetInstanceID();
+                    return aMat.GetHashCode() - bMat.GetHashCode();
                 }
 
                 if (aMat.renderQueue != bMat.renderQueue)
@@ -131,7 +131,7 @@ namespace Coffee.UIParticleInternal
         {
             for (var i = 0; i < list.Count; i++)
             {
-                if (list[i].GetInstanceID() == ps.GetInstanceID())
+                if (list[i].GetHashCode() == ps.GetHashCode())
                 {
                     return i;
                 }

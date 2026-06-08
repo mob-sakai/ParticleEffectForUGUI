@@ -158,6 +158,8 @@ namespace Coffee.UIParticleInternal
 
         private void OnPlayModeStateChanged(PlayModeStateChange state)
         {
+            if (!this) return;
+
             switch (state)
             {
                 case PlayModeStateChange.ExitingEditMode:

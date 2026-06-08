@@ -11,7 +11,7 @@ using Conditional = System.Diagnostics.ConditionalAttribute;
 
 namespace Coffee.UIParticleInternal
 {
-    internal static class Logging
+    internal static class Logger
     {
 #if !ENABLE_COFFEE_LOGGER
         private const string k_DisableSymbol = "DISABLE_COFFEE_LOGGER";

@@ -184,7 +184,7 @@ namespace Coffee.UIParticleInternal
         /// <summary>
         /// Verify whether it can be converted to the specified component.
         /// </summary>
-            internal static bool CanConvertTo<T>(this Object context) where T : MonoBehaviour
+        internal static bool CanConvertTo<T>(this Object context) where T : MonoBehaviour
         {
             return context != null && context.GetType() != typeof(T);
         }
