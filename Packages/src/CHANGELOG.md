@@ -1,3 +1,26 @@
+# [5.0.0-preview.17](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/5.0.0-preview.16...5.0.0-preview.17) (2026-06-08)
+
+
+### Bug Fixes
+
+* add `meshCleared` flag to optimize mesh clearing ([859fa20](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/859fa20d297c3f44e3361f20dbb7ce966407e03e))
+* add early return for case where subEmitter module is disabled ([d1386a1](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/d1386a12216743a6e09f1b9b87bea1dfcf7702e4))
+* avoid endless loop ([eb2e862](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/eb2e862e80e549c8cf16ddfed776c101c2413bac)), closes [#392](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/392)
+* fix icon ([a9461ec](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/a9461ecb4d40d7fe878e12465d6e38faae7ae65b))
+* fix Unity6.5 compile errors and warnings ([a5ee687](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/a5ee6878212be2fc4d7b48879426f239e8753009)), closes [#400](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/400)
+* fix URL link in README ([a79ffb2](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/a79ffb2c2b4c26f23d2925cb18674fda5d8bc9cb))
+* fix URL link in README ([1c8c65d](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/1c8c65d25e7f6fe7b1d20da4461333df8fc7578e)), closes [#376](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/376)
+* fix: second and subsequent bursts not displayed when world simulation and non-looping ([df2f3ca](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/df2f3caafbe279f1457d74f8183cb561ac14aa17)), closes [#326](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/326)
+* ignore "EditorOnly" tagged gameObjects on refresh ([031d46a](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/031d46a3216c942d2d1a6ccfadf5f0b9e3ce3006))
+* potential access to UIParticleRenderer that has already been destroyed ([b740dd6](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/b740dd662d423c6bef849662ce1b0bfbb4940ed4)), closes [#403](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/403)
+* UIParticle in canvas with 0f-0.01f alpha value does not start to play until alpha value is greater than 0.01f, causes play calls to be delayed unintentionally if canvas alpha value is set to mentioned value range ([38aec2e](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/38aec2ea1afd77677d629c86665a3342d92e49d9))
+* updated support for some changed menu paths ([f8ac986](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/f8ac9869f141238169730e74f5d65c4fc6081f51)), closes [#397](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/397)
+
+
+### Features
+
+* explicit null checks ([5384f61](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/5384f61c569e9f78ff9d5b45acfc6f5c2f021a87))
+
 # [5.0.0-preview.16](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/5.0.0-preview.15...5.0.0-preview.16) (2025-03-15)
 
 
