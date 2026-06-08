@@ -1,3 +1,13 @@
+## [4.12.2](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.12.1...v4.12.2) (2026-06-08)
+
+
+### Bug Fixes
+
+* add `meshCleared` flag to optimize mesh clearing ([859fa20](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/859fa20d297c3f44e3361f20dbb7ce966407e03e))
+* fix Unity6.5 compile errors and warnings ([a5ee687](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/a5ee6878212be2fc4d7b48879426f239e8753009)), closes [#400](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/400)
+* potential access to UIParticleRenderer that has already been destroyed ([b740dd6](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/b740dd662d423c6bef849662ce1b0bfbb4940ed4)), closes [#403](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/403)
+* updated support for some changed menu paths ([f8ac986](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/f8ac9869f141238169730e74f5d65c4fc6081f51)), closes [#397](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/397)
+
 ## [4.12.1](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.12.0...v4.12.1) (2026-03-24)
 
 
