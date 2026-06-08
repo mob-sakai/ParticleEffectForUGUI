@@ -20,7 +20,7 @@ namespace Coffee.UIParticleInternal
     {
         public static T[] FindObjectsOfType<T>() where T : Object
         {
-#if UNITY_6000_5_OR_NEWER
+#if UNITY_6000_4_OR_NEWER
             return Object.FindObjectsByType<T>(FindObjectsInactive.Include);
 #elif UNITY_2023_1_OR_NEWER
             return Object.FindObjectsByType<T>(FindObjectsInactive.Include, FindObjectsSortMode.None);

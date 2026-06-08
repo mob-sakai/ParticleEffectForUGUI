@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
@@ -20,7 +21,7 @@ namespace Coffee.UIParticleInternal
         static UIExtraCallbacks()
         {
             Canvas.willRenderCanvases += OnBeforeCanvasRebuild;
-            Logging.LogMulticast(typeof(Canvas), "willRenderCanvases", message: "ctor");
+            Logger.LogMulticast(typeof(Canvas), "willRenderCanvases", message: "ctor");
         }
 
         /// <summary>
@@ -67,9 +68,17 @@ namespace Coffee.UIParticleInternal
             if (s_IsInitializedAfterCanvasRebuild) return;
             s_IsInitializedAfterCanvasRebuild = true;
 
+            // Explicitly set `Canvas.willRenderCanvases += CanvasUpdateRegistry.PerformUpdate`.
             CanvasUpdateRegistry.IsRebuildingLayout();
+#if TMP_ENABLE
+            // Explicitly set `Canvas.willRenderCanvases += TMP_UpdateManager.DoRebuilds`.
+            typeof(TMPro.TMP_UpdateManager)
+                .GetProperty("instance", BindingFlags.NonPublic | BindingFlags.Static)
+                .GetValue(null);
+#endif
+            Canvas.willRenderCanvases -= OnAfterCanvasRebuild;
             Canvas.willRenderCanvases += OnAfterCanvasRebuild;
-            Logging.LogMulticast(typeof(Canvas), "willRenderCanvases",
+            Logger.LogMulticast(typeof(Canvas), "willRenderCanvases",
                 message: "InitializeAfterCanvasRebuild");
         }
 

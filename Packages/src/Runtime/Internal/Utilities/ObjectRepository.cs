@@ -103,7 +103,7 @@ namespace Coffee.UIParticleInternal
                     Release(ref obj);
                     ++entry.reference;
                     obj = entry.storedObject;
-                    Logging.Log(_name, $"Get(total#{count}): {entry}");
+                    Logger.Log(_name, $"Get(total#{count}): {entry}");
                 }
 
                 Profiler.EndSample();
@@ -131,7 +131,7 @@ namespace Coffee.UIParticleInternal
             newEntry.reference = 1;
             _cache[hash] = newEntry;
             _objectKey[newObject.GetHashCode()] = hash;
-            Logging.Log(_name, $"<color=#03c700>Add</color>(total#{count}): {newEntry}");
+            Logger.Log(_name, $"<color=#03c700>Add</color>(total#{count}): {newEntry}");
             Release(ref obj);
             obj = newObject;
             Profiler.EndSample();
@@ -157,12 +157,12 @@ namespace Coffee.UIParticleInternal
                 }
                 else
                 {
-                    Logging.Log(_name, $"Release(total#{_cache.Count}): {entry}");
+                    Logger.Log(_name, $"Release(total#{_cache.Count}): {entry}");
                 }
             }
             else
             {
-                Logging.Log(_name, $"Release(total#{_cache.Count}): <color=red>Already released: {obj}</color>");
+                Logger.Log(_name, $"Release(total#{_cache.Count}): <color=red>Already released: {obj}</color>");
             }
 
             obj = null;
@@ -178,7 +178,7 @@ namespace Coffee.UIParticleInternal
             _objectKey.Remove(entry.storedObject.GetHashCode());
             _pool.Push(entry);
             entry.reference = 0;
-            Logging.Log(_name, $"<color=#f29e03>Remove</color>(total#{_cache.Count}): {entry}");
+            Logger.Log(_name, $"<color=#f29e03>Remove</color>(total#{_cache.Count}): {entry}");
             entry.Release(_onRelease);
             Profiler.EndSample();
         }
