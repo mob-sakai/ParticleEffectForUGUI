@@ -44,7 +44,7 @@ namespace Coffee.UIExtensions
                     break;
                 case ShaderPropertyType.Float:
                 case ShaderPropertyType.Range:
-                    material.SetFloat(id,  mpb.GetFloat(id));
+                    material.SetFloat(id, mpb.GetFloat(id));
                     break;
                 case ShaderPropertyType.Texture:
                     material.SetTexture(id, mpb.GetTexture(id));
