@@ -25,9 +25,15 @@ namespace Coffee.UIExtensions
         [SerializeField]
         private bool m_HideGeneratedObjects = true;
 
-        public static HideFlags globalHideFlags => instance.m_HideGeneratedObjects
+        [Tooltip("When selecting UIParticle, a temporary ParticleSystem is generated for preview.")]
+        [SerializeField]
+        private bool m_PreviewOnSelect = true;
+
+        internal static HideFlags globalHideFlags => instance.m_HideGeneratedObjects
             ? HideFlags.DontSave | HideFlags.NotEditable | HideFlags.HideInHierarchy | HideFlags.HideInInspector
             : HideFlags.DontSave | HideFlags.NotEditable;
+
+        internal static bool previewOnSelect => instance.m_PreviewOnSelect;
 
 #if UNITY_EDITOR
         [SettingsProvider]

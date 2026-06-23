@@ -545,7 +545,10 @@ namespace Coffee.UIExtensions
             {
                 var ps = particles[i];
                 if (!ps
+#if UNITY_EDITOR
+                    || (ps.hideFlags & HideFlags.DontSave) != 0 // Dummy ParticleSystems for preview.
                     || ps.gameObject.CompareTag("EditorOnly") // Ignore "EditorOnly" tagged ParticleSystems.
+#endif
                     || ps.GetComponentInParent<UIParticle>(true) != this) // Ignore ParticleSystems that are not under this UIParticle.
                 {
                     particles.RemoveAt(i);

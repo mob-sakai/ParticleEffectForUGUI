@@ -48,15 +48,10 @@ namespace Coffee.UIParticleInternal
         {
             if (obj == null) return;
 #if UNITY_EDITOR
-            if (Application.isEditor)
-            {
-                Object.DestroyImmediate(obj);
-            }
-            else
+            Object.DestroyImmediate(obj, true);
+#else
+            Object.Destroy(obj);
 #endif
-            {
-                Object.Destroy(obj);
-            }
         }
 
         [Conditional("UNITY_EDITOR")]

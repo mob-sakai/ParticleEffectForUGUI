@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -8,6 +9,7 @@ using UnityEngine;
 using UnityEngine.Profiling;
 using UnityEngine.UI;
 using Coffee.UIParticleInternal;
+using Object = UnityEngine.Object;
 #if UNITY_2021_2_OR_NEWER
 using UnityEditor.Overlays;
 #else
@@ -66,6 +68,7 @@ namespace Coffee.UIExtensions
         private ReorderableList _ro;
         private bool _showMax;
         private bool _is3DScaleMode;
+        private GameObject[] _gameObjects;
 
         private static readonly HashSet<Shader> s_Shaders = new HashSet<Shader>();
 #if UNITY_2018 || UNITY_2019
@@ -182,6 +185,13 @@ namespace Coffee.UIExtensions
                                  !Mathf.Approximately(y.floatValue, z.floatValue) ||
                                  y.hasMultipleDifferentValues ||
                                  z.hasMultipleDifferentValues;
+            }
+
+            // Add temporary ParticleSystem for preview if enabled.
+            if (UIParticleProjectSettings.previewOnSelect)
+            {
+                _gameObjects = targets.OfType<UIParticle>().Select(x => x.gameObject).ToArray();
+                ParticleSystemPreviewSystem.Register(_gameObjects);
             }
         }
 
@@ -344,6 +354,10 @@ namespace Coffee.UIExtensions
                 }
             }
 #endif
+
+            // Remove the temporary ParticleSystem.
+            ParticleSystemPreviewSystem.DrawWarningForTemporary(_gameObjects);
+
             Profiler.EndSample();
         }
 
@@ -482,7 +496,7 @@ namespace Coffee.UIExtensions
 #endif
         }
 
-        private static bool FixButton(bool show, string text)
+        private static bool FixButton(bool show, string text, GUIContent buttonText = null)
         {
             if (!show) return false;
             using (new EditorGUILayout.HorizontalScope(GUILayout.ExpandWidth(true)))
@@ -490,7 +504,7 @@ namespace Coffee.UIExtensions
                 EditorGUILayout.HelpBox(text, MessageType.Warning, true);
                 using (new EditorGUILayout.VerticalScope())
                 {
-                    return GUILayout.Button(s_ContentFix, GUILayout.Width(30));
+                    return GUILayout.Button(buttonText ?? s_ContentFix, GUILayout.ExpandWidth(false));
                 }
             }
         }
