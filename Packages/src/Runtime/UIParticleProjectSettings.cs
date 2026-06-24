@@ -2,6 +2,7 @@
 using Coffee.UIParticleInternal;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Coffee.UIExtensions
 {
@@ -9,12 +10,14 @@ namespace Coffee.UIExtensions
     {
         [Header("Setting")]
         [SerializeField]
-        internal bool m_EnableLinearToGamma = true;
+        [Tooltip("Automatically correct the color space of the mesh.")]
+        [FormerlySerializedAs("m_EnableLinearToGamma")]
+        private bool m_AutoColorCorrection = true;
 
-        public static bool enableLinearToGamma
+        public static bool autoColorCorrection
         {
-            get => instance.m_EnableLinearToGamma;
-            set => instance.m_EnableLinearToGamma = value;
+            get => instance.m_AutoColorCorrection;
+            set => instance.m_AutoColorCorrection = value;
         }
 
 

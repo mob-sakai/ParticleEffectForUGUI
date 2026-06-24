@@ -195,6 +195,10 @@ and z-position.
 2. Adjust the ParticleSystem as you like.
    ![particle1](https://user-images.githubusercontent.com/12690315/95007359-ca385200-0649-11eb-8383-627c9750bda8.png)
 
+> [!Tips]
+> Adding a `UIParticle` to the parent is the recommended setup rather than attaching it directly to the `ParticleSystem`.
+> When using `ParticleSystem.emission.rateOverDistance`, it is recommended to move the transform of `UIParticle` rather than the `ParticleSystem`.
+
 <br>
 
 ### Usage with Your Existing ParticleSystem Prefab
@@ -260,9 +264,19 @@ uiParticle.Stop();
 
 ### Project Settings
 
-![](https://github.com/user-attachments/assets/befc7f34-fb47-4006-831a-eba79fda11ca)
+You can adjust the project-wide settings for `UI Particle`. (`Edit > Project Settings > UI > UI Particle`)
 
-- Click `Edit > Project Settings` to open the Project Settings window and then select `UI > UI Particle` category.
+![](https://github.com/mob-sakai/mob-sakai/releases/download/docs/1782270746550.png)
+
+#### Settings
+
+- **Enable Linear To Gamma**: Automatically correct the color space of the mesh.
+
+#### Editor
+
+- **Hide Generated Component**: Automatically hide the generated `UIParticleRenderer` component and `UIParticle BakingCamera`.
+
+- **Preview On Select**: When selecting UIParticle, a temporary ParticleSystem is generated for preview.
 
 <br><br>
 
