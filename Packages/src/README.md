@@ -183,8 +183,13 @@ _This package requires **Unity 2018.3 or later**._
 - **Time Scale Multiplier:** Time scale multiplier.
 - **Rendering Order**: The ParticleSystem list to be rendered. You can change the order and the materials.
 
-**NOTE:** Press the `Refresh` button to reconstruct the rendering order based on children ParticleSystem's sorting order
+> [!TIPS]
+> Press the `Refresh` button to reconstruct the rendering order based on children ParticleSystem's sorting order
 and z-position.
+
+> [!TIPS]
+> When a `GameObject` with this component is selected in the editor, a temporary `ParticleSystem` is added if needed so you can preview the effect in the Scene view.
+> The generated `ParticleSystem` is marked with `HideFlags.DontSave`, so it is neither saved nor included in builds.
 
 <br><br>
 
@@ -259,6 +264,17 @@ uiParticle.Stop();
     - **Normal:** Update with scaled delta time.
     - **Unscaled Time:** Update with unscaled delta time.
 - **OnAttracted**: An event called when attracting is complete (per particle).
+
+
+<br><br>
+
+### Component: ParticleSystemPreviewer
+
+`ParticleSystemPreviewer` is used to preview a ParticleSystem in the editor.
+
+- When a `GameObject` with this component is selected in the editor, a temporary `ParticleSystem` is added if needed so you can preview the effect in the Scene view.
+- The generated `ParticleSystem` is marked with `HideFlags.DontSave`, so it is neither saved nor included in builds.
+
 
 <br><br>
 
