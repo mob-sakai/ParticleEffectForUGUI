@@ -98,7 +98,7 @@ namespace Coffee.UIParticleInternal
             Profiler.BeginSample("(COF)[CanvasExt] GetViewProjectionMatrix");
             var rootCanvas = canvas.rootCanvas;
             var cam = rootCanvas.worldCamera;
-            if (rootCanvas && rootCanvas.renderMode != RenderMode.ScreenSpaceOverlay && cam)
+            if (rootCanvas != null && rootCanvas.renderMode != RenderMode.ScreenSpaceOverlay && cam != null)
             {
                 if (eye == Camera.MonoOrStereoscopicEye.Mono)
                 {

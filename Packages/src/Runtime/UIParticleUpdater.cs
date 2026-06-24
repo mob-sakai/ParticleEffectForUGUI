@@ -39,6 +39,17 @@ namespace Coffee.UIExtensions
         }
 
 #if UNITY_EDITOR
+#if UNITY_2019_3_OR_NEWER
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void OnDomainReload()
+        {
+            s_ActiveParticles.Clear();
+            s_ActiveAttractors.Clear();
+            s_UpdatedGroupIds.Clear();
+            s_FrameCount = 0;
+        }
+#endif
+
         [InitializeOnLoadMethod]
         private static void InitializeOnLoad()
         {

@@ -23,17 +23,14 @@ namespace Coffee.UIParticleInternal
 
         protected static bool s_BuildingPlayer;
 
-        private class Postprocessor : AssetPostprocessor
+        private class EditorEvents : AssetPostprocessor, IPreprocessBuildWithReport, IPostprocessBuildWithReport
         {
+            int IOrderedCallback.callbackOrder => 0;
+
             private static void OnPostprocessAllAssets(string[] _, string[] __, string[] ___, string[] ____)
             {
                 Initialize();
             }
-        }
-
-        private class ExcludeFromBuild : IPreprocessBuildWithReport, IPostprocessBuildWithReport
-        {
-            int IOrderedCallback.callbackOrder => 0;
 
             void IPreprocessBuildWithReport.OnPreprocessBuild(BuildReport report)
             {
@@ -44,11 +41,11 @@ namespace Coffee.UIParticleInternal
                 foreach (var t in TypeCache.GetTypesDerivedFrom(typeof(PreloadedProjectSettings<>)))
                 {
                     var settings = GetDefaultSettings(t);
-                    if (!settings || settings.m_PreLoadSettingsInBuild) continue;
+                    if (settings == null || settings.m_PreLoadSettingsInBuild) continue;
 
                     PlayerSettings.SetPreloadedAssets(
                         PlayerSettings.GetPreloadedAssets()
-                            .Where(x => x && x.GetType() != t)
+                            .Where(x => x != null && x.GetType() != t)
                             .ToArray());
 
                     Debug.Log($"[PreloadedProjectSettings] Build started: removed '{settings.name}' " +
@@ -62,6 +59,21 @@ namespace Coffee.UIParticleInternal
                 s_BuildingPlayer = false;
                 Initialize();
             }
+
+#if UNITY_2019_3_OR_NEWER
+            [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+            private static void OnDomainReload()
+            {
+                foreach (var t in TypeCache.GetTypesDerivedFrom(typeof(PreloadedProjectSettings<>)))
+                {
+                    var defaultSettings = GetDefaultSettings(t);
+                    if (defaultSettings != null)
+                    {
+                        defaultSettings.OnDomainReload();
+                    }
+                }
+            }
+#endif
         }
 
         private static void Initialize()
@@ -154,6 +166,10 @@ namespace Coffee.UIParticleInternal
         protected virtual void OnInitialize()
         {
         }
+
+        protected virtual void OnDomainReload()
+        {
+        }
     }
 
     internal abstract class PreloadedProjectSettingsEditor : Editor
@@ -222,7 +238,7 @@ namespace Coffee.UIParticleInternal
 
         private void OnPlayModeStateChanged(PlayModeStateChange state)
         {
-            if (!this) return;
+            if (this == null) return;
 
             switch (state)
             {
@@ -239,8 +255,13 @@ namespace Coffee.UIParticleInternal
                     break;
             }
         }
+
+        protected override void OnDomainReload()
+        {
+            s_Instance = null;
+        }
 #else
-    public static T instance => s_Instance != null ? s_Instance : s_Instance = CreateInstance<T>();
+        public static T instance => s_Instance != null ? s_Instance : s_Instance = CreateInstance<T>();
 #endif
 
         /// <summary>
@@ -256,9 +277,10 @@ namespace Coffee.UIParticleInternal
                 return;
             }
 
+            EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
             EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
 #else
-            if (s_Instance && s_Instance != this)
+            if (s_Instance != null && s_Instance != this)
             {
                 Destroy(s_Instance);
             }
@@ -293,7 +315,7 @@ namespace Coffee.UIParticleInternal
             {
                 if (_target == null)
                 {
-                    if (_editor)
+                    if (_editor != null)
                     {
                         DestroyImmediate(_editor);
                         _editor = null;
