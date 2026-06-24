@@ -14,7 +14,7 @@ namespace Coffee.UIParticleInternal
             UIExtraCallbacks.onLateAfterCanvasRebuild += ClearAllCache;
         }
 
-#if UNITY_EDITOR
+#if UNITY_EDITOR && UNITY_2019_3_OR_NEWER
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void Clear()
         {

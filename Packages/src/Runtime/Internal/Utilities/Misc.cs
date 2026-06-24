@@ -109,7 +109,7 @@ namespace Coffee.UIParticleInternal
         {
             if (Misc.isBatchOrBuilding) return;
 
-            var types = TypeCache.GetTypesWithAttribute<IconAttribute>();
+            var types = TypeCache.GetTypesWithAttribute(typeof(IconAttribute));
             var scripts = MonoImporter.GetAllRuntimeMonoScripts();
             foreach (var type in types)
             {

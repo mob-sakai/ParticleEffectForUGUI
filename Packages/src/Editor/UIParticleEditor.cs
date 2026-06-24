@@ -13,9 +13,7 @@ using Object = UnityEngine.Object;
 #if UNITY_2021_2_OR_NEWER
 using UnityEditor.Overlays;
 #else
-using System;
 using System.Reflection;
-using Object = UnityEngine.Object;
 #endif
 #if UNITY_2021_2_OR_NEWER
 using UnityEditor.SceneManagement;
@@ -207,7 +205,10 @@ namespace Coffee.UIExtensions
             serializedObject.Update();
 
             // Maskable
-            EditorGUILayout.PropertyField(_maskable);
+            if (_maskable != null)
+            {
+                EditorGUILayout.PropertyField(_maskable);
+            }
 
             // Scale
             EditorGUI.BeginDisabledGroup(!_meshSharing.hasMultipleDifferentValues && _meshSharing.intValue == 4);
