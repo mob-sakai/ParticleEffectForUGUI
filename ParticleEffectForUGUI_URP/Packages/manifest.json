@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "com.coffee.nano-monitor": "https://github.com/mob-sakai/Coffee.Internal.git?path=Packages/NanoMonitor",
+    "com.coffee.ui-particle": "file:../../Packages/src",
+    "com.coffee.symbolic-linker": "https://github.com/mob-sakai/Coffee.Internal.git?path=Packages/SymbolicLinker",
+    "com.unity.ide.rider": "3.0.40",
+    "com.unity.render-pipelines.universal": "17.3.0",
+    "com.unity.modules.animation": "1.0.0"
+  }
+}
