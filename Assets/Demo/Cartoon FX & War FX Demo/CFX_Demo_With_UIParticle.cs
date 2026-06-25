@@ -80,8 +80,8 @@ namespace Coffee.UIExtensions.Demo
                 .SelectMany(x => x.GetTypes())
                 .FirstOrDefault(x => x.Name == typeName);
 
-#if UNITY_2023_2_OR_NEWER
-            return type == null ? null : FindFirstObjectByType(type);
+#if UNITY_2023_1_OR_NEWER
+            return type == null ? null : FindAnyObjectByType(type, FindObjectsInactive.Include);
 #else
             return type == null ? null : FindObjectOfType(type);
 #endif

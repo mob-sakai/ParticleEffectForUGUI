@@ -185,6 +185,12 @@ _This package requires **Unity 2019.3 or later**._
 - **Scale**: Scale the rendering particles. When the `3D` toggle is enabled, 3D scale (x, y, z) is supported.
 - **Animatable Properties**: If you want to update material properties (e.g., `_MainTex_ST`, `_Color`) in AnimationClip,
   use this to mark as animatable.
+
+> [!TIPS]
+> (Unity 2021.1 or later) **Custom Animatable Properties**  
+> From the `Add Custom...` menu in `Animatable Properties`, you can add fields located outside the `Properties` block in the shader as `Animatable Properties`.  
+> This allows `Matrix`, `Matrix Array`, `Float Array`, and `Vector Array` values modified by the `ParticleSystemRenderer.SetPropertyBlock` method to be automatically reflected in UIParticle.
+
 - **Mesh Sharing**: Particle simulation results are shared within the same group. A large number of the same effects can
   be displayed with a small load. When the `Random` toggle is enabled, it will be grouped randomly.
   - **None:** Disable mesh sharing.
@@ -204,8 +210,13 @@ _This package requires **Unity 2019.3 or later**._
 - **Time Scale Multiplier:** Time scale multiplier.
 - **Rendering Order**: The ParticleSystem list to be rendered. You can change the order and the materials.
 
-**NOTE:** Press the `Refresh` button to reconstruct the rendering order based on children ParticleSystem's sorting order
+> [!TIPS]
+> Press the `Refresh` button to reconstruct the rendering order based on children ParticleSystem's sorting order
 and z-position.
+
+> [!TIPS]
+> When a `GameObject` with this component is selected in the editor, a temporary `ParticleSystem` is added if needed so you can preview the effect in the Scene view.
+> The generated `ParticleSystem` is marked with `HideFlags.DontSave`, so it is neither saved nor included in builds.
 
 <br><br>
 
@@ -215,6 +226,10 @@ and z-position.
    ![particle](https://user-images.githubusercontent.com/12690315/95007361-cad0e880-0649-11eb-8835-f145d62c5977.png)
 2. Adjust the ParticleSystem as you like.
    ![particle1](https://user-images.githubusercontent.com/12690315/95007359-ca385200-0649-11eb-8383-627c9750bda8.png)
+
+> [!Tips]
+> Adding a `UIParticle` to the parent is the recommended setup rather than attaching it directly to the `ParticleSystem`.
+> When using `ParticleSystem.emission.rateOverDistance`, it is recommended to move the transform of `UIParticle` rather than the `ParticleSystem`.
 
 <br>
 
@@ -277,13 +292,35 @@ uiParticle.Stop();
     - **Unscaled Time:** Update with unscaled delta time.
 - **OnAttracted**: An event called when attracting is complete (per particle).
 
+
+<br><br>
+
+### Component: ParticleSystemPreviewer
+
+`ParticleSystemPreviewer` is used to preview a ParticleSystem in the editor.
+
+- When a `GameObject` with this component is selected in the editor, a temporary `ParticleSystem` is added if needed so you can preview the effect in the Scene view.
+- The generated `ParticleSystem` is marked with `HideFlags.DontSave`, so it is neither saved nor included in builds.
+
+
 <br><br>
 
 ### Project Settings
 
-![](https://github.com/user-attachments/assets/befc7f34-fb47-4006-831a-eba79fda11ca)
+You can adjust the project-wide settings for `UI Particle`. (`Edit > Project Settings > UI > UI Particle`)
 
-- Click `Edit > Project Settings` to open the Project Settings window and then select `UI > UI Particle` category.
+![](https://github.com/mob-sakai/mob-sakai/releases/download/docs/1782360274340.png)
+
+#### Settings
+
+- **Enable Linear To Gamma**: Automatically correct the color space of the mesh.
+- **Default View Size For Baking**: Default view size for baking particle systems.
+
+#### Editor
+
+- **Hide Generated Component**: Automatically hide the generated `UIParticleRenderer` component and `UIParticle BakingCamera`.
+
+- **Preview On Select**: When selecting UIParticle, a temporary ParticleSystem is generated for preview.
 
 <br><br>
 
@@ -348,33 +385,39 @@ uiParticle.Stop();
 
 ### 🔍 FAQ: Why Are My UIParticles Not Displayed Correctly?
 
+See [this issue](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/270).
+
 If `ParticleSystem` alone displays particles correctly but `UIParticle` does not, please check the following points:
 
-- [Shader Limitation](#shader-limitation)
-    - `UIParticle` does not support all built-in shaders except for `UI/Default`.
+- [Shader Limitation](https://github.com/mob-sakai/ParticleEffectForUGUI#shader-limitation)
     - Most cases can be solved by using `UI/Additive` or `UI/Default`.
 - Particles are not masked
     - `UIParticle` is maskable.
+    - Use maskable/clipable shader (such as `UI/Additive` or `UI/Default`)
     - Set `Mask` or `RectMask2D` component properly.
-    - [Use maskable/clipable shader](#how-to-make-a-custom-shader-to-support-maskrectmask2d-component) (such
-      as `UI/Additive` or `UI/Default`)
 - Particles are too small
     - If particles are small enough, they will not appear on the screen.
     - Increase the `Scale` value.
     - If you don't want to change the apparent size depending on the resolution, try the `Auto Scaling` option.
 - Particles are too many
     - No more than 65535 vertices can be displayed (for mesh combination limitations).
-    - Please set `Emission` module and `Max Particles` of ParticleSystem properly.
+    - Please set `Emission` module and `Max Particles` of `ParticleSystem` properly.
 - Particles are emitted off-screen.
-    - When `Position Mode = Relative`, particles are emitted from the scaled position of the ParticleSystem, not from
-      the screen point of the ParticleSystem.
-    - Place the ParticleSystem in the proper position or try `Position Mode = Absolute`.
+    - When `Position Mode = Relative`, particles are emitted from the scaled position of the `ParticleSystem`, not from
+      the screen point of the `ParticleSystem`.
+    - Place the `ParticleSystem` in the proper position or try `Position Mode = Absolute`.
 - Attaching `UIParticle` to the same object as `ParticleSystem`
     - `Transform.localScale` will be overridden by the `Auto Scaling` option.
     - It is recommended to place `ParticleSystem` under `UIParticle`.
 - If `Transform.localScale` contains 0, rendering will be skipped.
+- If you are using `Shape` module, please check whether the scale includes 0.
 - Displayed particles are in the correct position but too large/too small
     - Adjust `ParticleSystem.renderer.Min/MaxParticleSize`.
+- If `Trails.RibbonCount` is greater than 1, the following error occurs frequently.
+  - `Failed setting triangles. Some indices are referencing out of bounds vertices. IndexCount: 660, VertexCount: 222`
+- Adding a `UIParticle` to the parent is the recommended setup rather than attaching it directly to the `ParticleSystem`.
+  - When using `ParticleSystem.emission.rateOverDistance`, it is recommended to move the transform of `UIParticle` rather than the `ParticleSystem`.
+- (v4.13.0, v5.0.0-preview.18) Try changing the `Default View Size For Baking` setting under `ProjectSettings > UI > UI Particle` to a value such as 100 or 1000.
 
 <br>
 

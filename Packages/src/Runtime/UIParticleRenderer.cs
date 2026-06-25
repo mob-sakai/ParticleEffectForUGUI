@@ -444,7 +444,7 @@ namespace Coffee.UIExtensions
                 _lastBounds = bounds;
 
                 // Convert linear color to gamma color.
-                if (UIParticleProjectSettings.enableLinearToGamma && canvas.ShouldGammaToLinearInMesh())
+                if (UIParticleProjectSettings.autoColorCorrection && canvas.ShouldGammaToLinearInMesh())
                 {
                     workerMesh.LinearToGamma();
                 }

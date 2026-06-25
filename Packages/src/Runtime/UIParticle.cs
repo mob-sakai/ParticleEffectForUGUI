@@ -292,6 +292,13 @@ namespace Coffee.UIExtensions
         }
 
         /// <summary>
+        /// View size for Baking.
+        /// </summary>
+        public float viewSizeForBaking => useCustomView
+            ? m_CustomViewSize
+            : UIParticleProjectSettings.defaultViewSizeForBaking;
+
+        /// <summary>
         /// Time scale multiplier.
         /// </summary>
         public float timeScaleMultiplier
@@ -587,7 +594,10 @@ namespace Coffee.UIExtensions
             {
                 var ps = particles[i];
                 if (!ps
+#if UNITY_EDITOR
+                    || (ps.hideFlags & HideFlags.DontSave) != 0 // Dummy ParticleSystems for preview.
                     || ps.gameObject.CompareTag("EditorOnly") // Ignore "EditorOnly" tagged ParticleSystems.
+#endif
                     || ps.GetComponentInParent<UIParticle>(true) != this) // Ignore ParticleSystems that are not under this UIParticle.
                 {
                     particles.RemoveAt(i);
@@ -746,7 +756,7 @@ namespace Coffee.UIExtensions
 
             if (_bakeCamera != null)
             {
-                _bakeCamera.orthographicSize = useCustomView ? customViewSize : 10;
+                _bakeCamera.orthographicSize = viewSizeForBaking;
                 return _bakeCamera;
             }
 
@@ -773,7 +783,7 @@ namespace Coffee.UIExtensions
 
             // Setup baking camera.
             _bakeCamera.enabled = false;
-            _bakeCamera.orthographicSize = useCustomView ? customViewSize : 10;
+            _bakeCamera.orthographicSize = viewSizeForBaking;
             _bakeCamera.transform.SetPositionAndRotation(new Vector3(0, 0, -1000), Quaternion.identity);
             _bakeCamera.orthographic = true;
             _bakeCamera.farClipPlane = 2000f;

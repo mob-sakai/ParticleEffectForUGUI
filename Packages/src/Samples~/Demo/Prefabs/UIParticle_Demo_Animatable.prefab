@@ -69,6 +69,8 @@ MonoBehaviour:
   m_AnimatableProperties:
   - m_Name: _MainTex_ST
     m_Type: 1
+  - m_Name: _Color2
+    m_Type: 103
   m_Particles:
   - {fileID: 198637387440798640}
   m_MeshSharing: 0
@@ -88,6 +90,7 @@ GameObject:
   - component: {fileID: 199176884810573912}
   - component: {fileID: 222047182059782320}
   - component: {fileID: 95475093951880840}
+  - component: {fileID: 3543952012814938654}
   m_Layer: 0
   m_Name: UvAnimParticle
   m_TagString: Untagged
@@ -4864,3 +4867,21 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &3543952012814938654
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1349193913114882}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da4c2e90ecd3d4dd4a520099c08cf493, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_PropertyName: _Color2
+  m_Colors:
+  - {r: 1, g: 0, b: 0, a: 1}
+  - {r: 0, g: 1, b: 0, a: 1}
+  - {r: 0, g: 0, b: 1, a: 1}
+  - {r: 1, g: 0.92156863, b: 0.015686275, a: 1}

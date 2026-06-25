@@ -12,6 +12,33 @@ namespace Coffee.UIParticleInternal
     /// </summary>
     internal static class ComponentExtensions
     {
+#if !UNITY_2019_2_OR_NEWER
+        public static bool TryGetComponent<T>(this GameObject self, out T component)
+            where T : Component
+        {
+            if (self == null)
+            {
+                component = null;
+                return false;
+            }
+
+            component = self.GetComponent<T>();
+            return component != null;
+        }
+
+        public static bool TryGetComponent<T>(this Component self, out T component)
+            where T : Component
+        {
+            if (self == null)
+            {
+                component = null;
+                return false;
+            }
+
+            return self.gameObject.TryGetComponent(out component);
+        }
+#endif
+
         /// <summary>
         /// Get components in children of a specific type in the hierarchy of a GameObject.
         /// </summary>
@@ -72,7 +99,7 @@ namespace Coffee.UIParticleInternal
         {
             T component = null;
             var transform = self.transform;
-            while (transform)
+            while (transform != null)
             {
                 if (transform.TryGetComponent<T>(out var c))
                 {
@@ -93,7 +120,7 @@ namespace Coffee.UIParticleInternal
             where T : Component
         {
             var tr = includeSelf ? self.transform : self.transform.parent;
-            while (tr)
+            while (tr != null)
             {
                 if (tr.TryGetComponent<T>(out var c) && valid(c)) return c;
                 if (tr == stopAfter) return null;
@@ -170,7 +197,7 @@ namespace Coffee.UIParticleInternal
             if (!includeInactive) return self.GetComponentInParent<T>();
 
             var current = self.transform;
-            while (current)
+            while (current != null)
             {
                 if (current.TryGetComponent<T>(out var c)) return c;
                 current = current.parent;
