@@ -49,6 +49,7 @@ namespace Coffee.UIExtensions
         private static readonly GUIContent s_ContentRandom = new GUIContent("Random");
         private static readonly GUIContent s_ContentScale = new GUIContent("Scale");
         private static readonly GUIContent s_ContentPrimary = new GUIContent("Primary");
+        private static readonly GUIContent s_ViewSize = new GUIContent("View Size");
         private static readonly Regex s_RegexBuiltInGuid = new Regex(@"^0{16}.0{15}$", RegexOptions.Compiled);
         private static readonly List<Material> s_TempMaterials = new List<Material>();
 
@@ -246,16 +247,24 @@ namespace Coffee.UIExtensions
 
             // Custom View Size
             EditorGUILayout.PropertyField(_useCustomView);
-            EditorGUI.BeginChangeCheck();
-            EditorGUI.BeginDisabledGroup(!_useCustomView.boolValue);
             EditorGUI.indentLevel++;
-            EditorGUILayout.PropertyField(_customViewSize);
-            EditorGUI.indentLevel--;
-            EditorGUI.EndDisabledGroup();
-            if (EditorGUI.EndChangeCheck())
+            if (_useCustomView.boolValue)
             {
-                _customViewSize.floatValue = Mathf.Max(0.1f, _customViewSize.floatValue);
+                EditorGUI.BeginChangeCheck();
+                EditorGUILayout.PropertyField(_customViewSize);
+                if (EditorGUI.EndChangeCheck())
+                {
+                    _customViewSize.floatValue = Mathf.Max(0.1f, _customViewSize.floatValue);
+                }
             }
+            else
+            {
+                EditorGUI.BeginDisabledGroup(!_useCustomView.boolValue);
+                EditorGUILayout.FloatField(s_ViewSize, UIParticleProjectSettings.defaultViewSizeForBaking);
+                EditorGUI.EndDisabledGroup();
+            }
+
+            EditorGUI.indentLevel--;
 
             // Time Scale Multiplier
             EditorGUILayout.PropertyField(_timeScaleMultiplier);

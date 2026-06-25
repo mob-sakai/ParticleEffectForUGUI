@@ -282,11 +282,12 @@ uiParticle.Stop();
 
 You can adjust the project-wide settings for `UI Particle`. (`Edit > Project Settings > UI > UI Particle`)
 
-![](https://github.com/mob-sakai/mob-sakai/releases/download/docs/1782270746550.png)
+![](https://github.com/mob-sakai/mob-sakai/releases/download/docs/1782360274340.png)
 
 #### Settings
 
 - **Enable Linear To Gamma**: Automatically correct the color space of the mesh.
+- **Default View Size For Baking**: Default view size for baking particle systems.
 
 #### Editor
 

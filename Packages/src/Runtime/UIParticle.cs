@@ -264,6 +264,13 @@ namespace Coffee.UIExtensions
         }
 
         /// <summary>
+        /// View size for Baking.
+        /// </summary>
+        public float viewSizeForBaking => useCustomView
+            ? m_CustomViewSize
+            : UIParticleProjectSettings.defaultViewSizeForBaking;
+
+        /// <summary>
         /// Time scale multiplier.
         /// </summary>
         public float timeScaleMultiplier
@@ -718,7 +725,7 @@ namespace Coffee.UIExtensions
 
             if (_bakeCamera != null)
             {
-                _bakeCamera.orthographicSize = useCustomView ? customViewSize : 10;
+                _bakeCamera.orthographicSize = viewSizeForBaking;
                 return _bakeCamera;
             }
 
@@ -745,7 +752,7 @@ namespace Coffee.UIExtensions
 
             // Setup baking camera.
             _bakeCamera.enabled = false;
-            _bakeCamera.orthographicSize = useCustomView ? customViewSize : 10;
+            _bakeCamera.orthographicSize = viewSizeForBaking;
             _bakeCamera.transform.SetPositionAndRotation(new Vector3(0, 0, -1000), Quaternion.identity);
             _bakeCamera.orthographic = true;
             _bakeCamera.farClipPlane = 2000f;

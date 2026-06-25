@@ -20,6 +20,15 @@ namespace Coffee.UIExtensions
             set => instance.m_AutoColorCorrection = value;
         }
 
+        [SerializeField]
+        [Tooltip("Default view size for baking particle systems.")]
+        private float m_DefaultViewSizeForBaking = 10;
+
+        public static float defaultViewSizeForBaking
+        {
+            get => instance.m_DefaultViewSizeForBaking;
+            set => instance.m_DefaultViewSizeForBaking = value;
+        }
 
         [Header("Editor")]
         [Tooltip("Hide the automatically generated objects.\n" +
@@ -43,6 +52,16 @@ namespace Coffee.UIExtensions
         private static SettingsProvider CreateSettingsProvider()
         {
             return new PreloadedProjectSettingsProvider("Project/UI/UI Particle");
+        }
+
+        [CustomEditor(typeof(UIParticleProjectSettings))]
+        private class UIParticleProjectSettingsEditor : Editor
+        {
+            public override void OnInspectorGUI()
+            {
+                EditorGUIUtility.labelWidth = 180;
+                base.OnInspectorGUI();
+            }
         }
 #endif
     }
