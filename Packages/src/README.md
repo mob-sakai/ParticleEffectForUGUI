@@ -364,33 +364,39 @@ You can adjust the project-wide settings for `UI Particle`. (`Edit > Project Set
 
 ### 🔍 FAQ: Why Are My UIParticles Not Displayed Correctly?
 
+See [this issue](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/270).
+
 If `ParticleSystem` alone displays particles correctly but `UIParticle` does not, please check the following points:
 
-- [Shader Limitation](#shader-limitation)
-    - `UIParticle` does not support all built-in shaders except for `UI/Default`.
+- [Shader Limitation](https://github.com/mob-sakai/ParticleEffectForUGUI#shader-limitation)
     - Most cases can be solved by using `UI/Additive` or `UI/Default`.
 - Particles are not masked
     - `UIParticle` is maskable.
+    - Use maskable/clipable shader (such as `UI/Additive` or `UI/Default`)
     - Set `Mask` or `RectMask2D` component properly.
-    - [Use maskable/clipable shader](#how-to-make-a-custom-shader-to-support-maskrectmask2d-component) (such
-      as `UI/Additive` or `UI/Default`)
 - Particles are too small
     - If particles are small enough, they will not appear on the screen.
     - Increase the `Scale` value.
     - If you don't want to change the apparent size depending on the resolution, try the `Auto Scaling` option.
 - Particles are too many
     - No more than 65535 vertices can be displayed (for mesh combination limitations).
-    - Please set `Emission` module and `Max Particles` of ParticleSystem properly.
+    - Please set `Emission` module and `Max Particles` of `ParticleSystem` properly.
 - Particles are emitted off-screen.
-    - When `Position Mode = Relative`, particles are emitted from the scaled position of the ParticleSystem, not from
-      the screen point of the ParticleSystem.
-    - Place the ParticleSystem in the proper position or try `Position Mode = Absolute`.
+    - When `Position Mode = Relative`, particles are emitted from the scaled position of the `ParticleSystem`, not from
+      the screen point of the `ParticleSystem`.
+    - Place the `ParticleSystem` in the proper position or try `Position Mode = Absolute`.
 - Attaching `UIParticle` to the same object as `ParticleSystem`
     - `Transform.localScale` will be overridden by the `Auto Scaling` option.
     - It is recommended to place `ParticleSystem` under `UIParticle`.
 - If `Transform.localScale` contains 0, rendering will be skipped.
+- If you are using `Shape` module, please check whether the scale includes 0.
 - Displayed particles are in the correct position but too large/too small
     - Adjust `ParticleSystem.renderer.Min/MaxParticleSize`.
+- If `Trails.RibbonCount` is greater than 1, the following error occurs frequently.
+  - `Failed setting triangles. Some indices are referencing out of bounds vertices. IndexCount: 660, VertexCount: 222`
+- Adding a `UIParticle` to the parent is the recommended setup rather than attaching it directly to the `ParticleSystem`.
+  - When using `ParticleSystem.emission.rateOverDistance`, it is recommended to move the transform of `UIParticle` rather than the `ParticleSystem`.
+- (v4.13.0, v5.0.0-preview.18) Try changing the `Default View Size For Baking` setting under `ProjectSettings > UI > UI Particle` to a value such as 100 or 1000.
 
 <br>
 
