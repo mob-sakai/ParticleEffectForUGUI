@@ -164,6 +164,12 @@ _This package requires **Unity 2018.3 or later**._
 - **Scale**: Scale the rendering particles. When the `3D` toggle is enabled, 3D scale (x, y, z) is supported.
 - **Animatable Properties**: If you want to update material properties (e.g., `_MainTex_ST`, `_Color`) in AnimationClip,
   use this to mark as animatable.
+
+> [!TIPS]
+> (Unity 2021.1 or later) **Custom Animatable Properties**  
+> From the `Add Custom...` menu in `Animatable Properties`, you can add fields located outside the `Properties` block in the shader as `Animatable Properties`.  
+> This allows `Matrix`, `Matrix Array`, `Float Array`, and `Vector Array` values modified by the `ParticleSystemRenderer.SetPropertyBlock` method to be automatically reflected in UIParticle.
+
 - **Mesh Sharing**: Particle simulation results are shared within the same group. A large number of the same effects can
   be displayed with a small load. When the `Random` toggle is enabled, it will be grouped randomly.
   - **None:** Disable mesh sharing.
