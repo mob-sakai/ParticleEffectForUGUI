@@ -1,3 +1,20 @@
+# [4.13.0](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.12.2...v4.13.0) (2026-06-25)
+
+
+### Bug Fixes
+
+* `UI/Additive` shader does not support RectMask2D softness. ([83145d3](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/83145d3a6ede3831d1f7c49afde6ef7d8a498d21))
+* rename `UIParticleProjectSettings.enableLinearToGamma` to `autoColorCorrection` ([10f82a8](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/10f82a8579a2d055f897e7a8d6f3b5ba1fc43ae8))
+* Support for skipping "reload domain" ([b7bb112](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/b7bb1124f6921ebca1b48991462637767b95e504)), closes [#406](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/406)
+* there is a compilation error in Unity 2019.2 or earlier ([c327632](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/c327632e1eb203351ba1a1087a19eb7838c22530)), closes [#407](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/407)
+
+
+### Features
+
+* add fields located outside the `Properties` block in the shader as `Animatable Properties` ([ea2fcfd](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/ea2fcfd8099a24b92624d34600beb519fb9d2b38)), closes [#399](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/399)
+* preview the ParticleSystem playback when selecting a UIParticle in the Editor ([108bcfb](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/108bcfbd246960dc730546dc334424cf2e17bfd4))
+* project-wide default view size for baking ([8e0ff10](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/8e0ff10c7344d9f53d2f4f096ddeb7392b67f930)), closes [#360](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/360)
+
 ## [4.12.2](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.12.1...v4.12.2) (2026-06-08)
 
 
