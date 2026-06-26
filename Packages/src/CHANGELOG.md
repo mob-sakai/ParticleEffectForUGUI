@@ -1,3 +1,11 @@
+## [4.13.1](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.13.0...v4.13.1) (2026-06-26)
+
+
+### Bug Fixes
+
+* `ParticleSystemPreviewer` is no longer included in build ([bad976c](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/bad976cf01180bdabf5cd2f1760e069afdcb644a))
+* add support for Unity 6.7 ([26fd3da](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/26fd3da20b6b07f7a26df662358c53757a7cc5f5)), closes [#408](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/408)
+
 # [4.13.0](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.12.2...v4.13.0) (2026-06-25)
 
 
