@@ -36,6 +36,7 @@ You can render, mask, and sort your `ParticleSystems` for UI without the need fo
   - [Usage with `Mask` or `RectMask2D` Component](#usage-with-mask-or-rectmask2d-component)
   - [Usage with Script](#usage-with-script)
   - [Component: UIParticleAttractor](#component-uiparticleattractor)
+  - [Component: ParticleSystemPreviewer](#component-particlesystempreviewer)
   - [Project Settings](#project-settings)
 - [🛠 Development Note](#-development-note)
   - [Compares the Baking mesh approach with the conventional approach](#compares-the-baking-mesh-approach-with-the-conventional-approach)
@@ -292,16 +293,17 @@ uiParticle.Stop();
     - **Unscaled Time:** Update with unscaled delta time.
 - **OnAttracted**: An event called when attracting is complete (per particle).
 
-
 <br><br>
 
 ### Component: ParticleSystemPreviewer
 
-`ParticleSystemPreviewer` is used to preview a ParticleSystem in the editor.
+`ParticleSystemPreviewer` is used to preview a `ParticleSystem` in the editor.
+
+![](https://github.com/mob-sakai/mob-sakai/releases/download/docs/1782441157549.png)
 
 - When a `GameObject` with this component is selected in the editor, a temporary `ParticleSystem` is added if needed so you can preview the effect in the Scene view.
 - The generated `ParticleSystem` is marked with `HideFlags.DontSave`, so it is neither saved nor included in builds.
-
+- This component will be removed in builds.
 
 <br><br>
 

@@ -1,27 +1,71 @@
-# [5.0.0-preview.17](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/5.0.0-preview.16...5.0.0-preview.17) (2026-06-08)
+## [4.13.1](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.13.0...v4.13.1) (2026-06-26)
+
+
+### Bug Fixes
+
+* `ParticleSystemPreviewer` is no longer included in build ([bad976c](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/bad976cf01180bdabf5cd2f1760e069afdcb644a))
+* add support for Unity 6.7 ([26fd3da](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/26fd3da20b6b07f7a26df662358c53757a7cc5f5)), closes [#408](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/408)
+
+# [4.13.0](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.12.2...v4.13.0) (2026-06-25)
+
+
+### Bug Fixes
+
+* `UI/Additive` shader does not support RectMask2D softness. ([83145d3](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/83145d3a6ede3831d1f7c49afde6ef7d8a498d21))
+* rename `UIParticleProjectSettings.enableLinearToGamma` to `autoColorCorrection` ([10f82a8](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/10f82a8579a2d055f897e7a8d6f3b5ba1fc43ae8))
+* Support for skipping "reload domain" ([b7bb112](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/b7bb1124f6921ebca1b48991462637767b95e504)), closes [#406](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/406)
+* there is a compilation error in Unity 2019.2 or earlier ([c327632](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/c327632e1eb203351ba1a1087a19eb7838c22530)), closes [#407](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/407)
+
+
+### Features
+
+* add fields located outside the `Properties` block in the shader as `Animatable Properties` ([ea2fcfd](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/ea2fcfd8099a24b92624d34600beb519fb9d2b38)), closes [#399](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/399)
+* preview the ParticleSystem playback when selecting a UIParticle in the Editor ([108bcfb](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/108bcfbd246960dc730546dc334424cf2e17bfd4))
+* project-wide default view size for baking ([8e0ff10](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/8e0ff10c7344d9f53d2f4f096ddeb7392b67f930)), closes [#360](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/360)
+
+## [4.12.2](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.12.1...v4.12.2) (2026-06-08)
 
 
 ### Bug Fixes
 
 * add `meshCleared` flag to optimize mesh clearing ([859fa20](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/859fa20d297c3f44e3361f20dbb7ce966407e03e))
-* add early return for case where subEmitter module is disabled ([d1386a1](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/d1386a12216743a6e09f1b9b87bea1dfcf7702e4))
-* avoid endless loop ([eb2e862](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/eb2e862e80e549c8cf16ddfed776c101c2413bac)), closes [#392](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/392)
-* fix icon ([a9461ec](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/a9461ecb4d40d7fe878e12465d6e38faae7ae65b))
 * fix Unity6.5 compile errors and warnings ([a5ee687](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/a5ee6878212be2fc4d7b48879426f239e8753009)), closes [#400](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/400)
-* fix URL link in README ([a79ffb2](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/a79ffb2c2b4c26f23d2925cb18674fda5d8bc9cb))
-* fix URL link in README ([1c8c65d](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/1c8c65d25e7f6fe7b1d20da4461333df8fc7578e)), closes [#376](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/376)
-* fix: second and subsequent bursts not displayed when world simulation and non-looping ([df2f3ca](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/df2f3caafbe279f1457d74f8183cb561ac14aa17)), closes [#326](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/326)
-* ignore "EditorOnly" tagged gameObjects on refresh ([031d46a](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/031d46a3216c942d2d1a6ccfadf5f0b9e3ce3006))
 * potential access to UIParticleRenderer that has already been destroyed ([b740dd6](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/b740dd662d423c6bef849662ce1b0bfbb4940ed4)), closes [#403](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/403)
-* UIParticle in canvas with 0f-0.01f alpha value does not start to play until alpha value is greater than 0.01f, causes play calls to be delayed unintentionally if canvas alpha value is set to mentioned value range ([38aec2e](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/38aec2ea1afd77677d629c86665a3342d92e49d9))
 * updated support for some changed menu paths ([f8ac986](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/f8ac9869f141238169730e74f5d65c4fc6081f51)), closes [#397](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/397)
+
+## [4.12.1](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.12.0...v4.12.1) (2026-03-24)
+
+
+### Bug Fixes
+
+* ignore "EditorOnly" tagged gameObjects on refresh ([031d46a](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/031d46a3216c942d2d1a6ccfadf5f0b9e3ce3006))
+
+# [4.12.0](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.11.4...v4.12.0) (2026-03-24)
 
 
 ### Features
 
 * explicit null checks ([5384f61](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/5384f61c569e9f78ff9d5b45acfc6f5c2f021a87))
 
-# [5.0.0-preview.16](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/5.0.0-preview.15...5.0.0-preview.16) (2025-03-15)
+## [4.11.4](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.11.3...v4.11.4) (2025-12-24)
+
+
+### Bug Fixes
+
+* add early return for case where subEmitter module is disabled ([d1386a1](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/d1386a12216743a6e09f1b9b87bea1dfcf7702e4))
+* avoid endless loop ([eb2e862](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/eb2e862e80e549c8cf16ddfed776c101c2413bac)), closes [#392](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/392)
+
+## [4.11.3](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.11.2...v4.11.3) (2025-10-14)
+
+
+### Bug Fixes
+
+* fix icon ([a9461ec](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/a9461ecb4d40d7fe878e12465d6e38faae7ae65b))
+* fix URL link in README ([1c8c65d](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/1c8c65d25e7f6fe7b1d20da4461333df8fc7578e)), closes [#376](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/376)
+* fix: second and subsequent bursts not displayed when world simulation and non-looping ([df2f3ca](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/df2f3caafbe279f1457d74f8183cb561ac14aa17)), closes [#326](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/326)
+* UIParticle in canvas with 0f-0.01f alpha value does not start to play until alpha value is greater than 0.01f, causes play calls to be delayed unintentionally if canvas alpha value is set to mentioned value range ([38aec2e](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/38aec2ea1afd77677d629c86665a3342d92e49d9))
+
+## [4.11.2](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.11.1...v4.11.2) (2025-03-15)
 
 
 ### Bug Fixes
@@ -29,39 +73,34 @@
 * IL2CPP build fails on older versions of Unity ([0da6525](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/0da652520cd165b43de7404c0b0ab1fbcf9349d1))
 * NRE on enable ([0cff50e](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/0cff50ef696aa53fb7c46a9a737b7cf3a05b7b9b)), closes [#359](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/359)
 
-# [5.0.0-preview.15](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/5.0.0-preview.14...5.0.0-preview.15) (2025-02-21)
+## [4.11.1](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.11.0...v4.11.1) (2025-02-21)
 
 
 ### Bug Fixes
 
 * component icons will no longer be displayed in the scene view ([6dfbdae](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/6dfbdae38d3822ab9c2c6f0e4ca1ca32ee98a239))
-* editor crashed on exit play mode (editor, windows) ([47ee45c](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/47ee45cbbe651a8f87ca2b8a3948f8b88db8211e)), closes [#351](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/351)
+
+# [4.11.0](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.10.7...v4.11.0) (2025-02-21)
 
 
 ### Features
 
 * add 'TimeScaleMultiplier' option ([925af0b](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/925af0b6046f65f23a778f67cefa8ff9cbedb513))
 
-# [5.0.0-preview.14](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/5.0.0-preview.13...5.0.0-preview.14) (2025-01-03)
+## [4.10.7](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.10.6...v4.10.7) (2025-01-14)
+
+
+### Bug Fixes
+
+* editor crashed on exit play mode (editor, windows) ([47ee45c](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/47ee45cbbe651a8f87ca2b8a3948f8b88db8211e)), closes [#351](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/351)
+
+## [4.10.6](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.10.5...v4.10.6) (2025-01-03)
 
 
 ### Bug Fixes
 
 * sub-emitter particles may not render correctly in certain scenarios ([8276684](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/8276684c3b1646f0490ed64557547ba15281664a)), closes [#348](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/348)
 * sub-emitter's `inherit velocity` module doubles at runtime ([67de3d1](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/67de3d1bd3e16dc9b564625cb990c53d75769506)), closes [#349](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/349)
-
-# [5.0.0-preview.13](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/5.0.0-preview.12...5.0.0-preview.13) (2025-01-03)
-
-
-### Features
-
-* change the default value of `UIParticle.scale` from `10` to `1` ([9955eef](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/9955eefdc22cf565502f85c87cd2efd3a25fbe50))
-* UIParticle no longer inherits from MaskableGraphic ([c09bfb8](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/c09bfb81abc9179bf5fc49d29eaf7fc4ed01a4dc))
-
-
-### BREAKING CHANGES
-
-* Some members inherited from MaskableGraphic will no longer be available.
 
 ## [4.10.5](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.10.4...v4.10.5) (2024-12-23)
 

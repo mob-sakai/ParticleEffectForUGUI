@@ -26,6 +26,7 @@ namespace Coffee.UIExtensions
         private static readonly List<Material> s_Materials = new List<Material>(2);
         private static MaterialPropertyBlock s_Mpb;
         private static readonly Vector3[] s_Corners = new Vector3[4];
+        private static readonly VertexHelper s_VertexHelper = new VertexHelper();
         private bool _delay;
         private int _index;
         private bool _isPrevStored;
@@ -451,11 +452,15 @@ namespace Coffee.UIExtensions
 
                 var components = InternalListPool<Component>.Rent();
                 GetComponents(typeof(IMeshModifier), components);
-                for (var i = 0; i < components.Count; i++)
+                if (0 < components.Count)
                 {
-#pragma warning disable CS0618 // Type or member is obsolete
-                    ((IMeshModifier)components[i]).ModifyMesh(workerMesh);
-#pragma warning restore CS0618 // Type or member is obsolete
+                    workerMesh.CopyTo(s_VertexHelper);
+                    for (var i = 0; i < components.Count; i++)
+                    {
+                        ((IMeshModifier)components[i]).ModifyMesh(s_VertexHelper);
+                    }
+
+                    s_VertexHelper.FillMesh(workerMesh);
                 }
 
                 InternalListPool<Component>.Return(ref components);
