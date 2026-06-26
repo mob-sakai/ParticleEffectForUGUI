@@ -1,3 +1,22 @@
+# [5.0.0-preview.18](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/5.0.0-preview.17...5.0.0-preview.18) (2026-06-26)
+
+
+### Bug Fixes
+
+* `ParticleSystemPreviewer` is no longer included in build ([bad976c](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/bad976cf01180bdabf5cd2f1760e069afdcb644a))
+* `UI/Additive` shader does not support RectMask2D softness. ([83145d3](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/83145d3a6ede3831d1f7c49afde6ef7d8a498d21))
+* add support for Unity 6.7 ([26fd3da](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/26fd3da20b6b07f7a26df662358c53757a7cc5f5)), closes [#408](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/408)
+* rename `UIParticleProjectSettings.enableLinearToGamma` to `autoColorCorrection` ([10f82a8](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/10f82a8579a2d055f897e7a8d6f3b5ba1fc43ae8))
+* Support for skipping "reload domain" ([b7bb112](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/b7bb1124f6921ebca1b48991462637767b95e504)), closes [#406](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/406)
+* there is a compilation error in Unity 2019.2 or earlier ([c327632](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/c327632e1eb203351ba1a1087a19eb7838c22530)), closes [#407](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/407)
+
+
+### Features
+
+* add fields located outside the `Properties` block in the shader as `Animatable Properties` ([ea2fcfd](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/ea2fcfd8099a24b92624d34600beb519fb9d2b38)), closes [#399](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/399)
+* preview the ParticleSystem playback when selecting a UIParticle in the Editor ([108bcfb](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/108bcfbd246960dc730546dc334424cf2e17bfd4))
+* project-wide default view size for baking ([8e0ff10](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/8e0ff10c7344d9f53d2f4f096ddeb7392b67f930)), closes [#360](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/360)
+
 ## [4.13.1](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.13.0...v4.13.1) (2026-06-26)
 
 
