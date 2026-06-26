@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using System.Collections.Generic;
 using System.Linq;
 using Coffee.UIParticleInternal;
@@ -13,7 +14,6 @@ namespace Coffee.UIExtensions
         // Do nothing.
     }
 
-#if UNITY_EDITOR
     [CustomEditor(typeof(ParticleSystemPreviewer))]
     [CanEditMultipleObjects]
     internal class ParticleSystemPreviewerEditor : Editor
@@ -29,6 +29,7 @@ namespace Coffee.UIExtensions
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
+            EditorGUILayout.HelpBox("ParticleSystemPreviewer will be removed in build.", MessageType.Warning);
             ParticleSystemPreviewSystem.DrawWarningForTemporary(_gameObjects);
             ParticleSystemPreviewSystem.DrawWarningForPermanent(_gameObjects);
         }
@@ -42,6 +43,12 @@ namespace Coffee.UIExtensions
     internal class ParticleSystemPreviewSystem : ScriptableSingleton<ParticleSystemPreviewSystem>
     {
         private const HideFlags k_TemporaryHideFlags = HideFlags.DontSave | HideFlags.NotEditable;
+
+        private const string k_TemporaryMesssage = "The temporary ParticleSystem for preview is attached.\n" +
+                                                   "It will be removed when exiting edit mode.";
+
+        private const string k_PermanentMesssage = "The permanent ParticleSystem is attached.\n" +
+                                                   "It will be included in build.";
 
         [SerializeField]
         private List<GameObject> m_PreviewObjects = new List<GameObject>();
@@ -192,8 +199,7 @@ namespace Coffee.UIExtensions
         {
             if (gameObjects == null || gameObjects.Length == 0 || !gameObjects.Any(HasTemporaryParticleSystem)) return;
 
-            if (WarningButton("The temporary ParticleSystem for preview is attached.\n" +
-                              "It will be removed when exiting edit mode.", "Remove"))
+            if (HelpBoxButton(MessageType.Warning, k_TemporaryMesssage, "Remove"))
             {
                 foreach (var go in gameObjects)
                 {
@@ -209,8 +215,7 @@ namespace Coffee.UIExtensions
         {
             if (gameObjects == null || gameObjects.Length == 0 || !gameObjects.Any(HasPermanentParticleSystem)) return;
 
-            if (WarningButton("The permanent ParticleSystem is attached.\n" +
-                              "It will be included in build.", "Remove"))
+            if (HelpBoxButton(MessageType.Info, k_PermanentMesssage, "Remove"))
             {
                 foreach (var go in gameObjects)
                 {
@@ -224,14 +229,14 @@ namespace Coffee.UIExtensions
             }
         }
 
-        private static bool WarningButton(string message, string buttonText)
+        private static bool HelpBoxButton(MessageType messageType, string message, string buttonText)
         {
             EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.HelpBox(message, MessageType.Warning, true);
+            EditorGUILayout.HelpBox(message, messageType, true);
             var clicked = GUILayout.Button(EditorGUIUtility.TrTempContent(buttonText));
             EditorGUILayout.EndHorizontal();
             return clicked;
         }
     }
-#endif
 }
+#endif

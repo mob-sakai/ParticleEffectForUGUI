@@ -34,6 +34,7 @@ You can render, mask, and sort your `ParticleSystems` for UI without the need fo
   - [Usage with `Mask` or `RectMask2D` Component](#usage-with-mask-or-rectmask2d-component)
   - [Usage with Script](#usage-with-script)
   - [Component: UIParticleAttractor](#component-uiparticleattractor)
+  - [Component: ParticleSystemPreviewer](#component-particlesystempreviewer)
   - [Project Settings](#project-settings)
 - [🛠 Development Note](#-development-note)
   - [Compares the Baking mesh approach with the conventional approach](#compares-the-baking-mesh-approach-with-the-conventional-approach)
@@ -116,7 +117,7 @@ _This package requires **Unity 2018.3 or later**._
   ```
 - To update the package, use Package Manager UI (`Window > Package Manager`) or run the following command with `@{version}`:
   ```
-  openupm add com.coffee.ui-particle@4.9.0
+  openupm add com.coffee.ui-particle@4.13.0
   ```
 
 #### Install via UPM (with Package Manager UI)
@@ -125,7 +126,7 @@ _This package requires **Unity 2018.3 or later**._
 - Click `+ > Add package from git URL...` and input the repository URL: `https://github.com/mob-sakai/ParticleEffectForUGUI.git`  
   ![](https://github.com/user-attachments/assets/f88f47ad-c606-44bd-9e86-ee3f72eac548)
 - To update the package, change suffix `#{version}` to the target version.
-  - e.g. `https://github.com/mob-sakai/ParticleEffectForUGUI.git#4.9.0`
+  - e.g. `https://github.com/mob-sakai/ParticleEffectForUGUI.git#4.13.0`
 
 #### Install via UPM (Manually)
 
@@ -140,7 +141,7 @@ _This package requires **Unity 2018.3 or later**._
   ```
 
 - To update the package, change suffix `#{version}` to the target version.
-  - e.g. `"com.coffee.ui-particle": "https://github.com/mob-sakai/ParticleEffectForUGUI.git#4.9.0",`
+  - e.g. `"com.coffee.ui-particle": "https://github.com/mob-sakai/ParticleEffectForUGUI.git#4.13.0",`
 
 #### Install as Embedded Package
 
@@ -271,16 +272,17 @@ uiParticle.Stop();
     - **Unscaled Time:** Update with unscaled delta time.
 - **OnAttracted**: An event called when attracting is complete (per particle).
 
-
 <br><br>
 
 ### Component: ParticleSystemPreviewer
 
-`ParticleSystemPreviewer` is used to preview a ParticleSystem in the editor.
+`ParticleSystemPreviewer` is used to preview a `ParticleSystem` in the editor.
+
+![](https://github.com/mob-sakai/mob-sakai/releases/download/docs/1782441157549.png)
 
 - When a `GameObject` with this component is selected in the editor, a temporary `ParticleSystem` is added if needed so you can preview the effect in the Scene view.
 - The generated `ParticleSystem` is marked with `HideFlags.DontSave`, so it is neither saved nor included in builds.
-
+- This component will be removed in builds.
 
 <br><br>
 
