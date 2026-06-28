@@ -7,7 +7,7 @@ run-name: 🧪 Test (${{ github.event.pull_request.title || github.ref_name }})
 
 env:
   # MINIMUM_VERSION: The minimum version of Unity.
-  MINIMUM_VERSION: 2020.3
+  MINIMUM_VERSION: 2019.4
   # EXCLUDE_FILTER: The excluded versions of Unity.
   EXCLUDE_FILTER: "(2017|2018|2023.3)"
   PROJECT_PATH: .
@@ -45,7 +45,8 @@ jobs:
     steps:
       - name: 🔑 Secrets check
         run: |
-          if [ -z "$UNITY_EMAIL" ] || [ -z "$UNITY_PASSWORD" ] || [ -z "UNITY_LICENSE" ]; then
+          echo "Checking secrets for ${{ github.actor }} ..."
+          if [ -z "$UNITY_EMAIL" ] || [ -z "$UNITY_PASSWORD" ] || [ -z "$UNITY_LICENSE" ]; then
             echo "Error: UNITY_EMAIL, UNITY_PASSWORD, and UNITY_LICENSE secrets must be set." | tee -a $GITHUB_STEP_SUMMARY >&2
             echo "Error: See https://game.ci/docs/github/test-runner#basic-setup" | tee -a $GITHUB_STEP_SUMMARY >&2
             echo "Error: Set the secrets at ${{ github.server_url }}/${{ github.repository }}/settings/secrets/actions" | tee -a $GITHUB_STEP_SUMMARY >&2
@@ -84,10 +85,10 @@ jobs:
         unityVersion: ${{ fromJson(needs.setup.outputs.unityVersions) }}
     steps:
       - name: 🚚 Checkout ($${{ github.ref }})
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: 📥 Cache library
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: ${{ env.PROJECT_PATH }}/Library
           key: ${{ env.PROJECT_PATH }}-Library-${{ matrix.unityVersion }}-${{ github.event.pull_request.head.sha || github.sha }}
@@ -96,7 +97,7 @@ jobs:
             ${{ env.PROJECT_PATH }}-Library-
 
       - name: 🛠️ Build Unity Project (Test)
-        uses: game-ci/unity-builder@v5
+        uses: game-ci/unity-builder@main
         timeout-minutes: 45
         with:
           customImage: ghcr.io/mob-sakai/unity3d:${{ matrix.unityVersion }}
@@ -110,7 +111,7 @@ jobs:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
 
       - name: 🧪 Run tests
-        uses: game-ci/unity-test-runner@v4
+        uses: game-ci/unity-test-runner@main
         timeout-minutes: 45
         with:
           customImage: ghcr.io/mob-sakai/unity3d:${{ matrix.unityVersion }}
