@@ -22,7 +22,7 @@ namespace Coffee.UIExtensions
 
         [SerializeField]
         [Tooltip("Default view size for baking particle systems.")]
-        private float m_DefaultViewSizeForBaking = 10;
+        private float m_DefaultViewSizeForBaking = 1000;
 
         public static float defaultViewSizeForBaking
         {

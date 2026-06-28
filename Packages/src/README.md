@@ -162,6 +162,7 @@ _This package requires **Unity 2019.3 or later**._
 ### Breaking Changes
 
 - The default value of `UIParticle.scale` has been changed from `10` to `1`.
+- The default value of `UIParticleProjectSettings.defaultViewSizeForBaking` has been changed from `10` to `1000`.
 - `UIParticle` no longer inherits from `MaskableGraphic`.
 - If you are installing via git URL, add `?path=Packages/src`.
    ```json
