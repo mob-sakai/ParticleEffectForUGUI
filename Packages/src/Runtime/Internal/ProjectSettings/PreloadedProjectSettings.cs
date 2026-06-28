@@ -59,21 +59,6 @@ namespace Coffee.UIParticleInternal
                 s_BuildingPlayer = false;
                 Initialize();
             }
-
-#if UNITY_2019_3_OR_NEWER
-            [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-            private static void OnDomainReload()
-            {
-                foreach (var t in TypeCache.GetTypesDerivedFrom(typeof(PreloadedProjectSettings<>)))
-                {
-                    var defaultSettings = GetDefaultSettings(t);
-                    if (defaultSettings != null)
-                    {
-                        defaultSettings.OnDomainReload();
-                    }
-                }
-            }
-#endif
         }
 
         private static void Initialize()
@@ -166,10 +151,6 @@ namespace Coffee.UIParticleInternal
         protected virtual void OnInitialize()
         {
         }
-
-        protected virtual void OnDomainReload()
-        {
-        }
     }
 
     internal abstract class PreloadedProjectSettingsEditor : Editor
@@ -254,11 +235,6 @@ namespace Coffee.UIParticleInternal
 
                     break;
             }
-        }
-
-        protected override void OnDomainReload()
-        {
-            s_Instance = null;
         }
 #else
         public static T instance => s_Instance != null ? s_Instance : s_Instance = CreateInstance<T>();
