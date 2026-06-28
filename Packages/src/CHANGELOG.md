@@ -1,3 +1,13 @@
+# [5.0.0-preview.19](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/5.0.0-preview.18...5.0.0-preview.19) (2026-06-28)
+
+
+* feat!: optimize camera settings in overlay render mode ([dc16e64](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/dc16e6458e855c451ab73e9c4cd418ef65f8b350))
+
+
+### BREAKING CHANGES
+
+* the default value of `UIParticleProjectSettings.defaultViewSizeForBaking` has been changed from `10` to `1000`. In some cases, the appearance of certain effects may change.
+
 # [5.0.0-preview.18](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/5.0.0-preview.17...5.0.0-preview.18) (2026-06-26)
 
 
