@@ -1,3 +1,10 @@
+# [5.0.0-preview.20](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/5.0.0-preview.19...5.0.0-preview.20) (2026-06-29)
+
+
+### Bug Fixes
+
+* support "disable domain reload" on Unity 6.6 or later ([dc12088](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/dc120884f68a5fee1775d039fc7bca0ee0e404b5))
+
 # [5.0.0-preview.19](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/5.0.0-preview.18...5.0.0-preview.19) (2026-06-28)
 
 
