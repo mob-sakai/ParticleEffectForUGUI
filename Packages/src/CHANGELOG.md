@@ -1,3 +1,10 @@
+# [5.0.0-preview.21](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/5.0.0-preview.20...5.0.0-preview.21) (2026-07-04)
+
+
+### Bug Fixes
+
+* fix mesh copying ([da49a93](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/da49a931e3c43f8988e29700c44cbff802bef641))
+
 # [5.0.0-preview.20](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/5.0.0-preview.19...5.0.0-preview.20) (2026-06-29)
 
 
