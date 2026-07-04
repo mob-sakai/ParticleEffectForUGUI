@@ -113,8 +113,8 @@ namespace Coffee.UIParticleInternal
             self.GetColors(colors);
             self.GetUVs(0, uv0);
             self.GetUVs(1, uv1);
-            self.GetUVs(2, uv1);
-            self.GetUVs(3, uv1);
+            self.GetUVs(2, uv2);
+            self.GetUVs(3, uv3);
             self.GetNormals(normals);
             self.GetTangents(tangents);
             self.GetIndices(indices, 0);
