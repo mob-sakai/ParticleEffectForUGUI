@@ -1,3 +1,10 @@
+## [4.13.3](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.13.2...v4.13.3) (2026-07-04)
+
+
+### Bug Fixes
+
+* fix mesh copying ([da49a93](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/da49a931e3c43f8988e29700c44cbff802bef641))
+
 ## [4.13.2](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.13.1...v4.13.2) (2026-06-29)
 
 
