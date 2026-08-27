@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Coffee.UIParticleInternal;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -47,6 +48,10 @@ namespace Coffee.UIExtensions
         [SerializeField]
         private UpdateMode m_UpdateMode;
 
+        [Range(0f, 1f)]
+        [SerializeField]
+        private float m_SphereCurveRate = 1f;
+
         [SerializeField]
         private UnityEvent m_OnAttracted;
 
@@ -80,6 +85,12 @@ namespace Coffee.UIExtensions
         {
             get => m_UpdateMode;
             set => m_UpdateMode = value;
+        }
+
+        public float sphereCurveRate
+        {
+            get => m_SphereCurveRate;
+            set => m_SphereCurveRate = Mathf.Clamp(value, 0f, 1f);
         }
 
         public UnityEvent onAttracted
@@ -267,7 +278,10 @@ namespace Coffee.UIExtensions
                     target = Vector3.Lerp(current, target, time / duration);
                     break;
                 case Movement.Sphere:
-                    target = Vector3.Slerp(current, target, time / duration);
+                    var t = time / duration;
+                    var linear = Vector3.Lerp(current, target, t);
+                    var spherical = Vector3.Slerp(current, target, t);
+                    target = Vector3.Lerp(linear, spherical, m_SphereCurveRate);
                     break;
             }
 
@@ -330,4 +344,54 @@ namespace Coffee.UIExtensions
             }
         }
     }
+
+#if UNITY_EDITOR
+    [CustomEditor(typeof(UIParticleAttractor))]
+    [CanEditMultipleObjects]
+    internal class UIParticleAttractorEditor : Editor
+    {
+        private SerializedProperty m_ParticleSystems;
+        private SerializedProperty m_DestinationRadius;
+        private SerializedProperty m_DelayRate;
+        private SerializedProperty m_MaxSpeed;
+        private SerializedProperty m_Movement;
+        private SerializedProperty m_UpdateMode;
+        private SerializedProperty m_SphereCurveRate;
+        private SerializedProperty m_OnAttracted;
+
+        private void OnEnable()
+        {
+            m_ParticleSystems = serializedObject.FindProperty("m_ParticleSystems");
+            m_DestinationRadius = serializedObject.FindProperty("m_DestinationRadius");
+            m_DelayRate = serializedObject.FindProperty("m_DelayRate");
+            m_MaxSpeed = serializedObject.FindProperty("m_MaxSpeed");
+            m_Movement = serializedObject.FindProperty("m_Movement");
+            m_UpdateMode = serializedObject.FindProperty("m_UpdateMode");
+            m_SphereCurveRate = serializedObject.FindProperty("m_SphereCurveRate");
+            m_OnAttracted = serializedObject.FindProperty("m_OnAttracted");
+        }
+
+        public override void OnInspectorGUI()
+        {
+            serializedObject.Update();
+
+            EditorGUILayout.PropertyField(m_ParticleSystems);
+            EditorGUILayout.PropertyField(m_DestinationRadius);
+            EditorGUILayout.PropertyField(m_DelayRate);
+            EditorGUILayout.PropertyField(m_MaxSpeed);
+            EditorGUILayout.PropertyField(m_Movement);
+            EditorGUILayout.PropertyField(m_UpdateMode);
+
+            if (m_Movement.enumValueIndex == (int)UIParticleAttractor.Movement.Sphere)
+            {
+                EditorGUI.indentLevel++;
+                EditorGUILayout.PropertyField(m_SphereCurveRate);
+                EditorGUI.indentLevel--;
+            }
+
+            EditorGUILayout.PropertyField(m_OnAttracted);
+            serializedObject.ApplyModifiedProperties();
+        }
+    }
+#endif
 }
