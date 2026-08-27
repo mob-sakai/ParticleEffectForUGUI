@@ -1,3 +1,10 @@
+# [5.0.0-preview.22](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/5.0.0-preview.21...5.0.0-preview.22) (2026-08-27)
+
+
+### Features
+
+* add `UIParticleAttractor.sphereCurveRate` for sphere movement tuning ([7cfbaee](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/7cfbaee6b89c4c0df446901fbab4f7f136f2db5d)), closes [#411](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/411)
+
 # [5.0.0-preview.21](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/5.0.0-preview.20...5.0.0-preview.21) (2026-07-04)
 
 
