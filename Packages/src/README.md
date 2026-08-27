@@ -289,6 +289,10 @@ uiParticle.Stop();
 - **Max Speed**: Maximum speed of attracting. If this value is too small, attracting may not be completed by the end of
   the lifetime, and `OnAttracted` may not be called.
 - **Movement**: Attracting movement type. (`Linear`, `Smooth`, `Sphere`)
+- **Sphere Curve Rate**: When `Movement = Sphere`, the curve rate of the sphere movement.
+    - **0:** Move in a straight line to the destination.
+    - **1:** Move in a perfect sphere to the destination.
+    - **0 < x < 1:** Move in a curve between straight and sphere.
 - **Update Mode**: Update mode.
     - **Normal:** Update with scaled delta time.
     - **Unscaled Time:** Update with unscaled delta time.
