@@ -97,7 +97,7 @@ jobs:
             ${{ env.PROJECT_PATH }}-Library-
 
       - name: 🛠️ Build Unity Project (Test)
-        uses: game-ci/unity-builder@main
+        uses: mob-sakai/unity-builder@fix/support-unity6.6
         timeout-minutes: 45
         with:
           customImage: ghcr.io/mob-sakai/unity3d:${{ matrix.unityVersion }}
@@ -111,7 +111,7 @@ jobs:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
 
       # - name: 🧪 Run tests
-      #   uses: game-ci/unity-test-runner@main
+      #   uses: mob-sakai/unity-test-runner@fix/support-unity6.6
       #   timeout-minutes: 45
       #   with:
       #     customImage: ghcr.io/mob-sakai/unity3d:${{ matrix.unityVersion }}
