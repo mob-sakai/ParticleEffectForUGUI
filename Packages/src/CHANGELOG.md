@@ -1,3 +1,10 @@
+# [5.0.0-preview.23](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/5.0.0-preview.22...5.0.0-preview.23) (2026-09-06)
+
+
+### Bug Fixes
+
+* `RectMask2D` still masks `UIParticle` even when `maskable = false` ([071c9ee](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/071c9eeb8575f430fe6a69d5c1f824ee53bc4434)), closes [#412](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/412)
+
 # [5.0.0-preview.22](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/5.0.0-preview.21...5.0.0-preview.22) (2026-08-27)
 
 
