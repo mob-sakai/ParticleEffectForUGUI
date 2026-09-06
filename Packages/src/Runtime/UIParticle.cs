@@ -695,7 +695,13 @@ namespace Coffee.UIExtensions
             {
                 var r = _renderers[i];
                 if (r == null) continue;
-                r.maskable = maskable;
+
+                if (r.maskable != maskable)
+                {
+                    r.maskable = maskable;
+                    r.RecalculateClipping();
+                }
+
                 r.SetMaterialDirty();
             }
         }

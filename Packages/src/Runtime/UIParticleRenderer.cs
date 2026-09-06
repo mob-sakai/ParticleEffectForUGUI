@@ -273,6 +273,7 @@ namespace Coffee.UIExtensions
             canvasRenderer.SetTexture(null);
 
             enabled = true;
+            RecalculateClipping();
         }
 
         public void UpdateMesh(Camera bakeCamera)
