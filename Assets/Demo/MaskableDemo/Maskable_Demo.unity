@@ -1750,17 +1750,22 @@ PrefabInstance:
     - target: {fileID: 50016514851573739, guid: 1da1f7e678e2d4e449f6d46d2d4c4116,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 0
+      value: 1.48
       objectReference: {fileID: 0}
     - target: {fileID: 50016514851573739, guid: 1da1f7e678e2d4e449f6d46d2d4c4116,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 0
+      value: 1.48
       objectReference: {fileID: 0}
     - target: {fileID: 50016514851573739, guid: 1da1f7e678e2d4e449f6d46d2d4c4116,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 0
+      value: 1.48
+      objectReference: {fileID: 0}
+    - target: {fileID: 50016514851573739, guid: 1da1f7e678e2d4e449f6d46d2d4c4116,
+        type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 101812364392167341, guid: 1da1f7e678e2d4e449f6d46d2d4c4116,
         type: 3}
@@ -1768,6 +1773,11 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 102597214597688835, guid: 1da1f7e678e2d4e449f6d46d2d4c4116,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 264116465809475146, guid: 1da1f7e678e2d4e449f6d46d2d4c4116,
         type: 3}
       propertyPath: m_Enabled
       value: 0
@@ -1986,7 +1996,7 @@ MonoBehaviour:
   m_GroupMaxId: 0
   m_PositionMode: 0
   m_AutoScaling: 0
-  m_AutoScalingMode: 2
+  m_AutoScalingMode: 1
   m_UseCustomView: 0
   m_CustomViewSize: 10
   m_TimeScaleMultiplier: 1
@@ -3515,17 +3525,22 @@ PrefabInstance:
     - target: {fileID: 50016514851573739, guid: 1da1f7e678e2d4e449f6d46d2d4c4116,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 0
+      value: 1.48
       objectReference: {fileID: 0}
     - target: {fileID: 50016514851573739, guid: 1da1f7e678e2d4e449f6d46d2d4c4116,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 0
+      value: 1.48
       objectReference: {fileID: 0}
     - target: {fileID: 50016514851573739, guid: 1da1f7e678e2d4e449f6d46d2d4c4116,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 0
+      value: 1.48
+      objectReference: {fileID: 0}
+    - target: {fileID: 50016514851573739, guid: 1da1f7e678e2d4e449f6d46d2d4c4116,
+        type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 101812364392167341, guid: 1da1f7e678e2d4e449f6d46d2d4c4116,
         type: 3}
@@ -3533,6 +3548,11 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 102597214597688835, guid: 1da1f7e678e2d4e449f6d46d2d4c4116,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 264116465809475146, guid: 1da1f7e678e2d4e449f6d46d2d4c4116,
         type: 3}
       propertyPath: m_Enabled
       value: 0
@@ -3759,7 +3779,7 @@ MonoBehaviour:
   m_GroupMaxId: 0
   m_PositionMode: 0
   m_AutoScaling: 0
-  m_AutoScalingMode: 2
+  m_AutoScalingMode: 1
   m_UseCustomView: 0
   m_CustomViewSize: 10
   m_TimeScaleMultiplier: 1
