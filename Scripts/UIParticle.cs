@@ -493,7 +493,8 @@ namespace Coffee.UIExtensions
 
             // refresh.
 #if UNITY_EDITOR
-            if (!Application.isPlaying)
+            // In build (batch mode), delayCall does not fire, and the registered closure will root all UIParticle prefabs, making them unloadable, so we do not register it.
+            if (!Application.isPlaying && !Application.isBatchMode)
                 UnityEditor.EditorApplication.delayCall += () =>
                 {
                     if (this) RefreshParticles();
@@ -528,11 +529,15 @@ namespace Coffee.UIExtensions
                 scale = m_Scale;
             }
 
-            UnityEditor.EditorApplication.delayCall += () =>
+            // In build (batch mode), delayCall does not fire, and the registered closure will root all UIParticle prefabs, making them unloadable, so we do not register it.
+            if (!Application.isBatchMode)
             {
-                if (Application.isPlaying || !this) return;
-                InitializeIfNeeded();
-            };
+                UnityEditor.EditorApplication.delayCall += () =>
+                {
+                    if (Application.isPlaying || !this) return;
+                    InitializeIfNeeded();
+                };
+            }
         }
 #endif
     }
