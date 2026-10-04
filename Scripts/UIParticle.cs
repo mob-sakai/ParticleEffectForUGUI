@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Coffee.UIParticleExtensions;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Serialization;
@@ -493,8 +494,8 @@ namespace Coffee.UIExtensions
 
             // refresh.
 #if UNITY_EDITOR
-            // In build (batch mode), delayCall does not fire, and the registered closure will root all UIParticle prefabs, making them unloadable, so we do not register it.
-            if (!Application.isPlaying && !Application.isBatchMode)
+            // In building, delayCall does not fire, and the registered closure will root all UIParticle prefabs, making them unloadable, so we do not register it.
+            if (!Application.isPlaying && !BuildPipeline.isBuildingPlayer)
                 UnityEditor.EditorApplication.delayCall += () =>
                 {
                     if (this) RefreshParticles();
@@ -529,8 +530,8 @@ namespace Coffee.UIExtensions
                 scale = m_Scale;
             }
 
-            // In build (batch mode), delayCall does not fire, and the registered closure will root all UIParticle prefabs, making them unloadable, so we do not register it.
-            if (!Application.isBatchMode)
+            // In building, delayCall does not fire, and the registered closure will root all UIParticle prefabs, making them unloadable, so we do not register it.
+            if (!BuildPipeline.isBuildingPlayer)
             {
                 UnityEditor.EditorApplication.delayCall += () =>
                 {
