@@ -1,3 +1,10 @@
+## [4.14.2](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.14.1...v4.14.2) (2026-10-28)
+
+
+### Bug Fixes
+
+* clamp unscaled delta time to Time.maximumDeltaTime ([2355605](https://github.com/mob-sakai/ParticleEffectForUGUI/commit/235560544e1bc21e65445c44727c920e6aca61b4))
+
 ## [4.14.1](https://github.com/mob-sakai/ParticleEffectForUGUI/compare/v4.14.0...v4.14.1) (2026-09-06)
 
 
