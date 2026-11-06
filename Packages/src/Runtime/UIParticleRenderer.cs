@@ -657,10 +657,11 @@ namespace Coffee.UIExtensions
         private void Simulate(Vector3 scale, bool paused)
         {
             var main = _particleSystem.main;
+            // Cap unscaled time like Time.deltaTime, so resuming after a long pause doesn't simulate the whole gap at once.
             var deltaTime = paused
                 ? 0
                 : main.useUnscaledTime
-                    ? Time.unscaledDeltaTime
+                    ? Mathf.Min(Time.unscaledDeltaTime, Time.maximumDeltaTime)
                     : Time.deltaTime;
             deltaTime *= _parent.timeScaleMultiplier;
 
