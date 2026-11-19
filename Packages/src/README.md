@@ -319,6 +319,10 @@ You can adjust the project-wide settings for `UI Particle`. (`Edit > Project Set
   attaching it directly to the `ParticleSystem`.
 - **Rate over distance:** Move the `UIParticle` transform rather than the
   `ParticleSystem` when using `ParticleSystem.emission.rateOverDistance`.
+- **Unscaled time:** UIParticle simulation and an Attractor in Unscaled Time
+  mode cap their per-frame unscaled delta at `Time.maximumDeltaTime`. A long
+  frame or application suspension may therefore advance them by less than
+  the elapsed wall-clock time.
 - **Simulation space:** ParticleSystem Custom simulation space is not supported
   by UIParticle. Use Local or World simulation space instead.
 - **World-space emission:** Direct `ParticleSystem.Emit()` may place particles

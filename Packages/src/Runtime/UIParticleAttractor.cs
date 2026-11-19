@@ -280,7 +280,7 @@ namespace Coffee.UIExtensions
                     speed *= 60 * Time.deltaTime;
                     break;
                 case UpdateMode.UnscaledTime:
-                    speed *= 60 * Time.unscaledDeltaTime;
+                    speed *= 60 * Mathf.Min(Time.unscaledDeltaTime, Time.maximumDeltaTime);
                     break;
             }
 
