@@ -20,6 +20,17 @@ Open `Issue355Highlight.unity` in Unity and enter Play mode. The scene changes t
 
 The on-screen result compares the particle count and the multiset of particle random seeds immediately before and after each call. A transition passes only when at least one particle exists and all existing particles are retained.
 
+## Regression checklist
+
+When changing playback, particle simulation, or rendering behavior, rerun the PlayMode test below and check the reproduction scene:
+
+1. Open `Issue355Highlight.unity` and enter Play mode. Confirm that particles appear after the initial `Play()`.
+2. Wait for at least one automatic color transition. Confirm that the screen reports **PASS**, with a nonzero and equal before/after/preserved particle count and zero failures.
+3. After particles have appeared, press **Change color + Play()** and confirm the same result. Continue through the color cycle to check that existing particles remain visible as new particles use the new color.
+4. Run the PlayMode test and confirm it passes. It also checks that `Resume()` preserves paused particles and that `Play()` restarts after `Pause()` and `Stop()`.
+
+The scene's count and random-seed comparison checks preservation at the instant `Play()` is called; the visual check is still needed for the color transition. Pressing the button before any particles exist reports a failure by design.
+
 ## Verification
 
 - Environment: Unity 6000.0.71f1.
@@ -33,5 +44,7 @@ Run the test with the Unity Editor connected on port 7800:
 unity command --port 7800 test run --mode playmode --filter PlayDoesNotResetAnAlreadyRunningSimulation --filter-type TestName --async-tests true --timeout 600
 unity command --port 7800 test status
 ```
+
+The test run is asynchronous: poll `test status` until it reports `completed`, then confirm `passed: 1` and `failed: 0`. If the Editor uses a different port, replace `7800` in both commands.
 
 The scene and test are retained as reproducible evidence; screenshots are intentionally excluded from the commit.
