@@ -103,10 +103,23 @@ namespace Coffee.UIExtensions
         /// The target ParticleSystems to attract. Use <see cref="AddParticleSystem"/> and
         /// <see cref="RemoveParticleSystem"/> to modify the list.
         /// </summary>
-        public IReadOnlyList<ParticleSystem> particleSystems => m_ParticleSystems;
+        public IReadOnlyList<ParticleSystem> particleSystems
+        {
+            get
+            {
+                if (m_ParticleSystems == null)
+                {
+                    m_ParticleSystems = new List<ParticleSystem>();
+                }
+
+                return m_ParticleSystems;
+            }
+        }
 
         public void AddParticleSystem(ParticleSystem ps)
         {
+            if (ps == null) return;
+
             if (m_ParticleSystems == null)
             {
                 m_ParticleSystems = new List<ParticleSystem>();
@@ -156,6 +169,8 @@ namespace Coffee.UIExtensions
 
         internal void Attract()
         {
+            if (m_ParticleSystems == null || m_ParticleSystems.Count == 0) return;
+
             // Collect UIParticle if needed (same size as m_ParticleSystems)
             CollectUIParticlesIfNeeded();
 
@@ -173,7 +188,7 @@ namespace Coffee.UIExtensions
                 var particles = ParticleSystemExtensions.GetParticleArray(count);
                 particleSystem.GetParticles(particles, count);
 
-                var uiParticle = _uiParticles[particleIndex];
+                var uiParticle = particleIndex < _uiParticles.Count ? _uiParticles[particleIndex] : null;
                 var dstPos = GetDestinationPosition(uiParticle, particleSystem);
                 for (var i = 0; i < count; i++)
                 {
@@ -290,7 +305,15 @@ namespace Coffee.UIExtensions
 
         private void CollectUIParticlesIfNeeded()
         {
-            if (m_ParticleSystems.Count == 0 || _uiParticles.Count != 0) return;
+            if (m_ParticleSystems == null) return;
+            if (_uiParticles == null)
+            {
+                _uiParticles = new List<UIParticle>();
+            }
+
+            if (m_ParticleSystems.Count == 0 || _uiParticles.Count == m_ParticleSystems.Count) return;
+
+            _uiParticles.Clear();
 
             // Expand capacity
             if (_uiParticles.Capacity < m_ParticleSystems.Capacity)
@@ -309,14 +332,16 @@ namespace Coffee.UIExtensions
                 }
 
                 var uiParticle = ps.GetComponentInParent<UIParticle>(true);
-                _uiParticles.Add(uiParticle.particles.Contains(ps) ? uiParticle : null);
+                _uiParticles.Add(uiParticle != null && uiParticle.particles != null && uiParticle.particles.Contains(ps)
+                    ? uiParticle
+                    : null);
             }
         }
 
 #if UNITY_EDITOR
         private void OnValidate()
         {
-            _uiParticles.Clear();
+            _uiParticles?.Clear();
         }
 #endif
 
@@ -331,6 +356,11 @@ namespace Coffee.UIExtensions
 
         private void UpgradeIfNeeded()
         {
+            if (m_ParticleSystems == null)
+            {
+                m_ParticleSystems = new List<ParticleSystem>();
+            }
+
             // Multiple ParticleSystems support: from 'm_ParticleSystem' to 'm_ParticleSystems'
             if (m_ParticleSystem != null)
             {

@@ -16,7 +16,7 @@ namespace Coffee.UIExtensions
 
         public static void Register(UIParticle particle)
         {
-            if (particle == null) return;
+            if (particle == null || s_ActiveParticles.Contains(particle)) return;
             s_ActiveParticles.Add(particle);
         }
 
@@ -28,7 +28,7 @@ namespace Coffee.UIExtensions
 
         public static void Register(UIParticleAttractor attractor)
         {
-            if (attractor == null) return;
+            if (attractor == null || s_ActiveAttractors.Contains(attractor)) return;
             s_ActiveAttractors.Add(attractor);
         }
 
@@ -111,17 +111,20 @@ namespace Coffee.UIExtensions
             // Attract
             for (var i = 0; i < s_ActiveAttractors.Count; i++)
             {
-                s_ActiveAttractors[i].Attract();
+                var attractor = s_ActiveAttractors[i];
+                if (attractor != null) attractor.Attract();
             }
         }
 
         public static void GetGroupedRenderers(int groupId, int index, List<UIParticleRenderer> results)
         {
+            if (results == null) return;
+
             results.Clear();
             for (var i = 0; i < s_ActiveParticles.Count; i++)
             {
                 var uip = s_ActiveParticles[i];
-                if (uip.useMeshSharing && uip.groupId == groupId)
+                if (uip != null && uip.useMeshSharing && uip.groupId == groupId)
                 {
                     results.Add(uip.GetRenderer(index));
                 }
@@ -134,6 +137,7 @@ namespace Coffee.UIExtensions
             for (var i = 0; i < s_ActiveParticles.Count; i++)
             {
                 var uip = s_ActiveParticles[i];
+                if (uip == null) continue;
                 if (!uip.useMeshSharing || uip.groupId != groupId) continue;
                 if (uip.isPrimary) return uip;
                 if (primary == null && uip.canSimulate) primary = uip;

@@ -322,7 +322,31 @@ namespace Coffee.UIExtensions
             ? m_Scale3D
             : m_Scale3D.GetScaled(canvasScale, transform.localScale);
 
-        public List<ParticleSystem> particles => m_Particles;
+        public List<ParticleSystem> particles
+        {
+            get
+            {
+                if (m_Particles == null)
+                {
+                    m_Particles = new List<ParticleSystem>();
+                }
+
+                return m_Particles;
+            }
+        }
+
+        internal AnimatableProperty[] animatableProperties
+        {
+            get
+            {
+                if (m_AnimatableProperties == null)
+                {
+                    m_AnimatableProperties = Array.Empty<AnimatableProperty>();
+                }
+
+                return m_AnimatableProperties;
+            }
+        }
 
         /// <summary>
         /// Paused.
@@ -580,6 +604,8 @@ namespace Coffee.UIExtensions
         /// </summary>
         public void RefreshParticles(List<ParticleSystem> particleSystems)
         {
+            if (particleSystems == null) return;
+
             // Collect children UIParticleRenderer components.
             // #246: Nullptr exceptions when using nested UIParticle components in hierarchy
             _renderers.Clear();
@@ -620,8 +646,9 @@ namespace Coffee.UIExtensions
         internal void UpdateTransformScale()
         {
             _tracker.Clear();
-            canvasScale = canvas.rootCanvas.transform.localScale.Inverse();
-            parentScale = transform.parent.lossyScale;
+            var rootCanvas = canvas != null ? canvas.rootCanvas : null;
+            canvasScale = rootCanvas != null ? rootCanvas.transform.localScale.Inverse() : Vector3.one;
+            parentScale = transform.parent != null ? transform.parent.lossyScale : Vector3.one;
             if (autoScalingMode != AutoScalingMode.Transform)
             {
                 if (_isScaleStored)
@@ -724,9 +751,11 @@ namespace Coffee.UIExtensions
         private Camera GetBakeCamera()
         {
             if (canvas == null) return Camera.main;
-            if (!useCustomView && canvas.renderMode != RenderMode.ScreenSpaceOverlay && canvas.rootCanvas.worldCamera)
+            var rootCanvas = canvas.rootCanvas;
+            if (!useCustomView && rootCanvas != null && canvas.renderMode != RenderMode.ScreenSpaceOverlay &&
+                rootCanvas.worldCamera)
             {
-                return canvas.rootCanvas.worldCamera;
+                return rootCanvas.worldCamera;
             }
 
             if (_bakeCamera != null)

@@ -20,6 +20,8 @@ namespace Coffee.UIParticleInternal
     {
         public static bool ShouldGammaToLinearInShader(this Canvas canvas)
         {
+            if (canvas == null) return false;
+
             return QualitySettings.activeColorSpace == ColorSpace.Linear &&
 #if CANVAS_SUPPORT_ALWAYS_GAMMA
                    canvas.vertexColorAlwaysGammaSpace;
@@ -30,6 +32,8 @@ namespace Coffee.UIParticleInternal
 
         public static bool ShouldGammaToLinearInMesh(this Canvas canvas)
         {
+            if (canvas == null) return false;
+
             return QualitySettings.activeColorSpace == ColorSpace.Linear &&
 #if CANVAS_SUPPORT_ALWAYS_GAMMA
                    !canvas.vertexColorAlwaysGammaSpace;
@@ -40,11 +44,13 @@ namespace Coffee.UIParticleInternal
 
         public static bool IsStereoCanvas(this Canvas canvas)
         {
+            if (canvas == null) return false;
+
 #if UNITY_MODULE_VR
             if (FrameCache.TryGet<bool>(canvas, nameof(IsStereoCanvas), out var stereo)) return stereo;
 
             stereo =
-                canvas != null && canvas.renderMode != RenderMode.ScreenSpaceOverlay && canvas.worldCamera != null
+                canvas.renderMode != RenderMode.ScreenSpaceOverlay && canvas.worldCamera != null
                 && XRSettings.enabled && !string.IsNullOrEmpty(XRSettings.loadedDeviceName);
             FrameCache.Set(canvas, nameof(IsStereoCanvas), stereo);
             return stereo;
@@ -58,6 +64,12 @@ namespace Coffee.UIParticleInternal
         /// </summary>
         public static void GetViewProjectionMatrix(this Canvas canvas, out Matrix4x4 vpMatrix)
         {
+            if (canvas == null)
+            {
+                vpMatrix = Matrix4x4.identity;
+                return;
+            }
+
             canvas.GetViewProjectionMatrix(Camera.MonoOrStereoscopicEye.Mono, out vpMatrix);
         }
 
@@ -67,6 +79,12 @@ namespace Coffee.UIParticleInternal
         public static void GetViewProjectionMatrix(this Canvas canvas, Camera.MonoOrStereoscopicEye eye,
             out Matrix4x4 vpMatrix)
         {
+            if (canvas == null)
+            {
+                vpMatrix = Matrix4x4.identity;
+                return;
+            }
+
             if (FrameCache.TryGet(canvas, nameof(GetViewProjectionMatrix), out vpMatrix)) return;
 
             canvas.GetViewProjectionMatrix(eye, out var viewMatrix, out var projectionMatrix);
@@ -88,6 +106,10 @@ namespace Coffee.UIParticleInternal
         public static void GetViewProjectionMatrix(this Canvas canvas, Camera.MonoOrStereoscopicEye eye,
             out Matrix4x4 vMatrix, out Matrix4x4 pMatrix)
         {
+            vMatrix = Matrix4x4.identity;
+            pMatrix = Matrix4x4.identity;
+            if (canvas == null) return;
+
             if (FrameCache.TryGet(canvas, "GetViewMatrix", (int)eye, out vMatrix) &&
                 FrameCache.TryGet(canvas, "GetProjectionMatrix", (int)eye, out pMatrix))
             {
@@ -97,8 +119,14 @@ namespace Coffee.UIParticleInternal
             // Get view and projection matrices.
             Profiler.BeginSample("(COF)[CanvasExt] GetViewProjectionMatrix");
             var rootCanvas = canvas.rootCanvas;
+            if (rootCanvas == null)
+            {
+                Profiler.EndSample();
+                return;
+            }
+
             var cam = rootCanvas.worldCamera;
-            if (rootCanvas != null && rootCanvas.renderMode != RenderMode.ScreenSpaceOverlay && cam != null)
+            if (rootCanvas.renderMode != RenderMode.ScreenSpaceOverlay && cam != null)
             {
                 if (eye == Camera.MonoOrStereoscopicEye.Mono)
                 {

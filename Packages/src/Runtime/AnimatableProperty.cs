@@ -39,6 +39,8 @@ namespace Coffee.UIExtensions
 
         public void UpdateMaterialProperties(Material material, MaterialPropertyBlock mpb)
         {
+            if (material == null || mpb == null) return;
+
 #if UNITY_2021_1_OR_NEWER
             if (!mpb.HasProperty(id)) return;
 #else

@@ -13,6 +13,8 @@ namespace Coffee.UIParticleInternal
 
         public static IEnumerable<Type> GetTypesDerivedFrom(Type baseType)
         {
+            if (baseType == null) return Array.Empty<Type>();
+
             lock (s_Lock)
             {
                 if (s_DerivedTypesCache.TryGetValue(baseType, out var cached))
@@ -35,6 +37,8 @@ namespace Coffee.UIParticleInternal
 
         public static IEnumerable<Type> GetTypesWithAttribute(Type attr)
         {
+            if (attr == null) return Array.Empty<Type>();
+
             lock (s_Lock)
             {
                 if (s_AttributeTypesCache.TryGetValue(attr, out var cached))

@@ -40,6 +40,8 @@ namespace Coffee.UIParticleInternal
 
         public static void LinearToGamma(this Mesh self)
         {
+            if (self == null) return;
+
             Profiler.BeginSample("(COF)[ColorExt] LinearToGamma (Mesh)");
             self.GetColors(s_Colors);
             var count = s_Colors.Count;
@@ -58,6 +60,8 @@ namespace Coffee.UIParticleInternal
 
         public static void GammaToLinear(this Mesh self)
         {
+            if (self == null) return;
+
             Profiler.BeginSample("(COF)[ColorExt] GammaToLinear (Mesh)");
             self.GetColors(s_Colors);
             var count = s_Colors.Count;

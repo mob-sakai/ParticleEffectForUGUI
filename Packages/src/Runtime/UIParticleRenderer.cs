@@ -57,9 +57,10 @@ namespace Coffee.UIExtensions
                 s_Corners[1] = transform.TransformPoint(_lastBounds.min.x, _lastBounds.max.y, 0);
                 s_Corners[2] = transform.TransformPoint(_lastBounds.max.x, _lastBounds.max.y, 0);
                 s_Corners[3] = transform.TransformPoint(_lastBounds.max.x, _lastBounds.min.y, 0);
-                if (canvas != null)
+                var rootCanvas = canvas != null ? canvas.rootCanvas : null;
+                if (rootCanvas != null)
                 {
-                    var worldToLocalMatrix = canvas.rootCanvas.transform.worldToLocalMatrix;
+                    var worldToLocalMatrix = rootCanvas.transform.worldToLocalMatrix;
                     for (var i = 0; i < 4; ++i)
                     {
                         s_Corners[i] = worldToLocalMatrix.MultiplyPoint(s_Corners[i]);
@@ -200,16 +201,23 @@ namespace Coffee.UIExtensions
 
             //
             var texture = mainTexture;
-            if (texture == null && _parent.m_AnimatableProperties.Length == 0)
+            var animatableProperties = _parent.animatableProperties;
+            if (texture == null && animatableProperties.Length == 0)
             {
                 MaterialRepository.Release(ref _modifiedMaterial);
                 return modifiedMaterial;
             }
 
+            if (modifiedMaterial == null)
+            {
+                MaterialRepository.Release(ref _modifiedMaterial);
+                return null;
+            }
+
             var hash = new Hash128(
                 modifiedMaterial ? (uint)modifiedMaterial.GetHashCode() : 0,
                 texture ? (uint)texture.GetHashCode() : 0,
-                0 < _parent.m_AnimatableProperties.Length ? (uint)GetHashCode() : 0,
+                0 < animatableProperties.Length ? (uint)GetHashCode() : 0,
 #if UNITY_EDITOR
                 (uint)EditorJsonUtility.ToJson(modifiedMaterial).GetHashCode()
 #else
@@ -230,6 +238,13 @@ namespace Coffee.UIExtensions
 
         public void Set(UIParticle parent, ParticleSystem ps, bool isTrail, ParticleSystem mainEmitter)
         {
+            if (parent == null || ps == null ||
+                !ps.TryGetComponent<ParticleSystemRenderer>(out var particleRenderer) || particleRenderer == null)
+            {
+                Reset();
+                return;
+            }
+
             _parent = parent;
             maskable = parent.maskable;
 
@@ -249,7 +264,7 @@ namespace Coffee.UIExtensions
                 }
             }
 
-            ps.TryGetComponent(out _renderer);
+            _renderer = particleRenderer;
             _renderer.enabled = false;
             _isTrail = isTrail;
             _renderer.GetSharedMaterials(s_Materials);
@@ -280,7 +295,7 @@ namespace Coffee.UIExtensions
         {
             // No particle to render: Clear mesh.
             if (
-                !isActiveAndEnabled || !_particleSystem || !_parent
+                !isActiveAndEnabled || !_particleSystem || !_parent || !_renderer
                 || !canvasRenderer || !canvas || !bakeCamera
                 || _parent.meshSharing == UIParticle.MeshSharing.Replica
                 || !transform.lossyScale.GetScaled(_parent.scale3DForCalc).IsVisible() // Scale is not visible.
@@ -485,7 +500,7 @@ namespace Coffee.UIExtensions
             for (var i = 0; i < renderers.Count; i++)
             {
                 var r = renderers[i];
-                if (r == this) continue;
+                if (r == null || r == this) continue;
 
                 r.canvasRenderer.SetMesh(workerMesh);
                 r._lastBounds = _lastBounds;
@@ -542,7 +557,11 @@ namespace Coffee.UIExtensions
                 && _particleSystem.main.scalingMode == ParticleSystemScalingMode.Local
                 && _parent.canvas)
             {
-                scale = scale.GetScaled(_parent.canvas.rootCanvas.transform.localScale);
+                var rootCanvas = _parent.canvas.rootCanvas;
+                if (rootCanvas != null)
+                {
+                    scale = scale.GetScaled(rootCanvas.transform.localScale);
+                }
             }
 
             Profiler.EndSample();
@@ -733,7 +752,10 @@ namespace Coffee.UIExtensions
 
         private void UpdateMaterialProperties()
         {
-            if (_parent.m_AnimatableProperties.Length == 0) return;
+            if (_parent == null || _renderer == null) return;
+
+            var animatableProperties = _parent.animatableProperties;
+            if (animatableProperties.Length == 0) return;
 
             if (s_Mpb == null)
             {
@@ -746,9 +768,10 @@ namespace Coffee.UIExtensions
             // #41: Copy the value from MaterialPropertyBlock to CanvasRenderer
             if (materialForRendering == null) return;
 
-            for (var i = 0; i < _parent.m_AnimatableProperties.Length; i++)
+            for (var i = 0; i < animatableProperties.Length; i++)
             {
-                var ap = _parent.m_AnimatableProperties[i];
+                var ap = animatableProperties[i];
+                if (ap == null) continue;
                 ap.UpdateMaterialProperties(materialForRendering, s_Mpb);
             }
 

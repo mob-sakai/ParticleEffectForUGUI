@@ -19,7 +19,11 @@ namespace Coffee.UIParticleInternal
 #endif
         private static void Clear()
         {
-            s_Caches.Clear();
+            lock (s_Caches)
+            {
+                s_Caches.Clear();
+            }
+
             UIExtraCallbacks.onLateAfterCanvasRebuild -= ClearAllCache;
             UIExtraCallbacks.onLateAfterCanvasRebuild += ClearAllCache;
         }
@@ -29,6 +33,12 @@ namespace Coffee.UIParticleInternal
         /// </summary>
         public static bool TryGet<T>(object key1, string key2, out T result)
         {
+            if (key1 == null || key2 == null)
+            {
+                result = default;
+                return false;
+            }
+
             return GetFrameCache<T>().TryGet((key1.GetHashCode(), key2.GetHashCode()), out result);
         }
 
@@ -37,6 +47,12 @@ namespace Coffee.UIParticleInternal
         /// </summary>
         public static bool TryGet<T>(object key1, string key2, int key3, out T result)
         {
+            if (key1 == null || key2 == null)
+            {
+                result = default;
+                return false;
+            }
+
             return GetFrameCache<T>().TryGet((key1.GetHashCode(), key2.GetHashCode() + key3), out result);
         }
 
@@ -45,6 +61,8 @@ namespace Coffee.UIParticleInternal
         /// </summary>
         public static void Set<T>(object key1, string key2, T result)
         {
+            if (key1 == null || key2 == null) return;
+
             GetFrameCache<T>().Set((key1.GetHashCode(), key2.GetHashCode()), result);
         }
 
@@ -53,26 +71,34 @@ namespace Coffee.UIParticleInternal
         /// </summary>
         public static void Set<T>(object key1, string key2, int key3, T result)
         {
+            if (key1 == null || key2 == null) return;
+
             GetFrameCache<T>().Set((key1.GetHashCode(), key2.GetHashCode() + key3), result);
         }
 
         private static void ClearAllCache()
         {
-            foreach (var cache in s_Caches.Values)
+            lock (s_Caches)
             {
-                cache.Clear();
+                foreach (var cache in s_Caches.Values)
+                {
+                    cache.Clear();
+                }
             }
         }
 
         private static FrameCacheContainer<T> GetFrameCache<T>()
         {
-            var t = typeof(T);
-            if (s_Caches.TryGetValue(t, out var frameCache)) return frameCache as FrameCacheContainer<T>;
+            lock (s_Caches)
+            {
+                var t = typeof(T);
+                if (s_Caches.TryGetValue(t, out var frameCache)) return frameCache as FrameCacheContainer<T>;
 
-            frameCache = new FrameCacheContainer<T>();
-            s_Caches.Add(t, frameCache);
+                frameCache = new FrameCacheContainer<T>();
+                s_Caches.Add(t, frameCache);
 
-            return (FrameCacheContainer<T>)frameCache;
+                return (FrameCacheContainer<T>)frameCache;
+            }
         }
 
         private interface IFrameCache
@@ -86,17 +112,26 @@ namespace Coffee.UIParticleInternal
 
             public void Clear()
             {
-                _caches.Clear();
+                lock (_caches)
+                {
+                    _caches.Clear();
+                }
             }
 
             public bool TryGet((int, int) key, out T result)
             {
-                return _caches.TryGetValue(key, out result);
+                lock (_caches)
+                {
+                    return _caches.TryGetValue(key, out result);
+                }
             }
 
             public void Set((int, int) key, T result)
             {
-                _caches[key] = result;
+                lock (_caches)
+                {
+                    _caches[key] = result;
+                }
             }
         }
     }
