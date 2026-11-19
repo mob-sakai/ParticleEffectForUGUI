@@ -62,7 +62,7 @@ These FAQ/question issues do not require individual fixes or issue work. They re
 
 | Issue | Assessment |
 |---|---|
-| [#293 Is custom simulation space broken?](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/293) | Reproduce custom simulation-space coordinate conversion while a ScrollRect moves and establish the expected coordinate space. |
+| ⏭️ [#293 Is custom simulation space broken?](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/293) | Custom simulation space is not supported; use Local or World instead. |
 | [#302 Size of the Shape Gizmo](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/302) | Check Shape Gizmo display across Canvas modes, separating Scene View display transforms from simulation transforms. |
 | [#321 Additions to Particle Attractor](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/321) | Add constant, range, and curve options to the Attractor's Delay Rate, similar to Particle System. Design serialization and compatibility with existing values. |
 | [#331 Transparency issue with Shader Graph shaders](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/331) | Shader Graph Scene Picking/Selection passes may affect baking. Reproduce with fixed URP and Shader Graph versions and consider shader selection for baking. |
