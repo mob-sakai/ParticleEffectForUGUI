@@ -353,6 +353,27 @@ namespace Coffee.UIExtensions
         /// </summary>
         public bool isPaused { get; private set; }
 
+        /// <summary>
+        /// Returns true if this component is active and not paused, and if there are live particles in a registered, active ParticleSystem,
+        /// or if particles will be generated in the future. Does not take into account the state of the source in Mesh Sharing.
+        /// </summary>
+        public bool isPlaying
+        {
+            get
+            {
+                if (!isActiveAndEnabled || isPaused) return false;
+
+                var systems = particles;
+                for (var i = 0; i < systems.Count; i++)
+                {
+                    var ps = systems[i];
+                    if (ps && ps.gameObject.activeInHierarchy && (ps.IsAlive(false) || ps.isPlaying)) return true;
+                }
+
+                return false;
+            }
+        }
+
         public Vector3 parentScale { get; private set; }
 
         public Vector3 canvasScale { get; private set; }

@@ -251,6 +251,17 @@ uiParticle.Emit(10);
 uiParticle.Stop();
 ```
 
+Use `uiParticle.isPlaying` to check whether the enabled, unpaused component
+has a registered, active ParticleSystem with live particles or a simulation
+that can still emit particles. It remains true while existing particles finish
+after emission stops and becomes false when paused, stopped, cleared, disabled,
+or finished using UIParticle's playback controls. A looping system may remain
+playing after `StopEmission()` even when it has no particles; the method disables
+emission, not the simulation. It reports the registered systems' state, not actual visibility;
+in Mesh Sharing mode, a replica does not report the primary's state.
+`ParticleSystem.isPlaying` alone is not reliable for UIParticle's manually
+simulated systems.
+
 See [Usage Notes](#usage-notes) for simulation-space and emission limitations.
 
 <br><br>
