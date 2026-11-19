@@ -550,14 +550,19 @@ namespace Coffee.UIExtensions
 
         private Vector3 GetWorldScale()
         {
-            Profiler.BeginSample("[UIParticleRenderer] GetWorldScale");
-            var scale = _parent.scale3DForCalc.GetScaled(_parent.parentScale);
+            return GetWorldScale(_parent, _particleSystem);
+        }
 
-            if (_parent.autoScalingMode == UIParticle.AutoScalingMode.UIParticle
-                && _particleSystem.main.scalingMode == ParticleSystemScalingMode.Local
-                && _parent.canvas)
+        internal static Vector3 GetWorldScale(UIParticle parent, ParticleSystem particleSystem)
+        {
+            Profiler.BeginSample("[UIParticleRenderer] GetWorldScale");
+            var scale = parent.scale3DForCalc.GetScaled(parent.parentScale);
+
+            if (parent.autoScalingMode == UIParticle.AutoScalingMode.UIParticle
+                && particleSystem.main.scalingMode == ParticleSystemScalingMode.Local
+                && parent.canvas)
             {
-                var rootCanvas = _parent.canvas.rootCanvas;
+                var rootCanvas = parent.canvas.rootCanvas;
                 if (rootCanvas != null)
                 {
                     scale = scale.GetScaled(rootCanvas.transform.localScale);
@@ -566,6 +571,11 @@ namespace Coffee.UIExtensions
 
             Profiler.EndSample();
             return scale;
+        }
+
+        internal static Vector3 GetSimulationPosition(ParticleSystem particleSystem, Vector3 position, Vector3 scale)
+        {
+            return particleSystem.IsLocalSpace() ? position : position.GetScaled(scale.Inverse());
         }
 
         private Matrix4x4 GetWorldMatrix(Vector3 psPos, Vector3 scale)
@@ -713,9 +723,7 @@ namespace Coffee.UIExtensions
             }
 
             // Move to scaled position, simulate, revert to origin position.
-            var scaledPos = isLocalSpace
-                ? originWorldPosition
-                : originWorldPosition.GetScaled(scale.Inverse());
+            var scaledPos = GetSimulationPosition(_particleSystem, originWorldPosition, scale);
             psTransform.SetPositionAndRotation(scaledPos, originWorldRotation);
             _particleSystem.Simulate(deltaTime, false, false, false);
             psTransform.localPosition = originLocalPosition;

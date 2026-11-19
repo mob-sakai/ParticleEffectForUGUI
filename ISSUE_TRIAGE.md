@@ -47,7 +47,7 @@ Use this document as the starting point for selecting and tracking work. Check t
 | Issue | Assessment |
 |---|---|
 | ✅ [#355 Play() resets the simulation](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/355) | **Fixed** in commit `f9cb393`; the GitHub issue remains open. Repeated `Play()` now preserves existing particles, with a regression test. See the [report](Assets/Issues/355_PlayResetsSimulation/REPORT.md). |
-| [#387 Using Emit() emits on wrong position](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/387) | The reporter later noted that `UIParticle.Play()` resolves the problem. Verify this first on the current version, explain when to use each method, and add a scripting note if needed. |
+| 🔄 [#387 Using Emit() emits on wrong position](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/387) | Experimental `UIParticle.Emit()` works in tested cases but not for World-space trails or a Custom space under the emitter; the same cases also fail with `UIParticle.Play()` bursts. Direct `ParticleSystem.Emit()` remains unfixed. See the [report](Assets/Issues/387_EmitWrongPosition/REPORT.md). |
 
 ## No Action Required (FAQ or Existing Information)
 

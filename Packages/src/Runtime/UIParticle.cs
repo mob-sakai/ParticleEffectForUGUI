@@ -442,6 +442,38 @@ namespace Coffee.UIExtensions
         }
 
         /// <summary>
+        /// 登録された各ParticleSystemから指定数の粒子を放出します。
+        /// </summary>
+        /// <param name="count">各ParticleSystemから放出する粒子数。</param>
+        public void Emit(int count)
+        {
+            if (count < 0) throw new ArgumentOutOfRangeException(nameof(count), "The emission count must be non-negative.");
+            if (count == 0) return;
+
+            UpdateTransformScale();
+            particles.Exec(p =>
+            {
+                var particleTransform = p.transform;
+                var localPosition = particleTransform.localPosition;
+                var localRotation = particleTransform.localRotation;
+                var position = particleTransform.position;
+                var rotation = particleTransform.rotation;
+                var scale = UIParticleRenderer.GetWorldScale(this, p);
+                try
+                {
+                    particleTransform.SetPositionAndRotation(
+                        UIParticleRenderer.GetSimulationPosition(p, position, scale), rotation);
+                    p.Emit(count);
+                }
+                finally
+                {
+                    particleTransform.localPosition = localPosition;
+                    particleTransform.localRotation = localRotation;
+                }
+            });
+        }
+
+        /// <summary>
         /// Pause the ParticleSystems.
         /// </summary>
         public void Pause()

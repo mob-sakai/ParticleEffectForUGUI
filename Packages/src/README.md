@@ -37,6 +37,7 @@ You can render, mask, and sort your `ParticleSystems` for UI without the need fo
   - [Component: ParticleSystemPreviewer](#component-particlesystempreviewer)
   - [Project Settings](#project-settings)
 - [🛠 Development Note](#-development-note)
+  - [Usage Notes](#usage-notes)
   - [Compares the Baking mesh approach with the conventional approach](#compares-the-baking-mesh-approach-with-the-conventional-approach)
     - [Performance test results](#performance-test-results)
   - [🔍 FAQ: Why Are My UIParticles Not Displayed Correctly?](#-faq-why-are-my-uiparticles-not-displayed-correctly)
@@ -207,9 +208,7 @@ and z-position.
 2. Adjust the ParticleSystem as you like.
    ![particle1](https://user-images.githubusercontent.com/12690315/95007359-ca385200-0649-11eb-8383-627c9750bda8.png)
 
-> [!Tips]
-> Adding a `UIParticle` to the parent is the recommended setup rather than attaching it directly to the `ParticleSystem`.
-> When using `ParticleSystem.emission.rateOverDistance`, it is recommended to move the transform of `UIParticle` rather than the `ParticleSystem`.
+See [Usage Notes](#usage-notes) for setup recommendations and limitations.
 
 <br>
 
@@ -248,8 +247,11 @@ particleSystem.Emit(10);
 
 // Control by UIParticle.
 uiParticle.Play();
+uiParticle.Emit(10);
 uiParticle.Stop();
 ```
+
+See [Usage Notes](#usage-notes) for simulation-space and emission limitations.
 
 <br><br>
 
@@ -310,6 +312,35 @@ You can adjust the project-wide settings for `UI Particle`. (`Edit > Project Set
 <br><br>
 
 ## 🛠 Development Note
+
+### Usage Notes
+
+- **Hierarchy:** Adding a `UIParticle` to the parent is recommended rather than
+  attaching it directly to the `ParticleSystem`.
+- **Rate over distance:** Move the `UIParticle` transform rather than the
+  `ParticleSystem` when using `ParticleSystem.emission.rateOverDistance`.
+- **Simulation space:** ParticleSystem Custom simulation space is not supported
+  by UIParticle. Use Local or World simulation space instead.
+- **World-space emission:** Direct `ParticleSystem.Emit()` may place particles
+  incorrectly when UIParticle scaling is used. For a time-zero burst, use
+  `UIParticle.Play()` instead of `ParticleSystem.Play()`.
+- **Experimental `UIParticle.Emit(count)`:** This emits `count` particles from
+  each registered ParticleSystem using the simulation's coordinate adjustment.
+  It temporarily moves each emitter and restores its transform, and updates
+  UIParticle's automatic transform scaling. It does not intercept direct
+  `ParticleSystem.Emit()` calls.
+- **Sub-emitters:** Registered sub-emitters are emitted directly as well as in
+  response to parent particles.
+- **Trails:** In the tested configuration, World-space trails render at the
+  wrong position and are not supported by the experimental `Emit()` method.
+- **Mesh sharing:** Only a Primary/Replica pair was tested; emitting on the
+  Replica does not emit on the Primary.
+- **Inactive systems:** In the tested setup, emitting on an inactive
+  ParticleSystem did not queue particles for later activation.
+
+Other configurations remain unverified. See
+[Issue #387](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/387)
+for details and tested conditions.
 
 ### Compares the Baking mesh approach with the conventional approach
 
