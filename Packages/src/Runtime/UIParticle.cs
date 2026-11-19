@@ -430,7 +430,14 @@ namespace Coffee.UIExtensions
         /// </summary>
         public void Play()
         {
-            particles.Exec(p => p.Simulate(0, false, true));
+            particles.Exec(p =>
+            {
+                if (isPaused || p.isStopped)
+                {
+                    p.Simulate(0, false, true);
+                }
+            });
+
             isPaused = false;
         }
 

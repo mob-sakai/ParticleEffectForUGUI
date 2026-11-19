@@ -1,0 +1,6 @@
+{
+    "name": "Coffee.UIParticle.Issue355.Scene",
+    "references": [
+        "Coffee.UIParticle"
+    ]
+}
