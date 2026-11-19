@@ -279,11 +279,13 @@ See [Usage Notes](#usage-notes) for simulation-space and emission limitations.
 - **Delay Rate**: Delay to start attracting. It is a percentage of the particle's start lifetime.
 - **Max Speed**: Maximum speed of attracting. If this value is too small, attracting may not be completed by the end of
   the lifetime, and `OnAttracted` may not be called.
-- **Movement**: Attracting movement type. (`Linear`, `Smooth`, `Sphere`)
+- **Movement**: Attracting movement type. (`Linear`, `Smooth`, `Sphere`, `Hemisphere`)
 - **Sphere Curve Rate**: When `Movement = Sphere`, the curve rate of the sphere movement.
     - **0:** Move in a straight line to the destination.
     - **1:** Move in a perfect sphere to the destination.
     - **0 < x < 1:** Move in a curve between straight and sphere.
+- **Hemisphere Radius**: When `Movement = Hemisphere`, the maximum curve offset from the direct path,
+  in particle simulation units. The curve direction follows the Attractor's up axis.
 - **Update Mode**: Update mode.
     - **Normal:** Update with scaled delta time.
     - **Unscaled Time:** Update with unscaled delta time.

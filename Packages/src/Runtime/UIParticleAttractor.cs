@@ -14,7 +14,8 @@ namespace Coffee.UIExtensions
         {
             Linear,
             Smooth,
-            Sphere
+            Sphere,
+            Hemisphere
         }
 
         public enum UpdateMode
@@ -52,10 +53,17 @@ namespace Coffee.UIExtensions
         [SerializeField]
         private float m_SphereCurveRate = 1f;
 
+        [Min(0f)]
+        [SerializeField]
+        private float m_HemisphereRadius = 100f;
+
         [SerializeField]
         private UnityEvent m_OnAttracted;
 
         private List<UIParticle> _uiParticles = new List<UIParticle>();
+        private readonly Dictionary<long, HemisphereParticle> _hemisphereParticles =
+            new Dictionary<long, HemisphereParticle>();
+        private readonly List<long> _staleHemisphereParticleKeys = new List<long>();
 
         public float destinationRadius
         {
@@ -91,6 +99,12 @@ namespace Coffee.UIExtensions
         {
             get => m_SphereCurveRate;
             set => m_SphereCurveRate = Mathf.Clamp(value, 0f, 1f);
+        }
+
+        public float hemisphereRadius
+        {
+            get => m_HemisphereRadius;
+            set => m_HemisphereRadius = Mathf.Max(0f, value);
         }
 
         public UnityEvent onAttracted
@@ -130,6 +144,7 @@ namespace Coffee.UIExtensions
 
             m_ParticleSystems.Add(ps);
             _uiParticles.Clear();
+            _hemisphereParticles.Clear();
         }
 
         public void RemoveParticleSystem(ParticleSystem ps)
@@ -144,6 +159,7 @@ namespace Coffee.UIExtensions
 
             m_ParticleSystems.RemoveAt(i);
             _uiParticles.Clear();
+            _hemisphereParticles.Clear();
         }
 
         private void Awake()
@@ -159,6 +175,7 @@ namespace Coffee.UIExtensions
         private void OnDisable()
         {
             UIParticleUpdater.Unregister(this);
+            _hemisphereParticles.Clear();
         }
 
         private void OnDestroy()
@@ -190,14 +207,24 @@ namespace Coffee.UIExtensions
 
                 var uiParticle = particleIndex < _uiParticles.Count ? _uiParticles[particleIndex] : null;
                 var dstPos = GetDestinationPosition(uiParticle, particleSystem);
+                var hemisphereDirection = transform.up;
+                if (particleSystem.IsLocalSpace())
+                {
+                    hemisphereDirection = particleSystem.transform.InverseTransformDirection(hemisphereDirection);
+                }
+
                 for (var i = 0; i < count; i++)
                 {
                     // Attracted
                     var p = particles[i];
+                    var isHemisphere = m_Movement == Movement.Hemisphere;
+                    var particleKey = isHemisphere ? GetHemisphereParticleKey(particleSystem, p) : 0;
+
                     if (0f < p.remainingLifetime && Vector3.Distance(p.position, dstPos) < m_DestinationRadius)
                     {
                         p.remainingLifetime = 0f;
                         particles[i] = p;
+                        if (isHemisphere) _hemisphereParticles.Remove(particleKey);
 
                         if (m_OnAttracted != null)
                         {
@@ -223,13 +250,40 @@ namespace Coffee.UIExtensions
                     if (time <= 0) continue;
 
                     // Attract
-                    p.position = GetAttractedPosition(p.position, dstPos, duration, time);
+                    var hemisphereOrigin = p.position;
+                    var attractionTime = time;
+                    if (isHemisphere)
+                    {
+                        if (!_hemisphereParticles.TryGetValue(particleKey, out var state))
+                        {
+                            state = new HemisphereParticle
+                            {
+                                origin = p.position,
+                                lastSeenFrame = Time.frameCount
+                            };
+                        }
+                        else
+                        {
+                            state.lastSeenFrame = Time.frameCount;
+                        }
+
+                        var progress = duration > 0 ? Mathf.Clamp01(time / duration) : 1f;
+                        state.progress = Mathf.Lerp(state.progress, 1f, progress);
+                        _hemisphereParticles[particleKey] = state;
+                        hemisphereOrigin = state.origin;
+                        attractionTime = state.progress * duration;
+                    }
+
+                    p.position = GetAttractedPosition(
+                        p.position, dstPos, duration, attractionTime, hemisphereDirection, hemisphereOrigin);
                     p.velocity *= 0.5f;
                     particles[i] = p;
                 }
 
                 particleSystem.SetParticles(particles, count);
             }
+
+            RemoveStaleHemisphereParticles();
         }
 
         private Vector3 GetDestinationPosition(UIParticle uiParticle, ParticleSystem particleSystem)
@@ -271,7 +325,9 @@ namespace Coffee.UIExtensions
             return dstPos;
         }
 
-        private Vector3 GetAttractedPosition(Vector3 current, Vector3 target, float duration, float time)
+        private Vector3 GetAttractedPosition(
+            Vector3 current, Vector3 target, float duration, float time, Vector3 hemisphereDirection,
+            Vector3 hemisphereOrigin)
         {
             var speed = m_MaxSpeed;
             switch (m_UpdateMode)
@@ -298,9 +354,74 @@ namespace Coffee.UIExtensions
                     var spherical = Vector3.Slerp(current, target, t);
                     target = Vector3.Lerp(linear, spherical, m_SphereCurveRate);
                     break;
+                case Movement.Hemisphere:
+                    var progress = duration > 0 ? Mathf.Clamp01(time / duration) : 1f;
+                    var direction = target - hemisphereOrigin;
+                    var perpendicular = Vector3.ProjectOnPlane(hemisphereDirection, direction);
+                    if (perpendicular.sqrMagnitude < 0.000001f)
+                    {
+                        perpendicular = Vector3.ProjectOnPlane(Vector3.forward, direction);
+                    }
+
+                    if (perpendicular.sqrMagnitude < 0.000001f)
+                    {
+                        perpendicular = Vector3.ProjectOnPlane(Vector3.right, direction);
+                    }
+
+                    if (perpendicular.sqrMagnitude > 0)
+                    {
+                        perpendicular.Normalize();
+                    }
+
+                    var linearTarget = Vector3.Lerp(hemisphereOrigin, target, progress);
+                    var curvedTarget = linearTarget
+                                       + perpendicular * (m_HemisphereRadius * Mathf.Sin(Mathf.PI * progress));
+                    var directLength = direction.magnitude;
+                    var targetOffset = curvedTarget - current;
+                    if (directLength > 0f && targetOffset.sqrMagnitude > 0f)
+                    {
+                        var alignment = Vector3.Dot(
+                            targetOffset.normalized, direction / directLength);
+                        if (alignment > 0.000001f)
+                        {
+                            speed /= alignment;
+                        }
+                    }
+
+                    target = curvedTarget;
+                    break;
             }
 
             return Vector3.MoveTowards(current, target, speed);
+        }
+
+        private static long GetHemisphereParticleKey(ParticleSystem particleSystem, ParticleSystem.Particle particle)
+        {
+            return ((long)particleSystem.GetInstanceID() << 32) | particle.randomSeed;
+        }
+
+        private void RemoveStaleHemisphereParticles()
+        {
+            _staleHemisphereParticleKeys.Clear();
+            foreach (var pair in _hemisphereParticles)
+            {
+                if (pair.Value.lastSeenFrame != Time.frameCount)
+                {
+                    _staleHemisphereParticleKeys.Add(pair.Key);
+                }
+            }
+
+            for (var i = 0; i < _staleHemisphereParticleKeys.Count; i++)
+            {
+                _hemisphereParticles.Remove(_staleHemisphereParticleKeys[i]);
+            }
+        }
+
+        private struct HemisphereParticle
+        {
+            public Vector3 origin;
+            public float progress;
+            public int lastSeenFrame;
         }
 
         private void CollectUIParticlesIfNeeded()
@@ -387,6 +508,7 @@ namespace Coffee.UIExtensions
         private SerializedProperty m_Movement;
         private SerializedProperty m_UpdateMode;
         private SerializedProperty m_SphereCurveRate;
+        private SerializedProperty m_HemisphereRadius;
         private SerializedProperty m_OnAttracted;
 
         private void OnEnable()
@@ -398,6 +520,7 @@ namespace Coffee.UIExtensions
             m_Movement = serializedObject.FindProperty("m_Movement");
             m_UpdateMode = serializedObject.FindProperty("m_UpdateMode");
             m_SphereCurveRate = serializedObject.FindProperty("m_SphereCurveRate");
+            m_HemisphereRadius = serializedObject.FindProperty("m_HemisphereRadius");
             m_OnAttracted = serializedObject.FindProperty("m_OnAttracted");
         }
 
@@ -416,6 +539,12 @@ namespace Coffee.UIExtensions
             {
                 EditorGUI.indentLevel++;
                 EditorGUILayout.PropertyField(m_SphereCurveRate);
+                EditorGUI.indentLevel--;
+            }
+            else if (m_Movement.enumValueIndex == (int)UIParticleAttractor.Movement.Hemisphere)
+            {
+                EditorGUI.indentLevel++;
+                EditorGUILayout.PropertyField(m_HemisphereRadius);
                 EditorGUI.indentLevel--;
             }
 
