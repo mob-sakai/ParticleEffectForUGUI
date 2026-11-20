@@ -1,0 +1,11 @@
+{
+    "name": "Coffee.UIParticle.Issue321.Scene",
+    "references": ["Coffee.UIParticle"],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": []
+}

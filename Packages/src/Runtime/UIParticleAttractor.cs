@@ -37,7 +37,15 @@ namespace Coffee.UIExtensions
 
         [Range(0f, 0.95f)]
         [SerializeField]
+        [HideInInspector]
         private float m_DelayRate;
+
+        [SerializeField]
+        private ParticleSystem.MinMaxCurve m_DelayRateCurve = new ParticleSystem.MinMaxCurve(0);
+
+        [SerializeField]
+        [HideInInspector]
+        private bool m_IsDelayRateUpgraded;
 
         [Range(0.001f, 100f)]
         [SerializeField]
@@ -73,8 +81,23 @@ namespace Coffee.UIExtensions
 
         public float delay
         {
-            get => m_DelayRate;
-            set => m_DelayRate = value;
+            get => Mathf.Clamp(EvaluateDelayRate(0.5f), 0f, 0.95f);
+            set
+            {
+                m_DelayRate = Mathf.Clamp(value, 0f, 0.95f);
+                m_DelayRateCurve = new ParticleSystem.MinMaxCurve(m_DelayRate);
+                m_IsDelayRateUpgraded = true;
+            }
+        }
+
+        public ParticleSystem.MinMaxCurve delayRate
+        {
+            get => m_DelayRateCurve;
+            set
+            {
+                m_DelayRateCurve = value;
+                m_IsDelayRateUpgraded = true;
+            }
         }
 
         public float maxSpeed
@@ -242,7 +265,8 @@ namespace Coffee.UIExtensions
                     }
 
                     // Calc attracting time
-                    var delayTime = p.startLifetime * m_DelayRate;
+                    var delayRate = EvaluateDelayRate((p.randomSeed & 0x00ffffff) / 16777215f);
+                    var delayTime = p.startLifetime * Mathf.Clamp(delayRate, 0f, 0.95f);
                     var duration = p.startLifetime - delayTime;
                     var time = Mathf.Max(0, p.startLifetime - p.remainingLifetime - delayTime);
 
@@ -400,6 +424,11 @@ namespace Coffee.UIExtensions
             return ((long)particleSystem.GetInstanceID() << 32) | particle.randomSeed;
         }
 
+        private float EvaluateDelayRate(float randomValue)
+        {
+            return m_DelayRateCurve.Evaluate(randomValue, randomValue);
+        }
+
         private void RemoveStaleHemisphereParticles()
         {
             _staleHemisphereParticleKeys.Clear();
@@ -473,6 +502,7 @@ namespace Coffee.UIExtensions
 
         void ISerializationCallbackReceiver.OnAfterDeserialize()
         {
+            UpgradeDelayRateIfNeeded();
         }
 
         private void UpgradeIfNeeded()
@@ -481,6 +511,8 @@ namespace Coffee.UIExtensions
             {
                 m_ParticleSystems = new List<ParticleSystem>();
             }
+
+            UpgradeDelayRateIfNeeded();
 
             // Multiple ParticleSystems support: from 'm_ParticleSystem' to 'm_ParticleSystems'
             if (m_ParticleSystem != null)
@@ -494,6 +526,14 @@ namespace Coffee.UIExtensions
                 Debug.Log($"Upgraded!");
             }
         }
+
+        private void UpgradeDelayRateIfNeeded()
+        {
+            if (m_IsDelayRateUpgraded) return;
+
+            m_DelayRateCurve = new ParticleSystem.MinMaxCurve(Mathf.Clamp(m_DelayRate, 0f, 0.95f));
+            m_IsDelayRateUpgraded = true;
+        }
     }
 
 #if UNITY_EDITOR
@@ -503,7 +543,7 @@ namespace Coffee.UIExtensions
     {
         private SerializedProperty m_ParticleSystems;
         private SerializedProperty m_DestinationRadius;
-        private SerializedProperty m_DelayRate;
+        private SerializedProperty m_DelayRateCurve;
         private SerializedProperty m_MaxSpeed;
         private SerializedProperty m_Movement;
         private SerializedProperty m_UpdateMode;
@@ -515,7 +555,7 @@ namespace Coffee.UIExtensions
         {
             m_ParticleSystems = serializedObject.FindProperty("m_ParticleSystems");
             m_DestinationRadius = serializedObject.FindProperty("m_DestinationRadius");
-            m_DelayRate = serializedObject.FindProperty("m_DelayRate");
+            m_DelayRateCurve = serializedObject.FindProperty("m_DelayRateCurve");
             m_MaxSpeed = serializedObject.FindProperty("m_MaxSpeed");
             m_Movement = serializedObject.FindProperty("m_Movement");
             m_UpdateMode = serializedObject.FindProperty("m_UpdateMode");
@@ -530,10 +570,9 @@ namespace Coffee.UIExtensions
 
             EditorGUILayout.PropertyField(m_ParticleSystems);
             EditorGUILayout.PropertyField(m_DestinationRadius);
-            EditorGUILayout.PropertyField(m_DelayRate);
+            EditorGUILayout.PropertyField(m_DelayRateCurve);
             EditorGUILayout.PropertyField(m_MaxSpeed);
             EditorGUILayout.PropertyField(m_Movement);
-            EditorGUILayout.PropertyField(m_UpdateMode);
 
             if (m_Movement.enumValueIndex == (int)UIParticleAttractor.Movement.Sphere)
             {
@@ -548,6 +587,7 @@ namespace Coffee.UIExtensions
                 EditorGUI.indentLevel--;
             }
 
+            EditorGUILayout.PropertyField(m_UpdateMode);
             EditorGUILayout.PropertyField(m_OnAttracted);
             serializedObject.ApplyModifiedProperties();
         }

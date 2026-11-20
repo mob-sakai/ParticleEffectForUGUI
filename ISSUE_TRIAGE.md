@@ -1,7 +1,7 @@
 # Open Issue Triage and Difficulty Assessment
 
 - **Triage date:** 2026-11-19
-- **Last updated:** 2026-11-19
+- **Last updated:** 2026-11-20
 - **Scope:** Open issues in `mob-sakai/ParticleEffectForUGUI`, excluding pull requests
 - **Issues reviewed:** 44
 - **Purpose:** Estimate resolution difficulty from the reports and identify possible next steps for each issue.
@@ -64,7 +64,7 @@ These FAQ/question issues do not require individual fixes or issue work. They re
 |---|---|
 | ⏭️ [#293 Is custom simulation space broken?](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/293) | Custom simulation space is not supported; use Local or World instead. |
 | [#302 Size of the Shape Gizmo](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/302) | Check Shape Gizmo display across Canvas modes, separating Scene View display transforms from simulation transforms. |
-| [#321 Additions to Particle Attractor](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/321) | Add constant, range, and curve options to the Attractor's Delay Rate, similar to Particle System. Design serialization and compatibility with existing values. |
+| ✅ [#321 Additions to Particle Attractor](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/321) | `UIParticleAttractor.delayRate` now supports constant, two-constant, curve, and two-curve values with a stable per-particle sample. Existing float `delay` assets and scripting remain compatible. See the [report](Assets/Issues/321_AttractorDelayCurve/REPORT.md). |
 | [#331 Transparency issue with Shader Graph shaders](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/331) | Shader Graph Scene Picking/Selection passes may affect baking. Reproduce with fixed URP and Shader Graph versions and consider shader selection for baking. |
 | ❌ [#333 Mesh sharing across different scales](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/333) | Reproduced with differing parent scales; the Replica uses the Primary's baked size. A compatibility-safe fix remains unresolved. See the [report](Assets/Issues/333_MeshSharingScale/REPORT.md). |
 | ❌ [#339 Prewarm doesn't work](https://github.com/mob-sakai/ParticleEffectForUGUI/issues/339) | Reproduced fewer prewarmed particles than native when lifetime exceeds duration. A candidate native restart cleared existing particles, so a safe fix remains unresolved. See the [report](Assets/Issues/339_Prewarm/REPORT.md). |
