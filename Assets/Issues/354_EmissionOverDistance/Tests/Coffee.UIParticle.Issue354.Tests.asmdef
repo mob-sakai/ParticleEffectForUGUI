@@ -1,0 +1,12 @@
+{
+    "name": "Coffee.UIParticle.Issue354.Tests",
+    "references": ["Coffee.UIParticle", "Coffee.UIParticle.Issue354.Scene"],
+    "optionalUnityReferences": ["TestAssemblies"],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": []
+}
