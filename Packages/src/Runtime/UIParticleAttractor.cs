@@ -15,7 +15,9 @@ namespace Coffee.UIExtensions
             Linear,
             Smooth,
             Sphere,
-            Hemisphere
+            Hemisphere,
+            InSmooth,
+            OutSmooth
         }
 
         public enum UpdateMode
@@ -69,9 +71,9 @@ namespace Coffee.UIExtensions
         private UnityEvent m_OnAttracted;
 
         private List<UIParticle> _uiParticles = new List<UIParticle>();
-        private readonly Dictionary<long, HemisphereParticle> _hemisphereParticles =
-            new Dictionary<long, HemisphereParticle>();
-        private readonly List<long> _staleHemisphereParticleKeys = new List<long>();
+        private readonly Dictionary<long, AttractionParticle> _attractionParticles =
+            new Dictionary<long, AttractionParticle>();
+        private readonly List<long> _staleAttractionParticleKeys = new List<long>();
 
         public float destinationRadius
         {
@@ -138,7 +140,7 @@ namespace Coffee.UIExtensions
 
         /// <summary>
         /// The target ParticleSystems to attract. Use <see cref="AddParticleSystem"/> and
-        /// <see cref="RemoveParticleSystem"/> to modify the list.
+        /// <see cref="RemoveParticleSystem"/> or <see cref="ClearParticleSystems"/> to modify the list.
         /// </summary>
         public IReadOnlyList<ParticleSystem> particleSystems
         {
@@ -167,7 +169,7 @@ namespace Coffee.UIExtensions
 
             m_ParticleSystems.Add(ps);
             _uiParticles.Clear();
-            _hemisphereParticles.Clear();
+            _attractionParticles.Clear();
         }
 
         public void RemoveParticleSystem(ParticleSystem ps)
@@ -182,7 +184,15 @@ namespace Coffee.UIExtensions
 
             m_ParticleSystems.RemoveAt(i);
             _uiParticles.Clear();
-            _hemisphereParticles.Clear();
+            _attractionParticles.Clear();
+        }
+
+        public void ClearParticleSystems()
+        {
+            m_ParticleSystems?.Clear();
+            _uiParticles?.Clear();
+            _attractionParticles.Clear();
+            _staleAttractionParticleKeys.Clear();
         }
 
         private void Awake()
@@ -198,7 +208,7 @@ namespace Coffee.UIExtensions
         private void OnDisable()
         {
             UIParticleUpdater.Unregister(this);
-            _hemisphereParticles.Clear();
+            _attractionParticles.Clear();
         }
 
         private void OnDestroy()
@@ -241,13 +251,16 @@ namespace Coffee.UIExtensions
                     // Attracted
                     var p = particles[i];
                     var isHemisphere = m_Movement == Movement.Hemisphere;
-                    var particleKey = isHemisphere ? GetHemisphereParticleKey(particleSystem, p) : 0;
+                    var hasStableOrigin = isHemisphere
+                                          || m_Movement == Movement.InSmooth
+                                          || m_Movement == Movement.OutSmooth;
+                    var particleKey = hasStableOrigin ? GetAttractionParticleKey(particleSystem, p) : 0;
 
                     if (0f < p.remainingLifetime && Vector3.Distance(p.position, dstPos) < m_DestinationRadius)
                     {
                         p.remainingLifetime = 0f;
                         particles[i] = p;
-                        if (isHemisphere) _hemisphereParticles.Remove(particleKey);
+                        if (hasStableOrigin) _attractionParticles.Remove(particleKey);
 
                         if (m_OnAttracted != null)
                         {
@@ -274,13 +287,13 @@ namespace Coffee.UIExtensions
                     if (time <= 0) continue;
 
                     // Attract
-                    var hemisphereOrigin = p.position;
+                    var movementOrigin = p.position;
                     var attractionTime = time;
-                    if (isHemisphere)
+                    if (hasStableOrigin)
                     {
-                        if (!_hemisphereParticles.TryGetValue(particleKey, out var state))
+                        if (!_attractionParticles.TryGetValue(particleKey, out var state))
                         {
-                            state = new HemisphereParticle
+                            state = new AttractionParticle
                             {
                                 origin = p.position,
                                 lastSeenFrame = Time.frameCount
@@ -292,14 +305,18 @@ namespace Coffee.UIExtensions
                         }
 
                         var progress = duration > 0 ? Mathf.Clamp01(time / duration) : 1f;
-                        state.progress = Mathf.Lerp(state.progress, 1f, progress);
-                        _hemisphereParticles[particleKey] = state;
-                        hemisphereOrigin = state.origin;
-                        attractionTime = state.progress * duration;
+                        if (isHemisphere)
+                        {
+                            state.progress = Mathf.Lerp(state.progress, 1f, progress);
+                            attractionTime = state.progress * duration;
+                        }
+
+                        _attractionParticles[particleKey] = state;
+                        movementOrigin = state.origin;
                     }
 
                     p.position = GetAttractedPosition(
-                        p.position, dstPos, duration, attractionTime, hemisphereDirection, hemisphereOrigin);
+                        p.position, dstPos, duration, attractionTime, hemisphereDirection, movementOrigin);
                     p.velocity *= 0.5f;
                     particles[i] = p;
                 }
@@ -307,7 +324,7 @@ namespace Coffee.UIExtensions
                 particleSystem.SetParticles(particles, count);
             }
 
-            RemoveStaleHemisphereParticles();
+            RemoveStaleAttractionParticles();
         }
 
         private Vector3 GetDestinationPosition(UIParticle uiParticle, ParticleSystem particleSystem)
@@ -351,7 +368,7 @@ namespace Coffee.UIExtensions
 
         private Vector3 GetAttractedPosition(
             Vector3 current, Vector3 target, float duration, float time, Vector3 hemisphereDirection,
-            Vector3 hemisphereOrigin)
+            Vector3 movementOrigin)
         {
             var speed = m_MaxSpeed;
             switch (m_UpdateMode)
@@ -372,6 +389,15 @@ namespace Coffee.UIExtensions
                 case Movement.Smooth:
                     target = Vector3.Lerp(current, target, time / duration);
                     break;
+                case Movement.InSmooth:
+                    var inProgress = duration > 0 ? Mathf.Clamp01(time / duration) : 1f;
+                    target = Vector3.Lerp(movementOrigin, target, inProgress * inProgress);
+                    break;
+                case Movement.OutSmooth:
+                    var outProgress = duration > 0 ? Mathf.Clamp01(time / duration) : 1f;
+                    var remainingProgress = 1f - outProgress;
+                    target = Vector3.Lerp(movementOrigin, target, 1f - remainingProgress * remainingProgress);
+                    break;
                 case Movement.Sphere:
                     var t = time / duration;
                     var linear = Vector3.Lerp(current, target, t);
@@ -380,7 +406,7 @@ namespace Coffee.UIExtensions
                     break;
                 case Movement.Hemisphere:
                     var progress = duration > 0 ? Mathf.Clamp01(time / duration) : 1f;
-                    var direction = target - hemisphereOrigin;
+                    var direction = target - movementOrigin;
                     var perpendicular = Vector3.ProjectOnPlane(hemisphereDirection, direction);
                     if (perpendicular.sqrMagnitude < 0.000001f)
                     {
@@ -397,7 +423,7 @@ namespace Coffee.UIExtensions
                         perpendicular.Normalize();
                     }
 
-                    var linearTarget = Vector3.Lerp(hemisphereOrigin, target, progress);
+                    var linearTarget = Vector3.Lerp(movementOrigin, target, progress);
                     var curvedTarget = linearTarget
                                        + perpendicular * (m_HemisphereRadius * Mathf.Sin(Mathf.PI * progress));
                     var directLength = direction.magnitude;
@@ -419,7 +445,7 @@ namespace Coffee.UIExtensions
             return Vector3.MoveTowards(current, target, speed);
         }
 
-        private static long GetHemisphereParticleKey(ParticleSystem particleSystem, ParticleSystem.Particle particle)
+        private static long GetAttractionParticleKey(ParticleSystem particleSystem, ParticleSystem.Particle particle)
         {
             return ((long)particleSystem.GetInstanceID() << 32) | particle.randomSeed;
         }
@@ -429,24 +455,24 @@ namespace Coffee.UIExtensions
             return m_DelayRateCurve.Evaluate(randomValue, randomValue);
         }
 
-        private void RemoveStaleHemisphereParticles()
+        private void RemoveStaleAttractionParticles()
         {
-            _staleHemisphereParticleKeys.Clear();
-            foreach (var pair in _hemisphereParticles)
+            _staleAttractionParticleKeys.Clear();
+            foreach (var pair in _attractionParticles)
             {
                 if (pair.Value.lastSeenFrame != Time.frameCount)
                 {
-                    _staleHemisphereParticleKeys.Add(pair.Key);
+                    _staleAttractionParticleKeys.Add(pair.Key);
                 }
             }
 
-            for (var i = 0; i < _staleHemisphereParticleKeys.Count; i++)
+            for (var i = 0; i < _staleAttractionParticleKeys.Count; i++)
             {
-                _hemisphereParticles.Remove(_staleHemisphereParticleKeys[i]);
+                _attractionParticles.Remove(_staleAttractionParticleKeys[i]);
             }
         }
 
-        private struct HemisphereParticle
+        private struct AttractionParticle
         {
             public Vector3 origin;
             public float progress;
